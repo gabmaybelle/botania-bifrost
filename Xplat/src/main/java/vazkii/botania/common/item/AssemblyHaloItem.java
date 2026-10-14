@@ -19,19 +19,19 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.ServerPlaceRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -71,7 +71,7 @@ import java.util.Optional;
 
 public class AssemblyHaloItem extends Item {
 
-	private static final ResourceLocation glowTexture = ResourceLocation.parse(ResourcesLib.MISC_GLOW_GREEN);
+	private static final Identifier glowTexture = Identifier.parse(ResourcesLib.MISC_GLOW_GREEN);
 	private static final ItemStack craftingTable = new ItemStack(Blocks.CRAFTING_TABLE);
 
 	public static final int SEGMENTS = 12;
@@ -81,7 +81,7 @@ public class AssemblyHaloItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide) {
 			int segment = getSegmentLookedAt(stack, player);
@@ -107,7 +107,7 @@ public class AssemblyHaloItem extends Item {
 			}
 		}
 
-		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -257,11 +257,11 @@ public class AssemblyHaloItem extends Item {
 		}
 
 		var storedRecipes = halo.getOrDefault(BotaniaDataComponents.STORED_RECIPES, StoredIds.EMPTY);
-		ResourceLocation id = storedRecipes.getSlot(segment - 1);
+		Identifier id = storedRecipes.getSlot(segment - 1);
 		return id != null ? getRecipeHolder(world, id) : null;
 	}
 
-	private static void saveRecipe(ItemStack halo, @Nullable ResourceLocation id, int segment) {
+	private static void saveRecipe(ItemStack halo, @Nullable Identifier id, int segment) {
 		if (segment <= 0 || segment >= SEGMENTS) {
 			return;
 		}
@@ -304,18 +304,18 @@ public class AssemblyHaloItem extends Item {
 		});
 	}
 
-	private static void rememberLastRecipe(ResourceLocation recipeId, ItemStack halo) {
+	private static void rememberLastRecipe(Identifier recipeId, ItemStack halo) {
 		DataComponentHelper.setOptional(halo, BotaniaDataComponents.LAST_RECIPE_ID, recipeId);
 	}
 
 	@Nullable
 	private static RecipeHolder<CraftingRecipe> getLastRecipe(Level world, ItemStack halo) {
-		ResourceLocation id = halo.get(BotaniaDataComponents.LAST_RECIPE_ID);
+		Identifier id = halo.get(BotaniaDataComponents.LAST_RECIPE_ID);
 		return id != null ? getRecipeHolder(world, id) : null;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static @Nullable RecipeHolder<CraftingRecipe> getRecipeHolder(Level world, ResourceLocation id) {
+	private static @Nullable RecipeHolder<CraftingRecipe> getRecipeHolder(Level world, Identifier id) {
 		Optional<RecipeHolder<?>> recipeHolder = world.getRecipeManager().byKey(id);
 		return recipeHolder.isPresent() && recipeHolder.get().value().getType() == RecipeType.CRAFTING
 				? (RecipeHolder<CraftingRecipe>) recipeHolder.get()
@@ -338,7 +338,7 @@ public class AssemblyHaloItem extends Item {
 		stack.set(BotaniaDataComponents.HALO_ROTATION_BASE, rotation);
 	}
 
-	public ResourceLocation getGlowResource(ItemStack stack) {
+	public Identifier getGlowResource(ItemStack stack) {
 		return glowTexture;
 	}
 

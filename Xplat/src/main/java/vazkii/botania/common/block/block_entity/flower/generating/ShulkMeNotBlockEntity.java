@@ -51,7 +51,7 @@ public class ShulkMeNotBlockEntity extends GeneratingFlowerBlockEntity {
 		}
 
 		BlockPos pos = getEffectivePos();
-		Vec3 posD = pos.getCenter();
+		Vec3 posD = Vec3.atCenterOf(pos);
 		List<Shulker> shulkers = world.getEntitiesOfClass(Shulker.class, MathHelper.inflateBoxAround(pos, RADIUS),
 				shulker -> shulker.isAlive() && shulker.distanceToSqr(posD) < RADIUS * RADIUS);
 		for (Shulker shulker : shulkers) {

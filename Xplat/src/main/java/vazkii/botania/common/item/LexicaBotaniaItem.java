@@ -16,12 +16,12 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -43,7 +43,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	@SuppressWarnings("unchecked")
 	public static final Supplier<DataComponentType<Component>> AKASHIC_DISPLAY_NAME_TYPE_SUPPLIER = Suppliers.memoize(() -> {
 		ResourceKey<DataComponentType<?>> resourceKey = ResourceKey.create(Registries.DATA_COMPONENT_TYPE,
-				ResourceLocation.fromNamespaceAndPath("akashictome", "og_display_name"));
+				Identifier.fromNamespaceAndPath("akashictome", "og_display_name"));
 		return (DataComponentType<Component>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(resourceKey);
 	});
 
@@ -71,7 +71,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);
 
 		if (playerIn instanceof ServerPlayer player) {
@@ -80,7 +80,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 			playerIn.playSound(BotaniaSounds.LEXICON_OPEN, 1F, (float) (0.7 + Math.random() * 0.4));
 		}
 
-		return InteractionResultHolder.sidedSuccess(stack, worldIn.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	public static Component getEdition() {

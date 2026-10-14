@@ -10,7 +10,7 @@ package vazkii.botania.api.brew;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -26,7 +26,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * The class for a Brew definition, each one is a singleton.
  */
 public class Brew {
-	public static final ResourceLocation DEFAULT_ID = botaniaRL("fallback");
+	public static final Identifier DEFAULT_ID = botaniaRL("fallback");
 	private final Supplier<Integer> color;
 	private final int cost;
 	private final Supplier<List<MobEffectInstance>> effects;
@@ -86,7 +86,7 @@ public class Brew {
 	 * Gets the insensitive unlocalized name. This is used for the lexicon.
 	 */
 	public String getTranslationKey() {
-		ResourceLocation id = BotaniaAPI.instance().getBrewRegistry().getKey(this);
+		Identifier id = BotaniaAPI.instance().getBrewRegistry().getKey(this);
 		return String.format("%s.brew.%s", id.getNamespace(), id.getPath());
 	}
 

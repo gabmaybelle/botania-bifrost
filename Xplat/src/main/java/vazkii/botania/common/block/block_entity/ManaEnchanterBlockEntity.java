@@ -24,8 +24,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EnchantmentTags;
@@ -409,7 +409,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 
 		if (!enchants.isEmpty()) {
 			String enchStr = enchants.stream()
-					.map(e -> e.enchantment.unwrapKey().map(ResourceKey::location).orElseThrow() + "=" + e.level)
+					.map(e -> e.enchantment.unwrapKey().map(ResourceKey::identifier).orElseThrow() + "=" + e.level)
 					.collect(Collectors.joining(","));
 
 			cmp.putString(TAG_ENCHANTS, enchStr);
@@ -433,7 +433,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 			String[] enchTokens = enchStr.split(",");
 			for (String token : enchTokens) {
 				String[] entryTokens = token.split("=");
-				ResourceLocation enchantmentId = ResourceLocation.parse(entryTokens[0]);
+				Identifier enchantmentId = Identifier.parse(entryTokens[0]);
 				ResourceKey<Enchantment> enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchantmentId);
 				int lvl = Integer.parseInt(entryTokens[1]);
 				registries.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentKey)

@@ -12,7 +12,6 @@ package vazkii.botania.test.item;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +37,7 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.ManaTabletItem;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 import vazkii.botania.common.item.rod.DepthsRodItem;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 import java.util.Objects;
@@ -59,7 +59,7 @@ public class AstrolabeTest {
 	private static final int SLOT_FIRST_PROVIDER = 2;
 	private static final int SLOT_SECOND_PROVIDER = 3;
 
-	@GameTest(template = TEMPLATE_CANDLES)
+	@BotaniaGameTest(template = TEMPLATE_CANDLES)
 	public void testCandlesHorizontal3x3(final GameTestHelper helper) {
 		final Player player = mockPlayerWithAstrolabe(helper, POS_PLAYER_CANDLES, LOOK_TARGET_CANDLES_HORIZONTAL,
 				ManaTabletItem.DEFAULT_MAX_MANA);
@@ -88,7 +88,7 @@ public class AstrolabeTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE_CANDLES)
+	@BotaniaGameTest(template = TEMPLATE_CANDLES)
 	public void testCandlesHorizontal3x3Offhand(final GameTestHelper helper) {
 		final Player player = mockPlayerWithAstrolabe(helper, POS_PLAYER_CANDLES, LOOK_TARGET_CANDLES_HORIZONTAL,
 				ManaTabletItem.DEFAULT_MAX_MANA);
@@ -105,7 +105,7 @@ public class AstrolabeTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE_CANDLES)
+	@BotaniaGameTest(template = TEMPLATE_CANDLES)
 	public void testCandlesHorizontal3x3MultipleSourcesTalismanLast(final GameTestHelper helper) {
 		final Player player = mockPlayerWithAstrolabe(helper, POS_PLAYER_CANDLES, LOOK_TARGET_CANDLES_HORIZONTAL,
 				ManaTabletItem.DEFAULT_MAX_MANA);
@@ -126,7 +126,7 @@ public class AstrolabeTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE_CANDLES)
+	@BotaniaGameTest(template = TEMPLATE_CANDLES)
 	public void testCandlesHorizontal3x3MultipleSourcesTalismanFirst(final GameTestHelper helper) {
 		final Player player = mockPlayerWithAstrolabe(helper, POS_PLAYER_CANDLES, LOOK_TARGET_CANDLES_HORIZONTAL,
 				ManaTabletItem.DEFAULT_MAX_MANA);
@@ -147,7 +147,7 @@ public class AstrolabeTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE_CANDLES)
+	@BotaniaGameTest(template = TEMPLATE_CANDLES)
 	public void testCandlesVertical3x3(final GameTestHelper helper) {
 		final Player player = mockPlayerWithAstrolabe(helper, POS_PLAYER_CANDLES, LOOK_TARGET_CANDLES_VERTICAL,
 				ManaTabletItem.DEFAULT_MAX_MANA);
@@ -163,7 +163,7 @@ public class AstrolabeTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE_CANDLES)
+	@BotaniaGameTest(template = TEMPLATE_CANDLES)
 	public void testCandlesVertical5x5(final GameTestHelper helper) {
 		final Player player = mockPlayerWithAstrolabe(helper, POS_PLAYER_CANDLES, LOOK_TARGET_CANDLES_VERTICAL,
 				ManaTabletItem.DEFAULT_MAX_MANA);
@@ -256,38 +256,38 @@ public class AstrolabeTest {
 	private static final Vec3 LOOK_TARGET_DIRECTIONAL_Z = new Vec3(2.5, 2.0, 2.5);
 
 	// Logs are placed according to targeted surface orientation
-	@GameTest(template = TEMPLATE_DIRECTIONAL)
+	@BotaniaGameTest(template = TEMPLATE_DIRECTIONAL)
 	public void testDirectionalLogsAxisX(GameTestHelper helper) {
 		testDirectionalBlockWithProperty(helper, LOOK_TARGET_DIRECTIONAL_X,
 				BLOCK_LOG, BlockStateProperties.AXIS, Direction.Axis.X);
 	}
 
-	@GameTest(template = TEMPLATE_DIRECTIONAL)
+	@BotaniaGameTest(template = TEMPLATE_DIRECTIONAL)
 	public void testDirectionalLogsAxisY(GameTestHelper helper) {
 		testDirectionalBlockWithProperty(helper, LOOK_TARGET_DIRECTIONAL_Y,
 				BLOCK_LOG, BlockStateProperties.AXIS, Direction.Axis.Y);
 	}
 
-	@GameTest(template = TEMPLATE_DIRECTIONAL)
+	@BotaniaGameTest(template = TEMPLATE_DIRECTIONAL)
 	public void testDirectionalLogsAxisZ(GameTestHelper helper) {
 		testDirectionalBlockWithProperty(helper, LOOK_TARGET_DIRECTIONAL_Z,
 				BLOCK_LOG, BlockStateProperties.AXIS, Direction.Axis.Z);
 	}
 
 	// Pistons are placed according to player look direction
-	@GameTest(template = TEMPLATE_DIRECTIONAL)
+	@BotaniaGameTest(template = TEMPLATE_DIRECTIONAL)
 	public void testDirectionalPistonAxisX(GameTestHelper helper) {
 		testDirectionalBlockWithProperty(helper, LOOK_TARGET_DIRECTIONAL_X,
 				BLOCK_PISTON, BlockStateProperties.FACING, Direction.NORTH);
 	}
 
-	@GameTest(template = TEMPLATE_DIRECTIONAL)
+	@BotaniaGameTest(template = TEMPLATE_DIRECTIONAL)
 	public void testDirectionalPistonAxisY(GameTestHelper helper) {
 		testDirectionalBlockWithProperty(helper, LOOK_TARGET_DIRECTIONAL_Y,
 				BLOCK_PISTON, BlockStateProperties.FACING, Direction.NORTH);
 	}
 
-	@GameTest(template = TEMPLATE_DIRECTIONAL)
+	@BotaniaGameTest(template = TEMPLATE_DIRECTIONAL)
 	public void testDirectionalPistonAxisZ(GameTestHelper helper) {
 		testDirectionalBlockWithProperty(helper, LOOK_TARGET_DIRECTIONAL_Z,
 				BLOCK_PISTON, BlockStateProperties.FACING, Direction.NORTH);
@@ -322,7 +322,7 @@ public class AstrolabeTest {
 	private static final int MANA_NOT_ENOUGH = DepthsRodItem.COST * 100;
 	private static final int MANA_BARELY_ENOUGH = DepthsRodItem.COST * 121 + COST_ASTROLABE / 2;
 
-	@GameTest(template = TEMPLATE_MANA)
+	@BotaniaGameTest(template = TEMPLATE_MANA)
 	public void testNotEnoughMana(GameTestHelper helper) {
 		// should be too little mana to conjure enough blocks:
 		final Player player = mockAstrolabeAndUseWithCobbleRod(helper, MANA_NOT_ENOUGH);
@@ -334,7 +334,7 @@ public class AstrolabeTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE_MANA)
+	@BotaniaGameTest(template = TEMPLATE_MANA)
 	public void testBarelyNotEnoughMana(GameTestHelper helper) {
 		// should be enough mana to conjure required blocks, but not enough left to also operate the Astrolabe
 		final Player player = mockAstrolabeAndUseWithCobbleRod(helper, MANA_BARELY_ENOUGH);

@@ -25,7 +25,7 @@ public class GaiaRitualSacrificeItem extends Item {
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		return GaiaGuardianEntity.spawn(ctx.getPlayer(), ctx.getItemInHand(), ctx.getLevel(), ctx.getClickedPos(), hardMode)
-				? InteractionResult.sidedSuccess(ctx.getLevel().isClientSide())
+				? InteractionResult.SUCCESS
 				: InteractionResult.FAIL;
 	}
 }

@@ -11,7 +11,7 @@ package vazkii.botania.api.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.component.BlockItemStateProperties;
@@ -36,7 +36,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface LifeAggregatorCarryable {
 
-	ResourceLocation ID = botaniaRL("life_aggregator_carryable");
+	Identifier ID = botaniaRL("life_aggregator_carryable");
 	BlockApiNoContext<LifeAggregatorCarryable> LOOKUP = new BlockApiNoContext<>(ID, LifeAggregatorCarryable.class);
 
 	/**

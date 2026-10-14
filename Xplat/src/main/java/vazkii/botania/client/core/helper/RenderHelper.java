@@ -8,7 +8,6 @@
  */
 package vazkii.botania.client.core.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -18,25 +17,26 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -182,7 +182,7 @@ public final class RenderHelper extends RenderType {
 				.setLightmapState(LIGHTMAP).createCompositeState(false);
 		ENCHANTER = makeLayer(ResourcesLib.PREFIX_MOD + "mana_enchanter_rune", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
 
-		RenderStateShard.TextureStateShard babylonTexture = new RenderStateShard.TextureStateShard(ResourceLocation.parse(ResourcesLib.MISC_BABYLON), false, true);
+		RenderStateShard.TextureStateShard babylonTexture = new RenderStateShard.TextureStateShard(Identifier.parse(ResourcesLib.MISC_BABYLON), false, true);
 		glState = RenderType.CompositeState.builder().setTextureState(babylonTexture)
 				.setShaderState(new ShaderStateShard(CoreShaders::halo))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -220,15 +220,15 @@ public final class RenderHelper extends RenderType {
 		throw new UnsupportedOperationException("Should not be instantiated");
 	}
 
-	private static RenderType getPylonGlowDirect(String name, ResourceLocation texture) {
+	private static RenderType getPylonGlowDirect(String name, Identifier texture) {
 		return getPylonGlow(name, texture, true);
 	}
 
-	private static RenderType getPylonGlow(String name, ResourceLocation texture) {
+	private static RenderType getPylonGlow(String name, Identifier texture) {
 		return getPylonGlow(name, texture, false);
 	}
 
-	private static RenderType getPylonGlow(String name, ResourceLocation texture, boolean direct) {
+	private static RenderType getPylonGlow(String name, Identifier texture, boolean direct) {
 		RenderType.CompositeState.CompositeStateBuilder glState = RenderType.CompositeState.builder()
 				.setShaderState(new ShaderStateShard(CoreShaders::pylon))
 				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
@@ -260,7 +260,7 @@ public final class RenderHelper extends RenderType {
 		return builder.createCompositeState(false);
 	}
 
-	public static RenderType getHaloLayer(ResourceLocation texture) {
+	public static RenderType getHaloLayer(Identifier texture) {
 		RenderType.CompositeState glState = RenderType.CompositeState.builder()
 				.setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
 				.setTextureState(new RenderStateShard.TextureStateShard(texture, true, false))
@@ -269,7 +269,7 @@ public final class RenderHelper extends RenderType {
 		return makeLayer(ResourcesLib.PREFIX_MOD + "assembly_halo", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, false, true, glState);
 	}
 
-	private static final Function<ResourceLocation, RenderType> GAIA_NOISE_DYNAMIC_LAYER = Util.memoize(texture -> {
+	private static final Function<Identifier, RenderType> GAIA_NOISE_DYNAMIC_LAYER = Util.memoize(texture -> {
 		// [VanillaCopy] entity_translucent, with own shader
 		CompositeState glState = RenderType.CompositeState.builder()
 				.setShaderState(new ShaderStateShard(CoreShaders::gaiaNoiseDynamic))
@@ -282,7 +282,7 @@ public final class RenderHelper extends RenderType {
 		return makeLayer(ResourcesLib.PREFIX_MOD + "gaia_noise_dynamic", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, glState);
 	});
 
-	private static final Function<ResourceLocation, RenderType> GAIA_NOISE_CONSTANT_LAYER = Util.memoize(texture -> {
+	private static final Function<Identifier, RenderType> GAIA_NOISE_CONSTANT_LAYER = Util.memoize(texture -> {
 		// [VanillaCopy] entity_translucent, with own shader
 		CompositeState glState = RenderType.CompositeState.builder()
 				.setShaderState(new ShaderStateShard(CoreShaders::gaiaNoiseConstant))
@@ -295,15 +295,15 @@ public final class RenderHelper extends RenderType {
 		return makeLayer(ResourcesLib.PREFIX_MOD + "gaia_noise_constant", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, glState);
 	});
 
-	public static RenderType getGaiaNoiseDynamicLayer(ResourceLocation texture) {
+	public static RenderType getGaiaNoiseDynamicLayer(Identifier texture) {
 		return GAIA_NOISE_DYNAMIC_LAYER.apply(texture);
 	}
 
-	public static RenderType getGaiaNoiseConstantLayer(ResourceLocation texture) {
+	public static RenderType getGaiaNoiseConstantLayer(Identifier texture) {
 		return GAIA_NOISE_CONSTANT_LAYER.apply(texture);
 	}
 
-	public static void drawTexturedModalRect(GuiGraphics gui, ResourceLocation textureId, int x, int y, int u, int v, int width, int height) {
+	public static void drawTexturedModalRect(GuiGraphics gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {
 		gui.blit(textureId, x, y, u, v, width, height, 256, 256);
 	}
 
@@ -329,7 +329,7 @@ public final class RenderHelper extends RenderType {
 			ms.mulPose(VecHelper.rotateZ(random.nextFloat() * 360F + f1 * 90F));
 			float f3 = random.nextFloat() * 20F + 5F + f2 * 10F;
 			float f4 = random.nextFloat() * 2F + 1F + f2 * 2F;
-			int alphaColor = FastColor.ARGB32.color(FastColor.as8BitChannel(f1), color);
+			int alphaColor = ARGB.color(ARGB.as8BitChannel(f1), color);
 			Matrix4f mat = ms.last().pose();
 			Runnable center = () -> buffer.addVertex(mat, 0, 0, 0).setColor(alphaColor);
 			Runnable[] vertices = {

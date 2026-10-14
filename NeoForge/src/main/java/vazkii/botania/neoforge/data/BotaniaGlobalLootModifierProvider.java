@@ -34,8 +34,8 @@ public class BotaniaGlobalLootModifierProvider extends GlobalLootModifierProvide
 		for (ResourceKey<LootTable> lootTable : BotaniaLootTables.all()) {
 			ResourceKey<LootTable> targetTable = BotaniaLootTables.getInjectionTargetLootTable(lootTable);
 			if (targetTable != null) {
-				add(lootTable.location().getPath(), new AddTableLootModifier(
-						new LootItemCondition[] { LootTableIdCondition.builder(targetTable.location()).build() },
+				add(lootTable.identifier().getPath(), new AddTableLootModifier(
+						new LootItemCondition[] { LootTableIdCondition.builder(targetTable.identifier()).build() },
 						lootTable)
 				);
 			}

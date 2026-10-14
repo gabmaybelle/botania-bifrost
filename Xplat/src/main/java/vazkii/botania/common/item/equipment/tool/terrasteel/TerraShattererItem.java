@@ -21,7 +21,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -98,24 +97,24 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		int tier = getLevel(stack);
 		if (!player.isSecondaryUseActive() || tier == 0) {
-			return InteractionResultHolder.pass(stack);
+			return InteractionResult.PASS;
 		}
 		if (hand == InteractionHand.MAIN_HAND && !player.getOffhandItem().isEmpty()) {
 			BlockHitResult blockhitresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 
 			if (blockhitresult.getType() == HitResult.Type.BLOCK) {
-				return InteractionResultHolder.pass(stack);
+				return InteractionResult.PASS;
 			}
 		}
 		setEnabled(stack, !isEnabled(stack));
 		if (!level.isClientSide()) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.TERRA_SHATTERER_MODE, SoundSource.PLAYERS, 1F, 1F);
 		}
-		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

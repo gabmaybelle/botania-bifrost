@@ -15,7 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -109,9 +109,9 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 			double z = worldPosition.getZ() + 0.5;
 
 			int color = brew.getColor(stack);
-			float r = FastColor.ARGB32.red(color) / 255f;
-			float g = FastColor.ARGB32.green(color) / 255f;
-			float b = FastColor.ARGB32.blue(color) / 255f;
+			float r = ARGB.red(color) / 255f;
+			float g = ARGB.green(color) / 255f;
+			float b = ARGB.blue(color) / 255f;
 
 			WispParticleData data1 = WispParticleData.wisp(0.05F + (float) Math.random() * 0.02F, r, g, b);
 			level.addParticle(data1, x - (Math.random() - 0.5) * 0.2, y - (Math.random() - 0.5) * 0.2, z - (Math.random() - 0.5) * 0.2, 0.005F - (float) Math.random() * 0.01F, 0.01F + (float) Math.random() * 0.005F, 0.005F - (float) Math.random() * 0.01F);

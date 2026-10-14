@@ -8,7 +8,7 @@
  */
 package vazkii.botania.neoforge;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -294,11 +294,11 @@ public final class NeoForgeBotaniaConfig {
 					.defineInRange("gardenOfGlass.islandScaleMultiplier", 8, 1, 512);
 			rannuncarpusIgnoredItems = builder
 					.comment("List of item registry names that will be ignored by rannuncarpuses when placing blocks.")
-					.defineList("rannuncarpus.ignoredItems", Collections.emptyList(), o -> o instanceof String s && ResourceLocation.tryParse(s) != null);
+					.defineList("rannuncarpus.ignoredItems", Collections.emptyList(), o -> o instanceof String s && Identifier.tryParse(s) != null);
 			rannuncarpusExcludedMods = builder
 					.comment("List of mod names for rannuncarpuses to ignore.\n" +
 							"Ignores Storage Drawers by default due to crashes with placing drawer blocks without player involvement.")
-					.defineList("rannuncarpus.excludedMods", Collections.singletonList("storagedrawers"), o -> o instanceof String s && ResourceLocation.tryParse(s + ":test") != null);
+					.defineList("rannuncarpus.excludedMods", Collections.singletonList("storagedrawers"), o -> o instanceof String s && Identifier.tryParse(s + ":test") != null);
 		}
 
 		@Override

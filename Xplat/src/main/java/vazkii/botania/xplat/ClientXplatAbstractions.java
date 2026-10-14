@@ -18,7 +18,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,8 +31,8 @@ import vazkii.botania.api.ServiceUtil;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public interface ClientXplatAbstractions {
-	ResourceLocation FLOATING_FLOWER_MODEL_LOADER_ID = botaniaRL("floating_flower");
-	ResourceLocation MANA_GUN_MODEL_LOADER_ID = botaniaRL("mana_blaster");
+	Identifier FLOATING_FLOWER_MODEL_LOADER_ID = botaniaRL("floating_flower");
+	Identifier MANA_GUN_MODEL_LOADER_ID = botaniaRL("mana_blaster");
 
 	// Event firing
 	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay);
@@ -47,7 +47,7 @@ public interface ClientXplatAbstractions {
 	 * Returns null if no model was found.
 	 */
 	@Nullable
-	BakedModel getResourceModel(ResourceLocation id);
+	BakedModel getResourceModel(Identifier id);
 	BakedModel wrapPlatformModel(BakedModel original);
 	int getGuiRightHeight(Player player);
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);

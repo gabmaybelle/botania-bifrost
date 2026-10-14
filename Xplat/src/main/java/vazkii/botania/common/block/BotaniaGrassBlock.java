@@ -10,9 +10,9 @@ package vazkii.botania.common.block;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
+import net.minecraft.world.level.block.SpreadingSnowyBlock;
 
-public class BotaniaGrassBlock extends SpreadingSnowyDirtBlock {
+public class BotaniaGrassBlock extends SpreadingSnowyBlock {
 	public static final MapCodec<BotaniaGrassBlock> CODEC = simpleCodec(BotaniaGrassBlock::new);
 
 	public BotaniaGrassBlock(Properties builder) {
@@ -20,7 +20,7 @@ public class BotaniaGrassBlock extends SpreadingSnowyDirtBlock {
 	}
 
 	@Override
-	protected MapCodec<? extends SpreadingSnowyDirtBlock> codec() {
+	protected MapCodec<? extends SpreadingSnowyBlock> codec() {
 		return CODEC;
 	}
 }

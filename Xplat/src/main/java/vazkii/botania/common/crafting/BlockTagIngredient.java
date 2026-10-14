@@ -16,7 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
@@ -89,7 +89,7 @@ public record BlockTagIngredient(TagKey<Block> tag) implements StateIngredient {
 				TagKey.hashedCodec(Registries.BLOCK).fieldOf("tag").forGetter(BlockTagIngredient::tag)
 		).apply(instance, BlockTagIngredient::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, BlockTagIngredient> STREAM_CODEC = StreamCodec.composite(
-				ResourceLocation.STREAM_CODEC.map(id -> TagKey.create(Registries.BLOCK, id), TagKey::location), BlockTagIngredient::tag,
+				Identifier.STREAM_CODEC.map(id -> TagKey.create(Registries.BLOCK, id), TagKey::location), BlockTagIngredient::tag,
 				BlockTagIngredient::new
 		);
 

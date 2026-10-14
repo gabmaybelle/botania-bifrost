@@ -8,7 +8,7 @@
  */
 package vazkii.botania.api.mana.spark;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.capability.BlockApiNoContext;
 import vazkii.botania.api.capability.SparkAttachable;
@@ -21,7 +21,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface ManaSparkAttachable extends SparkAttachable<ManaSpark> {
 
-	ResourceLocation ID = botaniaRL("mana_spark_attachable");
+	Identifier ID = botaniaRL("mana_spark_attachable");
 	BlockApiNoContext<ManaSparkAttachable> LOOKUP = new BlockApiNoContext<>(ID, ManaSparkAttachable.class);
 
 	/**

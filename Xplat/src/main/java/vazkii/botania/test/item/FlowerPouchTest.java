@@ -9,7 +9,6 @@
 
 package vazkii.botania.test.item;
 
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
@@ -20,10 +19,11 @@ import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.helper.ColorHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.ColoredContentsPouchItem;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class FlowerPouchTest {
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
+	@BotaniaGameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void testNoShinyFlowers(GameTestHelper helper) {
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
 		var bag = new ItemStack(BotaniaItems.FLOWER_POUCH);
@@ -42,7 +42,7 @@ public class FlowerPouchTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
+	@BotaniaGameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void testPickupBasic(GameTestHelper helper) {
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
 		var bag = new ItemStack(BotaniaItems.FLOWER_POUCH);

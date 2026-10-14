@@ -10,12 +10,12 @@ package vazkii.botania.common.handler;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
@@ -53,7 +53,7 @@ public final class PixieHandler {
 		PIXIE_SPAWN_CHANCE.register(registry);
 	}
 
-	public static AttributeModifier makeModifier(ResourceLocation slotId, double amount) {
+	public static AttributeModifier makeModifier(Identifier slotId, double amount) {
 		return new AttributeModifier(slotId, amount, AttributeModifier.Operation.ADD_VALUE);
 	}
 
@@ -80,7 +80,7 @@ public final class PixieHandler {
 
 				pixie.setProps(livingSource, player, dmg);
 				pixie.finalizeSpawn((ServerLevelAccessor) player.level(), player.level().getCurrentDifficultyAt(pixie.blockPosition()),
-						MobSpawnType.EVENT, null);
+						EntitySpawnReason.EVENT, null);
 				player.level().addFreshEntity(pixie);
 			}
 		}

@@ -11,8 +11,8 @@ package vazkii.botania.common.helper;
 
 import it.unimi.dsi.fastutil.shorts.Short2LongOpenHashMap;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Util;
 
 /**
  * This helper class marks block positions within a maximum "chessboard range" of 31 blocks from a center position.

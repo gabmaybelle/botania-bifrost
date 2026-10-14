@@ -11,7 +11,7 @@ package vazkii.botania.common.block.block_entity.flower.generating;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;

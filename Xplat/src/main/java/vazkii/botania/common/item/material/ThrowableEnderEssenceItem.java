@@ -13,7 +13,7 @@ import net.minecraft.core.Position;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
@@ -31,7 +31,7 @@ public class ThrowableEnderEssenceItem extends Item implements ProjectileItem {
 
 	// [VanillaCopy] SplashPotionItem::use with inlined super call, except throwing an ender essence bottle
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		level.playSound(
 				null,
 				player.getX(),
@@ -53,7 +53,7 @@ public class ThrowableEnderEssenceItem extends Item implements ProjectileItem {
 
 		player.awardStat(Stats.ITEM_USED.get(this));
 		itemstack.consume(1, player);
-		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

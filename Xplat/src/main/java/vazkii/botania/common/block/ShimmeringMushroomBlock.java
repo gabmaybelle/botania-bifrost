@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -83,9 +83,9 @@ public class ShimmeringMushroomBlock extends MushroomBlock implements CustomApot
 			return;
 		}
 		int color = MysticalPetalItem.getPetalLikeColor(this.color);
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.red(color) / 255f;
-		float b = FastColor.ARGB32.red(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.red(color) / 255f;
+		float b = ARGB.red(color) / 255f;
 
 		SparkleParticleData data = SparkleParticleData.sparkle(random.nextFloat(), r, g, b, 5);
 		level.addParticle(data,

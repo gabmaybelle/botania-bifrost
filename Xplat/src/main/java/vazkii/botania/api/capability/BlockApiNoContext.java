@@ -10,7 +10,7 @@
 package vazkii.botania.api.capability;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +25,7 @@ import vazkii.botania.api.BotaniaAPI;
  * @param <A> Type of the API.
  */
 public final class BlockApiNoContext<A> extends ApiIdBlock<A> {
-	public BlockApiNoContext(ResourceLocation id, Class<A> apiClass) {
+	public BlockApiNoContext(Identifier id, Class<A> apiClass) {
 		super(id, apiClass);
 	}
 

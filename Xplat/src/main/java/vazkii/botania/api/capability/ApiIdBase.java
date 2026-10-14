@@ -9,7 +9,7 @@
 
 package vazkii.botania.api.capability;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -29,15 +29,15 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.NonExtendable
 public abstract class ApiIdBase<A> {
-	private final ResourceLocation id;
+	private final Identifier id;
 	private final Class<A> apiClass;
 
-	protected ApiIdBase(ResourceLocation id, Class<A> apiClass) {
+	protected ApiIdBase(Identifier id, Class<A> apiClass) {
 		this.id = id;
 		this.apiClass = apiClass;
 	}
 
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return id;
 	}
 

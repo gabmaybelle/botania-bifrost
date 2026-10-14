@@ -11,7 +11,7 @@ package vazkii.botania.common.internal_caps;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import vazkii.botania.api.attachment.DataHolderId;
@@ -32,7 +32,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * interact with the item entity.
  */
 public final class ItemLifetime {
-	public static final ResourceLocation ID = botaniaRL("item_lifetime");
+	public static final Identifier ID = botaniaRL("item_lifetime");
 	public static final DataHolderId<Short> HOLDER = new DataHolderId<>(ID, Codec.SHORT);
 	/**
 	 * Special value for infinite lifetime that also implies no flower interactions at all.

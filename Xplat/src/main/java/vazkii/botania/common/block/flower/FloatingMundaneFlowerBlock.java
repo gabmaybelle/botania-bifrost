@@ -9,7 +9,7 @@
 package vazkii.botania.common.block.flower;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
@@ -37,9 +37,9 @@ public class FloatingMundaneFlowerBlock extends FloatingFlowerBaseBlock implemen
 	@Override
 	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 		int color = MysticalPetalItem.getPetalLikeColor(this.color);
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.green(color) / 255f;
-		float b = FastColor.ARGB32.blue(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.green(color) / 255f;
+		float b = ARGB.blue(color) / 255f;
 
 		if (rand.nextDouble() < BotaniaConfig.client().flowerParticleFrequency()) {
 			SparkleParticleData data = SparkleParticleData.sparkle(rand.nextFloat(), r, g, b, 5);

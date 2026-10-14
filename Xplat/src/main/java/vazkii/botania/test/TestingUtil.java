@@ -14,6 +14,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -43,14 +44,15 @@ public class TestingUtil {
 	@Contract("_,_,_ -> fail")
 	public static void throwPositionedAssertion(GameTestHelper helper, BlockPos relativePos, Supplier<String> msg) {
 		//A couple of GameTestHelper's assertion errors throw this exception, but it's inconvenient to throw yourself
-		throw new GameTestAssertPosException(msg.get(), helper.absolutePos(relativePos), relativePos, helper.getTick());
+		throw new GameTestAssertPosException(Component.literal(msg.get()), helper.absolutePos(relativePos), relativePos, helper.getTick());
 	}
 
 	@Contract("false,_ -> fail")
 	public static void assertThat(boolean value, Supplier<String> message) {
 		//The same as Preconditions.checkArgument but throws a GameTestAssertException
 		if (!value) {
-			throw new GameTestAssertException(message.get());
+			// PORT-26.3: the exception now wants the tick it happened on; there's no helper here, so 0.
+			throw new GameTestAssertException(Component.literal(message.get()), 0);
 		}
 	}
 

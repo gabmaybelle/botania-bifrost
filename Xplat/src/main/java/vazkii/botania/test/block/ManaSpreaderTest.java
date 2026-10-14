@@ -11,13 +11,13 @@ package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class ManaSpreaderTest {
@@ -28,7 +28,7 @@ public class ManaSpreaderTest {
 	private static final BlockPos SINK_POS = new BlockPos(4, 1, 1);
 	private static final BlockPos LEVER_POS = new BlockPos(1, 2, 2);
 
-	@GameTest(template = "botania:block/spreader_pool_default_aim")
+	@BotaniaGameTest(template = "botania:block/spreader_pool_default_aim")
 	public void testSpreaderDefaultAimHittingPool(GameTestHelper helper) {
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
 

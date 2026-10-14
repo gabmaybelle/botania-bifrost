@@ -9,9 +9,9 @@
 
 package vazkii.botania.client.core.helper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface GuiGraphicsAddon {
-	void botania_blitWithoutShader(ResourceLocation atlasLocation, int x, int y, float uOffset, float vOffset,
+	void botania_blitWithoutShader(Identifier atlasLocation, int x, int y, float uOffset, float vOffset,
 			int width, int height, int textureWidth, int textureHeight);
 }

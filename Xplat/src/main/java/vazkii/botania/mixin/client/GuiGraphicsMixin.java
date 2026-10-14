@@ -13,7 +13,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,7 +37,7 @@ public class GuiGraphicsMixin implements GuiGraphicsAddon {
 	}
 
 	@Override
-	public void botania_blitWithoutShader(ResourceLocation atlasLocation, int x, int y, float uOffset, float vOffset,
+	public void botania_blitWithoutShader(Identifier atlasLocation, int x, int y, float uOffset, float vOffset,
 			int width, int height, int textureWidth, int textureHeight) {
 		try {
 			boolean_skipSettingShader = true;
@@ -49,7 +49,7 @@ public class GuiGraphicsMixin implements GuiGraphicsAddon {
 	}
 
 	@WrapWithCondition(
-		method = "innerBlit(Lnet/minecraft/resources/ResourceLocation;IIIIIFFFF)V",
+		method = "innerBlit(Lnet/minecraft/resources/Identifier;IIIIIFFFF)V",
 		at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V")
 	)
 	private boolean botania_shouldSetShader(Supplier<ShaderInstance> supplier) {

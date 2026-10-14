@@ -11,13 +11,13 @@ package vazkii.botania.data;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -48,7 +48,7 @@ public class FloatingFlowerModelProvider implements DataProvider {
 	public CompletableFuture<?> run(CachedOutput cache) {
 		List<Tuple<String, JsonElement>> flowerJsons = new ArrayList<>();
 		for (Block b : BuiltInRegistries.BLOCK) {
-			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(b);
+			Identifier id = BuiltInRegistries.BLOCK.getKey(b);
 			if (BotaniaAPI.MODID.equals(id.getNamespace()) && b instanceof FloatingFlowerBaseBlock) {
 				String name = id.getPath();
 				String nonFloat;
@@ -67,15 +67,15 @@ public class FloatingFlowerModelProvider implements DataProvider {
 				flowerJsons.add(new Tuple<>(name, obj));
 			}
 		}
-		List<Tuple<ResourceLocation, JsonElement>> islandJsons = new ArrayList<>();
+		List<Tuple<Identifier, JsonElement>> islandJsons = new ArrayList<>();
 		Registry<IslandType> islandTypeRegistry = BotaniaAPI.INSTANCE.getIslandTypeRegistry();
 		islandTypeRegistry.stream().forEach(islandType -> {
-			ResourceLocation id = islandTypeRegistry.getKey(islandType);
+			Identifier id = islandTypeRegistry.getKey(islandType);
 			if (BotaniaAPI.MODID.equals(id.getNamespace())) {
-				ResourceLocation name = islandType.islandModel();
+				Identifier name = islandType.islandModel();
 				Item item = islandType.item().asItem();
-				ResourceLocation top;
-				ResourceLocation side;
+				Identifier top;
+				Identifier side;
 				if (item instanceof GrassSeedsItem grassSeedsItem) {
 					Block seedsBlock = grassSeedsItem.getGrassBlock();
 					if (seedsBlock == Blocks.GRASS_BLOCK) {
@@ -109,7 +109,7 @@ public class FloatingFlowerModelProvider implements DataProvider {
 			output.add(DataProvider.saveStable(cache, pair.getB(), items.json(botaniaRL(pair.getA()))));
 		}
 		PackOutput.PathProvider islands = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
-		for (Tuple<ResourceLocation, JsonElement> pair : islandJsons) {
+		for (Tuple<Identifier, JsonElement> pair : islandJsons) {
 			output.add(DataProvider.saveStable(cache, pair.getB(), islands.json(pair.getA())));
 		}
 

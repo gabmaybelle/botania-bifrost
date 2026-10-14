@@ -10,7 +10,7 @@ package vazkii.botania.common.block.flower;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.DyeColor;
@@ -47,9 +47,9 @@ public abstract class BotaniaFlowerBlock extends FlowerBlock implements Colored 
 		double y = pos.getY() + offset.y;
 		double z = pos.getZ() + offset.z;
 		int color = MysticalPetalItem.getPetalLikeColor(this.color);
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.green(color) / 255f;
-		float b = FastColor.ARGB32.blue(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.green(color) / 255f;
+		float b = ARGB.blue(color) / 255f;
 
 		SparkleParticleData data = SparkleParticleData.sparkle(rand.nextFloat(), r, g, b, 5);
 		world.addParticle(data, x + 0.3 + rand.nextFloat() * 0.5, y + 0.5 + rand.nextFloat() * 0.5, z + 0.3 + rand.nextFloat() * 0.5, 0, 0, 0);

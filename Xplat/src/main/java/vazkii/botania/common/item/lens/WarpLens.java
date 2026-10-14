@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.common.block.BotaniaBlocks;
@@ -40,7 +41,7 @@ public class WarpLens extends Lens {
 
 			if (dest != null) {
 				BlockPos sourcePos = entity.blockPosition();
-				entity.setPos(dest.getCenter());
+				entity.setPos(Vec3.atCenterOf(dest));
 				EntityHelper.addTeleportTicketIfFarAway(entity, sourcePos);
 				burst.setCollidedAt(dest);
 

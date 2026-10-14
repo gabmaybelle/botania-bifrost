@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -93,11 +93,11 @@ public class ElvenTradeProvider extends FabricRecipeProvider {
 		return new ItemStack[] { new ItemStack(output) };
 	}
 
-	private static ResourceLocation id(ItemLike item) {
+	private static Identifier id(ItemLike item) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.ELVEN_TRADE_TYPE, item);
 	}
 
-	private static ResourceLocation id(ItemLike item, String suffix) {
+	private static Identifier id(ItemLike item, String suffix) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.ELVEN_TRADE_TYPE, item, suffix);
 	}
 

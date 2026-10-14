@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -84,7 +84,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		);
 		tag(BlockTags.WALLS).add(getModBlocks(block -> block instanceof WallBlock));
 		tag(BotaniaTags.Blocks.WOODEN_WALLS).add(getModBlocks(block -> block instanceof WallBlock
-				&& block.builtInRegistryHolder().key().location().getPath().contains("wood")));
+				&& block.builtInRegistryHolder().key().identifier().getPath().contains("wood")));
 		tag(BlockTags.WOODEN_FENCES).add(
 				BotaniaBlocks.LIVINGWOOD_FENCE, BotaniaBlocks.DREAMWOOD_FENCE, BotaniaBlocks.SHIMMERWOOD_FENCE);
 		tag(BlockTags.FENCE_GATES).add(getModBlocks(b -> b instanceof FenceGateBlock));
@@ -389,8 +389,8 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.HORN_OF_THE_WILD_BREAKABLE)
 				.add(Blocks.MOSS_CARPET)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("biomesoplenty", "high_grass"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("biomesoplenty", "high_grass_plant"));
+				.addOptional(Identifier.fromNamespaceAndPath("biomesoplenty", "high_grass"))
+				.addOptional(Identifier.fromNamespaceAndPath("biomesoplenty", "high_grass_plant"));
 		tag(BotaniaTags.Blocks.HORN_OF_THE_WILD_IMMUNE)
 				.addTag(BotaniaTags.Blocks.GLIMMERING_FLOWERS)
 				.addTag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
@@ -413,7 +413,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.ROOTED_DIRT)
 				.add(grassBlockVariants);
 
-		tag(BotaniaTags.Blocks.UNETHICAL_TNT_CHECK).addOptional(ResourceLocation.fromNamespaceAndPath("ae2", "tiny_tnt"));
+		tag(BotaniaTags.Blocks.UNETHICAL_TNT_CHECK).addOptional(Identifier.fromNamespaceAndPath("ae2", "tiny_tnt"));
 
 		tag(BotaniaTags.Blocks.SINGLE_ITEM_INSERT).add(Blocks.CRAFTER);
 
@@ -475,15 +475,15 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		tag(BotaniaTags.Blocks.TERRA_TRUNCATOR_TRUNK_BLOCKS)
 				.addTag(BlockTags.LOGS)
 				.add(Blocks.MANGROVE_ROOTS, Blocks.MUSHROOM_STEM)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "glow_shroom_stem"));
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "glow_shroom_stem"));
 		tag(BotaniaTags.Blocks.TERRA_TRUNCATOR_CROWN_BLOCKS)
 				.addTag(BlockTags.LEAVES)
 				.add(
 						Blocks.NETHER_WART_BLOCK, Blocks.WARPED_WART_BLOCK, Blocks.SHROOMLIGHT,
 						Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK
 				)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "glow_shroom_block"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "glow_ring_of_shroom"));
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "glow_shroom_block"))
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "glow_ring_of_shroom"));
 
 		// for Diagonal Windows compatibility (DW adds its version of the block to the tag automatically)
 		tag(BotaniaTags.Blocks.FEL_BLAZE_BASE).add(Blocks.IRON_BARS);

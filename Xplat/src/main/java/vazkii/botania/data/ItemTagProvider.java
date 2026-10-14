@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -162,10 +162,10 @@ public class ItemTagProvider extends ItemTagsProvider {
 						Items.ANDESITE, Items.DIORITE, Items.GRANITE, Items.TUFF, Items.CALCITE, Items.STONE,
 						Items.BASALT, Items.BLACKSTONE, Items.DEEPSLATE, Items.DRIPSTONE_BLOCK, Items.POINTED_DRIPSTONE,
 						Items.MOSS_BLOCK, Items.SANDSTONE, Items.RED_SANDSTONE)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "jasper"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "limestone"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "marble"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "slate"));
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "jasper"))
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "limestone"))
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "marble"))
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "slate"));
 
 		this.copy(BotaniaTags.Blocks.BLOCKS_QUARTZ, BotaniaTags.Items.BLOCKS_QUARTZ);
 
@@ -309,13 +309,13 @@ public class ItemTagProvider extends ItemTagsProvider {
 		tag(BotaniaTags.Items.TOOL_PLACEABLE_AXE).addTag(ItemTags.SAPLINGS);
 		tag(BotaniaTags.Items.TOOL_PLACEABLE_PICKAXE)
 				.add(Items.TORCH, Items.SOUL_TORCH, Items.REDSTONE_TORCH)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("copperagebackport", "copper_torch"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("occultism", "spirit_torch"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("torches", "stone_torch"))
+				.addOptional(Identifier.fromNamespaceAndPath("copperagebackport", "copper_torch"))
+				.addOptional(Identifier.fromNamespaceAndPath("occultism", "spirit_torch"))
+				.addOptional(Identifier.fromNamespaceAndPath("torches", "stone_torch"))
 				// Well, "More Beautiful Torches", this could be your spot if you were tagging your countless items
-				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("quad-mstv-mtv", "fire_torch_variants"))
-				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("quad-mstv-mtv", "redstone_torch_variants"))
-				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("quad-mstv-mtv", "soul_torch_variants"));
+				.addOptionalTag(Identifier.fromNamespaceAndPath("quad-mstv-mtv", "fire_torch_variants"))
+				.addOptionalTag(Identifier.fromNamespaceAndPath("quad-mstv-mtv", "redstone_torch_variants"))
+				.addOptionalTag(Identifier.fromNamespaceAndPath("quad-mstv-mtv", "soul_torch_variants"));
 
 		tag(BotaniaTags.Items.MANA_SPARK_AUGMENTS).add(
 				BotaniaItems.SPARK_AUGMENT_DISPERSIVE, BotaniaItems.SPARK_AUGMENT_DOMINANT,

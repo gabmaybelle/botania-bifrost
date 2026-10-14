@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -113,6 +114,6 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerAccess {
 	)
 	private boolean shouldPickupXp(Player instance, Entity entity) {
 		// should only be XP orbs at this point, but just to be sure we always allow other entity types
-		return instance.takeXpDelay < 5 || entity.getType() != EntityType.EXPERIENCE_ORB;
+		return instance.takeXpDelay < 5 || entity.getType() != EntityTypes.EXPERIENCE_ORB;
 	}
 }

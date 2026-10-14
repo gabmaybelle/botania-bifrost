@@ -11,9 +11,7 @@ package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,6 +22,8 @@ import vazkii.botania.api.block_entity.FunctionalFlowerBlockEntity;
 import vazkii.botania.api.block_entity.SpecialFlowerBlockEntity;
 import vazkii.botania.common.block.flower.FloatingSpecialFlowerBlock;
 import vazkii.botania.common.block.flower.SpecialFlowerBlock;
+import vazkii.botania.test.BotaniaGameTestGenerator;
+import vazkii.botania.test.BotaniaTestFunction;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -38,15 +38,15 @@ public class IdleFlowerTickingTest {
 	private static final String BATCH_NAME = "IdleFlowerTickingTest";
 	private static final String TEMPLATE = "botania:block/flower_binding_arena";
 
-	@GameTestGenerator
-	public Collection<TestFunction> generateTestForEachSpecialFlowerBlockEntity() {
+	@BotaniaGameTestGenerator
+	public Collection<BotaniaTestFunction> generateTestForEachSpecialFlowerBlockEntity() {
 		return BuiltInRegistries.BLOCK.stream()
 				.filter(block -> block instanceof SpecialFlowerBlock || block instanceof FloatingSpecialFlowerBlock)
 				.map(block -> {
 					String testName = "%s.test_%s_idle".formatted(
 							IdleFlowerTickingTest.class.getSimpleName(),
 							BuiltInRegistries.BLOCK.getKey(block).getPath().toLowerCase(Locale.ROOT));
-					return new TestFunction(
+					return new BotaniaTestFunction(
 							BATCH_NAME,
 							testName,
 							TEMPLATE,

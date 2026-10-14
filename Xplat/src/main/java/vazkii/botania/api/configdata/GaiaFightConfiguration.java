@@ -14,8 +14,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -28,7 +28,7 @@ import java.util.List;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public record GaiaFightConfiguration(
-		ResourceLocation rewardLootTable,
+		Identifier rewardLootTable,
 		int teleportDelay,
 		IntProvider mineCount,
 		float dyingHealthPercent,
@@ -45,7 +45,7 @@ public record GaiaFightConfiguration(
 
 	public static final Codec<GaiaFightConfiguration> CODEC = RecordCodecBuilder.create(
 			instance -> instance.group(
-					ResourceLocation.CODEC.fieldOf("rewardLootTable")
+					Identifier.CODEC.fieldOf("rewardLootTable")
 							.forGetter(GaiaFightConfiguration::rewardLootTable),
 					Codec.INT.fieldOf("teleportDelay")
 							.forGetter(GaiaFightConfiguration::teleportDelay),
@@ -83,13 +83,13 @@ public record GaiaFightConfiguration(
 			).apply(instance, GaiaFightConfiguration::new)
 	);
 
-	public static final ResourceLocation NORMAL = botaniaRL("normal");
-	public static final ResourceLocation HARD = botaniaRL("hard");
+	public static final Identifier NORMAL = botaniaRL("normal");
+	public static final Identifier HARD = botaniaRL("hard");
 
 	public static GaiaFightConfiguration.Builder builder(ResourceKey<LootTable> playerLoot, int teleportDelay,
 			IntProvider mineCount, float dyingHealthPercent, int dyingTeleportDelay, IntProvider dyingMineCount,
 			IntProvider pixiesAfterHurtCount) {
-		return new GaiaFightConfiguration.Builder(playerLoot.location(), teleportDelay, mineCount,
+		return new GaiaFightConfiguration.Builder(playerLoot.identifier(), teleportDelay, mineCount,
 				dyingHealthPercent, dyingTeleportDelay, dyingMineCount, pixiesAfterHurtCount);
 	}
 
@@ -98,7 +98,7 @@ public record GaiaFightConfiguration(
 	}
 
 	public static class Builder {
-		private final ResourceLocation playerLoot;
+		private final Identifier playerLoot;
 		private final int teleportDelay;
 		private final IntProvider mineCount;
 		private final float dyingHealthPercent;
@@ -116,7 +116,7 @@ public record GaiaFightConfiguration(
 		@Nullable
 		private List<MobEffectToApply> effectsToApply;
 
-		private Builder(ResourceLocation playerLoot, int teleportDelay, IntProvider mineCount,
+		private Builder(Identifier playerLoot, int teleportDelay, IntProvider mineCount,
 				float dyingHealthPercent, int dyingTeleportDelay, IntProvider dyingMineCount,
 				IntProvider pixiesAfterHurtCount) {
 			this.playerLoot = playerLoot;

@@ -11,6 +11,7 @@ package vazkii.botania.client.capabilities;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ItemFrame;
 
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,7 @@ public final class ClientEntityCapabilities {
 		));
 
 		registration.register(MonocleHud.ENTITY_LOOKUP, List.of(
-				entityApi(ItemFrameHud::new, EntityType.ITEM_FRAME, EntityType.GLOW_ITEM_FRAME)
+				entityApi(ItemFrameHud::new, EntityTypes.ITEM_FRAME, EntityTypes.GLOW_ITEM_FRAME)
 		));
 	}
 

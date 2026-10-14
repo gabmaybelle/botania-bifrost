@@ -8,7 +8,7 @@
  */
 package vazkii.botania.client.patchouli.processor;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
@@ -20,7 +20,7 @@ import vazkii.patchouli.api.IVariableProvider;
 public class PetalApothecaryProcessor extends ReagentRecipeProcessor<PetalApothecaryRecipe> {
 	@Override
 	public void setup(Level level, IVariableProvider variables) {
-		ResourceLocation id = ResourceLocation.parse(variables.get("recipe", level.registryAccess()).asString());
+		Identifier id = Identifier.parse(variables.get("recipe", level.registryAccess()).asString());
 		this.recipe = new RecipeHolder<>(id, PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, id));
 	}
 }

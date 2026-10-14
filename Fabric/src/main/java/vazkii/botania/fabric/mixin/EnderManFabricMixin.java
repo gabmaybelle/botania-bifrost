@@ -11,7 +11,7 @@ package vazkii.botania.fabric.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.phys.Vec3;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import vazkii.botania.common.block.block_entity.flower.functional.VinculotusBlockEntity;
 
-@Mixin(EnderMan.class)
+@Mixin(Enderman.class)
 public class EnderManFabricMixin {
-	@WrapOperation(method = "teleport(DDD)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/EnderMan;randomTeleport(DDDZ)Z"))
-	private boolean checkForVincs(EnderMan instance, double x, double y, double z, boolean broadcastTeleport, Operation<Boolean> original) {
+	@WrapOperation(method = "teleport(DDD)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Enderman;randomTeleport(DDDZ)Z"))
+	private boolean checkForVincs(Enderman instance, double x, double y, double z, boolean broadcastTeleport, Operation<Boolean> original) {
 		Vec3 vincPos = VinculotusBlockEntity.onEndermanTeleport(instance, x, y, z);
 		if (vincPos != null) {
 			x = vincPos.x();

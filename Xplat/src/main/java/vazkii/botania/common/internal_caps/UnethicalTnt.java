@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -42,7 +42,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * @see vazkii.botania.common.item.lens.ForceLens#moveBlocks(Level, BlockPos, Direction, BlockPos)
  */
 public class UnethicalTnt {
-	public static final ResourceLocation ID = botaniaRL("unethical_tnt");
+	public static final Identifier ID = botaniaRL("unethical_tnt");
 	public static final DataMarkerId MARKER = new DataMarkerId(ID);
 
 	/**

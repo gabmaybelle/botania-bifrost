@@ -10,12 +10,12 @@ package vazkii.botania.common.block;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
 import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +42,7 @@ import vazkii.botania.mixin.MobAccessor;
 
 public class FelPumpkinBlock extends BotaniaBlock {
 	public static final MapCodec<FelPumpkinBlock> CODEC = simpleCodec(FelPumpkinBlock::new);
-	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	@Nullable
 	private BlockPattern felBlazeFull;
 	@Nullable
@@ -97,7 +97,7 @@ public class FelPumpkinBlock extends BotaniaBlock {
 	private void trySpawnBlaze(Level level, BlockPos pos) {
 		BlockPattern.BlockPatternMatch blockPatternMatch = this.getOrCreateFelBlazeFull().find(level, pos);
 		if (blockPatternMatch != null) {
-			Blaze blaze = EntityType.BLAZE.create(level);
+			Blaze blaze = EntityTypes.BLAZE.create(level);
 			if (blaze != null) {
 				blaze.setPersistenceRequired();
 				((MobAccessor) blaze).botania_setLootTable(BotaniaLootTables.FEL_BLAZE);

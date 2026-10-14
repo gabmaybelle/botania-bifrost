@@ -21,7 +21,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;
@@ -138,8 +138,8 @@ public class BotaniaDataComponents {
 	// crafting halo data
 	public static final DataComponentType<Float> HALO_ROTATION_BASE = make(LibComponentNames.HALO_ROTATION_BASE,
 			builder -> builder.networkSynchronized(ByteBufCodecs.FLOAT));
-	public static final DataComponentType<ResourceLocation> LAST_RECIPE_ID = make(LibComponentNames.LAST_RECIPE_ID,
-			builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC)
+	public static final DataComponentType<Identifier> LAST_RECIPE_ID = make(LibComponentNames.LAST_RECIPE_ID,
+			builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC)
 	);
 	public static final DataComponentType<StoredIds> STORED_RECIPES = make(LibComponentNames.STORED_RECIPES,
 			builder -> builder.persistent(StoredIds.CODEC).cacheEncoding()
@@ -162,8 +162,8 @@ public class BotaniaDataComponents {
 					.networkSynchronized(SingleItem.STREAM_CODEC));
 
 	// brews and similar consumables
-	public static final DataComponentType<ResourceLocation> BREW = make(LibComponentNames.BREW,
-			builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
+	public static final DataComponentType<Identifier> BREW = make(LibComponentNames.BREW,
+			builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
 	public static final DataComponentType<Integer> MAX_USES = make(LibComponentNames.MAX_USES,
 			builder -> builder.persistent(ExtraCodecs.POSITIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 	public static final DataComponentType<Integer> REMAINING_USES = make(LibComponentNames.REMAINING_USES,
@@ -188,8 +188,8 @@ public class BotaniaDataComponents {
 			builder -> builder.networkSynchronized(BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list())));
 
 	// black hole talisman
-	public static final DataComponentType<ResourceLocation> BLOCK_TYPE = make(LibComponentNames.BLOCK_TYPE,
-			builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
+	public static final DataComponentType<Identifier> BLOCK_TYPE = make(LibComponentNames.BLOCK_TYPE,
+			builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
 	public static final DataComponentType<Integer> BLOCK_COUNT = make(LibComponentNames.BLOCK_COUNT,
 			builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
@@ -197,8 +197,8 @@ public class BotaniaDataComponents {
 			builder -> builder.persistent(ExtraCodecs.POSITIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 	public static final DataComponentType<Integer> SIZE = make(LibComponentNames.SIZE,
 			builder -> builder.persistent(ExtraCodecs.POSITIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
-	public static final DataComponentType<ResourceLocation> MOB_TYPE = make(LibComponentNames.MOB_TYPE,
-			builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
+	public static final DataComponentType<Identifier> MOB_TYPE = make(LibComponentNames.MOB_TYPE,
+			builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
 	public static final DataComponentType<Integer> NOT_MY_NAME_STEP = make(LibComponentNames.NOT_MY_NAME_STEP,
 			builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 	public static final DataComponentType<String> SEXTANT_MODE = make(LibComponentNames.SEXTANT_MODE,
@@ -213,14 +213,14 @@ public class BotaniaDataComponents {
 			builder -> builder.persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC));
 
 	// Eye of the Flügel
-	public static final DataComponentType<Map<ResourceLocation, BlockPos>> BOUND_POSITIONS = make(LibComponentNames.BOUND_POSITIONS,
-			builder -> builder.persistent(Codec.unboundedMap(ResourceLocation.CODEC, BlockPos.CODEC)).cacheEncoding()
-					.networkSynchronized(ByteBufCodecs.map(HashMap::new, ResourceLocation.STREAM_CODEC, BlockPos.STREAM_CODEC)));
+	public static final DataComponentType<Map<Identifier, BlockPos>> BOUND_POSITIONS = make(LibComponentNames.BOUND_POSITIONS,
+			builder -> builder.persistent(Codec.unboundedMap(Identifier.CODEC, BlockPos.CODEC)).cacheEncoding()
+					.networkSynchronized(ByteBufCodecs.map(HashMap::new, Identifier.STREAM_CODEC, BlockPos.STREAM_CODEC)));
 	// non-authoritative data copies for the current dimension (for tooltip rendering)
 	public static final DataComponentType<BlockPos> LOCAL_BOUND_POSITION = make(LibComponentNames.LOCAL_BOUND_POSITION,
 			builder -> builder.networkSynchronized(BlockPos.STREAM_CODEC));
-	public static final DataComponentType<ResourceLocation> LOCAL_DIMENSION = make(LibComponentNames.LOCAL_DIMENSION,
-			builder -> builder.networkSynchronized(ResourceLocation.STREAM_CODEC));
+	public static final DataComponentType<Identifier> LOCAL_DIMENSION = make(LibComponentNames.LOCAL_DIMENSION,
+			builder -> builder.networkSynchronized(Identifier.STREAM_CODEC));
 
 	// Flügel Tiara components, TODO: subject to future reorganization
 	public static final DataComponentType<Integer> TIARA_VARIANT = make(LibComponentNames.TIARA_VARIANT,
@@ -274,10 +274,10 @@ public class BotaniaDataComponents {
 			builder -> builder.networkSynchronized(BlockPos.STREAM_CODEC));
 	public static final DataComponentType<Direction> SWAP_CLICK_AXIS = make(LibComponentNames.SWAP_CLICK_AXIS,
 			builder -> builder.networkSynchronized(Direction.STREAM_CODEC));
-	public static final DataComponentType<ResourceLocation> TARGET_BLOCK = make(LibComponentNames.TARGET_BLOCK,
-			builder -> builder.networkSynchronized(ResourceLocation.STREAM_CODEC));
-	public static final DataComponentType<ResourceLocation> PLACED_ITEM = make(LibComponentNames.PLACED_ITEM,
-			builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
+	public static final DataComponentType<Identifier> TARGET_BLOCK = make(LibComponentNames.TARGET_BLOCK,
+			builder -> builder.networkSynchronized(Identifier.STREAM_CODEC));
+	public static final DataComponentType<Identifier> PLACED_ITEM = make(LibComponentNames.PLACED_ITEM,
+			builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
 	public static final DataComponentType<Direction> SWAP_DIRECTION = make(LibComponentNames.SWAP_DIRECTION,
 			builder -> builder.persistent(Direction.CODEC).networkSynchronized(Direction.STREAM_CODEC));
 	public static final DataComponentType<Vec3> SWAP_HIT_VEC = make(LibComponentNames.SWAP_HIT_VEC,
@@ -291,8 +291,8 @@ public class BotaniaDataComponents {
 			builder -> builder.networkSynchronized(ByteBufCodecs.fromCodec(Vec3.CODEC)));
 
 	// spark augments
-	public static final DataComponentType<ResourceLocation> AUGMENT_ICON = make(LibComponentNames.AUGMENT_ICON,
-			builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
+	public static final DataComponentType<Identifier> AUGMENT_ICON = make(LibComponentNames.AUGMENT_ICON,
+			builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
 	public static final DataComponentType<Byte> AUGMENT_ID = make(LibComponentNames.AUGMENT_ID,
 			builder -> builder.persistent(Codec.BYTE.validate(
 					id -> id.compareTo((byte) 1) >= 0 && id.compareTo((byte) 15) <= 0
@@ -322,9 +322,9 @@ public class BotaniaDataComponents {
 	public static final DataComponentType<List<ItemStack>> LAST_FOODS = make("last_foods",
 			builder -> builder.persistent(ExtraCodecs.nonEmptyList(ItemStack.SINGLE_ITEM_CODEC.sizeLimitedListOf(GourmaryllisBlockEntity.getMaxStreak())))
 					.cacheEncoding().networkSynchronized(ItemStack.LIST_STREAM_CODEC));
-	public static final DataComponentType<List<ResourceLocation>> LAST_FLOWERS = make("last_flowers",
-			builder -> builder.persistent(ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.sizeLimitedListOf(RafflowsiaBlockEntity.getMaxStreak())))
-					.cacheEncoding().networkSynchronized(ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list(RafflowsiaBlockEntity.getMaxStreak()))));
+	public static final DataComponentType<List<Identifier>> LAST_FLOWERS = make("last_flowers",
+			builder -> builder.persistent(ExtraCodecs.nonEmptyList(Identifier.CODEC.sizeLimitedListOf(RafflowsiaBlockEntity.getMaxStreak())))
+					.cacheEncoding().networkSynchronized(Identifier.STREAM_CODEC.apply(ByteBufCodecs.list(RafflowsiaBlockEntity.getMaxStreak()))));
 	public static final DataComponentType<DyeColor> NEXT_COLOR = make("next_color",
 			builder -> builder.persistent(DyeColor.CODEC).networkSynchronized(DyeColor.STREAM_CODEC));
 	public static final DataComponentType<List<DyeColor>> COLOR_SEQUENCE = make("color_sequence",
@@ -344,7 +344,7 @@ public class BotaniaDataComponents {
 	 */
 	public static final DataComponentType<Unit> CONJURED_PROJECTILE = makeTransientUnit("conjured_projectile");
 
-	public static void registerComponents(BiConsumer<DataComponentType<?>, ResourceLocation> biConsumer) {
+	public static void registerComponents(BiConsumer<DataComponentType<?>, Identifier> biConsumer) {
 		for (Map.Entry<String, DataComponentType<?>> entry : ALL.entrySet()) {
 			biConsumer.accept(entry.getValue(), botaniaRL(entry.getKey()));
 		}

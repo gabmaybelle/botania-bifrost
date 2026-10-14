@@ -15,7 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import java.util.*;
 import io.netty.buffer.ByteBuf;
 
 public class StoredIds {
-	public static final StoredIds EMPTY = new StoredIds(new ResourceLocation[0]);
+	public static final StoredIds EMPTY = new StoredIds(new Identifier[0]);
 	public static final int MAX_SLOTS = 128; // happens to be a single byte if written as VAR_INT
 
 	public static final Codec<StoredIds> CODEC = Slot.CODEC.sizeLimitedListOf(MAX_SLOTS)
@@ -39,7 +39,7 @@ public class StoredIds {
 			return EMPTY;
 		}
 
-		var ids = new ResourceLocation[lastSlotIndex.getAsInt() + 1];
+		var ids = new Identifier[lastSlotIndex.getAsInt() + 1];
 		for (Slot slot : slots) {
 			ids[slot.index] = slot.value;
 		}
@@ -59,15 +59,15 @@ public class StoredIds {
 	}
 
 	@Nullable
-	private final ResourceLocation[] ids;
+	private final Identifier[] ids;
 	private final int cachedHashCode;
 
-	private StoredIds(ResourceLocation[] idsToStore) {
+	private StoredIds(Identifier[] idsToStore) {
 		ids = idsToStore;
 		cachedHashCode = Arrays.hashCode(idsToStore);
 	}
 
-	public StoredIds store(int slot, @Nullable ResourceLocation newId) {
+	public StoredIds store(int slot, @Nullable Identifier newId) {
 		if (slot < 0 || slot >= MAX_SLOTS) {
 			throw new IndexOutOfBoundsException("Slot index must be positive and less than " + MAX_SLOTS + ", but was " + slot);
 		}
@@ -90,7 +90,7 @@ public class StoredIds {
 		return new StoredIds(idsCopy);
 	}
 
-	private int getNewLength(int slot, @Nullable ResourceLocation newId) {
+	private int getNewLength(int slot, @Nullable Identifier newId) {
 		if (newId != null) {
 			// setting a slot, array might need to grow
 			return Math.max(ids.length, slot + 1);
@@ -111,7 +111,7 @@ public class StoredIds {
 	}
 
 	@Nullable
-	public ResourceLocation getSlot(int slot) {
+	public Identifier getSlot(int slot) {
 		return slot >= 0 && slot < ids.length ? ids[slot] : null;
 	}
 
@@ -131,15 +131,15 @@ public class StoredIds {
 		return cachedHashCode;
 	}
 
-	public record Slot(int index, ResourceLocation value) {
+	public record Slot(int index, Identifier value) {
 		public static final Codec<Slot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.intRange(0, MAX_SLOTS).fieldOf("index").forGetter(Slot::index),
-				ResourceLocation.CODEC.fieldOf("value").forGetter(Slot::value)
+				Identifier.CODEC.fieldOf("value").forGetter(Slot::value)
 		).apply(instance, Slot::new));
 
 		public static final StreamCodec<ByteBuf, Slot> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.VAR_INT, Slot::index,
-				ResourceLocation.STREAM_CODEC, Slot::value,
+				Identifier.STREAM_CODEC, Slot::value,
 				Slot::new
 		);
 	}

@@ -12,8 +12,8 @@ package vazkii.botania.common.lib;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 public class ConventionalBotaniaTags {
 
 	public static <T> TagKey<T> createSuffixedTag(TagKey<T> baseTag, String suffix) {
-		return TagKey.create(baseTag.registry(), baseTag.location().withSuffix("/" + suffix));
+		return TagKey.create(baseTag.registry(), baseTag.identifier().withSuffix("/" + suffix));
 	}
 
 	private static <T> TagKey<T> conventionalTag(ResourceKey<Registry<T>> registry, String path) {
-		return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath("c", path));
+		return TagKey.create(registry, Identifier.fromNamespaceAndPath("c", path));
 	}
 
 	public static class Blocks {

@@ -14,7 +14,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -45,30 +45,30 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 		XplatAbstractions.instance().registerReloadListener(PackType.SERVER_DATA, botaniaRL("configdata"), new ConfigDataManagerImpl());
 	}
 
-	private final Map<ResourceLocation, LooniumStructureConfiguration> looniumConfigs = new HashMap<>();
-	private final Map<ResourceLocation, GaiaFightConfiguration> gaiaFightConfigs = new HashMap<>();
+	private final Map<Identifier, LooniumStructureConfiguration> looniumConfigs = new HashMap<>();
+	private final Map<Identifier, GaiaFightConfiguration> gaiaFightConfigs = new HashMap<>();
 
 	@Nullable
 	@Override
-	public LooniumStructureConfiguration getEffectiveLooniumStructureConfiguration(ResourceLocation id) {
+	public LooniumStructureConfiguration getEffectiveLooniumStructureConfiguration(Identifier id) {
 		LooniumStructureConfiguration configuration = this.looniumConfigs.get(id);
 		return configuration != null ? configuration.getEffectiveConfig(looniumConfigs::get) : null;
 	}
 
 	@Nullable
 	@Override
-	public GaiaFightConfiguration getGaiaFightConfiguration(ResourceLocation id) {
+	public GaiaFightConfiguration getGaiaFightConfiguration(Identifier id) {
 		return gaiaFightConfigs.get(id);
 	}
 
-	private static void validateLooniumConfig(Map<ResourceLocation, LooniumStructureConfiguration> map) {
-		Set<ResourceLocation> errorEntries = new HashSet<>();
-		Set<ResourceLocation> visitedEntries = new LinkedHashSet<>();
+	private static void validateLooniumConfig(Map<Identifier, LooniumStructureConfiguration> map) {
+		Set<Identifier> errorEntries = new HashSet<>();
+		Set<Identifier> visitedEntries = new LinkedHashSet<>();
 		do {
 			errorEntries.clear();
-			for (Map.Entry<ResourceLocation, LooniumStructureConfiguration> entry : map.entrySet()) {
-				ResourceLocation id = entry.getKey();
-				ResourceLocation parent = entry.getValue().parent;
+			for (Map.Entry<Identifier, LooniumStructureConfiguration> entry : map.entrySet()) {
+				Identifier id = entry.getKey();
+				Identifier parent = entry.getValue().parent;
 				if (id.equals(parent)) {
 					BotaniaAPI.LOGGER.warn("Ignoring Loonium structure configuration, because it specified itself as parent: {}", id);
 					errorEntries.add(id);
@@ -89,7 +89,7 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 		}
 	}
 
-	private static void validateGaiaFightConfig(Map<ResourceLocation, GaiaFightConfiguration> map) {
+	private static void validateGaiaFightConfig(Map<Identifier, GaiaFightConfiguration> map) {
 		if (!map.containsKey(GaiaFightConfiguration.NORMAL)) {
 			BotaniaAPI.LOGGER.error("Normal gaia fight configuration not found!");
 		}
@@ -98,8 +98,8 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 		}
 	}
 
-	private static boolean findTopmostParent(Map<ResourceLocation, LooniumStructureConfiguration> map,
-			ResourceLocation id, @Nullable ResourceLocation parent, Set<ResourceLocation> visitedEntries) {
+	private static boolean findTopmostParent(Map<Identifier, LooniumStructureConfiguration> map,
+			Identifier id, @Nullable Identifier parent, Set<Identifier> visitedEntries) {
 		if (!visitedEntries.add(id)) {
 			BotaniaAPI.LOGGER.warn("Cyclic dependency between Loonium structure configurations detected: {}", visitedEntries);
 			return false;
@@ -111,12 +111,12 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 		return parentConfig != null && findTopmostParent(map, parent, parentConfig.parent, visitedEntries);
 	}
 
-	private void applyLooniumConfig(Map<ResourceLocation, LooniumStructureConfiguration> looniumConfigs) {
+	private void applyLooniumConfig(Map<Identifier, LooniumStructureConfiguration> looniumConfigs) {
 		BotaniaAPI.LOGGER.info("Loaded {} Loonium configurations", looniumConfigs.size());
 		this.looniumConfigs.putAll(looniumConfigs);
 	}
 
-	private void applyGaiaFightConfig(Map<ResourceLocation, GaiaFightConfiguration> gaiaFightConfigs) {
+	private void applyGaiaFightConfig(Map<Identifier, GaiaFightConfiguration> gaiaFightConfigs) {
 		BotaniaAPI.LOGGER.info("Loaded {} gaia fight configurations", gaiaFightConfigs.size());
 		this.gaiaFightConfigs.putAll(gaiaFightConfigs);
 	}
@@ -134,9 +134,9 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 	private <T> CompletableFuture<Void> scheduleConfigParse(PreparationBarrier barrier, ResourceManager manager,
 			Executor backgroundExecutor, Executor gameExecutor, ConfigDataType<T> type) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, JsonElement> resourceMap = new HashMap<>();
+			Map<Identifier, JsonElement> resourceMap = new HashMap<>();
 			SimpleJsonResourceReloadListener.scanDirectory(manager, type.directory, new Gson(), resourceMap);
-			Map<ResourceLocation, T> configs = new HashMap<>(resourceMap.size());
+			Map<Identifier, T> configs = new HashMap<>(resourceMap.size());
 			resourceMap.forEach((id, jsonElement) -> {
 				BotaniaAPI.LOGGER.debug("Parsing {} config '{}'", type.directory, id);
 				type.codec.parse(JsonOps.INSTANCE, jsonElement)
@@ -151,8 +151,8 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 	}
 
 	private record ConfigDataType<T>(Codec<T> codec, String directory,
-			Consumer<Map<ResourceLocation, T>> validateFunction,
-			BiConsumer<ConfigDataManagerImpl, Map<ResourceLocation, T>> applyFunction) {
+			Consumer<Map<Identifier, T>> validateFunction,
+			BiConsumer<ConfigDataManagerImpl, Map<Identifier, T>> applyFunction) {
 		private static final ConfigDataType<LooniumStructureConfiguration> LOONIUM =
 				new ConfigDataType<>(LooniumStructureConfiguration.CODEC, LOONIUM_CONFIG_PATH,
 						ConfigDataManagerImpl::validateLooniumConfig, ConfigDataManagerImpl::applyLooniumConfig);

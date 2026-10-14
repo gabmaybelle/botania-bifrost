@@ -8,7 +8,7 @@
  */
 package vazkii.botania.api.block;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.capability.BlockApiNoContext;
 
@@ -19,7 +19,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * NOTE: Do not attach this component to subclasses of AbstractFurnaceBlockEntity, as Botania already does so.
  */
 public interface ExoflameHeatable {
-	ResourceLocation ID = botaniaRL("exoflame_heatable");
+	Identifier ID = botaniaRL("exoflame_heatable");
 	BlockApiNoContext<ExoflameHeatable> LOOKUP = new BlockApiNoContext<>(ID, ExoflameHeatable.class);
 
 	/**

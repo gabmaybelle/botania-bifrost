@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -78,15 +78,15 @@ public class OrechidProvider extends FabricRecipeProvider {
 		biomeStone(consumer, BotaniaBlocks.ROSY_TALC, BotaniaTags.Biomes.MARIMORPHOSIS_ROSY_TALC_BONUS);
 	}
 
-	protected ResourceLocation orechidId(Block block) {
+	protected Identifier orechidId(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.ORECHID_TYPE, block);
 	}
 
-	protected ResourceLocation ignemId(Block block) {
+	protected Identifier ignemId(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.ORECHID_IGNEM_TYPE, block);
 	}
 
-	protected ResourceLocation marimorphosisId(Block block) {
+	protected Identifier marimorphosisId(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.MARIMORPHOSIS_TYPE, block);
 	}
 

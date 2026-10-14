@@ -8,14 +8,14 @@
  */
 package vazkii.botania.common.brew.effect;
 
-import net.minecraft.world.effect.InstantenousMobEffect;
+import net.minecraft.world.effect.InstantaneousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import org.jetbrains.annotations.Nullable;
 
-public class AbsolutionMobEffect extends InstantenousMobEffect {
+public class AbsolutionMobEffect extends InstantaneousMobEffect {
 
 	public AbsolutionMobEffect() {
 		super(MobEffectCategory.NEUTRAL, 0xFFFFFF);

@@ -11,7 +11,7 @@ package vazkii.botania.common.brew;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 
 import vazkii.botania.common.brew.effect.*;
@@ -33,7 +33,7 @@ public class BotaniaMobEffects {
 	public static final Holder<MobEffect> ABSOLUTION = create("absolution", new AbsolutionMobEffect());
 
 	private static Holder<MobEffect> create(String name, MobEffect effect) {
-		ResourceLocation id = botaniaRL(name);
+		Identifier id = botaniaRL(name);
 		RegistryHelper.HolderProxy<MobEffect> proxy = RegistryHelper.holderProxy(Registries.MOB_EFFECT, id, effect);
 		TO_REGISTER.add(proxy);
 		return proxy;

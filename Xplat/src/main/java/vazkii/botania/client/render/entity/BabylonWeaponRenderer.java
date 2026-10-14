@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 
 import org.joml.Matrix4f;
@@ -81,7 +81,7 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(BabylonWeaponEntity entity) {
+	public Identifier getTextureLocation(BabylonWeaponEntity entity) {
 		return InventoryMenu.BLOCK_ATLAS;
 	}
 

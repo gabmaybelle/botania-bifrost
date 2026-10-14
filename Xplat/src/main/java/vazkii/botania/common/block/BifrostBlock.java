@@ -9,7 +9,7 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
@@ -42,6 +42,6 @@ public class BifrostBlock extends TransparentBlock implements BeaconBeamBlock {
 
 	@SoftImplement("IBlockExtension")
 	public Integer getBeaconColorMultiplier(BlockState state, LevelReader level, BlockPos pos, BlockPos beaconPos) {
-		return FastColor.ARGB32.opaque(Mth.hsvToRgb(((Level) level).getGameTime() * 5 % 360 / 360F, 0.4F, 0.9F));
+		return ARGB.opaque(Mth.hsvToRgb(((Level) level).getGameTime() * 5 % 360 / 360F, 0.4F, 0.9F));
 	}
 }

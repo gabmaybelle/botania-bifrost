@@ -10,10 +10,10 @@ package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class HopperhockTest {
@@ -35,7 +36,7 @@ public class HopperhockTest {
 	private static final float SPAWN_ITEM_Y = SPAWN_ITEM_POS.getY();
 	private static final float SPAWN_ITEM_Z = SPAWN_ITEM_POS.getZ();
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceInsertTop(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -43,11 +44,11 @@ public class HopperhockTest {
 
 		helper.succeedWhen(() -> {
 			assertItemInSlot(helper, furnacePos, 0, Items.COBBLESTONE, 1);
-			helper.assertEntityNotPresent(EntityType.ITEM);
+			helper.assertEntityNotPresent(EntityTypes.ITEM);
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceInsertSide(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.south();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -55,11 +56,11 @@ public class HopperhockTest {
 
 		helper.succeedWhen(() -> {
 			assertItemInSlot(helper, furnacePos, 1, Items.CHARCOAL, 1);
-			helper.assertEntityNotPresent(EntityType.ITEM);
+			helper.assertEntityNotPresent(EntityTypes.ITEM);
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceInsertBottom(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.above();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -69,11 +70,11 @@ public class HopperhockTest {
 			// Both the fuel and output slots are accessible from the bottom face, but inserting into the
 			// output slot isn't possible.
 			assertItemInSlot(helper, furnacePos, 1, Items.CHARCOAL, 1);
-			helper.assertEntityNotPresent(EntityType.ITEM);
+			helper.assertEntityNotPresent(EntityTypes.ITEM);
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceInventoryFull(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -86,7 +87,7 @@ public class HopperhockTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceAddToStack(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -100,7 +101,7 @@ public class HopperhockTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceWrongItemForSlot(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.above();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -112,7 +113,7 @@ public class HopperhockTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceFilterMatch(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -121,11 +122,11 @@ public class HopperhockTest {
 
 		helper.succeedWhen(() -> {
 			assertItemInSlot(helper, furnacePos, 0, Items.COBBLESTONE, 1);
-			helper.assertEntityNotPresent(EntityType.ITEM);
+			helper.assertEntityNotPresent(EntityTypes.ITEM);
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testFurnaceFilterNoMatch(GameTestHelper helper) {
 		var furnacePos = FLOWER_POS.below();
 		helper.setBlock(furnacePos, Blocks.FURNACE);
@@ -138,7 +139,7 @@ public class HopperhockTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testComposterInsertTop(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.below();
 		helper.setBlock(composterPos, Blocks.COMPOSTER);
@@ -146,29 +147,29 @@ public class HopperhockTest {
 
 		helper.succeedWhen(() -> {
 			helper.assertBlockProperty(composterPos, ComposterBlock.LEVEL, 1);
-			helper.assertEntityNotPresent(EntityType.ITEM);
+			helper.assertEntityNotPresent(EntityTypes.ITEM);
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testComposterInsertSide(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.south();
 		spawnItemAndExpectNoPickUp(helper, composterPos, Items.PUMPKIN_PIE);
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testComposterInsertBottom(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.above();
 		spawnItemAndExpectNoPickUp(helper, composterPos, Items.PUMPKIN_PIE);
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testComposterInsertWrongItem(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.below();
 		spawnItemAndExpectNoPickUp(helper, composterPos, Items.OAK_LOG);
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testComposterFull(GameTestHelper helper) {
 		var composterPos = FLOWER_POS.below();
 		helper.setBlock(composterPos, Blocks.COMPOSTER.defaultBlockState().setValue(ComposterBlock.LEVEL, 7));
@@ -220,7 +221,7 @@ public class HopperhockTest {
 			return furnace;
 		} else {
 			throw new GameTestAssertPosException(
-					"Expected furnace here", helper.absolutePos(furnacePos), furnacePos, helper.getTick());
+					Component.literal("Expected furnace here"), helper.absolutePos(furnacePos), furnacePos, helper.getTick());
 		}
 	}
 }

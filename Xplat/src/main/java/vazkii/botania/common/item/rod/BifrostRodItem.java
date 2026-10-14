@@ -10,13 +10,13 @@ package vazkii.botania.common.item.rod;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -41,7 +41,7 @@ import java.util.List;
 
 public class BifrostRodItem extends SelfReturningItem {
 
-	private static final ResourceLocation AVATAR_OVERLAY = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_RAINBOW);
+	private static final Identifier AVATAR_OVERLAY = Identifier.parse(ResourcesLib.MODEL_AVATAR_RAINBOW);
 
 	private static final int MANA_COST = 750;
 	private static final int MANA_COST_AVATAR = 4;
@@ -56,7 +56,7 @@ public class BifrostRodItem extends SelfReturningItem {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide && ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_COST, false)) {
 			BlockState bifrost = BotaniaBlocks.BIFROST_BRIDGE.defaultBlockState();
@@ -116,7 +116,7 @@ public class BifrostRodItem extends SelfReturningItem {
 			}
 		}
 
-		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	private static boolean placeBridgeSegment(Level level, BlockPos center, BlockPos.MutableBlockPos placePos, int time) {
@@ -212,7 +212,7 @@ public class BifrostRodItem extends SelfReturningItem {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource() {
+		public Identifier getOverlayResource() {
 			return AVATAR_OVERLAY;
 		}
 	}

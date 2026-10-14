@@ -9,11 +9,11 @@
 
 package vazkii.botania.common.item.brew;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +46,7 @@ public class FlaskItem extends VialItem {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+	public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
 		HitResult hitResult = ProjectileUtil.getHitResultOnViewVector(player,
 				e -> !e.isSpectator() && (e.isPickable() || e instanceof EnderEssenceCloudEntity),
 				player.entityInteractionRange());
@@ -67,7 +67,7 @@ public class FlaskItem extends VialItem {
 		ItemStack filledResult = ItemUtils.createFilledResult(stackInHand, player, cloud.getBottledItem());
 		cloud.discard();
 
-		return InteractionResultHolder.sidedSuccess(filledResult, level.isClientSide());
+		return InteractionResult.SUCCESS.heldItemTransformedTo(filledResult);
 	}
 
 }

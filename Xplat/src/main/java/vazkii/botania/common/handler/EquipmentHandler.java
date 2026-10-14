@@ -8,7 +8,7 @@
  */
 package vazkii.botania.common.handler;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
@@ -89,7 +89,7 @@ public abstract class EquipmentHandler {
 				ItemStack current = inv.getItem(i);
 
 				if (!ItemStack.matches(old, current)) {
-					ResourceLocation slotId = botaniaRL("bauble_slot_" + i);
+					Identifier slotId = botaniaRL("bauble_slot_" + i);
 					if (old.getItem() instanceof BaubleItem bauble) {
 						player.getAttributes().removeAttributeModifiers(bauble.getEquippedAttributeModifiers(old, slotId));
 						bauble.onUnequipped(old, player);

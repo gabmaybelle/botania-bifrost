@@ -16,7 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -89,7 +89,7 @@ public class ConventionalItemTagProvider extends ItemTagsProvider {
 		// Dyed
 		ColorHelper.supportedColors().forEach(color -> {
 			tag(TagKey.create(ConventionalItemTags.DYED.registry(),
-					ConventionalItemTags.DYED.location().withSuffix("/" + color.getSerializedName())))
+					ConventionalItemTags.DYED.identifier().withSuffix("/" + color.getSerializedName())))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color).asItem())
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color).asItem())
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color).asItem())
@@ -231,7 +231,7 @@ public class ConventionalItemTagProvider extends ItemTagsProvider {
 				BotaniaItems.MANASTEEL_SHEARS, BotaniaItems.ELEMENTIUM_SHEARS
 		);
 		// this is a NeoForge tag, but appears to be missing on Fabric
-		tag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/wrench")))
+		tag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "tools/wrench")))
 				.add(BotaniaItems.WAND_OF_THE_FOREST, BotaniaItems.WAND_OF_THE_ELVEN_FOREST);
 
 		// Miscellaneous

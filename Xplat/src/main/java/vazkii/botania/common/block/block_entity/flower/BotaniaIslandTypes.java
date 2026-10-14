@@ -9,7 +9,7 @@
 
 package vazkii.botania.common.block.block_entity.flower;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
 
@@ -34,7 +34,7 @@ public class BotaniaIslandTypes {
 	public static final IslandType INFUSED = new IslandType(BotaniaItems.INFUSED_SEEDS, 0, SoundEvents.GRAVEL_PLACE);
 	public static final IslandType MUTATED = new IslandType(BotaniaItems.MUTATED_SEEDS, 0, SoundEvents.GRAVEL_PLACE);
 
-	public static void registerIslandTypes(BiConsumer<IslandType, ResourceLocation> r) {
+	public static void registerIslandTypes(BiConsumer<IslandType, Identifier> r) {
 		r.accept(GRASS, IslandType.DEFAULT_ID);
 		r.accept(PODZOL, botaniaRL("podzol"));
 		r.accept(MYCELIUM, botaniaRL("mycelium"));

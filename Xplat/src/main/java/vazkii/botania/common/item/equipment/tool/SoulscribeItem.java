@@ -10,7 +10,7 @@ package vazkii.botania.common.item.equipment.tool;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -28,7 +28,7 @@ public class SoulscribeItem extends SwordItem {
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (!target.level().isClientSide()
-				&& target instanceof EnderMan
+				&& target instanceof Enderman
 				&& attacker instanceof Player player) {
 			target.hurt(player.damageSources().playerAttack(player), 20);
 		}
@@ -39,7 +39,7 @@ public class SoulscribeItem extends SwordItem {
 
 	@Override
 	public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		if (target instanceof EnderMan && target.isDeadOrDying()
+		if (target instanceof Enderman && target.isDeadOrDying()
 				&& !EnderEssenceCaptured.HOLDER.getOrDefault(target, false)) {
 			EnderEssenceCloudEntity.spawnForEnderman(target);
 		}

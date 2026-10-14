@@ -11,12 +11,11 @@ package vazkii.botania.test.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
@@ -28,10 +27,11 @@ import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.LifeAggregatorItem;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class LifeAggregatorTest {
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE)
+	@BotaniaGameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void testSpawnerMover(GameTestHelper helper) {
 		var spawnerPos = BlockPos.ZERO;
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
@@ -39,7 +39,7 @@ public class LifeAggregatorTest {
 
 		helper.setBlock(spawnerPos, Blocks.SPAWNER);
 		SpawnerBlockEntity be = helper.getBlockEntity(spawnerPos);
-		be.setEntityId(EntityType.PIG, RandomSource.create());
+		be.setEntityId(EntityTypes.PIG, RandomSource.create());
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 

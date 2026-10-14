@@ -9,7 +9,7 @@
 package vazkii.botania.common.block.block_entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class BotaniaBlockEntities {
-	private static final Map<ResourceLocation, BlockEntityType<?>> ALL = new HashMap<>();
+	private static final Map<Identifier, BlockEntityType<?>> ALL = new HashMap<>();
 	private static final Map<Block, BlockEntityType<?>> ADD_TO_EXISTING = new HashMap<>();
 
 	public static final BlockEntityType<PetalApothecaryBlockEntity> PETAL_APOTHECARY = type(
@@ -467,7 +467,7 @@ public class BotaniaBlockEntities {
 				.toArray(Block[]::new));
 	}
 
-	private static <T extends BlockEntity> BlockEntityType<T> type(ResourceLocation id, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
+	private static <T extends BlockEntity> BlockEntityType<T> type(Identifier id, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
 		// TODO: should probably set up that datafixer type instead of passing null to build()
 		var ret = BlockEntityType.Builder.of(factory, blocks).build(null);
 		var old = ALL.put(id, ret);
@@ -477,11 +477,11 @@ public class BotaniaBlockEntities {
 		return ret;
 	}
 
-	private static ResourceLocation getId(Block b) {
+	private static Identifier getId(Block b) {
 		return BuiltInRegistries.BLOCK.getKey(b);
 	}
 
-	public static void registerTiles(BiConsumer<BlockEntityType<?>, ResourceLocation> r) {
+	public static void registerTiles(BiConsumer<BlockEntityType<?>, Identifier> r) {
 		for (var e : ALL.entrySet()) {
 			r.accept(e.getValue(), e.getKey());
 		}

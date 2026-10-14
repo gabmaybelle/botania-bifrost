@@ -12,10 +12,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -35,9 +35,9 @@ import java.util.Random;
 
 public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockEntity> {
 
-	public static final ResourceLocation MANA_TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_PYLON_MANA);
-	public static final ResourceLocation NATURA_TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_PYLON_NATURA);
-	public static final ResourceLocation GAIA_TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_PYLON_GAIA);
+	public static final Identifier MANA_TEXTURE = Identifier.parse(ResourcesLib.MODEL_PYLON_MANA);
+	public static final Identifier NATURA_TEXTURE = Identifier.parse(ResourcesLib.MODEL_PYLON_NATURA);
+	public static final Identifier GAIA_TEXTURE = Identifier.parse(ResourcesLib.MODEL_PYLON_GAIA);
 
 	private final ManaPylonModel manaModel;
 	private final NaturaPylonModel naturaModel;
@@ -59,7 +59,7 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 		boolean direct = renderingItem && (forceTransform == ItemDisplayContext.GUI || forceTransform.firstPerson()); // loosely based off ItemRenderer logic
 		Block type = renderingItem ? forceVariant : pylon.getBlockState().getBlock();
 		PylonModel model;
-		ResourceLocation texture;
+		Identifier texture;
 		RenderType shaderLayer;
 		if (BotaniaBlocks.NATURA_PYLON.equals(type)) {
 			model = naturaModel;

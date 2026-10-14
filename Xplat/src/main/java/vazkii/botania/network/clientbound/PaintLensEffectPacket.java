@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -43,9 +43,9 @@ public record PaintLensEffectPacket(BlockPos pos, DyeColor color) implements Cus
 	public static class Handler {
 		public static void handle(PaintLensEffectPacket packet, Player localPlayer) {
 			int color = packet.color().getTextureDiffuseColor();
-			float r = FastColor.ARGB32.red(color) / 255f;
-			float g = FastColor.ARGB32.green(color) / 255f;
-			float b = FastColor.ARGB32.blue(color) / 255f;
+			float r = ARGB.red(color) / 255f;
+			float g = ARGB.green(color) / 255f;
+			float b = ARGB.blue(color) / 255f;
 			Level level = localPlayer.level();
 			RandomSource random = level.getRandom();
 			for (int i = 0; i < 10; i++) {

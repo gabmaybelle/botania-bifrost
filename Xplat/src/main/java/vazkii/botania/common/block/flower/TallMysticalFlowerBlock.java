@@ -9,7 +9,7 @@
 package vazkii.botania.common.block.flower;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
@@ -46,9 +46,9 @@ public class TallMysticalFlowerBlock extends TallFlowerBlock implements Colored 
 			return;
 		}
 		int color = MysticalPetalItem.getPetalLikeColor(this.color);
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.green(color) / 255f;
-		float b = FastColor.ARGB32.blue(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.green(color) / 255f;
+		float b = ARGB.blue(color) / 255f;
 
 		SparkleParticleData data = SparkleParticleData.sparkle(random.nextFloat(), r, g, b, 5);
 		level.addParticle(data, pos.getX() + 0.3 + random.nextFloat() * 0.5, pos.getY() + 0.5 + random.nextFloat() * 0.5, pos.getZ() + 0.3 + random.nextFloat() * 0.5, 0, 0, 0);

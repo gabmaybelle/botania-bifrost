@@ -67,7 +67,7 @@ public interface ThrottledPacket<T extends BlockEntity & ThrottledPacket<T>> ext
 	 */
 	default boolean mayBeRelevantForClients(Level level) {
 		BlockPos pos = getSelf().getBlockPos();
-		Vec3 posCenter = pos.getCenter();
+		Vec3 posCenter = Vec3.atCenterOf(pos);
 		for (Player player : level.players()) {
 			if (player.isAlive()
 					&& EntityHelper.isLookingTowards(player, posCenter)

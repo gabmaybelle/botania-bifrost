@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -78,7 +78,7 @@ public class GrassSeedsItem extends Item {
 				spawnParticles(world, pos, color);
 			}
 
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;
@@ -86,11 +86,11 @@ public class GrassSeedsItem extends Item {
 
 	public static void spawnParticles(Level world, BlockPos pos, int color) {
 		float velMul = -0.025F;
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.green(color) / 255f;
-		float b = FastColor.ARGB32.blue(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.green(color) / 255f;
+		float b = ARGB.blue(color) / 255f;
 		RandomSource rng = world.getRandom();
-		Vec3 posVec = pos.getCenter();
+		Vec3 posVec = Vec3.atCenterOf(pos);
 		for (int i = 0; i < 50; i++) {
 			double x = (rng.nextDouble() - 0.5) * 3;
 			double y = rng.nextDouble() - 0.5 + 1;
@@ -243,7 +243,7 @@ public class GrassSeedsItem extends Item {
 			return state.is(BotaniaTags.Blocks.PASTURE_SEED_REPLACEABLE) && canBeGrass(pos, state);
 		}
 
-		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyDirtBlock#canBeGrass
+		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyBlock#canBeGrass
 		private boolean canBeGrass(BlockPos pos, BlockState state) {
 			BlockPos abovePos = pos.above();
 			BlockState aboveState = world.getBlockState(abovePos);
@@ -259,7 +259,7 @@ public class GrassSeedsItem extends Item {
 			return lightLevel < world.getMaxLightLevel();
 		}
 
-		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyDirtBlock#canPropagate
+		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyBlock#canPropagate
 		private boolean canPropagate(BlockPos pos) {
 			BlockPos abovePos = pos.above();
 			return canBeGrass(pos, stateToSet) && !world.getFluidState(abovePos).is(FluidTags.WATER);

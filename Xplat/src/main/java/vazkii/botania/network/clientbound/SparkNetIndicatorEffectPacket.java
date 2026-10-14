@@ -12,7 +12,7 @@ package vazkii.botania.network.clientbound;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -61,9 +61,9 @@ public record SparkNetIndicatorEffectPacket(int sparkId1, int sparkId2) implemen
 			for (int i = 0; i < iters; i++) {
 				float hue = i * huePer + hueSum;
 				int color = Mth.hsvToRgb(Mth.frac(hue), 1, 1);
-				float r = Math.min(1, FastColor.ARGB32.red(color) / 255f + 0.4f);
-				float g = Math.min(1, FastColor.ARGB32.green(color) / 255f + 0.4f);
-				float b = Math.min(1, FastColor.ARGB32.blue(color) / 255f + 0.4f);
+				float r = Math.min(1, ARGB.red(color) / 255f + 0.4f);
+				float g = Math.min(1, ARGB.green(color) / 255f + 0.4f);
+				float b = Math.min(1, ARGB.blue(color) / 255f + 0.4f);
 
 				SparkleParticleData data = SparkleParticleData.noClip(1, r, g, b, 12);
 				world.addAlwaysVisibleParticle(data, true, currentPos.x, currentPos.y, currentPos.z, 0, 0, 0);

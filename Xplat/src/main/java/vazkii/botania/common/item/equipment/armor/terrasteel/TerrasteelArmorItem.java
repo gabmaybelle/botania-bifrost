@@ -14,16 +14,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.annotations.SoftImplement;
@@ -42,8 +42,8 @@ public class TerrasteelArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public ResourceLocation getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
-		return ResourceLocation.parse(ResourcesLib.MODEL_TERRASTEEL_NEW);
+	public Identifier getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
+		return Identifier.parse(ResourcesLib.MODEL_TERRASTEEL_NEW);
 	}
 
 	//TODO Very unsure if this works

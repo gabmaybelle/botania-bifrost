@@ -9,7 +9,7 @@
 
 package vazkii.botania.common.internal_caps;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +26,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public final class PhantomInked {
 
-	public static final ResourceLocation ID = botaniaRL("phantom_inked");
+	public static final Identifier ID = botaniaRL("phantom_inked");
 	public static final DataMarkerId MARKER = new DataMarkerId(ID);
 
 	/**

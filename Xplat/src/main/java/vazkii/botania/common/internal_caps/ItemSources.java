@@ -11,7 +11,7 @@ package vazkii.botania.common.internal_caps;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.BotaniaRegistries;
 import vazkii.botania.api.internal.ItemSource;
@@ -32,7 +32,7 @@ public class ItemSources {
 	public static final ItemSource TERRA_PLATE = new ItemSource(false);
 	public static final ItemSource BOTANICAL_BREWERY = new ItemSource(true);
 
-	public static void submitRegistrations(BiConsumer<ItemSource, ResourceLocation> r) {
+	public static void submitRegistrations(BiConsumer<ItemSource, Identifier> r) {
 		r.accept(PETAL_APOTHECARY, botaniaRL("petal_apothecary"));
 		r.accept(MANA_INFUSION, botaniaRL("mana_infusion"));
 		r.accept(RUNIC_ALTAR, botaniaRL("runic_altar"));

@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
@@ -101,7 +101,7 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 			gui.fill(mouseX - 1, mouseY - height - offsetFromBox - 1, mouseX + totalWidth + 1, mouseY - offsetFromBox, 0xFF000000);
 			for (int i = 0; i < rainbowWidth; i++) {
 				gui.fill(mouseX + i, mouseY - height - offsetFromBox, mouseX + i + 1, mouseY - offsetFromBox,
-						FastColor.ARGB32.opaque(Mth.hsvToRgb((hueOff + huePer * i) % 1, 1, 1)));
+						ARGB.opaque(Mth.hsvToRgb((hueOff + huePer * i) % 1, 1, 1)));
 			}
 			gui.fill(mouseX + rainbowWidth, mouseY - height - offsetFromBox, mouseX + totalWidth, mouseY - offsetFromBox, 0xFF555555);
 		} else {
@@ -109,7 +109,7 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 
 			gui.fill(mouseX - 1, mouseY - height - offsetFromBox - 1, mouseX + totalWidth + 1, mouseY - offsetFromBox, 0xFF000000);
 			gui.fill(mouseX, mouseY - height - offsetFromBox, mouseX + manaBarWidth, mouseY - offsetFromBox,
-					FastColor.ARGB32.opaque(Mth.hsvToRgb(0.528f, Mth.sin(time * 0.2f) * 0.3f + 0.7f, 1)));
+					ARGB.opaque(Mth.hsvToRgb(0.528f, Mth.sin(time * 0.2f) * 0.3f + 0.7f, 1)));
 			gui.fill(mouseX + manaBarWidth, mouseY - height - offsetFromBox, mouseX + totalWidth, mouseY - offsetFromBox, 0xFF555555);
 		}
 		ps.popPose();

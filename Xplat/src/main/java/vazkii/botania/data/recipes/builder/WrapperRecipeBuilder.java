@@ -11,7 +11,7 @@ package vazkii.botania.data.recipes.builder;
 
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 
 import vazkii.botania.common.crafting.recipe.WrappingRecipeSerializer;
@@ -38,7 +38,7 @@ public class WrapperRecipeBuilder<T extends Recipe<?>> {
 		recipeOutput.accept(output.getLeft(), wrappedRecipe, output.getRight().orElse(null));
 	}
 
-	public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+	public void save(RecipeOutput recipeOutput, Identifier id) {
 		CapturingRecipeOutput capturingRecipeOutput = new CapturingRecipeOutput(recipeOutput);
 		var output = capturingRecipeOutput.captureSave(out -> recipeBuilder.save(out, id));
 

@@ -11,6 +11,7 @@ package vazkii.botania.common.block.block_entity.flower.generating;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -268,7 +269,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		streakLength = componentInput.getOrDefault(BotaniaDataComponents.STREAK_LENGTH, -1);
 		lastFoodCount = componentInput.getOrDefault(BotaniaDataComponents.LAST_REPEATS, 0);
 		lastFoods.clear();

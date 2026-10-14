@@ -9,8 +9,8 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
 import java.util.ArrayList;
@@ -45,14 +45,14 @@ public final class BotaniaBannerPatterns {
 	}
 
 	@Deprecated(forRemoval = true)
-	public static void submitRegistrations(BiConsumer<BannerPattern, ResourceLocation> consumer) {
+	public static void submitRegistrations(BiConsumer<BannerPattern, Identifier> consumer) {
 		// obsolete
 	}
 
 	public static void provideData(BiConsumer<ResourceKey<BannerPattern>, BannerPattern> consumer) {
 		for (var resourceKey : ALL) {
-			BannerPattern pattern = new BannerPattern(resourceKey.location(),
-					"block.minecraft.banner." + resourceKey.location().toLanguageKey());
+			BannerPattern pattern = new BannerPattern(resourceKey.identifier(),
+					"block.minecraft.banner." + resourceKey.identifier().toLanguageKey());
 			consumer.accept(resourceKey, pattern);
 		}
 	}

@@ -10,6 +10,7 @@ package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
@@ -193,7 +194,7 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		cooldown = componentInput.getOrDefault(BotaniaDataComponents.COOLDOWN, 0);
 	}
 }

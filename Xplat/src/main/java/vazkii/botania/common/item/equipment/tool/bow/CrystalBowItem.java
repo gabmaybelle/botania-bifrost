@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
@@ -46,15 +46,15 @@ public class CrystalBowItem extends BowItem {
 
 	// [VanillaCopy] BowItem::use
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack itemStack = player.getItemInHand(hand);
 		boolean foundProjectile = !getProjectile(itemStack, player).isEmpty(); // Botania - check conjuration option
 		if (!player.hasInfiniteMaterials() && !foundProjectile) {
-			return InteractionResultHolder.fail(itemStack);
+			return InteractionResult.FAIL;
 		}
 
 		player.startUsingItem(hand);
-		return InteractionResultHolder.consume(itemStack);
+		return InteractionResult.CONSUME;
 	}
 
 	// [VanillaCopy] BowItem::releaseUsing

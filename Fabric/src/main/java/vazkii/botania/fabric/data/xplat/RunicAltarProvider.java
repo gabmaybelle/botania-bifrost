@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -117,7 +117,7 @@ public class RunicAltarProvider extends FabricRecipeProvider {
 				null);
 	}
 
-	private static ResourceLocation idFor(ItemLike item) {
+	private static Identifier idFor(ItemLike item) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, item);
 	}
 

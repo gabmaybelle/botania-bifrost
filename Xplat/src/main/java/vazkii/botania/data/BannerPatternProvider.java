@@ -46,7 +46,7 @@ public class BannerPatternProvider implements DataProvider {
 
 		var output = new ArrayList<CompletableFuture<?>>(patterns.size());
 		for (Map.Entry<ResourceKey<BannerPattern>, BannerPattern> e : patterns.entrySet()) {
-			Path path = pathProvider.json(e.getKey().location());
+			Path path = pathProvider.json(e.getKey().identifier());
 			output.add(DataProvider.saveStable(cache, registries, BannerPattern.DIRECT_CODEC, e.getValue(), path));
 		}
 		return CompletableFuture.allOf(output.toArray(CompletableFuture<?>[]::new));

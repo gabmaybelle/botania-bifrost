@@ -18,7 +18,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 
 import vazkii.botania.xplat.XplatAbstractions;
@@ -46,7 +46,7 @@ public abstract class BotaniaRecipeProvider implements DataProvider {
 	}
 
 	private CompletableFuture<?> run(CachedOutput output, HolderLookup.Provider registryLookup) {
-		final Set<ResourceLocation> set = Sets.newHashSet();
+		final Set<Identifier> set = Sets.newHashSet();
 		final List<CompletableFuture<?>> list = new ArrayList<>();
 		this.buildRecipes(XplatAbstractions.INSTANCE.createRecipeOutput(
 				(location, recipe, advancement) -> {

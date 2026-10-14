@@ -13,7 +13,7 @@ import net.minecraft.commands.CacheableFunction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -79,7 +79,7 @@ public class PureDaisyProvider extends BotaniaRecipeProvider {
 				PureDaisyRecipe.DEFAULT_TIME, true, null, null), null);
 	}
 
-	private static ResourceLocation id(Block block) {
+	private static Identifier id(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PURE_DAISY_TYPE, block);
 	}
 }

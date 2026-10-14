@@ -15,7 +15,7 @@ import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,8 +29,8 @@ import java.util.Optional;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
-	ResourceLocation TYPE_ID = botaniaRL("elven_trade");
-	ResourceLocation TYPE_ID_LEXICON = botaniaRL("elven_trade_lexicon");
+	Identifier TYPE_ID = botaniaRL("elven_trade");
+	Identifier TYPE_ID_LEXICON = botaniaRL("elven_trade_lexicon");
 
 	/**
 	 * @return Preview of the inputs

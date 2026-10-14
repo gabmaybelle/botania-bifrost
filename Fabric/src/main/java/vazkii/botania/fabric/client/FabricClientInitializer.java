@@ -32,11 +32,12 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.BotaniaAPIClient;
@@ -160,7 +161,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 		Map<Item, ArmorMaterial.Layer> armors = new LinkedHashMap<>();
 		for (var entry : BuiltInRegistries.ITEM.entrySet()) {
 			Item item = entry.getValue();
-			ResourceLocation id = entry.getKey().location();
+			Identifier id = entry.getKey().identifier();
 			if (item instanceof ManasteelArmorItem armor
 					&& id.getNamespace().equals(BotaniaAPI.MODID)) {
 				armors.put(armor, armor.getMaterial().value().layers().getFirst());
@@ -186,7 +187,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 	private void initAuxiliaryRender(EntityType<? extends LivingEntity> type, LivingEntityRenderer<?, ?> renderer,
 			LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper helper, EntityRendererProvider.Context ctx) {
-		if (type == EntityType.PLAYER && renderer instanceof PlayerRenderer playerRenderer) {
+		if (type == EntityTypes.PLAYER && renderer instanceof PlayerRenderer playerRenderer) {
 			EntityRenderers.addAuxiliaryPlayerRenders(playerRenderer, helper::register);
 		}
 	}

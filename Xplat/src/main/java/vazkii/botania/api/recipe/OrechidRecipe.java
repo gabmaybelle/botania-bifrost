@@ -9,16 +9,16 @@
 package vazkii.botania.api.recipe;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public interface OrechidRecipe extends BlockStateRecipe {
-	ResourceLocation TYPE_ID = botaniaRL("orechid");
-	ResourceLocation IGNEM_TYPE_ID = botaniaRL("orechid_ignem");
-	ResourceLocation MARIMORPHOSIS_TYPE_ID = botaniaRL("marimorphosis");
+	Identifier TYPE_ID = botaniaRL("orechid");
+	Identifier IGNEM_TYPE_ID = botaniaRL("orechid_ignem");
+	Identifier MARIMORPHOSIS_TYPE_ID = botaniaRL("marimorphosis");
 
 	@Override
 	RecipeType<? extends OrechidRecipe> getType();

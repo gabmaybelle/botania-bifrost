@@ -14,7 +14,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -92,7 +92,7 @@ public class StateIngredients {
 		}
 	};
 
-	public static void submitRegistrations(BiConsumer<StateIngredientType<?>, ResourceLocation> r) {
+	public static void submitRegistrations(BiConsumer<StateIngredientType<?>, Identifier> r) {
 		r.accept(NONE_TYPE, botaniaRL("none"));
 		r.accept(BLOCK_TYPE, botaniaRL("block"));
 		r.accept(BLOCK_STATE, botaniaRL("state"));

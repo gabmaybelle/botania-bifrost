@@ -21,10 +21,10 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -67,11 +67,11 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 	}
 
 	private CompletableFuture<?> run(CachedOutput cache, HolderLookup.Provider registries) {
-		Map<ResourceLocation, LooniumStructureConfiguration> configs = new HashMap<>();
+		Map<Identifier, LooniumStructureConfiguration> configs = new HashMap<>();
 		addConfigs(configs);
 
 		var output = new ArrayList<CompletableFuture<?>>(configs.size());
-		for (Map.Entry<ResourceLocation, LooniumStructureConfiguration> e : configs.entrySet()) {
+		for (Map.Entry<Identifier, LooniumStructureConfiguration> e : configs.entrySet()) {
 			Path path = pathProvider.json(e.getKey());
 			LooniumStructureConfiguration config = e.getValue();
 			JsonElement jsonTree = LooniumStructureConfiguration.CODEC.encodeStart(JsonOps.INSTANCE, config)
@@ -81,54 +81,54 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 		return CompletableFuture.allOf(output.toArray(CompletableFuture<?>[]::new));
 	}
 
-	private void addConfigs(Map<ResourceLocation, LooniumStructureConfiguration> configs) {
-		ResourceLocation defaultConfigId = LooniumStructureConfiguration.DEFAULT_CONFIG_ID;
+	private void addConfigs(Map<Identifier, LooniumStructureConfiguration> configs) {
+		Identifier defaultConfigId = LooniumStructureConfiguration.DEFAULT_CONFIG_ID;
 		configs.put(defaultConfigId, getDefaultConfig());
 
-		configs.put(BuiltinStructures.ANCIENT_CITY.location(), getConfigAncientCity(defaultConfigId));
-		configs.put(BuiltinStructures.BASTION_REMNANT.location(), getConfigBastionRemnant(defaultConfigId));
-		configs.put(BuiltinStructures.DESERT_PYRAMID.location(), getConfigDesertPyramid(defaultConfigId));
-		configs.put(BuiltinStructures.END_CITY.location(), getConfigEndCity(defaultConfigId));
-		configs.put(BuiltinStructures.FORTRESS.location(), getConfigFortress(defaultConfigId));
-		configs.put(BuiltinStructures.JUNGLE_TEMPLE.location(), getConfigJungleTemple(defaultConfigId));
-		configs.put(BuiltinStructures.OCEAN_MONUMENT.location(), getConfigOceanMonument(defaultConfigId));
+		configs.put(BuiltinStructures.ANCIENT_CITY.identifier(), getConfigAncientCity(defaultConfigId));
+		configs.put(BuiltinStructures.BASTION_REMNANT.identifier(), getConfigBastionRemnant(defaultConfigId));
+		configs.put(BuiltinStructures.DESERT_PYRAMID.identifier(), getConfigDesertPyramid(defaultConfigId));
+		configs.put(BuiltinStructures.END_CITY.identifier(), getConfigEndCity(defaultConfigId));
+		configs.put(BuiltinStructures.FORTRESS.identifier(), getConfigFortress(defaultConfigId));
+		configs.put(BuiltinStructures.JUNGLE_TEMPLE.identifier(), getConfigJungleTemple(defaultConfigId));
+		configs.put(BuiltinStructures.OCEAN_MONUMENT.identifier(), getConfigOceanMonument(defaultConfigId));
 
-		ResourceLocation oceanRuinId = botaniaRL("ocean_ruins");
+		Identifier oceanRuinId = botaniaRL("ocean_ruins");
 		configs.put(oceanRuinId,
 				LooniumStructureConfiguration.forParent(defaultConfigId)
 						.boundingBoxType(StructureSpawnOverride.BoundingBoxType.STRUCTURE).build()
 		);
-		configs.put(BuiltinStructures.OCEAN_RUIN_COLD.location(), getConfigOceanRuinCold(oceanRuinId));
-		configs.put(BuiltinStructures.OCEAN_RUIN_WARM.location(), getConfigOceanRuinWarm(oceanRuinId));
+		configs.put(BuiltinStructures.OCEAN_RUIN_COLD.identifier(), getConfigOceanRuinCold(oceanRuinId));
+		configs.put(BuiltinStructures.OCEAN_RUIN_WARM.identifier(), getConfigOceanRuinWarm(oceanRuinId));
 
-		configs.put(BuiltinStructures.PILLAGER_OUTPOST.location(), getConfigPillagerOutpost(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_DESERT.location(), getConfigRuinedPortalDesert(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_JUNGLE.location(), getConfigRuinedPortalJungle(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_MOUNTAIN.location(), getConfigRuinedPortalMountain(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_NETHER.location(), getConfigRuinedPortalNether(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_OCEAN.location(), getConfigRuinedPortalOcean(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_STANDARD.location(), getConfigRuinedPortalStandard(defaultConfigId));
-		configs.put(BuiltinStructures.RUINED_PORTAL_SWAMP.location(), getConfigRuinedPortalSwamp(defaultConfigId));
+		configs.put(BuiltinStructures.PILLAGER_OUTPOST.identifier(), getConfigPillagerOutpost(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_DESERT.identifier(), getConfigRuinedPortalDesert(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_JUNGLE.identifier(), getConfigRuinedPortalJungle(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_MOUNTAIN.identifier(), getConfigRuinedPortalMountain(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_NETHER.identifier(), getConfigRuinedPortalNether(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_OCEAN.identifier(), getConfigRuinedPortalOcean(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_STANDARD.identifier(), getConfigRuinedPortalStandard(defaultConfigId));
+		configs.put(BuiltinStructures.RUINED_PORTAL_SWAMP.identifier(), getConfigRuinedPortalSwamp(defaultConfigId));
 
-		configs.put(BuiltinStructures.SHIPWRECK.location(), getConfigShipwreck(defaultConfigId));
-		configs.put(BuiltinStructures.SHIPWRECK_BEACHED.location(),
-				LooniumStructureConfiguration.forParent(BuiltinStructures.SHIPWRECK.location()).build());
+		configs.put(BuiltinStructures.SHIPWRECK.identifier(), getConfigShipwreck(defaultConfigId));
+		configs.put(BuiltinStructures.SHIPWRECK_BEACHED.identifier(),
+				LooniumStructureConfiguration.forParent(BuiltinStructures.SHIPWRECK.identifier()).build());
 
-		configs.put(BuiltinStructures.STRONGHOLD.location(), getConfigStronghold(defaultConfigId));
-		configs.put(BuiltinStructures.TRAIL_RUINS.location(), getConfigTrailRuins(defaultConfigId));
-		configs.put(BuiltinStructures.TRIAL_CHAMBERS.location(), getConfigTrialChamber(defaultConfigId));
+		configs.put(BuiltinStructures.STRONGHOLD.identifier(), getConfigStronghold(defaultConfigId));
+		configs.put(BuiltinStructures.TRAIL_RUINS.identifier(), getConfigTrailRuins(defaultConfigId));
+		configs.put(BuiltinStructures.TRIAL_CHAMBERS.identifier(), getConfigTrialChamber(defaultConfigId));
 
-		ResourceLocation villageId = botaniaRL("village");
+		Identifier villageId = botaniaRL("village");
 		configs.put(villageId, LooniumStructureConfiguration.forParent(defaultConfigId)
 				.boundingBoxType(StructureSpawnOverride.BoundingBoxType.STRUCTURE).build()
 		);
-		configs.put(BuiltinStructures.VILLAGE_DESERT.location(), getConfigVillageDesert(villageId));
-		configs.put(BuiltinStructures.VILLAGE_PLAINS.location(), getConfigVillagePlains(villageId));
-		configs.put(BuiltinStructures.VILLAGE_SAVANNA.location(), getConfigVillageSavanna(villageId));
-		configs.put(BuiltinStructures.VILLAGE_SNOWY.location(), getConfigVillageSnowy(villageId));
-		configs.put(BuiltinStructures.VILLAGE_TAIGA.location(), getConfigVillageTaiga(villageId));
+		configs.put(BuiltinStructures.VILLAGE_DESERT.identifier(), getConfigVillageDesert(villageId));
+		configs.put(BuiltinStructures.VILLAGE_PLAINS.identifier(), getConfigVillagePlains(villageId));
+		configs.put(BuiltinStructures.VILLAGE_SAVANNA.identifier(), getConfigVillageSavanna(villageId));
+		configs.put(BuiltinStructures.VILLAGE_SNOWY.identifier(), getConfigVillageSnowy(villageId));
+		configs.put(BuiltinStructures.VILLAGE_TAIGA.identifier(), getConfigVillageTaiga(villageId));
 
-		configs.put(BuiltinStructures.WOODLAND_MANSION.location(), getConfigWoodlandMansion(defaultConfigId));
+		configs.put(BuiltinStructures.WOODLAND_MANSION.identifier(), getConfigWoodlandMansion(defaultConfigId));
 	}
 
 	public static LooniumStructureConfiguration getDefaultConfig() {
@@ -138,21 +138,21 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 				.boundingBoxType(StructureSpawnOverride.BoundingBoxType.PIECE)
 				.spawnedMobs(
 						// weights roughly based on original Loonium mob selection logic
-						MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+						MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 						getCreeperSpawnData(195, false, getCreeperEffects(false)),
 						getCreeperSpawnData(1, true, getCreeperEffects(false)),
-						MobSpawnData.entityWeight(EntityType.HUSK, 59)
+						MobSpawnData.entityWeight(EntityTypes.HUSK, 59)
 								.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.DROWNED, 106)
+						MobSpawnData.entityWeight(EntityTypes.DROWNED, 106)
 								.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+						MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 								.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.STRAY, 59)
+						MobSpawnData.entityWeight(EntityTypes.STRAY, 59)
 								.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.SKELETON, 529)
+						MobSpawnData.entityWeight(EntityTypes.SKELETON, 529)
 								.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-						MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+						MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+						MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 				)
 				.attributeModifiers(
 						new MobAttributeModifier(
@@ -164,35 +164,35 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 				.build();
 	}
 
-	public static LooniumStructureConfiguration getConfigAncientCity(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigAncientCity(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 30).build(),
 				getCreeperSpawnData(99, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 40)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_ANCIENT_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 80)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 80)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_ANCIENT_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 410)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 410)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_ANCIENT_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 60)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_ANCIENT_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 40)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_ANCIENT_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 400)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 400)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_ANCIENT_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 100).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 200).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 100).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 200).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigBastionRemnant(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigBastionRemnant(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 30).build(),
 				getCreeperSpawnData(99, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
 				getPiglinSpawnData(450, BotaniaLootTables.LOONIUM_PIGLIN_BASTION_REMNANT, false, false),
-				MobSpawnData.entityWeight(EntityType.PIGLIN_BRUTE, 50)
+				MobSpawnData.entityWeight(EntityTypes.PIGLIN_BRUTE, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_PIGLIN_BRUTE_DEFAULT)
 						.attributeModifiers(
 								new MobAttributeModifier(
@@ -201,43 +201,43 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 										Attributes.ATTACK_DAMAGE, 1.5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
 						)
 						.build(),
-				MobSpawnData.entityWeight(EntityType.HOGLIN, 300).spawnAsAdult().build()
+				MobSpawnData.entityWeight(EntityTypes.HOGLIN, 300).spawnAsAdult().build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigDesertPyramid(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigDesertPyramid(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 50).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 50).build(),
 				getCreeperSpawnData(149, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 450)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DESERT_PYRAMID).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DESERT_PYRAMID).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 500)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 500)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DESERT_PYRAMID).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 40).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 360).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 360).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigEndCity(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigEndCity(Identifier parentId) {
 		MobEffectToApply[] creeperEffects = {
 				MobEffectToApply.effect(MobEffects.FIRE_RESISTANCE).duration(100).build(),
 				MobEffectToApply.effect(MobEffects.REGENERATION).duration(100).build(),
 				MobEffectToApply.effect(MobEffects.SLOW_FALLING).duration(400).build()
 		};
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.SHULKER, 100)
+				MobSpawnData.entityWeight(EntityTypes.SHULKER, 100)
 						.effectsToApply(getStandardEffects(true, true)).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 300).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 300).build(),
 				getCreeperSpawnData(99, false, creeperEffects),
 				getCreeperSpawnData(1, true, creeperEffects),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 300)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 300)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_END_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 300)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 300)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_END_CITY).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 300).build()
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 300).build()
 		).effectsToApply(
 				MobEffectToApply.effect(MobEffects.FIRE_RESISTANCE).build(),
 				MobEffectToApply.effect(MobEffects.REGENERATION).build(),
@@ -245,488 +245,488 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigFortress(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigFortress(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 30).build(),
 				getCreeperSpawnData(99, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.BLAZE, 300)
+				MobSpawnData.entityWeight(EntityTypes.BLAZE, 300)
 						.effectsToApply(getStandardEffects(false, false)).build(),
-				MobSpawnData.entityWeight(EntityType.WITHER_SKELETON, 450)
+				MobSpawnData.entityWeight(EntityTypes.WITHER_SKELETON, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_FORTRESS)
 						.effectsToApply(getStandardEffects(false, false)).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 50)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_FORTRESS).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 400)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 400)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_FORTRESS)
 						.effectsToApply(getStandardEffects(false, false)).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigJungleTemple(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigJungleTemple(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 30).build(),
 				getCreeperSpawnData(149, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 40)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_JUNGLE_TEMPLE).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 360)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 360)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_JUNGLE_TEMPLE).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 50)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_JUNGLE_TEMPLE).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 450)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_JUNGLE_TEMPLE).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 300).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 300).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 300).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 300).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigOceanMonument(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigOceanMonument(Identifier parentId) {
 		MobEffectToApply[] standardEffectsInWater = getStandardEffects(true, true);
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.GUARDIAN, 200).build(),
+				MobSpawnData.entityWeight(EntityTypes.GUARDIAN, 200).build(),
 				getCreeperSpawnData(199, false, getCreeperEffects(true)),
 				getCreeperSpawnData(1, true, getCreeperEffects(true)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 540)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 540)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_MONUMENT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 60)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_MONUMENT).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 40)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_MONUMENT).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 40)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_MONUMENT).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 320)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 320)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_MONUMENT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 30)
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 30)
 						.effectsToApply(standardEffectsInWater).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 270)
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 270)
 						.effectsToApply(standardEffectsInWater).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigOceanRuinCold(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigOceanRuinCold(Identifier parentId) {
 		MobEffectToApply[] standardEffectsInWater = getStandardEffects(true, true);
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
 				getCreeperSpawnData(199, false, getCreeperEffects(true)),
 				getCreeperSpawnData(1, true, getCreeperEffects(true)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 540)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 540)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 60)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 40)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 360)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 360)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 30)
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 30)
 						.effectsToApply(standardEffectsInWater).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 270)
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 270)
 						.effectsToApply(standardEffectsInWater).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigOceanRuinWarm(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigOceanRuinWarm(Identifier parentId) {
 		MobEffectToApply[] standardEffectsInWater = getStandardEffects(true, true);
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
 				getCreeperSpawnData(199, false, getCreeperEffects(true)),
 				getCreeperSpawnData(1, true, getCreeperEffects(true)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 540)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 540)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 60)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 40)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 360)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 360)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 30)
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 30)
 						.effectsToApply(standardEffectsInWater).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 270)
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 270)
 						.effectsToApply(standardEffectsInWater).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigPillagerOutpost(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigPillagerOutpost(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId)
 				.boundingBoxType(StructureSpawnOverride.BoundingBoxType.STRUCTURE).spawnedMobs(
-						MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+						MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 						getCreeperSpawnData(199, false, getCreeperEffects(false)),
 						getCreeperSpawnData(1, true, getCreeperEffects(false)),
-						MobSpawnData.entityWeight(EntityType.PILLAGER, 900)
+						MobSpawnData.entityWeight(EntityTypes.PILLAGER, 900)
 								.equipmentTable(BotaniaLootTables.LOONIUM_PILLAGER_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.VINDICATOR, 175)
+						MobSpawnData.entityWeight(EntityTypes.VINDICATOR, 175)
 								.equipmentTable(BotaniaLootTables.LOONIUM_VINDICATOR_DEFAULT).build(),
-						MobSpawnData.entityWeight(EntityType.EVOKER, 25).build(),
-						MobSpawnData.entityWeight(EntityType.SKELETON, 200)
+						MobSpawnData.entityWeight(EntityTypes.EVOKER, 25).build(),
+						MobSpawnData.entityWeight(EntityTypes.SKELETON, 200)
 								.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_OUTPOST).build(),
-						MobSpawnData.entityWeight(EntityType.ZOMBIE, 200)
+						MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 200)
 								.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_OUTPOST).build(),
-						MobSpawnData.entityWeight(EntityType.SPIDER, 200).build()
+						MobSpawnData.entityWeight(EntityTypes.SPIDER, 200).build()
 				).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalDesert(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalDesert(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 25)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 25)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(50, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, false, true),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 50).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 50).build(),
 				getCreeperSpawnData(149, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 450)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 450)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 360).build()
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 360).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalJungle(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalJungle(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 25)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 25)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(50, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, false, true),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 30).build(),
 				getCreeperSpawnData(149, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 40)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 360)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 360)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 50)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 450)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 250).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 50).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 250).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 50).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalMountain(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalMountain(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 25)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 25)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(50, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, false, true),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 529)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 529)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 59)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 529)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 529)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SILVERFISH, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.SILVERFISH, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalNether(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalNether(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 125)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 125)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(500, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, false, false),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 450)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 450)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 200)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 200)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 10).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 90).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 10).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 90).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalOcean(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalOcean(Identifier parentId) {
 		MobEffectToApply[] standardEffectsInWater = getStandardEffects(true, true);
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 25)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 25)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(50, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, true, true),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
 				getCreeperSpawnData(199, false, getCreeperEffects(true)),
 				getCreeperSpawnData(1, true, getCreeperEffects(true)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 540)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 540)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 60)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 40)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 360)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 360)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 30)
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 30)
 						.effectsToApply(standardEffectsInWater).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 270)
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 270)
 						.effectsToApply(standardEffectsInWater).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalStandard(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalStandard(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 25)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 25)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(50, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, false, true),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 59)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 106)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 59)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 529)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 529)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigRuinedPortalSwamp(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigRuinedPortalSwamp(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ZOGLIN, 25)
+				MobSpawnData.entityWeight(EntityTypes.ZOGLIN, 25)
 						.effectsToApply(getStandardEffects(false, false)).build(),
 				getPiglinSpawnData(50, BotaniaLootTables.LOONIUM_PIGLIN_PORTAL, false, true),
-				MobSpawnData.entityWeight(EntityType.ZOMBIFIED_PIGLIN, 50)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIFIED_PIGLIN, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 30).build(),
 				getCreeperSpawnData(149, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 40)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 360)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 360)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 400)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 400)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 100)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 100)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_PORTAL).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 50).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 250).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 50).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 250).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigShipwreck(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigShipwreck(Identifier parentId) {
 		MobEffectToApply[] standardEffectsInWater = getStandardEffects(true, true);
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
 				getCreeperSpawnData(199, false, getCreeperEffects(true)),
 				getCreeperSpawnData(1, true, getCreeperEffects(true)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 540)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 540)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_SHIPWRECK).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 60)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_SHIPWRECK).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 40)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_SHIPWRECK).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 40)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 40)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_SHIPWRECK).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 320)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 320)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_SHIPWRECK).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 30)
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 30)
 						.effectsToApply(standardEffectsInWater).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 270)
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 270)
 						.effectsToApply(standardEffectsInWater).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigStronghold(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigStronghold(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 80).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 80).build(),
 				getCreeperSpawnData(149, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 50)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_STRONGHOLD).build(),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 50)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_STRONGHOLD).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 400)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 400)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_STRONGHOLD).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 50)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_STRONGHOLD).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 50)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 50)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_STRONGHOLD).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 400)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 400)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_STRONGHOLD).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 100).build(),
-				MobSpawnData.entityWeight(EntityType.SILVERFISH, 100).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 400).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 100).build(),
+				MobSpawnData.entityWeight(EntityTypes.SILVERFISH, 100).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 400).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigTrailRuins(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigTrailRuins(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 59)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_TRAIL_RUINS).build(),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 106)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_TRAIL_RUINS).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_TRAIL_RUINS).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 49)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 49)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_TRAIL_RUINS).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 49)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 49)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_TRAIL_RUINS).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 509)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 509)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_TRAIL_RUINS).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigTrialChamber(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigTrialChamber(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 106)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_TRIAL_CHAMBER).build(),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 59)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_TRIAL_CHAMBER).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_TRIAL_CHAMBER).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 49)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 49)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_TRIAL_CHAMBER).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 49)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 49)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_TRIAL_CHAMBER).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 509)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 509)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_TRIAL_CHAMBER).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build(),
-				MobSpawnData.entityWeight(EntityType.BREEZE, 200).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build(),
+				MobSpawnData.entityWeight(EntityTypes.BREEZE, 200).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigVillageDesert(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigVillageDesert(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.HUSK, 423)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 59)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE_VILLAGER, 106)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE_VILLAGER, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_VILLAGER).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 600)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 600)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigVillagePlains(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigVillagePlains(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 59)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE_VILLAGER, 106)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE_VILLAGER, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_VILLAGER).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 600)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 600)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigVillageSavanna(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigVillageSavanna(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 30)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 30)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.HUSK, 30)
+				MobSpawnData.entityWeight(EntityTypes.HUSK, 30)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE_VILLAGER, 106)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE_VILLAGER, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_VILLAGER).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 60)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 60)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 540)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 540)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigVillageSnowy(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigVillageSnowy(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 59)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE_VILLAGER, 106)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE_VILLAGER, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_VILLAGER).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 529)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 529)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 59)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigVillageTaiga(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigVillageTaiga(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(195, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.DROWNED, 59)
+				MobSpawnData.entityWeight(EntityTypes.DROWNED, 59)
 						.equipmentTable(BotaniaLootTables.LOONIUM_DROWNED_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 423)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE_VILLAGER, 106)
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE_VILLAGER, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ZOMBIE_VILLAGER).build(),
-				MobSpawnData.entityWeight(EntityType.STRAY, 106)
+				MobSpawnData.entityWeight(EntityTypes.STRAY, 106)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 423)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 423)
 						.equipmentTable(BotaniaLootTables.LOONIUM_SKELETON_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 59).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 529).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 59).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 529).build()
 		).build();
 	}
 
-	public static LooniumStructureConfiguration getConfigWoodlandMansion(ResourceLocation parentId) {
+	public static LooniumStructureConfiguration getConfigWoodlandMansion(Identifier parentId) {
 		return LooniumStructureConfiguration.forParent(parentId).spawnedMobs(
-				MobSpawnData.entityWeight(EntityType.ENDERMAN, 40).build(),
+				MobSpawnData.entityWeight(EntityTypes.ENDERMAN, 40).build(),
 				getCreeperSpawnData(199, false, getCreeperEffects(false)),
 				getCreeperSpawnData(1, true, getCreeperEffects(false)),
-				MobSpawnData.entityWeight(EntityType.VINDICATOR, 600)
+				MobSpawnData.entityWeight(EntityTypes.VINDICATOR, 600)
 						.equipmentTable(BotaniaLootTables.LOONIUM_VINDICATOR_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.PILLAGER, 200)
+				MobSpawnData.entityWeight(EntityTypes.PILLAGER, 200)
 						.equipmentTable(BotaniaLootTables.LOONIUM_PILLAGER_DEFAULT).build(),
-				MobSpawnData.entityWeight(EntityType.EVOKER, 100).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 150)
+				MobSpawnData.entityWeight(EntityTypes.EVOKER, 100).build(),
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 150)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ARMOR_MANSION).build(),
-				MobSpawnData.entityWeight(EntityType.ZOMBIE, 50).spawnAsBaby()
+				MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 50).spawnAsBaby()
 						.equipmentTable(BotaniaLootTables.LOONIUM_ARMOR_MANSION).build(),
-				MobSpawnData.entityWeight(EntityType.BOGGED, 20)
+				MobSpawnData.entityWeight(EntityTypes.BOGGED, 20)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ARMOR_MANSION).build(),
-				MobSpawnData.entityWeight(EntityType.SKELETON, 180)
+				MobSpawnData.entityWeight(EntityTypes.SKELETON, 180)
 						.equipmentTable(BotaniaLootTables.LOONIUM_ARMOR_MANSION).build(),
-				MobSpawnData.entityWeight(EntityType.CAVE_SPIDER, 30).build(),
-				MobSpawnData.entityWeight(EntityType.SPIDER, 270).build()
+				MobSpawnData.entityWeight(EntityTypes.CAVE_SPIDER, 30).build(),
+				MobSpawnData.entityWeight(EntityTypes.SPIDER, 270).build()
 		).build();
 	}
 
@@ -767,7 +767,7 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 
 	public static MobSpawnData getCreeperSpawnData(int weight, boolean charged,
 			MobEffectToApply... creeperEffects) {
-		MobSpawnData.Builder builder = MobSpawnData.entityWeight(EntityType.CREEPER, weight);
+		MobSpawnData.Builder builder = MobSpawnData.entityWeight(EntityTypes.CREEPER, weight);
 		builder.effectsToApply(creeperEffects);
 
 		if (charged) {
@@ -796,7 +796,7 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 		DataResult<Tag> dataResult = piglinBrain.serializeStart(NbtOps.INSTANCE);
 		dataResult.resultOrPartial(BotaniaAPI.LOGGER::error).ifPresent(tag -> piglinNbt.put("Brain", tag));
 
-		return MobSpawnData.entityWeight(EntityType.PIGLIN, weight)
+		return MobSpawnData.entityWeight(EntityTypes.PIGLIN, weight)
 				.spawnAsAdult()
 				.nbt(piglinNbt)
 				.equipmentTable(equipmentTable)

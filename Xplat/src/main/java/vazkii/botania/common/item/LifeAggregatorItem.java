@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -59,13 +59,13 @@ public class LifeAggregatorItem extends Item {
 			return;
 		}
 
-		ResourceLocation blockId = stack.get(BotaniaDataComponents.BLOCK_TYPE);
+		Identifier blockId = stack.get(BotaniaDataComponents.BLOCK_TYPE);
 		if (blockId != null) {
 			BuiltInRegistries.BLOCK.getOptional(blockId).ifPresent(
 					block -> tooltipComponents.add(block.getName().withStyle(ChatFormatting.GRAY)));
 		}
 
-		ResourceLocation entityId = stack.get(BotaniaDataComponents.MOB_TYPE);
+		Identifier entityId = stack.get(BotaniaDataComponents.MOB_TYPE);
 		if (entityId != null) {
 			BuiltInRegistries.ENTITY_TYPE.getOptional(entityId).ifPresent(
 					type -> tooltipComponents.add(type.getDescription().copy().withStyle(ChatFormatting.GRAY)));
@@ -78,14 +78,14 @@ public class LifeAggregatorItem extends Item {
 			return placeSpawner(context);
 		} else {
 			return tryCaptureSpawner(context)
-					? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+					? InteractionResult.SUCCESS
 					: InteractionResult.PASS;
 		}
 	}
 
 	private InteractionResult placeSpawner(UseOnContext context) {
 		ItemStack mover = context.getItemInHand();
-		ResourceLocation blockId = mover.get(BotaniaDataComponents.BLOCK_TYPE);
+		Identifier blockId = mover.get(BotaniaDataComponents.BLOCK_TYPE);
 		Block block = BuiltInRegistries.BLOCK.get(blockId);
 		if (block == Blocks.AIR || !(block instanceof EntityBlock)) {
 			return InteractionResult.FAIL;

@@ -13,7 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -171,17 +171,17 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 		return "Botania stonecutting recipes";
 	}
 
-	protected ResourceLocation idFor(ItemLike input, ItemLike output) {
-		ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(input.asItem());
-		ResourceLocation outputId = BuiltInRegistries.ITEM.getKey(output.asItem());
+	protected Identifier idFor(ItemLike input, ItemLike output) {
+		Identifier inputId = BuiltInRegistries.ITEM.getKey(input.asItem());
+		Identifier outputId = BuiltInRegistries.ITEM.getKey(output.asItem());
 		return BotaniaRecipeHelper.deriveRecipeId(RecipeType.STONECUTTING, inputId.getPath() + "_to_" + outputId.getPath());
 	}
 
-	protected void stonecutting(RecipeOutput recipeOutput, ResourceLocation id, Ingredient input, ItemLike output) {
+	protected void stonecutting(RecipeOutput recipeOutput, Identifier id, Ingredient input, ItemLike output) {
 		stonecutting(recipeOutput, id, input, output, 1);
 	}
 
-	protected void stonecutting(RecipeOutput recipeOutput, ResourceLocation id, Ingredient input, ItemLike output, int count) {
+	protected void stonecutting(RecipeOutput recipeOutput, Identifier id, Ingredient input, ItemLike output, int count) {
 		ItemStack outputStack = new ItemStack(output);
 		outputStack.setCount(count);
 		recipeOutput.accept(id, new StonecutterRecipe("", input, outputStack), null);
@@ -201,7 +201,7 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 		for (ItemLike output : inputs) {
 			Ingredient input = Ingredient.of(inputs.stream()
 					.filter(thisInput -> output != thisInput).toArray(ItemLike[]::new));
-			ResourceLocation id = BotaniaRecipeHelper.deriveRecipeId(RecipeType.STONECUTTING, output.asItem());
+			Identifier id = BotaniaRecipeHelper.deriveRecipeId(RecipeType.STONECUTTING, output.asItem());
 			stonecutting(recipeOutput, id, input, output);
 		}
 	}

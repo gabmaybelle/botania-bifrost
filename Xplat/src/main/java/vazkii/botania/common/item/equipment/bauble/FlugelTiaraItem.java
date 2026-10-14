@@ -20,11 +20,11 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,8 +59,8 @@ import java.util.List;
 
 public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabContents {
 
-	private static final ResourceLocation textureHud = ResourceLocation.parse(ResourcesLib.GUI_HUD_ICONS);
-	public static final ResourceLocation textureHalo = ResourceLocation.parse(ResourcesLib.MISC_HALO);
+	private static final Identifier textureHud = Identifier.parse(ResourcesLib.GUI_HUD_ICONS);
+	public static final Identifier textureHalo = Identifier.parse(ResourcesLib.MISC_HALO);
 
 	private static final List<String> playersWithFlight = Collections.synchronizedList(new ArrayList<>());
 	private static final int COST = 35;
@@ -440,14 +440,14 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 					break;
 				case 7: {
 					float alpha = 0.5f + Mth.cos(tickTime * 0.3f) * 0.2f;
-					int color = FastColor.ARGB32.color(FastColor.as8BitChannel(alpha), 0xFFFFFF);
+					int color = ARGB.color(ARGB.as8BitChannel(alpha), 0xFFFFFF);
 					renderCustomColor(bipedModel, model, living, stack, ms, buffers, flap, color);
 					break;
 				}
 				case 9: {
 					float customFlap = -(Mth.sin(tickTime * 0.2f) + 0.6f) * (flying ? 12f : 5f);
 					float alpha = 0.5f + (flying ? Mth.cos(tickTime * 0.3f) * 0.25f + 0.25f : 0);
-					int color = FastColor.ARGB32.color(FastColor.as8BitChannel(alpha), 0xFFFFFF);
+					int color = ARGB.color(ARGB.as8BitChannel(alpha), 0xFFFFFF);
 					renderCustomColor(bipedModel, model, living, stack, ms, buffers, customFlap, color);
 					break;
 				}

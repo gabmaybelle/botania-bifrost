@@ -198,7 +198,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 		// the apothecary has water and no items, so just optimistically assume
 		// success on the client.
 		if (player.level().isClientSide()) {
-			return InteractionResult.sidedSuccess(true);
+			return InteractionResult.SUCCESS;
 		}
 		boolean success = InventoryHelper.tryToSetLastRecipe(player, getItemHandler(), lastRecipe, SoundEvents.GENERIC_SPLASH);
 		if (success) {
@@ -206,7 +206,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
 		}
 		return success
-				? InteractionResult.sidedSuccess(false)
+				? InteractionResult.SUCCESS
 				: InteractionResult.PASS;
 	}
 

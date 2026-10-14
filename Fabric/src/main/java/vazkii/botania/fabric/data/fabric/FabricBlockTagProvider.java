@@ -13,7 +13,7 @@ package vazkii.botania.fabric.data.fabric;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class FabricBlockTagProvider extends BlockTagProvider {
 
-	private static TagKey<Block> blockTag(ResourceLocation location) {
+	private static TagKey<Block> blockTag(Identifier location) {
 		return TagKey.create(Registries.BLOCK, location);
 	}
 

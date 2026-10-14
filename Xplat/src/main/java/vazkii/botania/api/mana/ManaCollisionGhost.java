@@ -8,7 +8,7 @@
  */
 package vazkii.botania.api.mana;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.capability.BlockApiNoContext;
 
@@ -18,7 +18,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * Any Block, Block Entity, or Entity with this capability has custom collision logic for bursts.
  */
 public interface ManaCollisionGhost {
-	ResourceLocation ID = botaniaRL("mana_ghost");
+	Identifier ID = botaniaRL("mana_ghost");
 	BlockApiNoContext<ManaCollisionGhost> LOOKUP = new BlockApiNoContext<>(ID, ManaCollisionGhost.class);
 
 	enum Behaviour {

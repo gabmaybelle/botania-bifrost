@@ -10,12 +10,12 @@
 
 package vazkii.botania.data.loot;
 
-import net.minecraft.advancements.critereon.EntityEquipmentPredicate;
-import net.minecraft.advancements.critereon.EntityFlagsPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.EntityTypePredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.NbtPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.NbtPredicate;
+import net.minecraft.advancements.predicates.entity.EntityEquipmentPredicate;
+import net.minecraft.advancements.predicates.entity.EntityFlagsPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.EntityTypePredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -27,19 +27,19 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimMaterials;
-import net.minecraft.world.item.armortrim.TrimPattern;
-import net.minecraft.world.item.armortrim.TrimPatterns;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.trim.ArmorTrim;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.item.equipment.trim.TrimPattern;
+import net.minecraft.world.item.equipment.trim.TrimPatterns;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -374,7 +374,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 				).withPool(LootPool.lootPool()
 						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 								EntityPredicate.Builder.entity()
-										.entityType(EntityTypePredicate.of(EntityType.SKELETON))))
+										.entityType(EntityTypePredicate.of(EntityTypes.SKELETON))))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f))
 						.add(LootItem.lootTableItem(Items.TIPPED_ARROW).apply(SetComponentsFunction.setComponent(
 								DataComponents.POTION_CONTENTS, PotionContents.EMPTY.withEffectAdded(
@@ -744,7 +744,7 @@ public class BotaniaEquipmentLoot implements LootTableSubProvider {
 								.withPool(LootPool.lootPool()
 										.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 												EntityPredicate.Builder.entity()
-														.entityType(EntityTypePredicate.of(EntityType.SKELETON))))
+														.entityType(EntityTypePredicate.of(EntityTypes.SKELETON))))
 										.when(LootItemRandomChanceCondition.randomChance(0.9f))
 										.add(LootItem.lootTableItem(Items.TIPPED_ARROW).apply(
 												SetComponentsFunction.setComponent(DataComponents.POTION_CONTENTS,

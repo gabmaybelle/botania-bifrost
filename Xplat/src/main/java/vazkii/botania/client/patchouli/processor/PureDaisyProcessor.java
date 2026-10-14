@@ -9,7 +9,7 @@
 package vazkii.botania.client.patchouli.processor;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +53,7 @@ public class PureDaisyProcessor implements IComponentProcessor {
 				.asStreamOrSingleton(level.registryAccess())
 				.map(IVariable::asString)
 				.forEach(name -> {
-					PureDaisyRecipe recipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.PURE_DAISY_TYPE, ResourceLocation.parse(name));
+					PureDaisyRecipe recipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.PURE_DAISY_TYPE, Identifier.parse(name));
 					if (recipe != null) {
 						recipes.add(recipe);
 					} else {

@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import vazkii.botania.common.entity.BotaniaEntities;
 import vazkii.botania.common.lib.BotaniaTags;
@@ -31,7 +31,7 @@ public class ConventionalEntityTypeTagProvider extends FabricTagProvider.EntityT
 		tag(ConventionalEntityTypeTags.BOSSES).add(reverseLookup(BotaniaEntities.GAIA_GUARDIAN));
 
 		tag(BotaniaTags.Entities.NOT_CHARMABLE)
-				.add(reverseLookup(EntityType.WARDEN))
+				.add(reverseLookup(EntityTypes.WARDEN))
 				.addTag(ConventionalEntityTypeTags.BOSSES);
 
 		tag(ConventionalEntityTypeTags.MINECARTS).add(reverseLookup(BotaniaEntities.MANA_POOL_MINECART));

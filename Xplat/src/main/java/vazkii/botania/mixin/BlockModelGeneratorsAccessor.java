@@ -8,11 +8,11 @@
  */
 package vazkii.botania.mixin;
 
-import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.BlockStateGenerator;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,51 +21,51 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(BlockModelGenerators.class)
 public interface BlockModelGeneratorsAccessor {
 	@Invoker("createSlab")
-	static BlockStateGenerator botania_createSlab(Block block, ResourceLocation bottomModel, ResourceLocation topModel, ResourceLocation doubleModel) {
+	static BlockStateGenerator botania_createSlab(Block block, Identifier bottomModel, Identifier topModel, Identifier doubleModel) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createFenceGate")
-	static BlockStateGenerator botania_createFenceGate(Block block, ResourceLocation openModel, ResourceLocation closedModel, ResourceLocation openWallModel, ResourceLocation closedWallModel, boolean uvLock) {
+	static BlockStateGenerator botania_createFenceGate(Block block, Identifier openModel, Identifier closedModel, Identifier openWallModel, Identifier closedWallModel, boolean uvLock) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createFence")
-	static BlockStateGenerator botania_createFence(Block block, ResourceLocation postModel, ResourceLocation sideModel) {
+	static BlockStateGenerator botania_createFence(Block block, Identifier postModel, Identifier sideModel) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createDoor")
 	static BlockStateGenerator botania_createDoor(Block block,
-			ResourceLocation topLeftModelLocation, ResourceLocation topLeftOpenModelLocation,
-			ResourceLocation topRightModelLocation, ResourceLocation topRightOpenModelLocation,
-			ResourceLocation bottomLeftModelLocation, ResourceLocation bottomLeftOpenModelLocation,
-			ResourceLocation bottomRightModelLocation, ResourceLocation bottomRightOpenModelLocation) {
+			Identifier topLeftModelLocation, Identifier topLeftOpenModelLocation,
+			Identifier topRightModelLocation, Identifier topRightOpenModelLocation,
+			Identifier bottomLeftModelLocation, Identifier bottomLeftOpenModelLocation,
+			Identifier bottomRightModelLocation, Identifier bottomRightOpenModelLocation) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createTrapdoor")
-	static BlockStateGenerator botania_createTrapdoor(Block block, ResourceLocation topModelLocation, ResourceLocation bottomModelLocation, ResourceLocation openModelLocation) {
+	static BlockStateGenerator botania_createTrapdoor(Block block, Identifier topModelLocation, Identifier bottomModelLocation, Identifier openModelLocation) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createOrientableTrapdoor")
-	static BlockStateGenerator botania_createOrientableTrapdoor(Block block, ResourceLocation topModelLocation, ResourceLocation bottomModelLocation, ResourceLocation openModelLocation) {
+	static BlockStateGenerator botania_createOrientableTrapdoor(Block block, Identifier topModelLocation, Identifier bottomModelLocation, Identifier openModelLocation) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createButton")
-	static BlockStateGenerator botania_createButton(Block block, ResourceLocation unpoweredModel, ResourceLocation poweredModel) {
+	static BlockStateGenerator botania_createButton(Block block, Identifier unpoweredModel, Identifier poweredModel) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createPressurePlate")
-	static BlockStateGenerator botania_createPreasurePlate(Block block, ResourceLocation unpoweredModel, ResourceLocation poweredModel) {
+	static BlockStateGenerator botania_createPreasurePlate(Block block, Identifier unpoweredModel, Identifier poweredModel) {
 		throw new IllegalStateException();
 	}
 
 	@Invoker("createAxisAlignedPillarBlock")
-	static BlockStateGenerator botania_createAxisAlignedPillarBlock(Block block, ResourceLocation model) {
+	static BlockStateGenerator botania_createAxisAlignedPillarBlock(Block block, Identifier model) {
 		throw new IllegalStateException();
 	}
 
@@ -80,7 +80,7 @@ public interface BlockModelGeneratorsAccessor {
 	}
 
 	@Invoker("createRotatedVariants")
-	static Variant[] botania_createRotatedVariants(ResourceLocation model) {
+	static Variant[] botania_createRotatedVariants(Identifier model) {
 		throw new IllegalStateException();
 	}
 }

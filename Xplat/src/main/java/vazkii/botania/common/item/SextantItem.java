@@ -12,7 +12,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -24,16 +24,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -62,7 +62,7 @@ import java.util.stream.Stream;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class SextantItem extends Item {
-	public static final ResourceLocation MULTIBLOCK_ID = botaniaRL("worldshapers_sextant");
+	public static final Identifier MULTIBLOCK_ID = botaniaRL("worldshapers_sextant");
 	private static final int MAX_RADIUS = 256;
 
 	public SextantItem(Properties builder) {
@@ -70,8 +70,8 @@ public class SextantItem extends Item {
 	}
 
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -282,7 +282,7 @@ public class SextantItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isSecondaryUseActive()) {
 			BlockHitResult rtr = ToolCommons.raytraceFromEntity(player, 128, false);
@@ -293,17 +293,17 @@ public class SextantItem extends Item {
 				}
 				return ItemUtils.startUsingInstantly(world, player, hand);
 			}
-			return InteractionResultHolder.pass(stack);
+			return InteractionResult.PASS;
 		} else {
 			reset(world, player, stack);
-			return InteractionResultHolder.success(stack);
+			return InteractionResult.SUCCESS;
 		}
 	}
 
 	private static double calculateRadius(ItemStack stack, LivingEntity living) {
 		GlobalPos pos = stack.getOrDefault(BotaniaDataComponents.BINDING_POS,
 				GlobalPos.of(living.level().dimension(), BlockPos.ZERO));
-		Vec3 source = pos.pos().getCenter();
+		Vec3 source = Vec3.atCenterOf(pos.pos());
 
 		Vec3 centerVec = VecHelper.fromEntityCenter(living);
 		Vec3 diffVec = source.subtract(centerVec);

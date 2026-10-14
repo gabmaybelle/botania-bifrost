@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +59,7 @@ public final class ItemsRemainingRenderHandler {
 
 			Component text = customString != null ? customString : getRemainingCount(stack, count);
 
-			int color = FastColor.ARGB32.color(FastColor.as8BitChannel(alpha), 0xFFFFFF);
+			int color = ARGB.color(ARGB.as8BitChannel(alpha), 0xFFFFFF);
 			gui.drawString(mc.font, text, x + 20, y + 6, color);
 		}
 	}

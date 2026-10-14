@@ -13,14 +13,14 @@ import com.mojang.blaze3d.vertex.*;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +60,7 @@ public final class BoundBlockRenderer {
 
 		ms.pushPose();
 
-		int color = FastColor.ARGB32.opaque(Mth.hsvToRgb((ClientTickHandler.getEntityTicksInGame() + partialTick) % 200 / 200F, 0.6F, 1F));
+		int color = ARGB.opaque(Mth.hsvToRgb((ClientTickHandler.getEntityTicksInGame() + partialTick) % 200 / 200F, 0.6F, 1F));
 
 		if (!player.getMainHandItem().isEmpty()) {
 			var coordBoundItem = CoordBoundItem.LOOKUP.find(player.getMainHandItem(), player.level());
@@ -129,7 +129,7 @@ public final class BoundBlockRenderer {
 
 			buffer = buffers.getBuffer(thick ? RenderHelper.LINE_8_NO_DEPTH : RenderHelper.LINE_4_NO_DEPTH);
 			int alpha = 64;
-			color = FastColor.ARGB32.color(alpha, color);
+			color = ARGB.color(alpha, color);
 			renderBlockOutline(ms, buffer, shape, color);
 
 			ms.popPose();

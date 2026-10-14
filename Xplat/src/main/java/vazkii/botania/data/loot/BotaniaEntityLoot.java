@@ -10,13 +10,13 @@
 
 package vazkii.botania.data.loot;
 
-import net.minecraft.advancements.critereon.EntityEquipmentPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.entity.EntityEquipmentPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -137,25 +137,25 @@ public class BotaniaEntityLoot implements LootTableSubProvider {
 	// Note: keep in sync with entity list in BotaniaLootTables
 	private void defineElementiumAxeBeheadingLoot(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
 		// TODO: this can technically cause a double drop if injected as additional pool
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.WITHER_SKELETON),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.WITHER_SKELETON),
 				defineAxeBeheadingDropTable(Items.WITHER_SKELETON_SKULL, 0.1154f, 0.0385f));
 
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.SKELETON),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.SKELETON),
 				defineAxeBeheadingDropTable(Items.SKELETON_SKULL, 0.1154f, 0.0385f));
 
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.ZOMBIE),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.ZOMBIE),
 				defineAxeBeheadingDropTable(Items.ZOMBIE_HEAD, 0.0769f, 0.0769f));
 
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.PIGLIN),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.PIGLIN),
 				defineAxeBeheadingDropTable(Items.PIGLIN_HEAD, 0.0769f, 0.0769f));
 
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.CREEPER),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.CREEPER),
 				defineAxeBeheadingDropTable(Items.CREEPER_HEAD, 0.0769f, 0.0769f));
 
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.ENDER_DRAGON),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.ENDER_DRAGON),
 				defineAxeBeheadingDropTable(Items.DRAGON_HEAD, 0.25f, 0.25f));
 
-		output.accept(BotaniaLootTables.getInjectedLootTable(EntityType.PLAYER),
+		output.accept(BotaniaLootTables.getInjectedLootTable(EntityTypes.PLAYER),
 				defineAxeBeheadingDropTable(Items.PLAYER_HEAD, 0.0909f, 0.0909f)
 						.apply(FillPlayerHead.fillPlayerHead(LootContext.EntityTarget.THIS)));
 

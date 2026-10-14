@@ -10,7 +10,6 @@
 package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -20,6 +19,7 @@ import vazkii.botania.api.block.PetalApothecary;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.PetalApothecaryBlock;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 
 public class ApothecaryRecipeTest {
 
@@ -37,7 +37,7 @@ public class ApothecaryRecipeTest {
 		helper.spawnItem(item, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 	}
 
-	@GameTest(template = TEMPLATE, batch = "apothecary")
+	@BotaniaGameTest(template = TEMPLATE, batch = "apothecary")
 	public void testItemEnterPrevention(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			spawnItem(helper, BotaniaItems.WHITE_MYSTICAL_PETAL);

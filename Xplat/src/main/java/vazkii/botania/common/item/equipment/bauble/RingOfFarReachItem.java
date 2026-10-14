@@ -11,7 +11,7 @@ package vazkii.botania.common.item.equipment.bauble;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -24,7 +24,7 @@ public class RingOfFarReachItem extends BaubleItem {
 	}
 
 	@Override
-	public Multimap<Holder<Attribute>, AttributeModifier> getEquippedAttributeModifiers(ItemStack stack, ResourceLocation slotId) {
+	public Multimap<Holder<Attribute>, AttributeModifier> getEquippedAttributeModifiers(ItemStack stack, Identifier slotId) {
 		Multimap<Holder<Attribute>, AttributeModifier> attributes = super.getEquippedAttributeModifiers(stack, slotId);
 		attributes.put(Attributes.BLOCK_INTERACTION_RANGE,
 				new AttributeModifier(slotId, 3.5, AttributeModifier.Operation.ADD_VALUE));

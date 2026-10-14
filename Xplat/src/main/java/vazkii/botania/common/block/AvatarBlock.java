@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -49,7 +49,7 @@ public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock,
 
 	private static final VoxelShape X_AABB = box(5, 0, 3.5, 11, 17, 12.5);
 	private static final VoxelShape Z_AABB = box(3.5, 0, 5, 12.5, 17, 11);
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+	public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final BooleanProperty ACTIVE = BotaniaStateProperties.ACTIVE;
 
@@ -73,7 +73,7 @@ public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock,
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackOnPlayer, BlockState state, Level level, BlockPos pos, Player player,
+	public InteractionResult useItemOn(ItemStack stackOnPlayer, BlockState state, Level level, BlockPos pos, Player player,
 			InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof AvatarBlockEntity avatar) {
 			ItemStack stackOnAvatar = avatar.getItemHandler().getItem(0);
@@ -83,18 +83,18 @@ public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock,
 					player.getInventory().placeItemBackInInventory(stackOnAvatar);
 					level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
 				}
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 
 			} else if (!stackOnPlayer.isEmpty() && AvatarWieldable.LOOKUP.find(stackOnPlayer, avatar) != null) {
 				if (!level.isClientSide()) {
 					avatar.getItemHandler().setItem(0, stackOnPlayer.split(1));
 					level.setBlockAndUpdate(pos, state.setValue(ACTIVE, true));
 				}
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock,
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

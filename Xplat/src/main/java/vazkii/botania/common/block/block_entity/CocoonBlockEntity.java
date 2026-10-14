@@ -18,8 +18,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -86,9 +87,9 @@ public class CocoonBlockEntity extends BlockEntity {
 			}
 
 			if (Math.random() < shulkerChance) {
-				entity = EntityType.SHULKER.create(level);
+				entity = EntityTypes.SHULKER.create(level);
 			} else if (Math.random() < villagerChance) {
-				Villager villager = EntityType.VILLAGER.create(level);
+				Villager villager = EntityTypes.VILLAGER.create(level);
 				if (villager != null) {
 					VillagerType type = VillagerType.byBiome(level.getBiome(pos));
 					villager.setVillagerData(villager.getVillagerData().setType(type));
@@ -125,7 +126,7 @@ public class CocoonBlockEntity extends BlockEntity {
 				if (entity instanceof AgeableMob ageable) {
 					ageable.setBaby(true);
 				}
-				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), MobSpawnType.EVENT, null);
+				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
 				entity.setPersistenceRequired();
 				level.addFreshEntity(entity);
 				entity.spawnAnim();
@@ -148,8 +149,8 @@ public class CocoonBlockEntity extends BlockEntity {
 			return null;
 		}
 
-		if (type == EntityType.COW && level.getRandom().nextFloat() < 0.01) {
-			type = EntityType.MOOSHROOM;
+		if (type == EntityTypes.COW && level.getRandom().nextFloat() < 0.01) {
+			type = EntityTypes.MOOSHROOM;
 		}
 		Entity entity = type.create(level);
 		return entity instanceof Mob mob ? mob : null;

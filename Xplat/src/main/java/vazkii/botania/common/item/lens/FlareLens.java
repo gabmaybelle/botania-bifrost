@@ -8,7 +8,7 @@
  */
 package vazkii.botania.common.item.lens;
 
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -59,9 +59,9 @@ public class FlareLens extends Lens {
 			}
 		}
 
-		float r = FastColor.ARGB32.red(color) / 255F;
-		float g = FastColor.ARGB32.green(color) / 255F;
-		float b = FastColor.ARGB32.blue(color) / 255F;
+		float r = ARGB.red(color) / 255F;
+		float g = ARGB.green(color) / 255F;
+		float b = ARGB.blue(color) / 255F;
 
 		WispParticleData data = WispParticleData.wisp(0.4F, r, g, b);
 		// The start position is set a bit away from the spreader (along the burst's motion vector), as to not

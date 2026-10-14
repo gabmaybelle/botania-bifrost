@@ -17,7 +17,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -35,7 +35,7 @@ import java.util.List;
 
 public class ColoredContentsPouchScreen extends AbstractContainerScreen<ColoredContentsPouchMenu> {
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.GUI_FLOWER_BAG);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.GUI_FLOWER_BAG);
 
 	public ColoredContentsPouchScreen(ColoredContentsPouchMenu container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);

@@ -24,8 +24,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.Container;
@@ -73,7 +73,7 @@ public final class HUDHandler {
 
 	private HUDHandler() {}
 
-	public static final ResourceLocation manaBar = ResourceLocation.parse(ResourcesLib.GUI_MANA_HUD);
+	public static final Identifier manaBar = Identifier.parse(ResourcesLib.GUI_MANA_HUD);
 
 	private static boolean didWarningsCheck = false;
 
@@ -298,9 +298,9 @@ public final class HUDHandler {
 		}
 
 		int color = Mth.hsvToRgb(0.55f, Math.min(1, Mth.sin(ClientTickHandler.getUiAnimationTicks() / 4) * 0.5f + 1), 1);
-		float r = FastColor.ARGB32.red(color) / 255f;
-		float g = FastColor.ARGB32.green(color) / 255f;
-		float b = FastColor.ARGB32.blue(color) / 255f;
+		float r = ARGB.red(color) / 255f;
+		float g = ARGB.green(color) / 255f;
+		float b = ARGB.blue(color) / 255f;
 		RenderSystem.setShaderColor(r, g, b, 1 - r);
 
 		RenderSystem.enableBlend();

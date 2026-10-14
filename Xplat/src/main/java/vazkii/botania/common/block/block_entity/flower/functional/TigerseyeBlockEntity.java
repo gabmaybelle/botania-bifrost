@@ -10,7 +10,7 @@ package vazkii.botania.common.block.block_entity.flower.functional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -104,9 +104,9 @@ public class TigerseyeBlockEntity extends FunctionalFlowerBlockEntity {
 				Entity e = level.getEntity(payload);
 				if (e != null) {
 					int color = getColor();
-					float r = FastColor.ARGB32.red(color) / 255f;
-					float g = FastColor.ARGB32.green(color) / 255f;
-					float b = FastColor.ARGB32.blue(color) / 255f;
+					float r = ARGB.red(color) / 255f;
+					float g = ARGB.green(color) / 255f;
+					float b = ARGB.blue(color) / 255f;
 					SparkleParticleData data = SparkleParticleData.sparkle(level.getRandom().nextFloat(), r, g, b, 10);
 
 					for (int i = 0; i < 50; i++) {

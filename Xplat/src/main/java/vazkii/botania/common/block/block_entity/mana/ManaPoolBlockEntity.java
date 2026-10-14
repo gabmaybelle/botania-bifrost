@@ -609,7 +609,7 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 		if ((lastSynchronizedMana == 0 ^ mana == 0
 				|| getMaxMana() > 0 && (float) Math.abs(lastSynchronizedMana - mana) / getMaxMana() > 0.01f)) {
 			// this is a visible change in mana level (change between empty and non-empty, or significant level change)
-			Vec3 center = worldPosition.getCenter();
+			Vec3 center = Vec3.atCenterOf(worldPosition);
 			for (Player player : level.players()) {
 				if (player.isAlive() && player.position().closerThan(center, 64)) {
 					return true;

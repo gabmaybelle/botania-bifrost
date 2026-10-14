@@ -13,6 +13,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.*;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -50,7 +51,7 @@ public class BaubleBoxItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		if (!world.isClientSide) {
 			ItemStack stack = player.getItemInHand(hand);
 			stack.set(BotaniaDataComponents.ACTIVE_TRANSIENT, Unit.INSTANCE);
@@ -66,7 +67,7 @@ public class BaubleBoxItem extends Item {
 				}
 			}, hand == InteractionHand.MAIN_HAND, ByteBufCodecs.BOOL);
 		}
-		return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

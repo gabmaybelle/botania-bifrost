@@ -16,7 +16,7 @@ import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
@@ -27,15 +27,15 @@ import vazkii.botania.client.model.ManaBlasterBakedModel;
 import java.util.function.Function;
 
 public class NeoForgeManaBlasterModel implements IUnbakedGeometry<NeoForgeManaBlasterModel> {
-	private final ResourceLocation gunNoClip, gunClip;
+	private final Identifier gunNoClip, gunClip;
 
-	public NeoForgeManaBlasterModel(ResourceLocation gunNoClip, ResourceLocation gunClip) {
+	public NeoForgeManaBlasterModel(Identifier gunNoClip, Identifier gunClip) {
 		this.gunNoClip = gunNoClip;
 		this.gunClip = gunClip;
 	}
 
 	@Override
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
+	public void resolveParents(Function<Identifier, UnbakedModel> modelGetter, IGeometryBakingContext context) {
 		modelGetter.apply(this.gunNoClip).resolveParents(modelGetter);
 		modelGetter.apply(this.gunClip).resolveParents(modelGetter);
 	}
@@ -59,8 +59,8 @@ public class NeoForgeManaBlasterModel implements IUnbakedGeometry<NeoForgeManaBl
 		@Override
 		public NeoForgeManaBlasterModel read(JsonObject json, JsonDeserializationContext deserializationContext) {
 			return new NeoForgeManaBlasterModel(
-					ResourceLocation.parse(GsonHelper.getAsString(json, "mana_blaster_noclip")),
-					ResourceLocation.parse(GsonHelper.getAsString(json, "mana_blaster_clip"))
+					Identifier.parse(GsonHelper.getAsString(json, "mana_blaster_noclip")),
+					Identifier.parse(GsonHelper.getAsString(json, "mana_blaster_clip"))
 			);
 		}
 	}

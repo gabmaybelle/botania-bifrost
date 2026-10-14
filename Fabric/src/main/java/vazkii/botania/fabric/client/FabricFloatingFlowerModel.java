@@ -15,17 +15,17 @@ import com.mojang.math.Transformation;
 
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -54,12 +54,12 @@ public class FabricFloatingFlowerModel extends BlockModel {
 	}
 
 	@Override
-	public Collection<ResourceLocation> getDependencies() {
+	public Collection<Identifier> getDependencies() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter) {
+	public void resolveParents(Function<Identifier, UnbakedModel> modelGetter) {
 		this.unbakedFlower.resolveParents(modelGetter);
 		BotaniaAPI.instance().getIslandTypeRegistry().stream().forEach(islandType -> {
 			UnbakedModel islandModel = modelGetter.apply(islandType.islandModel());

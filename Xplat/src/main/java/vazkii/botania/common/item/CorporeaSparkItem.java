@@ -44,7 +44,7 @@ public class CorporeaSparkItem extends Item {
 			}
 		}
 		return attachSpark(context.getLevel(), context.getClickedPos(), context.getItemInHand(), otherHandStack)
-				? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+				? InteractionResult.SUCCESS
 				: InteractionResult.PASS;
 	}
 

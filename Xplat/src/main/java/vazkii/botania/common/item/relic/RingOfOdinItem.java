@@ -11,7 +11,7 @@ package vazkii.botania.common.item.relic;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -40,7 +40,7 @@ public class RingOfOdinItem extends RelicBaubleItem {
 	}
 
 	@Override
-	public Multimap<Holder<Attribute>, AttributeModifier> getEquippedAttributeModifiers(ItemStack stack, ResourceLocation slotId) {
+	public Multimap<Holder<Attribute>, AttributeModifier> getEquippedAttributeModifiers(ItemStack stack, Identifier slotId) {
 		Multimap<Holder<Attribute>, AttributeModifier> attributes = super.getEquippedAttributeModifiers(stack, slotId);
 		attributes.put(Attributes.MAX_HEALTH,
 				new AttributeModifier(slotId, 20, AttributeModifier.Operation.ADD_VALUE));

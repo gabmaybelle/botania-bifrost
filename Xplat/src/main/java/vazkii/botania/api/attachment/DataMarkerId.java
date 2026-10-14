@@ -9,7 +9,7 @@
 
 package vazkii.botania.api.attachment;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 
@@ -21,7 +21,7 @@ import vazkii.botania.api.BotaniaAPI;
  * @implNote Formally, the data attachment always is a reference to {@link Unit#INSTANCE}.
  */
 public class DataMarkerId extends DataIdBase<Unit> {
-	public DataMarkerId(ResourceLocation id) {
+	public DataMarkerId(Identifier id) {
 		super(id, Unit.CODEC);
 	}
 

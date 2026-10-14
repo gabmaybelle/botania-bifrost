@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +26,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * The basic class for a Functional Flower.
  */
 public abstract class FunctionalFlowerBlockEntity extends BindableSpecialFlowerBlockEntity<ManaPool> {
-	private static final ResourceLocation POOL_ID = botaniaRL("mana_pool");
+	private static final Identifier POOL_ID = botaniaRL("mana_pool");
 
 	public static final int LINK_RANGE = 10;
 	private static final String TAG_MANA = "mana";

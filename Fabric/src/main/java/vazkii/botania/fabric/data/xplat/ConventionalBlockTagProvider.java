@@ -77,7 +77,7 @@ public class ConventionalBlockTagProvider extends BlockTagProvider {
 		// Dyed blocks
 		ColorHelper.supportedColors().forEach(color -> {
 			tag(TagKey.create(ConventionalBlockTags.DYED.registry(),
-					ConventionalBlockTags.DYED.location().withSuffix("/" + color.getSerializedName())))
+					ConventionalBlockTags.DYED.identifier().withSuffix("/" + color.getSerializedName())))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color))

@@ -10,7 +10,7 @@
 package vazkii.botania.common.item;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -53,7 +53,7 @@ public enum BotaniaItemTiers implements Tier {
 
 		@Override
 		public Ingredient getRepairIngredient() {
-			return Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.parse("c:glass_blocks/colorless")));
+			return Ingredient.of(TagKey.create(Registries.ITEM, Identifier.parse("c:glass_blocks/colorless")));
 		}
 	};
 

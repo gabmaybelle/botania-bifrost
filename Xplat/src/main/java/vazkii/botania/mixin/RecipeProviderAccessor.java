@@ -8,9 +8,9 @@
  */
 package vazkii.botania.mixin;
 
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.data.recipes.RecipeProvider;
 
 import org.spongepowered.asm.mixin.Mixin;

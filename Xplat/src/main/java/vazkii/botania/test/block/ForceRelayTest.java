@@ -9,17 +9,17 @@
 package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.ForceRelayBlock;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class ForceRelayTest {
-	@GameTest(template = "botania:block/force_relay_basic")
+	@BotaniaGameTest(template = "botania:block/force_relay_basic")
 	public void testBasic(GameTestHelper helper) {
 		var initialRelay = new BlockPos(4, 2, 2);
 		var initialAndesite = new BlockPos(4, 4, 5);
@@ -55,7 +55,7 @@ public class ForceRelayTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = "botania:block/force_relay_immovable")
+	@BotaniaGameTest(template = "botania:block/force_relay_immovable")
 	public void testImmovable(GameTestHelper helper) {
 		var initialRelay = new BlockPos(1, 2, 1);
 		var initialCobble = new BlockPos(1, 2, 0);
@@ -77,7 +77,7 @@ public class ForceRelayTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = "botania:block/force_relay_sticky_move_no_pull")
+	@BotaniaGameTest(template = "botania:block/force_relay_sticky_move_no_pull")
 	public void testStickyPistonMoveNotPropagated(GameTestHelper helper) {
 		final var initialRelay = new BlockPos(1, 2, 2);
 		final var initialGranite = new BlockPos(3, 2, 3);
@@ -129,7 +129,7 @@ public class ForceRelayTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = "botania:block/force_relay_structure_pull")
+	@BotaniaGameTest(template = "botania:block/force_relay_structure_pull")
 	public void testMovingInPistonStructure(GameTestHelper helper) {
 		final var button = new BlockPos(0, 2, 1);
 		final var initialRelay1 = new BlockPos(3, 2, 2);

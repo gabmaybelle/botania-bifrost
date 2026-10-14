@@ -11,7 +11,7 @@ package vazkii.botania.common.block.block_entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -49,8 +49,8 @@ public class OpenCrateBlockEntity extends ExposedSimpleInventoryBlockEntity {
 	}
 
 	public boolean canEject() {
-		float width = EntityType.ITEM.getWidth();
-		float height = EntityType.ITEM.getHeight();
+		float width = EntityTypes.ITEM.getWidth();
+		float height = EntityTypes.ITEM.getHeight();
 
 		double ejectX = worldPosition.getX() + 0.5;
 		double ejectY = worldPosition.getY() - height;
@@ -60,7 +60,7 @@ public class OpenCrateBlockEntity extends ExposedSimpleInventoryBlockEntity {
 	}
 
 	public void eject(ItemStack stack, boolean redstone) {
-		double ejectY = worldPosition.getY() - EntityType.ITEM.getHeight();
+		double ejectY = worldPosition.getY() - EntityTypes.ITEM.getHeight();
 		ItemEntity item = new ItemEntity(level, worldPosition.getX() + 0.5, ejectY, worldPosition.getZ() + 0.5, stack);
 		item.setDeltaMovement(Vec3.ZERO);
 		if (redstone) {

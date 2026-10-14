@@ -67,7 +67,7 @@ public abstract class ExperienceOrbMixin extends Entity {
 	private void setMovementTowardsFlower(CallbackInfo ci) {
 		// [VanillaCopy] ExperienceOrb::tick, section "if (this.followingPlayer != null)"
 		if (this.botania_followingFlower != null) {
-			Vec3 vec3 = this.botania_followingFlower.getCenter().subtract(this.position());
+			Vec3 vec3 = Vec3.atCenterOf(this.botania_followingFlower).subtract(this.position());
 			double d0 = vec3.lengthSqr();
 			if (d0 < 64.0) {
 				double d1 = 1.0 - Math.sqrt(d0) / 8.0;

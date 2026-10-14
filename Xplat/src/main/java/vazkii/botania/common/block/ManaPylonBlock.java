@@ -9,7 +9,7 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -43,9 +43,9 @@ public class ManaPylonBlock extends PylonBlock {
 			BlockState flowerState = level.getBlockState(flowerPos);
 			if (flowerState.getBlock() instanceof Colored flower) {
 				int hex = MysticalPetalItem.getPetalLikeColor(flower.getColor());
-				float r = FastColor.ARGB32.red(hex) / 255f;
-				float g = FastColor.ARGB32.green(hex) / 255f;
-				float b = FastColor.ARGB32.blue(hex) / 255f;
+				float r = ARGB.red(hex) / 255f;
+				float g = ARGB.green(hex) / 255f;
+				float b = ARGB.blue(hex) / 255f;
 
 				RandomSource rng = level.getRandom();
 				Vec3 centerBlock = new Vec3(

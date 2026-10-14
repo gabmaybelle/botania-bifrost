@@ -9,11 +9,11 @@
 package vazkii.botania.client.core.helper;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +48,7 @@ public class CoreShaders {
 
 	// This is abstracted this way instead of just directly constructing the ShaderInstance
 	// Because Fabric is cute and hides the ResourceProvider from modders (why?)
-	public static void init(TriConsumer<ResourceLocation, VertexFormat, Consumer<ShaderInstance>> registrations) {
+	public static void init(TriConsumer<Identifier, VertexFormat, Consumer<ShaderInstance>> registrations) {
 		registrations.accept(
 				botaniaRL("starfield_creator"),
 				DefaultVertexFormat.POSITION,

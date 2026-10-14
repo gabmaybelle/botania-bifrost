@@ -11,7 +11,7 @@ package vazkii.botania.client;
 
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -34,7 +34,7 @@ import java.util.Locale;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public final class BotaniaItemProperties {
-	public static void init(TriConsumer<Item, ResourceLocation, ClampedItemPropertyFunction> consumer) {
+	public static void init(TriConsumer<Item, Identifier, ClampedItemPropertyFunction> consumer) {
 		consumer.accept(BotaniaItems.TRINKET_CASE, botaniaRL("open"),
 				(stack, world, entity, seed) -> stack.has(BotaniaDataComponents.ACTIVE_TRANSIENT) ? 1 : 0);
 		consumer.accept(BotaniaItems.BLACK_HOLE_TALISMAN, botaniaRL("active"),
@@ -46,10 +46,10 @@ public final class BotaniaItemProperties {
 					return swigsLeft == totalSwigs ? 0.0F : Math.nextUp((totalSwigs - swigsLeft) / (float) totalSwigs);
 				});
 
-		ResourceLocation vuvuzelaId = botaniaRL("vuvuzela");
+		Identifier vuvuzelaId = botaniaRL("vuvuzela");
 		ClampedItemPropertyFunction isVuvuzela = (stack, world, entity, seed) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains("vuvuzela") ? 1 : 0;
 		// same as goat horn:
-		ResourceLocation tootingId = ResourceLocation.withDefaultNamespace("tooting");
+		Identifier tootingId = Identifier.withDefaultNamespace("tooting");
 		ClampedItemPropertyFunction isTooting = (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0;
 		for (HornItem hornItem : Arrays.asList(BotaniaItems.HORN_OF_THE_WILD, BotaniaItems.HORN_OF_THE_CANOPY, BotaniaItems.HORN_OF_THE_COVERING)) {
 			consumer.accept(hornItem, vuvuzelaId, isVuvuzela);
@@ -72,7 +72,7 @@ public final class BotaniaItemProperties {
 		consumer.accept(BotaniaItems.MANUFACTORY_HALO, botaniaRL("active"),
 				(stack, world, entity, seed) -> stack.has(BotaniaDataComponents.ACTIVE) ? 1 : 0);
 
-		ResourceLocation poolFullId = botaniaRL("full");
+		Identifier poolFullId = botaniaRL("full");
 		ClampedItemPropertyFunction poolFull = (stack, world, entity, seed) -> stack.has(BotaniaDataComponents.RENDER_FULL)
 				|| stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof ManaPoolBlock pool && pool.isCreative()
 						? 1 : 0;
@@ -89,7 +89,7 @@ public final class BotaniaItemProperties {
 		consumer.accept(BotaniaItems.BREW_VIAL, botaniaRL("swigs_taken"), brewGetter);
 		consumer.accept(BotaniaItems.BREW_FLASK, botaniaRL("swigs_taken"), brewGetter);
 
-		ResourceLocation holidayId = botaniaRL("holiday");
+		Identifier holidayId = botaniaRL("holiday");
 		ClampedItemPropertyFunction holidayGetter = (stack, worldIn, entityIn, seed) -> ClientProxy.jingleTheBells ? 1 : 0;
 		consumer.accept(BotaniaItems.MANAWEAVE_HELMET, holidayId, holidayGetter);
 		consumer.accept(BotaniaItems.MANAWEAVE_CHESTPLATE, holidayId, holidayGetter);
@@ -134,10 +134,10 @@ public final class BotaniaItemProperties {
 				return entity.getUseItem() != stack ? 0.0F : (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
 			}
 		};
-		consumer.accept(BotaniaItems.LIVINGWOOD_BOW, ResourceLocation.withDefaultNamespace("pulling"), pulling);
-		consumer.accept(BotaniaItems.LIVINGWOOD_BOW, ResourceLocation.withDefaultNamespace("pull"), pull);
-		consumer.accept(BotaniaItems.CRYSTAL_BOW, ResourceLocation.withDefaultNamespace("pulling"), pulling);
-		consumer.accept(BotaniaItems.CRYSTAL_BOW, ResourceLocation.withDefaultNamespace("pull"), pull);
+		consumer.accept(BotaniaItems.LIVINGWOOD_BOW, Identifier.withDefaultNamespace("pulling"), pulling);
+		consumer.accept(BotaniaItems.LIVINGWOOD_BOW, Identifier.withDefaultNamespace("pull"), pull);
+		consumer.accept(BotaniaItems.CRYSTAL_BOW, Identifier.withDefaultNamespace("pulling"), pulling);
+		consumer.accept(BotaniaItems.CRYSTAL_BOW, Identifier.withDefaultNamespace("pull"), pull);
 	}
 
 	private BotaniaItemProperties() {}

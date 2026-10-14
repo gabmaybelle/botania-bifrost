@@ -92,7 +92,7 @@ public class ContributorList {
 				String flowerName = LEGACY_FLOWER_NAMES.getOrDefault(searchName, searchName) + (petite ? "_petite" : "");
 
 				var item = StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(BotaniaTags.Items.CONTRIBUTOR_HEADFLOWERS).spliterator(), false)
-						.filter(h -> h.is(resKey -> resKey.location().getPath().equals(flowerName)))
+						.filter(h -> h.is(resKey -> resKey.identifier().getPath().equals(flowerName)))
 						.findFirst()
 						.map(Holder::value)
 						.orElse(Items.POPPY);

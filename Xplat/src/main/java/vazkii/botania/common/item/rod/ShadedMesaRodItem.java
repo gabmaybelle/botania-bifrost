@@ -12,7 +12,6 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -106,7 +105,7 @@ public class ShadedMesaRodItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		Integer targetID = stack.get(BotaniaDataComponents.TARGET_ENTITY);
 		float length = stack.getOrDefault(BotaniaDataComponents.TARGET_DIST, 0f);
@@ -155,7 +154,7 @@ public class ShadedMesaRodItem extends Item {
 
 			if (target != null) {
 				if (target.getType().is(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP)) {
-					return InteractionResultHolder.fail(stack);
+					return InteractionResult.FAIL;
 				}
 
 				if (ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true)) {
@@ -201,10 +200,10 @@ public class ShadedMesaRodItem extends Item {
 				}
 
 				stack.set(BotaniaDataComponents.REMAINING_TICKS, 5);
-				return InteractionResultHolder.consume(stack);
+				return InteractionResult.CONSUME;
 			}
 		}
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	private static void leftClick(Player player) {

@@ -10,7 +10,7 @@ package vazkii.botania.common.block.block_entity.flower.functional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -64,7 +64,7 @@ public class VinculotusBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Nullable
-	public static Vec3 onEndermanTeleport(EnderMan entity, double targetX, double targetY, double targetZ) {
+	public static Vec3 onEndermanTeleport(Enderman entity, double targetX, double targetY, double targetZ) {
 		if (EnderEssenceCaptured.HOLDER.getOrDefault(entity, false)) {
 			// this Enderman won't teleport anymore anyway
 			return null;
@@ -107,16 +107,16 @@ public class VinculotusBlockEntity extends FunctionalFlowerBlockEntity {
 			return new Vec3(x + (Math.random() * 2.4 - 1.2), y, z + (Math.random() * 2.4 - 1.2));
 		}
 
-		// remove any potential marker that may have been left over from a previous attempt to capture this EnderMan
+		// remove any potential marker that may have been left over from a previous attempt to capture this Enderman
 		EnderEssenceCaptured.HOLDER.removeFrom(entity);
 		return null;
 	}
 
 	/**
-	 * If this is called right after {@link #onEndermanTeleport(EnderMan, double, double, double)} redirected the
+	 * If this is called right after {@link #onEndermanTeleport(Enderman, double, double, double)} redirected the
 	 * teleport target, the Enderman successfully teleported to the capturing flower.
 	 *
-	 * @param entity The {@link EnderMan}.
+	 * @param entity The {@link Enderman}.
 	 */
 	public static void postEndermanTeleport(LivingEntity entity) {
 		if (EnderEssenceCaptured.HOLDER.existsFor(entity)) {
@@ -130,7 +130,7 @@ public class VinculotusBlockEntity extends FunctionalFlowerBlockEntity {
 	/**
 	 * Prevent teleportation if the Enderman was stripped of its ability to do so.
 	 *
-	 * @param entity The {@link EnderMan}.
+	 * @param entity The {@link Enderman}.
 	 * @return <code>true</code> if the Enderman should not be able to teleport anymore.
 	 */
 	public static boolean preventEndermanTeleport(LivingEntity entity) {

@@ -22,7 +22,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -218,7 +218,7 @@ public class NeoForgeClientInitializer {
 		List<Item> armorItems = new ArrayList<>();
 		for (var entry : BuiltInRegistries.ITEM.entrySet()) {
 			Item item = entry.getValue();
-			ResourceLocation id = entry.getKey().location();
+			Identifier id = entry.getKey().identifier();
 			if (item instanceof ManasteelArmorItem armor && id.getNamespace().equals(BotaniaAPI.MODID)) {
 				armorItems.add(armor);
 			}

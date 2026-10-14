@@ -14,8 +14,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -48,7 +48,7 @@ public class NeoForgeBlockTagProvider extends IntrinsicHolderTagsProvider<Block>
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("buzzier_bees", "flower_blacklist")))
+		tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("buzzier_bees", "flower_blacklist")))
 				.addTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS)
 				.addTag(BotaniaTags.Blocks.SPECIAL_FLOWERS);
 	}

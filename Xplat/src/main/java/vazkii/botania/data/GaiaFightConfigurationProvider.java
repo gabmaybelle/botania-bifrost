@@ -16,12 +16,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.valueproviders.BiasedToBottomInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import vazkii.botania.api.configdata.GaiaFightConfiguration;
 import vazkii.botania.api.configdata.MobEffectToApply;
@@ -52,11 +52,11 @@ public class GaiaFightConfigurationProvider implements DataProvider {
 	}
 
 	private CompletableFuture<?> run(CachedOutput cache, HolderLookup.Provider registries) {
-		Map<ResourceLocation, GaiaFightConfiguration> configs = new HashMap<>();
+		Map<Identifier, GaiaFightConfiguration> configs = new HashMap<>();
 		addConfigs(configs);
 
 		var output = new ArrayList<CompletableFuture<?>>(configs.size());
-		for (Map.Entry<ResourceLocation, GaiaFightConfiguration> e : configs.entrySet()) {
+		for (Map.Entry<Identifier, GaiaFightConfiguration> e : configs.entrySet()) {
 			Path path = pathProvider.json(e.getKey());
 			GaiaFightConfiguration config = e.getValue();
 			JsonElement jsonTree = GaiaFightConfiguration.CODEC.encodeStart(JsonOps.INSTANCE, config)
@@ -66,25 +66,25 @@ public class GaiaFightConfigurationProvider implements DataProvider {
 		return CompletableFuture.allOf(output.toArray(CompletableFuture<?>[]::new));
 	}
 
-	private void addConfigs(Map<ResourceLocation, GaiaFightConfiguration> configs) {
+	private void addConfigs(Map<Identifier, GaiaFightConfiguration> configs) {
 		configs.put(GaiaFightConfiguration.NORMAL, GaiaFightConfiguration
 				.builder(BotaniaLootTables.GAIA_GUARDIAN_REWARD, 60, ConstantInt.of(6),
 						0.2f, 40, ConstantInt.of(6),
 						// this happens when you check the RNG in a for loop condition:
 						BiasedToBottomInt.of(0, 2))
 				.spawnedMobs(UniformInt.of(3, 4),
-						MobSpawnData.entityWeight(EntityType.WITCH, 2)
+						MobSpawnData.entityWeight(EntityTypes.WITCH, 2)
 								.allowEquipmentDrops()
 								.build(),
-						MobSpawnData.entityWeight(EntityType.ZOMBIE, 22)
+						MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 22)
 								.effectsToApply(MobEffectToApply.effect(MobEffects.FIRE_RESISTANCE).build())
 								.allowEquipmentDrops()
 								.build(),
-						MobSpawnData.entityWeight(EntityType.SKELETON, 21)
+						MobSpawnData.entityWeight(EntityTypes.SKELETON, 21)
 								.effectsToApply(MobEffectToApply.effect(MobEffects.FIRE_RESISTANCE).build())
 								.allowEquipmentDrops()
 								.build(),
-						MobSpawnData.entityWeight(EntityType.WITHER_SKELETON, 3)
+						MobSpawnData.entityWeight(EntityTypes.WITHER_SKELETON, 3)
 								.allowEquipmentDrops()
 								.build(),
 						MobSpawnData.entityWeight(BotaniaEntities.PIXIE, 24)
@@ -100,18 +100,18 @@ public class GaiaFightConfigurationProvider implements DataProvider {
 						BiasedToBottomInt.of(0, 5))
 				.spawnMissiles(15, ConstantInt.of(4))
 				.spawnedMobs(UniformInt.of(3, 4),
-						MobSpawnData.entityWeight(EntityType.WITCH, 8)
+						MobSpawnData.entityWeight(EntityTypes.WITCH, 8)
 								.allowEquipmentDrops()
 								.build(),
-						MobSpawnData.entityWeight(EntityType.ZOMBIE, 16)
+						MobSpawnData.entityWeight(EntityTypes.ZOMBIE, 16)
 								.effectsToApply(MobEffectToApply.effect(MobEffects.FIRE_RESISTANCE).build())
 								.allowEquipmentDrops()
 								.build(),
-						MobSpawnData.entityWeight(EntityType.SKELETON, 21)
+						MobSpawnData.entityWeight(EntityTypes.SKELETON, 21)
 								.effectsToApply(MobEffectToApply.effect(MobEffects.FIRE_RESISTANCE).build())
 								.allowEquipmentDrops()
 								.build(),
-						MobSpawnData.entityWeight(EntityType.WITHER_SKELETON, 3)
+						MobSpawnData.entityWeight(EntityTypes.WITHER_SKELETON, 3)
 								.equipmentTable(BotaniaLootTables.GAIA_HARD_WITHER_SKELETON)
 								.allowEquipmentDrops()
 								.build(),

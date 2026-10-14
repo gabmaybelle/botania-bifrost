@@ -8,7 +8,7 @@
  */
 package vazkii.botania.api.mana;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.capability.BlockApiNoContext;
 import vazkii.botania.api.internal.ManaBurst;
@@ -21,7 +21,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface ManaTrigger {
 
-	ResourceLocation ID = botaniaRL("mana_trigger");
+	Identifier ID = botaniaRL("mana_trigger");
 	BlockApiNoContext<ManaTrigger> LOOKUP = new BlockApiNoContext<>(ID, ManaTrigger.class);
 
 	void onBurstCollision(ManaBurst burst);

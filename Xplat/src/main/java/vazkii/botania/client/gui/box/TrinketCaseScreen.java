@@ -14,14 +14,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import vazkii.botania.client.lib.ResourcesLib;
 
 public class TrinketCaseScreen extends AbstractContainerScreen<TrinketCaseMenu> {
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.GUI_BAUBLE_BOX);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.GUI_BAUBLE_BOX);
 	private int mouseX;
 	private int mouseY;
 

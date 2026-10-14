@@ -10,12 +10,13 @@
 package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.flower.generating.DandelifeonBlockEntity;
+import vazkii.botania.test.BotaniaGameTest;
 
 public class DandelifeonTest {
 	private static final String TEMPLATE = "botania:block/dandelifeon_transfer";
@@ -26,7 +27,7 @@ public class DandelifeonTest {
 	private static final BlockPos UPPER_SQUARE = new BlockPos(32, 3, 12);
 	private static final int EXPECTED_MANA = 2460;
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 250)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 250)
 	public void testDandelifeonTransferring(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			helper.pullLever(LEVER_POS);
@@ -41,7 +42,7 @@ public class DandelifeonTest {
 			}
 			var be = helper.getBlockEntity(TARGET_POS);
 			if (!(be instanceof DandelifeonBlockEntity dandie)) {
-				throw new GameTestAssertException("Missing Dandelifeon at: " + TARGET_POS);
+				throw new GameTestAssertException(Component.literal("Missing Dandelifeon at: " + TARGET_POS), helper.getTick());
 			}
 			// test the region was nuked
 			int radius = dandie.getRange();
@@ -52,7 +53,7 @@ public class DandelifeonTest {
 			}
 			// test mana value is correct
 			if (dandie.getMana() != EXPECTED_MANA) {
-				throw new GameTestAssertException("Wrong amount of mana: expected " + EXPECTED_MANA + " but was " + dandie.getMana());
+				throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + EXPECTED_MANA + " but was " + dandie.getMana()), helper.getTick());
 			}
 		}).thenSucceed();
 	}

@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
@@ -90,7 +91,7 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 			return;
 		}
 		Entity entity = result.getEntity();
-		if (entity.getType() == EntityType.GHAST && this.level().dimension() == Level.OVERWORLD) {
+		if (entity.getType() == EntityTypes.GHAST && this.level().dimension() == Level.OVERWORLD) {
 			this.level().levelEvent(LevelEvent.PARTICLES_SPELL_POTION_SPLASH, blockPosition(), PARTICLE_COLOR);
 			DamageSource source = entity.damageSources().thrown(this, getOwner());
 			entity.hurt(source, 0);

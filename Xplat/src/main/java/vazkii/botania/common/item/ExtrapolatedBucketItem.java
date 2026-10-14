@@ -8,7 +8,7 @@
  */
 package vazkii.botania.common.item;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -16,7 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,13 +41,13 @@ public class ExtrapolatedBucketItem extends Item {
 
 	// [VanillaCopy] BucketItem, only the empty cases
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+	public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
 		ItemStack itemStack = player.getItemInHand(interactionHand);
 		BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
 		if (blockHitResult.getType() == HitResult.Type.MISS) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else {
 			BlockPos blockPos = blockHitResult.getBlockPos();
 			Direction direction = blockHitResult.getDirection();
@@ -70,7 +70,7 @@ public class ExtrapolatedBucketItem extends Item {
 							CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, itemStack2);
 						}
 
-						return InteractionResultHolder.sidedSuccess(itemStack3, level.isClientSide());
+						return InteractionResult.SUCCESS.heldItemTransformedTo(itemStack3);
 					}
 				} else if (blockState.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
 					CauldronInteraction interaction = ((AbstractCauldronBlockAccessor) cauldronBlock)
@@ -89,12 +89,14 @@ public class ExtrapolatedBucketItem extends Item {
 							// don't replace with a filled bucket
 							player.setItemInHand(interactionHand, itemStack);
 						}
-						return new InteractionResultHolder<>(result.result(), itemStack);
+						// PORT-26.3: the cauldron interaction now answers with an InteractionResult that may carry the filled
+						// bucket as the new held item; a plain SUCCESS keeps our own stack in hand, as above.
+						return result instanceof InteractionResult.Success ? InteractionResult.SUCCESS : result;
 					}
 				}
 
 			}
-			return InteractionResultHolder.fail(itemStack);
+			return InteractionResult.FAIL;
 		}
 	}
 

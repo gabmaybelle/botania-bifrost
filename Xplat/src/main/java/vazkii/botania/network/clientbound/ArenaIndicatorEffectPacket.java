@@ -39,7 +39,7 @@ public record ArenaIndicatorEffectPacket(BlockPos pos) implements CustomPacketPa
 		public static void handle(ArenaIndicatorEffectPacket packet, Player localPlayer) {
 			SparkleParticleData data = SparkleParticleData.sparkle(5, 1, 0, 1, 120);
 			Level level = localPlayer.level();
-			Vec3 center = packet.pos().getCenter();
+			Vec3 center = Vec3.atCenterOf(packet.pos());
 			for (int i = 0; i < 360; i += 8) {
 				double rad = i * (Math.PI / 180);
 				Proxy.INSTANCE.addParticleForceNear(level, data,

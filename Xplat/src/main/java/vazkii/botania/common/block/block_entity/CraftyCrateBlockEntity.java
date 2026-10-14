@@ -14,7 +14,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.Container;
@@ -58,7 +58,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	// not meant to be persisted, as it's always immediately ejected
 	private ItemStack craftResult = ItemStack.EMPTY;
 
-	private final Queue<ResourceLocation> lastRecipes = new ArrayDeque<>();
+	private final Queue<Identifier> lastRecipes = new ArrayDeque<>();
 	private boolean dirty;
 	private boolean matchFailed;
 	private int lastRecipeEpoch = recipeEpoch;
@@ -206,7 +206,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 	private Optional<RecipeHolder<CraftingRecipe>> getMatchingRecipe(CraftingContainer craft) {
 		CraftingInput input = CraftingInput.of(craft.getWidth(), craft.getHeight(), craft.getItems());
-		for (ResourceLocation currentRecipe : lastRecipes) {
+		for (Identifier currentRecipe : lastRecipes) {
 			var holder = BotaniaRecipeTypes.getRecipe(level, currentRecipe, RecipeType.CRAFTING);
 			if (holder.isPresent() && holder.get().value().matches(input, level)) {
 				return holder;

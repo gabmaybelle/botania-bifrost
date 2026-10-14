@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -105,7 +105,7 @@ public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implem
 				+ (dir.getStepY() == 0 ? sin : cos) * ampl * killNonZero(dir.getStepZ())
 				+ lastTerm;
 
-		buffer.addVertex(ms.last().pose(), x, y, z).setColor(0xFF, 0, 0, FastColor.as8BitChannel(sizeAlpha));
+		buffer.addVertex(ms.last().pose(), x, y, z).setColor(0xFF, 0, 0, ARGB.as8BitChannel(sizeAlpha));
 		switch (dir.getAxis().getPlane()) {
 			case HORIZONTAL -> buffer.setNormal(ms.last(), 0, 1, 0);
 			case VERTICAL -> buffer.setNormal(ms.last(), 1, 0, 0);

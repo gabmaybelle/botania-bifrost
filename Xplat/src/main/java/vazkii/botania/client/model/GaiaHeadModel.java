@@ -11,7 +11,7 @@ package vazkii.botania.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.SkullModelBase;
+import net.minecraft.client.model.object.skull.SkullModelBase;
 
 import vazkii.botania.client.render.block_entity.GaiaHeadBlockEntityRenderer;
 

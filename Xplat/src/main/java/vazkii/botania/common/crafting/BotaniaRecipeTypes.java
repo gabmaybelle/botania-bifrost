@@ -8,7 +8,7 @@
  */
 package vazkii.botania.common.crafting;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class BotaniaRecipeTypes {
-	private static final Map<ResourceLocation, RecipeType<?>> TYPES = new LinkedHashMap<>();
+	private static final Map<Identifier, RecipeType<?>> TYPES = new LinkedHashMap<>();
 
 	public static final RecipeType<vazkii.botania.api.recipe.ManaInfusionRecipe> MANA_INFUSION_TYPE = register(
 			vazkii.botania.api.recipe.ManaInfusionRecipe.TYPE_ID);
@@ -47,7 +47,7 @@ public class BotaniaRecipeTypes {
 	public static final RecipeType<vazkii.botania.api.recipe.OrechidRecipe> MARIMORPHOSIS_TYPE = register(
 			vazkii.botania.api.recipe.OrechidRecipe.MARIMORPHOSIS_TYPE_ID);
 
-	private static <T extends Recipe<?>> RecipeType<T> register(ResourceLocation id) {
+	private static <T extends Recipe<?>> RecipeType<T> register(Identifier id) {
 		RecipeType<T> type = new BotaniaRecipeType<>(id.getPath());
 		if (TYPES.put(id, type) != null) {
 			throw new IllegalArgumentException("Multiple recipe types with ID " + id);
@@ -62,11 +62,11 @@ public class BotaniaRecipeTypes {
 		}
 	}
 
-	public static void submitRecipeTypes(BiConsumer<RecipeType<?>, ResourceLocation> r) {
+	public static void submitRecipeTypes(BiConsumer<RecipeType<?>, Identifier> r) {
 		TYPES.forEach((resourceLocation, recipeType) -> r.accept(recipeType, resourceLocation));
 	}
 
-	public static void submitRecipeSerializers(BiConsumer<RecipeSerializer<?>, ResourceLocation> r) {
+	public static void submitRecipeSerializers(BiConsumer<RecipeSerializer<?>, Identifier> r) {
 		// serializers for our custom recipe types
 		r.accept(ManaInfusionRecipe.SERIALIZER, vazkii.botania.api.recipe.ManaInfusionRecipe.TYPE_ID);
 		r.accept(ElvenTradeRecipe.SERIALIZER, vazkii.botania.api.recipe.ElvenTradeRecipe.TYPE_ID);
@@ -109,7 +109,7 @@ public class BotaniaRecipeTypes {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(Level world, ResourceLocation id, RecipeType<T> expectedType) {
+	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(Level world, Identifier id, RecipeType<T> expectedType) {
 		var holder = world.getRecipeManager().byKey(id);
 		return holder.isPresent() && holder.get().value().getType() == expectedType
 				? holder.map(h -> (RecipeHolder<T>) h)

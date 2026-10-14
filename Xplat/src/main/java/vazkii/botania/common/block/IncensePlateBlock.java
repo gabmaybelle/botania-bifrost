@@ -15,7 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -64,9 +64,9 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (!(world.getBlockEntity(pos) instanceof IncensePlateBlockEntity plate)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		ItemStack plateStack = plate.getItemHandler().getItem(0);
 
@@ -74,7 +74,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 			plate.getItemHandler().setItem(0, stack.copy());
 			world.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
 			stack.shrink(1);
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		if (!plateStack.isEmpty() && !state.getValue(BlockStateProperties.LIT)) {
 			if (stack.is(Items.FIRE_CHARGE)) {
@@ -93,10 +93,10 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 				plate.getItemHandler().setItem(0, ItemStack.EMPTY);
 				world.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
 			}
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

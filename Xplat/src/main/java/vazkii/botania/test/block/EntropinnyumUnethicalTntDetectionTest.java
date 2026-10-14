@@ -11,10 +11,10 @@ package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -23,6 +23,7 @@ import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.flower.generating.EntropinnyumBlockEntity;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class EntropinnyumUnethicalTntDetectionTest {
@@ -51,15 +52,15 @@ public class EntropinnyumUnethicalTntDetectionTest {
 		return () -> {
 			final var be = helper.getBlockEntity(POSITION_ENTROPINNYUM);
 			if (!(be instanceof EntropinnyumBlockEntity entropinnyum)) {
-				throw new GameTestAssertException("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM);
+				throw new GameTestAssertException(Component.literal("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM), helper.getTick());
 			}
 			if (entropinnyum.getMana() != 3) {
-				throw new GameTestAssertException("Wrong amount of mana: expected " + 3 + " but was " + entropinnyum.getMana());
+				throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + 3 + " but was " + entropinnyum.getMana()), helper.getTick());
 			}
 		};
 	}
 
-	@GameTest(template = TEMPLATE_SLIME_DUPER_FORCE_LENS, timeoutTicks = 150)
+	@BotaniaGameTest(template = TEMPLATE_SLIME_DUPER_FORCE_LENS, timeoutTicks = 150)
 	public void testForceLensDuper(GameTestHelper helper) {
 		helper.startSequence()
 				.thenExecute(() -> {
@@ -70,38 +71,38 @@ public class EntropinnyumUnethicalTntDetectionTest {
 							() -> "Failed to bind spreader");
 
 					if (helper.getBlockState(POSITION_FORCE_LENS_DETECTOR_RAIL).getBlock() != Blocks.DETECTOR_RAIL) {
-						throw new GameTestAssertException("Missing detector rail at: " +
-								POSITION_FORCE_LENS_DETECTOR_RAIL);
+						throw new GameTestAssertException(Component.literal("Missing detector rail at: " +
+								POSITION_FORCE_LENS_DETECTOR_RAIL), helper.getTick());
 					}
-					helper.spawn(EntityType.MINECART, POSITION_FORCE_LENS_DETECTOR_RAIL);
+					helper.spawn(EntityTypes.MINECART, POSITION_FORCE_LENS_DETECTOR_RAIL);
 					helper.pressButton(POSITION_FORCE_LENS_BUTTON);
 				})
 				.thenExecuteAfter(130, checkEntropinnyumForUnethicalManaAmount(helper))
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE_SLIME_DUPER_FORCE_RELAY)
+	@BotaniaGameTest(template = TEMPLATE_SLIME_DUPER_FORCE_RELAY)
 	public void testForceRelayDuper(GameTestHelper helper) {
 		helper.startSequence()
 				.thenExecute(() -> {
 					if (helper.getBlockState(POSITION_FORCE_RELAY).getBlock() != BotaniaBlocks.FORCE_RELAY) {
-						throw new GameTestAssertException("Missing force relay at: " + POSITION_FORCE_RELAY);
+						throw new GameTestAssertException(Component.literal("Missing force relay at: " + POSITION_FORCE_RELAY), helper.getTick());
 					}
 					TestingUtil.bindForceRelayTarget(helper, POSITION_FORCE_RELAY,
 							POSITION_FORCE_RELAY_PUSHED_SLIME_BLOCK);
 
 					if (helper.getBlockState(POSITION_FORCE_RELAY_DETECTOR_RAIL).getBlock() != Blocks.DETECTOR_RAIL) {
-						throw new GameTestAssertException("Missing detector rail at: " +
-								POSITION_FORCE_RELAY_DETECTOR_RAIL);
+						throw new GameTestAssertException(Component.literal("Missing detector rail at: " +
+								POSITION_FORCE_RELAY_DETECTOR_RAIL), helper.getTick());
 					}
-					helper.spawn(EntityType.MINECART, POSITION_FORCE_RELAY_DETECTOR_RAIL);
+					helper.spawn(EntityTypes.MINECART, POSITION_FORCE_RELAY_DETECTOR_RAIL);
 				})
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_FORCE_RELAY_BUTTON))
 				.thenExecuteAfter(90, checkEntropinnyumForUnethicalManaAmount(helper))
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE_ENTITYLESS_DUPER)
+	@BotaniaGameTest(template = TEMPLATE_ENTITYLESS_DUPER)
 	public void testEntitylessDuper(GameTestHelper helper) {
 		helper.startSequence()
 				.thenExecute(() -> helper.pressButton(POSITION_ENTITYLESS_DUPER_BUTTON))
@@ -109,17 +110,17 @@ public class EntropinnyumUnethicalTntDetectionTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE_LEGIT_TNT)
+	@BotaniaGameTest(template = TEMPLATE_LEGIT_TNT)
 	public void testLegitimateTnt(GameTestHelper helper) {
 		helper.startSequence()
 				.thenExecute(() -> helper.pressButton(POSITION_ETHICAL_TNT_BLOCK_BUTTON))
 				.thenExecuteAfter(95, () -> {
 					final var be = helper.getBlockEntity(POSITION_ENTROPINNYUM);
 					if (!(be instanceof EntropinnyumBlockEntity entropinnyum)) {
-						throw new GameTestAssertException("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM);
+						throw new GameTestAssertException(Component.literal("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM), helper.getTick());
 					}
 					if (entropinnyum.getMana() != entropinnyum.getMaxMana()) {
-						throw new GameTestAssertException("Wrong amount of mana: expected " + entropinnyum.getMaxMana() + " but was " + entropinnyum.getMana());
+						throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + entropinnyum.getMaxMana() + " but was " + entropinnyum.getMana()), helper.getTick());
 					}
 				})
 				.thenSucceed();

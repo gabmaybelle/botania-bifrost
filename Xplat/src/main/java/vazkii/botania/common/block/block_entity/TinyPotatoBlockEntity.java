@@ -14,12 +14,13 @@ import it.unimi.dsi.fastutil.objects.ObjectArrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -63,7 +64,7 @@ import java.util.Map;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity implements Nameable {
-	private static final ResourceLocation BIRTHDAY_ADVANCEMENT = botaniaRL("challenge/tiny_potato_birthday");
+	private static final Identifier BIRTHDAY_ADVANCEMENT = botaniaRL("challenge/tiny_potato_birthday");
 	/**
 	 * Tiny Potato was added in commit c225a134043922724e6ff141ff26f31097d4d9d0, created on July 19, 2014
 	 */
@@ -316,7 +317,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		super.applyImplicitComponents(componentInput);
 		this.name = componentInput.get(DataComponents.CUSTOM_NAME);
 	}

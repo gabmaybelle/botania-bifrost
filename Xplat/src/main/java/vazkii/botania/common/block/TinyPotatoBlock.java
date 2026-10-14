@@ -15,7 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -80,7 +80,7 @@ public class TinyPotatoBlock extends BotaniaWaterloggedBlock implements EntityBl
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (tile instanceof TinyPotatoBlockEntity tater) {
 			tater.interact(player, hand, player.getItemInHand(hand), hit.getDirection());
@@ -88,7 +88,7 @@ public class TinyPotatoBlock extends BotaniaWaterloggedBlock implements EntityBl
 				spawnHearts((ServerLevel) world, pos);
 			}
 		}
-		return ItemInteractionResult.sidedSuccess(world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	public static void spawnHearts(ServerLevel level, BlockPos pos) {
@@ -120,7 +120,7 @@ public class TinyPotatoBlock extends BotaniaWaterloggedBlock implements EntityBl
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

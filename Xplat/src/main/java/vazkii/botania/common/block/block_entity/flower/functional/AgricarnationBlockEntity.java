@@ -113,7 +113,7 @@ public class AgricarnationBlockEntity extends FunctionalFlowerBlockEntity {
 	private boolean isPlant(Level level, BlockPos pos, BlockState state, Block block) {
 		if (state.is(BotaniaTags.Blocks.AGRICARNATION_GROWTH_EXCLUDED)
 				// grass/mycelium/nylium-like spreading blocks are excluded unless tagged otherwise
-				|| (block instanceof SpreadingSnowyDirtBlock || block instanceof NyliumBlock)
+				|| (block instanceof SpreadingSnowyBlock || block instanceof NyliumBlock)
 						&& !state.is(BotaniaTags.Blocks.AGRICARNATION_GROWTH_CANDIDATE)) {
 			return false;
 		}

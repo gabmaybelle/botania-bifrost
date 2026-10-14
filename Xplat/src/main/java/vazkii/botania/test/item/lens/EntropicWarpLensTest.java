@@ -11,7 +11,6 @@ package vazkii.botania.test.item.lens;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -19,11 +18,12 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class EntropicWarpLensTest {
 
-	@GameTest(template = "botania:item/lens/entropic_warp_lens")
+	@BotaniaGameTest(template = "botania:item/lens/entropic_warp_lens")
 	public void testWarp(GameTestHelper helper) {
 		var spreaderPos = new BlockPos(3, 3, 3);
 		var lampPos = new BlockPos(2, 4, 3);

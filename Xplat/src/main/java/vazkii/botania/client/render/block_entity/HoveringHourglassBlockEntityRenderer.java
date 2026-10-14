@@ -14,7 +14,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -36,7 +36,7 @@ public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer
 	private static final double ANIM_VERTICAL_TICK_SCALE = 0.04;
 	private static final double ANIM_TICK_CYCLE = 2 * Math.PI / ANIM_HORIZONTAL_TICK_SCALE / ANIM_VERTICAL_TICK_SCALE;
 
-	final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_HOVERING_HOURGLASS);
+	final Identifier texture = Identifier.parse(ResourcesLib.MODEL_HOVERING_HOURGLASS);
 	private final HourglassModel model;
 
 	public HoveringHourglassBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {

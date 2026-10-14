@@ -10,7 +10,7 @@ package vazkii.botania.api.recipe;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public interface PureDaisyRecipe extends BlockStateRecipe {
-	ResourceLocation TYPE_ID = botaniaRL("pure_daisy");
+	Identifier TYPE_ID = botaniaRL("pure_daisy");
 
 	/**
 	 * This gets called every tick, please be careful with your checks.

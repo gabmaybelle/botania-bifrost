@@ -11,7 +11,7 @@ package vazkii.botania.api.attachment;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -33,15 +33,15 @@ import vazkii.botania.common.internal_caps.BotaniaDataAttachments;
  */
 @ApiStatus.NonExtendable
 public abstract class DataIdBase<T> {
-	private final ResourceLocation id;
+	private final Identifier id;
 	private final Codec<T> codec;
 
-	protected DataIdBase(ResourceLocation id, Codec<T> codec) {
+	protected DataIdBase(Identifier id, Codec<T> codec) {
 		this.id = id;
 		this.codec = codec;
 	}
 
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return id;
 	}
 

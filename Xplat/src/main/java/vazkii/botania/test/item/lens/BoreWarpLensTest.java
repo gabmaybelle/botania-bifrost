@@ -10,7 +10,6 @@
 package vazkii.botania.test.item.lens;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class BoreWarpLensTest {
@@ -33,7 +33,7 @@ public class BoreWarpLensTest {
 	private static final BlockPos UNWARPED_HOPPER_POS = new BlockPos(3, 1, 4);
 	private static final BlockPos WARPED_HOPPER_POS = new BlockPos(1, 1, 1);
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testWarpBoreLens(GameTestHelper helper) {
 		setUpLensesAndBindings(helper, BotaniaItems.WARP_LENS, BotaniaItems.BORE_LENS);
 
@@ -49,7 +49,7 @@ public class BoreWarpLensTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testBoreWarpLens(GameTestHelper helper) {
 		setUpLensesAndBindings(helper, BotaniaItems.BORE_LENS, BotaniaItems.WARP_LENS);
 

@@ -14,7 +14,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
@@ -32,7 +32,7 @@ public class LooniumStructureConfiguration {
 	public static final int DEFAULT_MAX_NEARBY_MOBS = 10;
 	public static final Codec<LooniumStructureConfiguration> CODEC = RecordCodecBuilder.<LooniumStructureConfiguration>create(
 			instance -> instance.group(
-					ResourceLocation.CODEC.optionalFieldOf("parent")
+					Identifier.CODEC.optionalFieldOf("parent")
 							.forGetter(lsc -> Optional.ofNullable(lsc.parent)),
 					ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("manaCost")
 							.forGetter(lsc -> Optional.ofNullable(lsc.manaCost)),
@@ -64,7 +64,7 @@ public class LooniumStructureConfiguration {
 		}
 		return DataResult.success(lsc);
 	});
-	public static final ResourceLocation DEFAULT_CONFIG_ID = botaniaRL("default");
+	public static final Identifier DEFAULT_CONFIG_ID = botaniaRL("default");
 
 	@Nullable
 	public final Integer manaCost;
@@ -79,9 +79,9 @@ public class LooniumStructureConfiguration {
 	@Nullable
 	public final List<MobEffectToApply> effectsToApply;
 	@Nullable
-	public final ResourceLocation parent;
+	public final Identifier parent;
 
-	private LooniumStructureConfiguration(@Nullable ResourceLocation parent, @Nullable Integer manaCost, @Nullable Integer maxNearbyMobs,
+	private LooniumStructureConfiguration(@Nullable Identifier parent, @Nullable Integer manaCost, @Nullable Integer maxNearbyMobs,
 			@Nullable StructureSpawnOverride.BoundingBoxType boundingBoxType, @Nullable WeightedRandomList<MobSpawnData> spawnedMobs,
 			@Nullable List<MobAttributeModifier> attributeModifiers, @Nullable List<MobEffectToApply> effectsToApply) {
 		this.manaCost = manaCost;
@@ -97,12 +97,12 @@ public class LooniumStructureConfiguration {
 		return new Builder();
 	}
 
-	public static Builder forParent(ResourceLocation parent) {
+	public static Builder forParent(Identifier parent) {
 		return builder().parent(parent);
 	}
 
 	public LooniumStructureConfiguration getEffectiveConfig(
-			Function<ResourceLocation, LooniumStructureConfiguration> parentSupplier) {
+			Function<Identifier, LooniumStructureConfiguration> parentSupplier) {
 		if (parent == null) {
 			return this;
 		}
@@ -133,7 +133,7 @@ public class LooniumStructureConfiguration {
 	// Codecs don't support setting null as intentional default value for optional fields, so we do this.
 	// (blame com.mojang.datafixers.util.Either::getLeft using Optional::of instead Optional.ofNullable)
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	private static LooniumStructureConfiguration create(Optional<ResourceLocation> parent,
+	private static LooniumStructureConfiguration create(Optional<Identifier> parent,
 			Optional<Integer> manaCost, Optional<Integer> maxNearbyMobs,
 			Optional<StructureSpawnOverride.BoundingBoxType> boundingBoxType,
 			Optional<WeightedRandomList<MobSpawnData>> spawnedMobs,
@@ -147,7 +147,7 @@ public class LooniumStructureConfiguration {
 
 	public static class Builder {
 		@Nullable
-		private ResourceLocation parent;
+		private Identifier parent;
 		@Nullable
 		private Integer manaCost;
 		@Nullable
@@ -163,7 +163,7 @@ public class LooniumStructureConfiguration {
 
 		private Builder() {}
 
-		private Builder parent(ResourceLocation parent) {
+		private Builder parent(Identifier parent) {
 			this.parent = parent;
 			return this;
 		}

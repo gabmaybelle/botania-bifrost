@@ -21,7 +21,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -142,7 +142,7 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 		setBrew(stack, BotaniaAPI.instance().getBrewRegistry().getKey(brew));
 	}
 
-	public static void setBrew(ItemStack stack, ResourceLocation brew) {
+	public static void setBrew(ItemStack stack, Identifier brew) {
 		stack.set(BotaniaDataComponents.BREW, brew);
 	}
 

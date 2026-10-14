@@ -8,7 +8,7 @@
  */
 package vazkii.botania.api.mana;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -21,7 +21,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface ManaItem {
 
-	ResourceLocation ID = botaniaRL("mana_item");
+	Identifier ID = botaniaRL("mana_item");
 	ItemApiNoContext<ManaItem> LOOKUP = new ItemApiNoContext<>(ID, ManaItem.class);
 
 	/**

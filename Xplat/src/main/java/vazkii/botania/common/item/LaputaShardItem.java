@@ -99,7 +99,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 				}
 				stack.shrink(1);
 			}
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;

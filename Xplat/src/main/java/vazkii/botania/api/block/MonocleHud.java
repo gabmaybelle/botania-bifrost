@@ -13,7 +13,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.capability.BlockApiNoContext;
 import vazkii.botania.api.capability.EntityApiNoContext;
@@ -25,7 +25,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface MonocleHud {
 
-	ResourceLocation ID = botaniaRL("monocle_hud");
+	Identifier ID = botaniaRL("monocle_hud");
 	BlockApiNoContext<MonocleHud> BLOCK_LOOKUP = new BlockApiNoContext<>(ID, MonocleHud.class);
 	EntityApiNoContext<MonocleHud> ENTITY_LOOKUP = new EntityApiNoContext<>(ID, MonocleHud.class);
 

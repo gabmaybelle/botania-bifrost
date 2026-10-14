@@ -13,10 +13,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -911,11 +911,11 @@ public final class BotaniaItems {
 	public static final CauldronInteraction MANA_LENS_INTERACTION = BotaniaItems::cauldronUndyeManaLens;
 	public static final CauldronInteraction PHANTOM_INK_INTERACTION = BotaniaItems::cauldronRemovePhantomInk;
 
-	private static ItemInteractionResult cauldronUndyeManaPool(BlockState state, Level level, BlockPos pos,
+	private static InteractionResult cauldronUndyeManaPool(BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, ItemStack stack) {
 		Block block = Block.byItem(stack.getItem());
 		if (!(block instanceof ManaPoolBlock poolBlock)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		if (!level.isClientSide()) {
 			ManaPoolBlock undyedPool = ManaPoolBlock.getUndyedBlock(poolBlock);
@@ -924,13 +924,13 @@ public final class BotaniaItems {
 			player.awardStat(BotaniaStats.MANA_POOLS_CLEANED);
 			LayeredCauldronBlock.lowerFillLevel(state, level, pos);
 		}
-		return ItemInteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
-	private static ItemInteractionResult cauldronUndyeManaLens(BlockState state, Level level, BlockPos pos,
+	private static InteractionResult cauldronUndyeManaLens(BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, ItemStack stack) {
 		if (!LensItem.isLensTinted(stack)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		if (!level.isClientSide()) {
 			stack.remove(BotaniaDataComponents.LENS_RAINBOW_TINT);
@@ -938,20 +938,20 @@ public final class BotaniaItems {
 			player.awardStat(BotaniaStats.MANA_LENSES_CLEANED);
 			LayeredCauldronBlock.lowerFillLevel(state, level, pos);
 		}
-		return ItemInteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
-	private static ItemInteractionResult cauldronRemovePhantomInk(BlockState state, Level level, BlockPos pos,
+	private static InteractionResult cauldronRemovePhantomInk(BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, ItemStack stack) {
 		if (!(stack.getItem() instanceof PhantomInkable inkable) || !inkable.hasPhantomInk(stack)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		if (!level.isClientSide()) {
 			inkable.setPhantomInk(stack, false);
 			player.awardStat(BotaniaStats.PHANTOM_INK_CLEANED);
 			LayeredCauldronBlock.lowerFillLevel(state, level, pos);
 		}
-		return ItemInteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	private static <T extends Item> T make(String name, T item) {
@@ -985,13 +985,13 @@ public final class BotaniaItems {
 		return defaultBuilder().stacksTo(1);
 	}
 
-	public static void registerItems(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItems(BiConsumer<Item, Identifier> r) {
 		for (var e : ALL.entrySet()) {
 			r.accept(e.getValue(), botaniaRL(e.getKey()));
 		}
 	}
 
-	public static void registerMenuTypes(BiConsumer<MenuType<?>, ResourceLocation> consumer) {
+	public static void registerMenuTypes(BiConsumer<MenuType<?>, Identifier> consumer) {
 		consumer.accept(TRINKET_CASE_MENU_TYPE, botaniaRL(LibItemNames.TRINKET_CASE));
 		consumer.accept(COLORED_CONTENTS_POUCH_MENU_TYPE, botaniaRL(LibItemNames.FLOWER_POUCH));
 		consumer.accept(HAND_OF_ENDER_MENU_TYPE, botaniaRL(LibItemNames.HAND_OF_ENDER));

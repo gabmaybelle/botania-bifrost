@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
@@ -104,9 +104,9 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 		if (fabulous) {
 			int color = minecraft.getBlockColors().getColor(state, level, pool != null ? pool.getBlockPos() : null, 0);
 
-			float red = FastColor.ARGB32.red(color) / 255f;
-			float green = FastColor.ARGB32.green(color) / 255f;
-			float blue = FastColor.ARGB32.blue(color) / 255f;
+			float red = ARGB.red(color) / 255f;
+			float green = ARGB.green(color) / 255f;
+			float blue = ARGB.blue(color) / 255f;
 			BakedModel model = blockRenderDispatcher.getBlockModel(state);
 			VertexConsumer buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
 			blockRenderDispatcher.getModelRenderer()

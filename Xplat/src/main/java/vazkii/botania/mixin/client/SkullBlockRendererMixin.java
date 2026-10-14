@@ -10,12 +10,12 @@ package vazkii.botania.mixin.client;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.client.model.SkullModelBase;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.skull.SkullModelBase;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.SkullBlock;
 
@@ -37,7 +37,7 @@ import java.util.Map;
 public abstract class SkullBlockRendererMixin {
 	@Shadow
 	@Final
-	private static Map<SkullBlock.Type, ResourceLocation> SKIN_BY_TYPE;
+	private static Map<SkullBlock.Type, Identifier> SKIN_BY_TYPE;
 
 	@Inject(
 		method = "createSkullRenderers",

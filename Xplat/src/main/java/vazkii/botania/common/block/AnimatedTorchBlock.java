@@ -103,7 +103,7 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 	public InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player playerIn, BlockHitResult hit) {
 		if (playerIn.isSecondaryUseActive() && worldIn.getBlockEntity(pos) instanceof AnimatedTorchBlockEntity torch) {
 			torch.handRotate();
-			return InteractionResult.sidedSuccess(worldIn.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;
@@ -126,7 +126,7 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

@@ -14,17 +14,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.client.data.models.model.DelegatedModel;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.model.DelegatedModel;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.data.models.model.ModelTemplate;
-import net.minecraft.data.models.model.ModelTemplates;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.data.models.model.TextureSlot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SignItem;
@@ -72,16 +72,16 @@ public class ItemModelProvider implements DataProvider {
 	private static final TextureSlot LAYER2 = TextureSlotAccessor.botania_create("layer2");
 	private static final TextureSlot LAYER3 = TextureSlotAccessor.botania_create("layer3");
 	private static final ModelTemplate GENERATED_1 = new ModelTemplate(
-			Optional.of(ResourceLocation.withDefaultNamespace("item/generated")), Optional.empty(),
+			Optional.of(Identifier.withDefaultNamespace("item/generated")), Optional.empty(),
 			TextureSlot.LAYER0, LAYER1);
 	private static final ModelTemplate GENERATED_2 = new ModelTemplate(
-			Optional.of(ResourceLocation.withDefaultNamespace("item/generated")), Optional.empty(),
+			Optional.of(Identifier.withDefaultNamespace("item/generated")), Optional.empty(),
 			TextureSlot.LAYER0, LAYER1, LAYER2);
 	private static final ModelTemplate HANDHELD_1 = new ModelTemplate(
-			Optional.of(ResourceLocation.withDefaultNamespace("item/handheld")), Optional.empty(),
+			Optional.of(Identifier.withDefaultNamespace("item/handheld")), Optional.empty(),
 			TextureSlot.LAYER0, LAYER1);
 	private static final ModelTemplate HANDHELD_3 = new ModelTemplate(
-			Optional.of(ResourceLocation.withDefaultNamespace("item/handheld")), Optional.empty(),
+			Optional.of(Identifier.withDefaultNamespace("item/handheld")), Optional.empty(),
 			TextureSlot.LAYER0, LAYER1, LAYER2, LAYER3);
 	private static final ModelTemplate WALL_INVENTORY = new ModelTemplate(
 			Optional.of(botaniaRL("block/shapes/wall_inventory")), Optional.empty(),
@@ -95,13 +95,13 @@ public class ItemModelProvider implements DataProvider {
 			Optional.of(botaniaRL("block/shapes/spreader_item")), Optional.empty(),
 			TextureSlot.SIDE, TextureSlot.BACK, TextureSlot.INSIDE, OUTSIDE, CORE);
 	private static final ModelWithOverrides GENERATED_OVERRIDES = new ModelWithOverrides(
-			ResourceLocation.withDefaultNamespace("item/generated"), TextureSlot.LAYER0);
+			Identifier.withDefaultNamespace("item/generated"), TextureSlot.LAYER0);
 	private static final ModelWithOverrides GENERATED_OVERRIDES_1 = new ModelWithOverrides(
-			ResourceLocation.withDefaultNamespace("item/generated"), TextureSlot.LAYER0, LAYER1);
+			Identifier.withDefaultNamespace("item/generated"), TextureSlot.LAYER0, LAYER1);
 	private static final ModelWithOverrides HANDHELD_OVERRIDES = new ModelWithOverrides(
-			ResourceLocation.withDefaultNamespace("item/handheld"), TextureSlot.LAYER0);
+			Identifier.withDefaultNamespace("item/handheld"), TextureSlot.LAYER0);
 	private static final ModelWithOverrides HANDHELD_OVERRIDES_2 = new ModelWithOverrides(
-			ResourceLocation.withDefaultNamespace("item/handheld"), TextureSlot.LAYER0, LAYER1, LAYER2);
+			Identifier.withDefaultNamespace("item/handheld"), TextureSlot.LAYER0, LAYER1, LAYER2);
 
 	private final PackOutput packOutput;
 
@@ -114,7 +114,7 @@ public class ItemModelProvider implements DataProvider {
 		Set<Item> items = BuiltInRegistries.ITEM.stream()
 				.filter(item -> BotaniaAPI.MODID.equals(BuiltInRegistries.ITEM.getKey(item).getNamespace()))
 				.collect(Collectors.toSet());
-		Map<ResourceLocation, Supplier<JsonElement>> map = new HashMap<>();
+		Map<Identifier, Supplier<JsonElement>> map = new HashMap<>();
 		registerItemBlocks(takeAll(items, item -> item instanceof BlockItem).stream()
 				.map(item -> (BlockItem) item)
 				.collect(Collectors.toSet()), map::put);
@@ -124,20 +124,20 @@ public class ItemModelProvider implements DataProvider {
 		PackOutput.PathProvider modelPathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 		List<CompletableFuture<?>> outputList = new ArrayList<>();
 
-		for (Map.Entry<ResourceLocation, Supplier<JsonElement>> e : map.entrySet()) {
-			ResourceLocation id = e.getKey();
+		for (Map.Entry<Identifier, Supplier<JsonElement>> e : map.entrySet()) {
+			Identifier id = e.getKey();
 			outputList.add(DataProvider.saveStable(output, e.getValue().get(), modelPathProvider.json(id)));
 		}
 
 		return CompletableFuture.allOf(outputList.toArray(CompletableFuture[]::new));
 	}
 
-	private static void registerItems(Set<Item> items, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private static void registerItems(Set<Item> items, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		// Written manually
 		items.remove(BotaniaItems.MANA_BLASTER);
 
 		takeAll(items, item -> item instanceof LensItem).forEach(item -> {
-			ResourceLocation lens;
+			Identifier lens;
 			if (item == BotaniaItems.RESISTANCE_LENS || item == BotaniaItems.WARP_LENS
 					|| item == BotaniaItems.KINDLE_LENS || item == BotaniaItems.TRIPWIRE_LENS) {
 				// To avoid z-fighting
@@ -203,8 +203,8 @@ public class ItemModelProvider implements DataProvider {
 				.create(ModelLocationUtils.getModelLocation(item), TextureMapping.layer0(item), consumer));
 	}
 
-	private static void singleGeneratedOverride(Item item, ResourceLocation overrideModel, ResourceLocation predicate,
-			double value, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private static void singleGeneratedOverride(Item item, Identifier overrideModel, Identifier predicate,
+			double value, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		ModelTemplates.FLAT_ITEM.create(overrideModel, TextureMapping.layer0(overrideModel), consumer);
 		GENERATED_OVERRIDES.create(ModelLocationUtils.getModelLocation(item),
 				TextureMapping.layer0(item),
@@ -212,13 +212,13 @@ public class ItemModelProvider implements DataProvider {
 				consumer);
 	}
 
-	private static void singleGeneratedSuffixOverride(Item item, String suffix, ResourceLocation predicate,
-			double value, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private static void singleGeneratedSuffixOverride(Item item, String suffix, Identifier predicate,
+			double value, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		singleGeneratedOverride(item, ModelLocationUtils.getModelLocation(item, suffix), predicate, value, consumer);
 	}
 
-	private static void singleHandheldOverride(Item item, ResourceLocation overrideModel, ResourceLocation predicate,
-			double value, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private static void singleHandheldOverride(Item item, Identifier overrideModel, Identifier predicate,
+			double value, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		ModelTemplates.FLAT_HANDHELD_ITEM.create(overrideModel, TextureMapping.layer0(overrideModel), consumer);
 		HANDHELD_OVERRIDES.create(ModelLocationUtils.getModelLocation(item),
 				TextureMapping.layer0(item),
@@ -227,12 +227,12 @@ public class ItemModelProvider implements DataProvider {
 				consumer);
 	}
 
-	private static void singleHandheldSuffixOverride(Item item, String suffix, ResourceLocation predicate, double value,
-			BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private static void singleHandheldSuffixOverride(Item item, String suffix, Identifier predicate, double value,
+			BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		singleHandheldOverride(item, ModelLocationUtils.getModelLocation(item, suffix), predicate, value, consumer);
 	}
 
-	private static void registerItemOverrides(Set<Item> items, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private static void registerItemOverrides(Set<Item> items, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		// Written manually
 		items.remove(BotaniaItems.LIVINGWOOD_BOW);
 		items.remove(BotaniaItems.CRYSTAL_BOW);
@@ -245,7 +245,7 @@ public class ItemModelProvider implements DataProvider {
 
 		OverrideHolder flaskOverrides = new OverrideHolder();
 		for (int i = 1; i < BaseBrewItem.DEFAULT_USES_FLASK; i++) {
-			ResourceLocation overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.BREW_FLASK, "_" + i);
+			Identifier overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.BREW_FLASK, "_" + i);
 			GENERATED_1.create(overrideModel,
 					TextureMapping.layer0(BotaniaItems.ALFGLASS_FLASK).put(LAYER1, overrideModel),
 					consumer);
@@ -261,7 +261,7 @@ public class ItemModelProvider implements DataProvider {
 
 		OverrideHolder vialOverrides = new OverrideHolder();
 		for (int i = 1; i < BaseBrewItem.DEFAULT_USES_VIAL; i++) {
-			ResourceLocation overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.BREW_VIAL, "_" + i);
+			Identifier overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.BREW_VIAL, "_" + i);
 			GENERATED_1.create(overrideModel,
 					TextureMapping.layer0(BotaniaItems.MANAGLASS_VIAL).put(LAYER1, overrideModel),
 					consumer);
@@ -276,7 +276,7 @@ public class ItemModelProvider implements DataProvider {
 		singleHandheldOverride(BotaniaItems.ELEMENTIUM_SHEARS, botaniaRL("item/dammitreddit"), botaniaRL("reddit"), 1, consumer);
 		items.remove(BotaniaItems.ELEMENTIUM_SHEARS);
 
-		ResourceLocation vuvuzela = botaniaRL("item/vuvuzela");
+		Identifier vuvuzela = botaniaRL("item/vuvuzela");
 		ModelTemplates.FLAT_HANDHELD_ITEM.create(vuvuzela, TextureMapping.layer0(vuvuzela), consumer);
 		// defined manually to apply display transforms:
 		items.remove(BotaniaItems.HORN_OF_THE_WILD);
@@ -297,7 +297,7 @@ public class ItemModelProvider implements DataProvider {
 
 		OverrideHolder bottleOverrides = new OverrideHolder();
 		for (int i = 1; i < BottledManaItem.SWIGS; i++) {
-			ResourceLocation overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.MANA_IN_A_BOTTLE, "_" + i);
+			Identifier overrideModel = ModelLocationUtils.getModelLocation(BotaniaItems.MANA_IN_A_BOTTLE, "_" + i);
 			ModelTemplates.FLAT_ITEM.create(overrideModel, TextureMapping.layer0(overrideModel), consumer);
 			bottleOverrides.add(overrideModel, Pair.of(botaniaRL("swigs_taken"), (double) i / (BottledManaItem.SWIGS - 1)));
 		}
@@ -340,13 +340,13 @@ public class ItemModelProvider implements DataProvider {
 		singleGeneratedSuffixOverride(BotaniaItems.MANUFACTORY_HALO, "_active", botaniaRL("active"), 1.0, consumer);
 		items.remove(BotaniaItems.MANUFACTORY_HALO);
 
-		ResourceLocation enabledModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_active");
+		Identifier enabledModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_active");
 		ModelTemplates.FLAT_HANDHELD_ITEM.create(enabledModel, TextureMapping.layer0(enabledModel), consumer);
 
-		ResourceLocation tippedModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_tipped");
+		Identifier tippedModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_tipped");
 		ModelTemplates.FLAT_HANDHELD_ITEM.create(tippedModel, TextureMapping.layer0(tippedModel), consumer);
 
-		ResourceLocation tippedEnabledModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_tipped_active");
+		Identifier tippedEnabledModel = ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER, "_tipped_active");
 		ModelTemplates.FLAT_HANDHELD_ITEM.create(tippedEnabledModel, TextureMapping.layer0(tippedEnabledModel), consumer);
 
 		HANDHELD_OVERRIDES.create(ModelLocationUtils.getModelLocation(BotaniaItems.TERRA_SHATTERER),
@@ -365,11 +365,11 @@ public class ItemModelProvider implements DataProvider {
 		registerWandModels(items, consumer, BotaniaItems.WAND_OF_THE_ELVEN_FOREST);
 	}
 
-	private static void registerWandModels(Set<Item> items, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer, Item wandType) {
+	private static void registerWandModels(Set<Item> items, BiConsumer<Identifier, Supplier<JsonElement>> consumer, Item wandType) {
 		TextureMapping twigWandTextures = TextureMapping.layer0(wandType)
 				.put(LAYER1, TextureMapping.getItemTexture(wandType, "_top"))
 				.put(LAYER2, TextureMapping.getItemTexture(wandType, "_bottom"));
-		ResourceLocation twigWandBind = ModelLocationUtils.getModelLocation(wandType, "_bind");
+		Identifier twigWandBind = ModelLocationUtils.getModelLocation(wandType, "_bind");
 		HANDHELD_3.create(twigWandBind,
 				twigWandTextures.copyAndUpdate(LAYER3, TextureMapping.getItemTexture(wandType, "_bind")),
 				consumer);
@@ -381,7 +381,7 @@ public class ItemModelProvider implements DataProvider {
 	}
 
 	@SuppressWarnings("SuspiciousMethodCalls")
-	private void registerItemBlocks(Set<BlockItem> itemBlocks, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	private void registerItemBlocks(Set<BlockItem> itemBlocks, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		// Manually written
 		itemBlocks.remove(BotaniaBlocks.CORPOREA_CRYSTAL_CUBE.asItem());
 
@@ -436,7 +436,7 @@ public class ItemModelProvider implements DataProvider {
 
 		takeAll(itemBlocks, item -> item.getBlock() instanceof FlowerMotifBlock).forEach(item -> {
 			String name = BuiltInRegistries.ITEM.getKey(item).getPath();
-			ResourceLocation texName = botaniaRL("block/" + name.replace("_motif", ""));
+			Identifier texName = botaniaRL("block/" + name.replace("_motif", ""));
 			ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item), TextureMapping.layer0(texName), consumer);
 		});
 
@@ -447,7 +447,7 @@ public class ItemModelProvider implements DataProvider {
 				consumer.accept(ModelLocationUtils.getModelLocation(item),
 						new DelegatedModel(ModelLocationUtils.getModelLocation(block, "_full")));
 			} else if (block.color == null) {
-				ResourceLocation fullModel = ModelLocationUtils.getModelLocation(block, "_full");
+				Identifier fullModel = ModelLocationUtils.getModelLocation(block, "_full");
 				OverrideHolder overrides = new OverrideHolder().add(fullModel, Pair.of(botaniaRL("full"), 1.0));
 				consumer.accept(
 						ModelLocationUtils.getModelLocation(item),
@@ -607,15 +607,15 @@ public class ItemModelProvider implements DataProvider {
 					}""";
 	private static final JsonElement BUILTIN_ENTITY_DISPLAY = new Gson().fromJson(BUILTIN_ENTITY_DISPLAY_STR, JsonElement.class);
 
-	protected void builtinEntity(Item item, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+	protected void builtinEntity(Item item, BiConsumer<Identifier, Supplier<JsonElement>> consumer) {
 		builtinEntity(item, consumer, 1.0);
 	}
 
-	protected void builtinEntity(Item item, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer, double scale) {
+	protected void builtinEntity(Item item, BiConsumer<Identifier, Supplier<JsonElement>> consumer, double scale) {
 		builtinEntity(item, consumer, scale, 0.0);
 	}
 
-	protected void builtinEntity(Item item, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer, double scale, double handYOffset) {
+	protected void builtinEntity(Item item, BiConsumer<Identifier, Supplier<JsonElement>> consumer, double scale, double handYOffset) {
 		final JsonElement display;
 		if (handYOffset == 0.0 && scale == 1.0) {
 			display = BUILTIN_ENTITY_DISPLAY;

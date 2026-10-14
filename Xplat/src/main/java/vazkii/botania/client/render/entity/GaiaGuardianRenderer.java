@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerModelPart;
 
 import org.jetbrains.annotations.Nullable;
@@ -101,7 +101,7 @@ public class GaiaGuardianRenderer extends HumanoidMobRenderer<GaiaGuardianEntity
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GaiaGuardianEntity entity) {
+	public Identifier getTextureLocation(GaiaGuardianEntity entity) {
 		return getViewingPlayer() instanceof AbstractClientPlayer clientPlayer
 				? clientPlayer.getSkin().texture()
 				: DefaultPlayerSkin.get(entity.getUUID()).texture();

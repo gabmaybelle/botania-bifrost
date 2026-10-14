@@ -10,7 +10,6 @@
 package vazkii.botania.test.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +29,7 @@ import vazkii.botania.api.recipe.OrechidRecipe;
 import vazkii.botania.api.recipe.PureDaisyRecipe;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.crafting.LexiconElvenTradeRecipe;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class RarityConsistencyTest {
 			Items.GOLDEN_APPLE, Rarity.COMMON
 	);
 
-	@GameTest(template = TestingUtil.EMPTY_STRUCTURE, timeoutTicks = 1)
+	@BotaniaGameTest(template = TestingUtil.EMPTY_STRUCTURE, timeoutTicks = 1)
 	public void checkRecipeOutputConsistency(GameTestHelper helper) {
 		boolean failedAnyChecks = false;
 		Set<Item> craftableItems = new HashSet<>();
@@ -68,7 +68,7 @@ public class RarityConsistencyTest {
 			for (ItemStack resultItem : resultItems) {
 				craftableItems.add(resultItem.getItem());
 
-				if (!resultItem.getItemHolder().unwrapKey().orElseThrow().location().getNamespace()
+				if (!resultItem.getItemHolder().unwrapKey().orElseThrow().identifier().getNamespace()
 						.equals(BotaniaAPI.MODID)) {
 					// only check recipes that make Botania items
 					continue;

@@ -13,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +35,7 @@ public class HighlandsRodItem extends LandsRodItem {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ManaItemHandler.instance().requestManaExactForTool(stack, player, COST * 2, false)) {
 			Vec3 playerVec = VecHelper.fromEntityCenter(player);
@@ -65,7 +64,7 @@ public class HighlandsRodItem extends LandsRodItem {
 			}
 		}
 
-		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 
 }

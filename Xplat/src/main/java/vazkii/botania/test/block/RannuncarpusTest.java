@@ -10,7 +10,6 @@
 package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +20,7 @@ import net.minecraft.world.phys.AABB;
 
 import vazkii.botania.common.block.block_entity.flower.functional.RannuncarpusBlockEntity;
 import vazkii.botania.common.internal_caps.ItemLifetime;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class RannuncarpusTest {
@@ -39,7 +39,7 @@ public class RannuncarpusTest {
 	private static final BlockPos SEA_PICKLE_POS = new BlockPos(1, 2, 1);
 	private static final BlockPos FLOATING_YELLOW_CANDLE_POS = new BlockPos(1, 5, 2);
 
-	@GameTest(template = TEMPLATE, batch = "rannuncarpus1")
+	@BotaniaGameTest(template = TEMPLATE, batch = "rannuncarpus1")
 	public void testDestinationFilterPositive(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			helper.killAllEntities();
@@ -49,7 +49,7 @@ public class RannuncarpusTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, batch = "rannuncarpus2")
+	@BotaniaGameTest(template = TEMPLATE, batch = "rannuncarpus2")
 	public void testDestinationFilterNegative(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			helper.killAllEntities();
@@ -61,7 +61,7 @@ public class RannuncarpusTest {
 				}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testPickupFilterPositive(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			var frame = getItemFrame(helper);
@@ -72,7 +72,7 @@ public class RannuncarpusTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void testPickupFilterNegative(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> {
 			var frame = getItemFrame(helper);
@@ -90,7 +90,7 @@ public class RannuncarpusTest {
 					// new items are supplied twice during the test
 					+ 2 * ItemLifetime.FUNCTIONAL_INHERENT_DELAY;
 
-	@GameTest(template = TEMPLATE_CANDLES, timeoutTicks = MULTI_PLACEMENT_TIMEOUT_TICKS, batch = "rannuncarpus3")
+	@BotaniaGameTest(template = TEMPLATE_CANDLES, timeoutTicks = MULTI_PLACEMENT_TIMEOUT_TICKS, batch = "rannuncarpus3")
 	public void testMultiplePlacements(GameTestHelper helper) {
 		final var yellowCandles = helper.spawnItem(Blocks.YELLOW_CANDLE.asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
 		helper.startSequence().thenExecute(() -> {
@@ -124,7 +124,7 @@ public class RannuncarpusTest {
 		}).thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = ItemLifetime.FUNCTIONAL_INHERENT_DELAY + 13 * RannuncarpusBlockEntity.PLACE_INTERVAL_TICKS)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = ItemLifetime.FUNCTIONAL_INHERENT_DELAY + 13 * RannuncarpusBlockEntity.PLACE_INTERVAL_TICKS)
 	public void testMultiplePlacementsPrefersEmptySpots(GameTestHelper helper) {
 		// have the flower place across the entire platform
 		helper.setBlock(FILTER_POS, Blocks.POLISHED_ANDESITE);

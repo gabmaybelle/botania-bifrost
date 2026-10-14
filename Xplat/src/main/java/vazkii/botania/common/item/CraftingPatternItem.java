@@ -46,7 +46,7 @@ public class CraftingPatternItem extends Item {
 					world.getBlockEntity(pos, BotaniaBlockEntities.CRAFTY_CRATE)
 							.ifPresent(CraftyCrateBlockEntity::ejectLocked);
 				}
-				return InteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		} else if (world.getBlockEntity(pos) instanceof CrafterBlockEntity crafter) {
 			if (!world.isClientSide) {
@@ -67,7 +67,7 @@ public class CraftingPatternItem extends Item {
 				world.playSound(null, pos, SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.5f, clickPitch);
 				world.gameEvent(ctx.getPlayer(), GameEvent.BLOCK_ACTIVATE, pos);
 			}
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}

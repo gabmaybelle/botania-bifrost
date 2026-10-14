@@ -9,7 +9,7 @@
 
 package vazkii.botania.api.capability;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +25,7 @@ import vazkii.botania.api.BotaniaAPI;
 public final class ItemApiWithContext<A, C> extends ApiIdItem<A> {
 	private final Class<C> contextClass;
 
-	public ItemApiWithContext(ResourceLocation id, Class<A> apiClass, Class<C> contextClass) {
+	public ItemApiWithContext(Identifier id, Class<A> apiClass, Class<C> contextClass) {
 		super(id, apiClass);
 		this.contextClass = contextClass;
 	}

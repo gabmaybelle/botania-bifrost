@@ -17,7 +17,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -153,7 +153,7 @@ public class GogRecipeProvider extends RecipeProvider {
 		return StateIngredients.of(block);
 	}
 
-	protected ResourceLocation orechidId(Block b) {
+	protected Identifier orechidId(Block b) {
 		return gogRL("orechid/" + BuiltInRegistries.BLOCK.getKey(b).getPath());
 	}
 

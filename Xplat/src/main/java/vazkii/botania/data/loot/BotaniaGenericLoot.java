@@ -12,9 +12,9 @@ package vazkii.botania.data.loot;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -52,10 +52,10 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 			.of(VillageLoot.CARTOGRAPHER, VillageLoot.FLETCHER, VillageLoot.TANNERY, VillageLoot.TOOLSMITH, VillageLoot.WEAPONSMITH);
 
 	public static ResourceKey<LootTable> getStructureId(ResourceKey<Structure> structureKey) {
-		return getStructureId(structureKey.location());
+		return getStructureId(structureKey.identifier());
 	}
 
-	public static ResourceKey<LootTable> getStructureId(ResourceLocation structureId) {
+	public static ResourceKey<LootTable> getStructureId(Identifier structureId) {
 		return ResourceKey.create(
 				Registries.LOOT_TABLE, botaniaRL("loonium/%s/%s".formatted(structureId.getNamespace(), structureId.getPath())));
 	}
@@ -138,7 +138,7 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 		output.accept(getStructureId(BuiltinStructures.MINESHAFT_MESA), buildDelegateLootTable(BuiltInLootTables.ABANDONED_MINESHAFT));
 		output.accept(getStructureId(BuiltinStructures.OCEAN_MONUMENT),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(EntityType.ELDER_GUARDIAN.getDefaultLootTable()).setWeight(5))
+						.add(NestedLootTable.lootTableReference(EntityTypes.ELDER_GUARDIAN.getDefaultLootTable()).setWeight(5))
 						// sponge is a player-kill drop and won't be rolled for the elder guardian table by the Loonium
 						.add(LootItem.lootTableItem(Items.WET_SPONGE))
 

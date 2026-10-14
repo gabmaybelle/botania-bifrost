@@ -9,18 +9,34 @@
 package vazkii.botania.data;
 
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.predicates.NbtPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.ConsumeItemTrigger;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.ImpossibleTrigger;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+import net.minecraft.advancements.triggers.KilledTrigger;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.predicates.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -340,28 +356,28 @@ public class AdvancementProvider {
 	public static class BotaniaChallengeAdvancements implements AdvancementSubProvider {
 
 		private static final EntityType<?>[] LOONIUM_MOBS_TO_KILL = {
-				EntityType.BLAZE,
-				EntityType.CAVE_SPIDER,
-				EntityType.CREEPER,
-				EntityType.DROWNED,
-				EntityType.ENDERMAN,
-				EntityType.EVOKER,
-				EntityType.GUARDIAN,
-				EntityType.HOGLIN,
-				EntityType.HUSK,
-				EntityType.PIGLIN,
-				EntityType.PIGLIN_BRUTE,
-				EntityType.PILLAGER,
-				EntityType.SHULKER,
-				EntityType.SILVERFISH,
-				EntityType.SKELETON,
-				EntityType.STRAY,
-				EntityType.VINDICATOR,
-				EntityType.WITHER_SKELETON,
-				EntityType.ZOGLIN,
-				EntityType.ZOMBIE_VILLAGER,
-				EntityType.ZOMBIE,
-				EntityType.ZOMBIFIED_PIGLIN
+				EntityTypes.BLAZE,
+				EntityTypes.CAVE_SPIDER,
+				EntityTypes.CREEPER,
+				EntityTypes.DROWNED,
+				EntityTypes.ENDERMAN,
+				EntityTypes.EVOKER,
+				EntityTypes.GUARDIAN,
+				EntityTypes.HOGLIN,
+				EntityTypes.HUSK,
+				EntityTypes.PIGLIN,
+				EntityTypes.PIGLIN_BRUTE,
+				EntityTypes.PILLAGER,
+				EntityTypes.SHULKER,
+				EntityTypes.SILVERFISH,
+				EntityTypes.SKELETON,
+				EntityTypes.STRAY,
+				EntityTypes.VINDICATOR,
+				EntityTypes.WITHER_SKELETON,
+				EntityTypes.ZOGLIN,
+				EntityTypes.ZOMBIE_VILLAGER,
+				EntityTypes.ZOMBIE,
+				EntityTypes.ZOMBIFIED_PIGLIN
 		};
 
 		@Override
@@ -522,7 +538,7 @@ public class AdvancementProvider {
 				Optional.empty(), advancementType, true, true, true);
 	}
 
-	protected static DisplayInfo rootDisplay(ItemLike icon, String titleKey, String descKey, ResourceLocation background) {
+	protected static DisplayInfo rootDisplay(ItemLike icon, String titleKey, String descKey, Identifier background) {
 		return new DisplayInfo(new ItemStack(icon.asItem()),
 				Component.translatable(titleKey),
 				Component.translatable(descKey),

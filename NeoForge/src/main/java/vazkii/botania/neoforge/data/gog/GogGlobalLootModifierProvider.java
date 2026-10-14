@@ -43,8 +43,8 @@ public class GogGlobalLootModifierProvider extends GlobalLootModifierProvider {
 	protected void start() {
 		add("extra_seeds", new AddTableLootModifier(new LootItemCondition[] {
 				AnyOfCondition.anyOf(
-						LootTableIdCondition.builder(Blocks.SHORT_GRASS.getLootTable().location()),
-						LootTableIdCondition.builder(Blocks.TALL_GRASS.getLootTable().location())
+						LootTableIdCondition.builder(Blocks.SHORT_GRASS.getLootTable().identifier()),
+						LootTableIdCondition.builder(Blocks.TALL_GRASS.getLootTable().identifier())
 				).build()
 		}, ResourceKey.create(Registries.LOOT_TABLE, gogRL("extra_seeds"))));
 	}

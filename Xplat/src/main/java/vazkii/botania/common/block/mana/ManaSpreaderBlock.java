@@ -10,14 +10,14 @@ package vazkii.botania.common.block.mana;
 
 import com.google.common.base.Suppliers;
 
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -97,11 +97,11 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 	private final SpreaderParameters spreaderParameters;
 	@Nullable
 	private final DyeColor coverColor;
-	private final Supplier<ResourceLocation> spreaderModelIdSupplier = Suppliers.memoize(
+	private final Supplier<Identifier> spreaderModelIdSupplier = Suppliers.memoize(
 			() -> ModelLocationUtils.getModelLocation(getBaseBlock(this)));
-	private final Supplier<ResourceLocation> coreModelIdSupplier = Suppliers.memoize(
+	private final Supplier<Identifier> coreModelIdSupplier = Suppliers.memoize(
 			() -> ModelLocationUtils.getModelLocation(getBaseBlock(this), "_core"));
-	private final Supplier<ResourceLocation> scaffoldingModelIdSupplier = Suppliers.memoize(
+	private final Supplier<Identifier> scaffoldingModelIdSupplier = Suppliers.memoize(
 			() -> ModelLocationUtils.getModelLocation(getBaseBlock(this), "_scaffolding"));
 
 	public ManaSpreaderBlock(SpreaderParameters spreaderParameters, @Nullable DyeColor coverColor, Properties builder) {
@@ -162,15 +162,15 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 		return spreaderParameters.hudColor;
 	}
 
-	public ResourceLocation getSpreaderModelId() {
+	public Identifier getSpreaderModelId() {
 		return spreaderModelIdSupplier.get();
 	}
 
-	public ResourceLocation getCoreModelId() {
+	public Identifier getCoreModelId() {
 		return coreModelIdSupplier.get();
 	}
 
-	public ResourceLocation getScaffoldingModelId() {
+	public Identifier getScaffoldingModelId() {
 		return scaffoldingModelIdSupplier.get();
 	}
 
@@ -237,17 +237,17 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (!(world.getBlockEntity(pos) instanceof ManaSpreaderBlockEntity spreader)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
 		if (heldItem.getItem() instanceof WandOfTheForestItem) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		boolean mainHandEmpty = player.getMainHandItem().isEmpty();
 
@@ -293,7 +293,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 
 				world.playSound(player, pos, BotaniaSounds.SPREADER_SCAFFOLD, SoundSource.BLOCKS, 1F, 1F);
 			}
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		if (state.getValue(HAS_SCAFFOLDING) && player.isSecondaryUseActive()) {
@@ -306,7 +306,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 
 			world.playSound(player, pos, BotaniaSounds.SPREADER_UN_SCAFFOLD, SoundSource.BLOCKS, 1F, 1F);
 
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		if (!lens.isEmpty() && (mainHandEmpty || lensIsSame)) {
 			if (!player.hasInfiniteMaterials() || !player.getInventory().contains(lens)) {
@@ -316,7 +316,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 
 			world.playSound(player, pos, BotaniaSounds.SPREADER_REMOVE_LENS, SoundSource.BLOCKS, 1F, 1F);
 
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		if (coverColor != null && (mainHandEmpty || woolIsSame)) {
 			ItemStack wool = new ItemStack(ColorHelper.WOOL_MAP.apply(coverColor));
@@ -327,10 +327,10 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 			spreader.setChanged();
 			world.playSound(player, pos, BotaniaSounds.SPREADER_UNCOVER, SoundSource.BLOCKS, 1F, 1F);
 
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

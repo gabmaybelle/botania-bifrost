@@ -13,8 +13,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import vazkii.botania.common.entity.BotaniaEntities;
 import vazkii.botania.common.lib.BotaniaTags;
@@ -30,34 +31,34 @@ public class EntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
 		tag(BotaniaTags.Entities.COCOON_COMMON).add(
-				EntityType.PIG, EntityType.COW, EntityType.CHICKEN, EntityType.RABBIT, EntityType.SHEEP
+				EntityTypes.PIG, EntityTypes.COW, EntityTypes.CHICKEN, EntityTypes.RABBIT, EntityTypes.SHEEP
 		);
 		tag(BotaniaTags.Entities.COCOON_RARE)
-				.add(EntityType.HORSE, EntityType.DONKEY, EntityType.WOLF, EntityType.OCELOT,
-						EntityType.CAT, EntityType.PARROT, EntityType.LLAMA, EntityType.FOX,
-						EntityType.PANDA, EntityType.TURTLE, EntityType.GOAT, EntityType.CAMEL,
-						EntityType.ARMADILLO);
+				.add(EntityTypes.HORSE, EntityTypes.DONKEY, EntityTypes.WOLF, EntityTypes.OCELOT,
+						EntityTypes.CAT, EntityTypes.PARROT, EntityTypes.LLAMA, EntityTypes.FOX,
+						EntityTypes.PANDA, EntityTypes.TURTLE, EntityTypes.GOAT, EntityTypes.CAMEL,
+						EntityTypes.ARMADILLO);
 
 		tag(BotaniaTags.Entities.COCOON_COMMON_AQUATIC)
-				.add(EntityType.COD, EntityType.SALMON, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SQUID, EntityType.FROG)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "crab"));
-		tag(BotaniaTags.Entities.COCOON_RARE_AQUATIC).add(EntityType.DOLPHIN, EntityType.GLOW_SQUID, EntityType.AXOLOTL);
+				.add(EntityTypes.COD, EntityTypes.SALMON, EntityTypes.TROPICAL_FISH, EntityTypes.PUFFERFISH, EntityTypes.SQUID, EntityTypes.FROG)
+				.addOptional(Identifier.fromNamespaceAndPath("quark", "crab"));
+		tag(BotaniaTags.Entities.COCOON_RARE_AQUATIC).add(EntityTypes.DOLPHIN, EntityTypes.GLOW_SQUID, EntityTypes.AXOLOTL);
 
-		tag(BotaniaTags.Entities.DRUM_MILKABLE).add(EntityType.COW, EntityType.MOOSHROOM, EntityType.GOAT);
-		tag(BotaniaTags.Entities.DRUM_NO_SHEARING).add(EntityType.MOOSHROOM);
+		tag(BotaniaTags.Entities.DRUM_MILKABLE).add(EntityTypes.COW, EntityTypes.MOOSHROOM, EntityTypes.GOAT);
+		tag(BotaniaTags.Entities.DRUM_NO_SHEARING).add(EntityTypes.MOOSHROOM);
 
-		tag(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP).add(EntityType.ENDER_DRAGON, EntityType.WITHER,
-				EntityType.ITEM_FRAME, EntityType.GLOW_ITEM_FRAME, EntityType.END_CRYSTAL, EntityType.PAINTING,
-				EntityType.COMMAND_BLOCK_MINECART, EntityType.MARKER, EntityType.AREA_EFFECT_CLOUD,
-				EntityType.EVOKER_FANGS, EntityType.LEASH_KNOT, EntityType.BLOCK_DISPLAY, EntityType.ITEM_DISPLAY,
-				EntityType.TEXT_DISPLAY, EntityType.INTERACTION, EntityType.MARKER,
+		tag(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP).add(EntityTypes.ENDER_DRAGON, EntityTypes.WITHER,
+				EntityTypes.ITEM_FRAME, EntityTypes.GLOW_ITEM_FRAME, EntityTypes.END_CRYSTAL, EntityTypes.PAINTING,
+				EntityTypes.COMMAND_BLOCK_MINECART, EntityTypes.MARKER, EntityTypes.AREA_EFFECT_CLOUD,
+				EntityTypes.EVOKER_FANGS, EntityTypes.LEASH_KNOT, EntityTypes.BLOCK_DISPLAY, EntityTypes.ITEM_DISPLAY,
+				EntityTypes.TEXT_DISPLAY, EntityTypes.INTERACTION, EntityTypes.MARKER,
 				BotaniaEntities.CORPOREA_SPARK, BotaniaEntities.GAIA_GUARDIAN, BotaniaEntities.FLAME_RING, BotaniaEntities.GAIA_TRAP,
 				BotaniaEntities.MAGIC_MISSILE, BotaniaEntities.MANA_BURST, BotaniaEntities.PINK_WITHER, BotaniaEntities.MANA_SPARK, BotaniaEntities.LUMINIZER_BEAM
 		);
 
-		tag(BotaniaTags.Entities.KEY_IMMUNE).add(EntityType.ITEM, EntityType.ITEM_FRAME, EntityType.GLOW_ITEM_FRAME,
-				EntityType.PAINTING, EntityType.EXPERIENCE_ORB);
-		tag(BotaniaTags.Entities.PORTAL_BREAD_IMMUNE).add(EntityType.ITEM, EntityType.EXPERIENCE_ORB);
+		tag(BotaniaTags.Entities.KEY_IMMUNE).add(EntityTypes.ITEM, EntityTypes.ITEM_FRAME, EntityTypes.GLOW_ITEM_FRAME,
+				EntityTypes.PAINTING, EntityTypes.EXPERIENCE_ORB);
+		tag(BotaniaTags.Entities.PORTAL_BREAD_IMMUNE).add(EntityTypes.ITEM, EntityTypes.EXPERIENCE_ORB);
 
 		tag(BotaniaTags.Entities.ENDER_ESSENCE_CLOUDS)
 				.add(BotaniaEntities.DILUTED_ENDER_ESSENCE_CLOUD, BotaniaEntities.PURE_ENDER_ESSENCE_CLOUD);

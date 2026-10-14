@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,7 +28,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * The basic class for a Generating Flower.
  */
 public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerBlockEntity<ManaCollector> {
-	private static final ResourceLocation SPREADER_ID = botaniaRL("mana_spreader");
+	private static final Identifier SPREADER_ID = botaniaRL("mana_spreader");
 
 	public static final int LINK_RANGE = 6;
 	private static final String TAG_MANA = "mana";

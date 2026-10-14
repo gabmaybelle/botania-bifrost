@@ -12,9 +12,10 @@ package vazkii.botania.common.loot;
 import com.google.common.collect.Sets;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -40,8 +41,8 @@ public class BotaniaLootTables {
 	static {
 		// register entity types for injected elementium axe beheading loot tables
 		Stream.of(
-				EntityType.WITHER_SKELETON, EntityType.SKELETON, EntityType.ZOMBIE, EntityType.PIGLIN,
-				EntityType.CREEPER, EntityType.ENDER_DRAGON, EntityType.PLAYER
+				EntityTypes.WITHER_SKELETON, EntityTypes.SKELETON, EntityTypes.ZOMBIE, EntityTypes.PIGLIN,
+				EntityTypes.CREEPER, EntityTypes.ENDER_DRAGON, EntityTypes.PLAYER
 		).map(BotaniaLootTables::getInjectedLootTable).forEach(LOCATIONS::add);
 	}
 
@@ -188,13 +189,13 @@ public class BotaniaLootTables {
 	 * Gets the resource key of the loot table to inject into the specified table.
 	 */
 	public static ResourceKey<LootTable> getInjectedLootTable(ResourceKey<LootTable> baseLootTable) {
-		return getInjectedLootTable(baseLootTable.location());
+		return getInjectedLootTable(baseLootTable.identifier());
 	}
 
 	/**
 	 * Gets the resource key of the loot table to inject into the specified table.
 	 */
-	public static ResourceKey<LootTable> getInjectedLootTable(ResourceLocation baseId) {
+	public static ResourceKey<LootTable> getInjectedLootTable(Identifier baseId) {
 		return ResourceKey.create(Registries.LOOT_TABLE,
 				botaniaRL("injected/%s/%s".formatted(baseId.getNamespace(), baseId.getPath())));
 	}
@@ -204,12 +205,12 @@ public class BotaniaLootTables {
 	 */
 	@Nullable
 	public static ResourceKey<LootTable> getInjectionTargetLootTable(ResourceKey<LootTable> injectedLootTable) {
-		Matcher matcher = INJECTED_LOOT_TABLE_PATTERN.matcher(injectedLootTable.location().getPath());
-		if (!injectedLootTable.location().getNamespace().equals(MODID) || !matcher.matches()) {
+		Matcher matcher = INJECTED_LOOT_TABLE_PATTERN.matcher(injectedLootTable.identifier().getPath());
+		if (!injectedLootTable.identifier().getNamespace().equals(MODID) || !matcher.matches()) {
 			return null;
 		}
 
 		return ResourceKey.create(injectedLootTable.registryKey(),
-				ResourceLocation.fromNamespaceAndPath(matcher.group("namespace"), matcher.group("path")));
+				Identifier.fromNamespaceAndPath(matcher.group("namespace"), matcher.group("path")));
 	}
 }

@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +52,7 @@ public class CocoonBlock extends BotaniaWaterloggedBlock implements EntityBlock 
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override
@@ -68,13 +68,13 @@ public class CocoonBlock extends BotaniaWaterloggedBlock implements EntityBlock 
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		return addStack(level, pos, stack, player.hasInfiniteMaterials());
 	}
 
-	private ItemInteractionResult addStack(Level world, BlockPos pos, ItemStack stack, boolean creative) {
+	private InteractionResult addStack(Level world, BlockPos pos, ItemStack stack, boolean creative) {
 		if (!(world.getBlockEntity(pos) instanceof CocoonBlockEntity cocoon)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		if (stack.is(Items.EMERALD) || stack.is(Items.CHORUS_FRUIT) || stack.is(BotaniaItems.GAIA_SPIRIT)) {
 			if (!world.isClientSide) {
@@ -104,10 +104,10 @@ public class CocoonBlock extends BotaniaWaterloggedBlock implements EntityBlock 
 				}
 			}
 
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

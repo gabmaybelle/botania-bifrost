@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.common.item.WandOfTheForestItem;
 
@@ -37,7 +38,7 @@ public record ParticleBeamEffectPacket(BlockPos source, BlockPos target) impleme
 	public static class Handler {
 		public static void handle(ParticleBeamEffectPacket packet, Player localPlayer) {
 			WandOfTheForestItem.doParticleBeam(localPlayer.level(),
-					packet.source().getCenter(), packet.target().getCenter());
+					Vec3.atCenterOf(packet.source()), Vec3.atCenterOf(packet.target()));
 		}
 	}
 }

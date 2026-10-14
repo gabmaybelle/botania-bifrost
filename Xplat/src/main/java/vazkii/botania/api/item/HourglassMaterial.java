@@ -9,7 +9,7 @@
 
 package vazkii.botania.api.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.capability.ItemApiNoContext;
 
@@ -19,7 +19,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * An item with this capability can be used in a Hovering Hourglass.
  */
 public interface HourglassMaterial {
-	ResourceLocation ID = botaniaRL("hourglass_material");
+	Identifier ID = botaniaRL("hourglass_material");
 	ItemApiNoContext<HourglassMaterial> LOOKUP = new ItemApiNoContext<>(ID, HourglassMaterial.class);
 
 	HourglassMaterial SAND = new Material(20, 0xFFEC49, false);

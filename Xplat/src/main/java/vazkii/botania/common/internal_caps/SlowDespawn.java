@@ -9,7 +9,7 @@
 
 package vazkii.botania.common.internal_caps;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import vazkii.botania.api.attachment.DataMarkerId;
 
@@ -20,7 +20,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  * (Random idle despawning still applies.)
  */
 public final class SlowDespawn {
-	public static final ResourceLocation ID = botaniaRL("slow_despawn");
+	public static final Identifier ID = botaniaRL("slow_despawn");
 	public static final DataMarkerId MARKER = new DataMarkerId(ID);
 
 	private SlowDespawn() {}

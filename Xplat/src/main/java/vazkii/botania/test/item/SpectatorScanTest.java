@@ -11,16 +11,15 @@ package vazkii.botania.test.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.npc.VillagerData;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -32,6 +31,7 @@ import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.bauble.SpectatorItem;
 import vazkii.botania.mixin.AbstractHorseAccessor;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 import java.util.Collections;
@@ -51,21 +51,21 @@ public class SpectatorScanTest {
 	private static final String LOOT_TABLE_CHEST = "minecraft:chests/simple_dungeon";
 	private static final String LOOT_TABLE_CART = "minecraft:chests/abandoned_mineshaft";
 
-	@GameTest(template = "botania:item/spectator_scan", batch = "spectator1")
+	@BotaniaGameTest(template = "botania:item/spectator_scan", batch = "spectator1")
 	public void testSpectatorScanMainHand(GameTestHelper helper) {
 		performTest(helper, (h, player) -> {
 			player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_INGOT));
 		});
 	}
 
-	@GameTest(template = "botania:item/spectator_scan", batch = "spectator2")
+	@BotaniaGameTest(template = "botania:item/spectator_scan", batch = "spectator2")
 	public void testSpectatorScanOffHand(GameTestHelper helper) {
 		performTest(helper, (h, player) -> {
 			player.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.IRON_INGOT));
 		});
 	}
 
-	@GameTest(template = "botania:item/spectator_scan", batch = "spectator3")
+	@BotaniaGameTest(template = "botania:item/spectator_scan", batch = "spectator3")
 	public void testSpectatorScanBothHands(GameTestHelper helper) {
 		performTest(helper, (h, player) -> {
 			player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_INGOT));
@@ -78,11 +78,11 @@ public class SpectatorScanTest {
 
 		// set up test entities
 		var itemEntity = helper.spawnItem(Items.IRON_INGOT, POSITION_ITEM);
-		var villager = helper.spawn(EntityType.VILLAGER, POSITION_VILLAGER);
+		var villager = helper.spawn(EntityTypes.VILLAGER, POSITION_VILLAGER);
 		villager.setVillagerData(new VillagerData(VillagerType.PLAINS, VillagerProfession.TOOLSMITH, 2));
 
 		// set inventory content
-		var regularChestCart = helper.spawn(EntityType.CHEST_MINECART, POSITION_CART_NORMAL);
+		var regularChestCart = helper.spawn(EntityTypes.CHEST_MINECART, POSITION_CART_NORMAL);
 		regularChestCart.setItem(2, new ItemStack(Items.COAL));
 		regularChestCart.setItem(5, new ItemStack(Items.IRON_INGOT));
 
@@ -90,7 +90,7 @@ public class SpectatorScanTest {
 		regularChest.setItem(3, new ItemStack(Items.FLINT));
 		regularChest.setItem(7, new ItemStack(Items.IRON_INGOT));
 
-		var donkey = helper.spawnWithNoFreeWill(EntityType.DONKEY, POSITION_DONKEY);
+		var donkey = helper.spawnWithNoFreeWill(EntityTypes.DONKEY, POSITION_DONKEY);
 		donkey.setTamed(true);
 		donkey.setChest(true);
 		((AbstractHorseAccessor) donkey).botania_createInventory();
@@ -98,15 +98,15 @@ public class SpectatorScanTest {
 		donkeyInventory.setItem(3, new ItemStack(Items.COAL));
 		donkeyInventory.setItem(4, new ItemStack(Items.IRON_INGOT));
 
-		var allay = helper.spawnWithNoFreeWill(EntityType.ALLAY, POSITION_ALLAY);
+		var allay = helper.spawnWithNoFreeWill(EntityTypes.ALLAY, POSITION_ALLAY);
 		allay.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_INGOT));
 
 		// set loot tables
-		var lootChestCart = helper.spawn(EntityType.CHEST_MINECART, POSITION_CART_LOOT);
-		lootChestCart.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(LOOT_TABLE_CART)), 1L);
+		var lootChestCart = helper.spawn(EntityTypes.CHEST_MINECART, POSITION_CART_LOOT);
+		lootChestCart.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(LOOT_TABLE_CART)), 1L);
 
 		var lootChest = TestingUtil.assertBlockEntity(helper, POSITION_CHEST_LOOT, BlockEntityType.CHEST);
-		lootChest.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(LOOT_TABLE_CHEST)), 1L);
+		lootChest.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(LOOT_TABLE_CHEST)), 1L);
 
 		// set up player
 		var player = helper.makeMockPlayer(GameType.CREATIVE);

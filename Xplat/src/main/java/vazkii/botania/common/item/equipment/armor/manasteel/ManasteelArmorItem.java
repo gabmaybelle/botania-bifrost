@@ -14,7 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -39,12 +39,12 @@ public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
 	}
 
 	@SoftImplement("IItemExtension")
-	public final ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-		return hasPhantomInk(stack) ? ResourceLocation.parse(ResourcesLib.MODEL_INVISIBLE_ARMOR) : getArmorTextureAfterInk(stack, slot);
+	public final Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
+		return hasPhantomInk(stack) ? Identifier.parse(ResourcesLib.MODEL_INVISIBLE_ARMOR) : getArmorTextureAfterInk(stack, slot);
 	}
 
-	public ResourceLocation getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
-		return ResourceLocation.parse(ResourcesLib.MODEL_MANASTEEL_NEW);
+	public Identifier getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
+		return Identifier.parse(ResourcesLib.MODEL_MANASTEEL_NEW);
 	}
 
 	@Override

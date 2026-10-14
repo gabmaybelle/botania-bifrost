@@ -14,11 +14,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.RegistryHelper;
@@ -97,7 +97,7 @@ public class BotaniaArmorMaterials {
 			enummap.put(armoritem$type, defense.get(armoritem$type));
 		}
 
-		ResourceLocation id = botaniaRL(name);
+		Identifier id = botaniaRL(name);
 		RegistryHelper.HolderProxy<ArmorMaterial> proxy = RegistryHelper.lazyHolderProxy(Registries.ARMOR_MATERIAL, id,
 				() -> new ArmorMaterial(enummap, enchantmentValue, equipSound, repairIngredient, layers, toughness, 0));
 		ALL.add(proxy);

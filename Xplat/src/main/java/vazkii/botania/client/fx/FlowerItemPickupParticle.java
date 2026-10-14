@@ -69,7 +69,7 @@ public class FlowerItemPickupParticle extends Particle {
 	public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
 		float time = ((float) this.life + partialTicks) / LIFE_TIME;
 		time *= time;
-		Vec3 targetPos = target.getCenter().add(level.getBlockState(target).getOffset(level, target));
+		Vec3 targetPos = Vec3.atCenterOf(target).add(level.getBlockState(target).getOffset(level, target));
 		double xx = Mth.lerp(time, this.itemEntity.getX(), targetPos.x);
 		double yy = Mth.lerp(time, this.itemEntity.getY(), targetPos.y);
 		double zz = Mth.lerp(time, this.itemEntity.getZ(), targetPos.z);

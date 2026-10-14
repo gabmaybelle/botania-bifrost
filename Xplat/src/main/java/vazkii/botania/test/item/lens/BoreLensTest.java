@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.DelegatingConfigAccess;
 import vazkii.botania.test.TestingUtil;
 import vazkii.botania.xplat.BotaniaConfig;
@@ -115,47 +116,47 @@ public class BoreLensTest {
 		}
 	}
 
-	@GameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
 	public void testSnow(GameTestHelper helper) {
 		testMine(helper, Blocks.SNOW_BLOCK, true);
 	}
 
-	@GameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
 	public void testStone(GameTestHelper helper) {
 		testMine(helper, Blocks.STONE, true);
 	}
 
-	@GameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
 	public void testLog(GameTestHelper helper) {
 		testMine(helper, Blocks.OAK_LOG, true);
 	}
 
-	@GameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = WOOD_LEVEL_BATCH)
 	public void testIronBlockTooLow(GameTestHelper helper) {
 		testMine(helper, Blocks.IRON_BLOCK, false);
 	}
 
-	@GameTest(template = ARENA, batch = STONE_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = STONE_LEVEL_BATCH)
 	public void testIronBlock(GameTestHelper helper) {
 		testMine(helper, Blocks.IRON_BLOCK, true);
 	}
 
-	@GameTest(template = ARENA, batch = STONE_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = STONE_LEVEL_BATCH)
 	public void testGoldOreTooLow(GameTestHelper helper) {
 		testMine(helper, Blocks.GOLD_ORE, false);
 	}
 
-	@GameTest(template = ARENA, batch = IRON_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = IRON_LEVEL_BATCH)
 	public void testGoldOre(GameTestHelper helper) {
 		testMine(helper, Blocks.GOLD_ORE, true);
 	}
 
-	@GameTest(template = ARENA, batch = IRON_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = IRON_LEVEL_BATCH)
 	public void testObsidianTooLow(GameTestHelper helper) {
 		testMine(helper, Blocks.OBSIDIAN, false);
 	}
 
-	@GameTest(template = ARENA, batch = DIAMOND_LEVEL_BATCH)
+	@BotaniaGameTest(template = ARENA, batch = DIAMOND_LEVEL_BATCH)
 	public void testObsidian(GameTestHelper helper) {
 		testMine(helper, Blocks.OBSIDIAN, true);
 	}

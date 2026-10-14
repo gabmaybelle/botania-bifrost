@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -212,7 +212,7 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 				BuiltInRegistries.ITEM.getKey(output.asItem()).toString(), output, input, mana);
 	}
 
-	private static void normal(RecipeOutput consumer, ResourceLocation id, @Nullable String group, ItemLike output, Ingredient input, int mana) {
+	private static void normal(RecipeOutput consumer, Identifier id, @Nullable String group, ItemLike output, Ingredient input, int mana) {
 		consumer.accept(id, new ManaInfusionRecipe(new ItemStack(output), input, mana, group, null), null);
 	}
 
@@ -260,7 +260,7 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 	}
 
 	protected void deconstructLossy(RecipeOutput consumer, ItemLike output, TagKey<Item> input) {
-		deconstructLossy(consumer, input.location().getPath(), output, 3, Ingredient.of(input));
+		deconstructLossy(consumer, input.identifier().getPath(), output, 3, Ingredient.of(input));
 	}
 
 	protected void deconstructLossy(RecipeOutput consumer, ItemLike output, int count, ItemLike input) {
@@ -277,7 +277,7 @@ public class ManaInfusionProvider extends FabricRecipeProvider {
 				(int) Math.round(Math.sqrt(count) * baseMana), group);
 	}
 
-	protected static ResourceLocation id(String s) {
+	protected static Identifier id(String s) {
 		return botaniaRL("mana_infusion/" + s);
 	}
 

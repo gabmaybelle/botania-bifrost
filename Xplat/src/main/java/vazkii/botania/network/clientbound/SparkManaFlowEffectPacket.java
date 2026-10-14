@@ -12,7 +12,7 @@ package vazkii.botania.network.clientbound;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -59,9 +59,9 @@ public record SparkManaFlowEffectPacket(int sparkId1, int sparkId2, DyeColor net
 
 			Vec3 motion = receiverVec.subtract(thisVec).scale(0.04);
 			int color = packet.network().getTextureDiffuseColor();
-			float r = FastColor.ARGB32.red(color) / 255f;
-			float g = FastColor.ARGB32.green(color) / 255f;
-			float b = FastColor.ARGB32.blue(color) / 255f;
+			float r = ARGB.red(color) / 255f;
+			float g = ARGB.green(color) / 255f;
+			float b = ARGB.blue(color) / 255f;
 			if (rng.nextFloat() < 0.25f) {
 				r += 0.2f * (float) rng.nextGaussian();
 				g += 0.2f * (float) rng.nextGaussian();

@@ -18,12 +18,13 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class TargetBlockTest {
 	public static final String ARENA = "botania:block/target_block_trigger";
 
-	@GameTest(template = ARENA)
+	@BotaniaGameTest(template = ARENA)
 	public void testFakeBurstNoShooty(GameTestHelper helper) {
 		var spreaderPos = new BlockPos(5, 2, 5);
 		var lampPos = new BlockPos(3, 3, 5);

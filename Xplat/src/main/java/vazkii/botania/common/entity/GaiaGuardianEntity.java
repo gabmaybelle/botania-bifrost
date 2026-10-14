@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.Pair;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
@@ -28,8 +28,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -44,11 +44,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -194,16 +194,16 @@ public class GaiaGuardianEntity extends Mob {
 			new BlockPos(-PYLON_OFFSET, 1, -PYLON_OFFSET)
 	);
 
-	private static final List<ResourceLocation> CHEATY_BLOCKS = Arrays.asList(
-			ResourceLocation.fromNamespaceAndPath("openblocks", "beartrap"),
-			ResourceLocation.fromNamespaceAndPath("thaumictinkerer", "magnet")
+	private static final List<Identifier> CHEATY_BLOCKS = Arrays.asList(
+			Identifier.fromNamespaceAndPath("openblocks", "beartrap"),
+			Identifier.fromNamespaceAndPath("thaumictinkerer", "magnet")
 	);
 
 	private static final WeakHashMap<GaiaGuardianEntity, GaiaFightData> SERVER_GAIA_FIGHTS = new WeakHashMap<>();
 	private static final WeakHashMap<GaiaGuardianEntity, GaiaFightData> CLIENT_GAIA_FIGHTS = new WeakHashMap<>();
 	private static final Supplier<MobSpawnData> FALLBACK_MOB_SPAWN_DATA = Suppliers.memoize(
 			() -> MobSpawnData.entityWeight(BotaniaEntities.PIXIE, 1).build());
-	private static final ResourceLocation ATTRIBUTE_MODIFIER_ID = botaniaRL("gaia_fight_modifier");
+	private static final Identifier ATTRIBUTE_MODIFIER_ID = botaniaRL("gaia_fight_modifier");
 
 	// this should never collide with the /team command, since space is not allowed in scoreboard team names
 	public static final String GAIA_FIGHT_TEAM_NAME = "Gaia-spawned Monsters";
@@ -333,7 +333,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		e.playSound(BotaniaSounds.GAIA_SUMMON, 1F, 1F);
-		e.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(e.blockPosition()), MobSpawnType.EVENT, null);
+		e.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(e.blockPosition()), EntitySpawnReason.EVENT, null);
 		world.addFreshEntity(e);
 
 		e.updateGaiaFight();
@@ -768,13 +768,13 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	private static boolean anyActiveArenasAround(Level world, BlockPos source) {
-		var arena = getNearestGaiaFight(world, source.getCenter());
+		var arena = getNearestGaiaFight(world, Vec3.atCenterOf(source));
 		return arena != null
 				&& MathHelper.distSqr(arena.second().arenaCenter(), source) < DOUBLE_ARENA_PLAYER_RANGE_SQUARED;
 	}
 
 	private void particles() {
-		Vec3 centerPos = source.getCenter();
+		Vec3 centerPos = Vec3.atCenterOf(source);
 		for (int i = 0; i < 360; i += 8) {
 			float r = 0.6F;
 			float g = 0F;
@@ -858,7 +858,7 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	private void keepInsideArena(Player player) {
-		Vec3 center = source.getCenter();
+		Vec3 center = Vec3.atCenterOf(source);
 		Vec3 playerPos = player.position();
 		double distSq = center.distanceToSqr(playerPos);
 		if (distSq > ARENA_RANGE * ARENA_RANGE) {
@@ -903,7 +903,7 @@ public class GaiaGuardianEntity extends Mob {
 
 						applyAttributesAndEffects(pickedMobType, mob);
 
-						mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+						mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 						LooniumBlockEntity.equipSpawnedMob(serverLevel, pickedMobType, mob);
 
 						// in case the mob spawned with a vehicle or passenger(s), ensure those don't drop unexpected loot
@@ -944,7 +944,7 @@ public class GaiaGuardianEntity extends Mob {
 						pixie.setProps(players.get(random.nextInt(players.size())), this, 8);
 						pixie.setPos(getRandomX(2), getY() + 2, getRandomZ(2));
 						pixie.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(pixie.blockPosition()),
-								MobSpawnType.MOB_SUMMONED, null);
+								EntitySpawnReason.MOB_SUMMONED, null);
 						serverLevel.addFreshEntity(pixie);
 					}
 				}
@@ -1109,7 +1109,7 @@ public class GaiaGuardianEntity extends Mob {
 								pixie.setPos(getRandomX(1), getY() + 2, getRandomZ(1));
 								pixie.finalizeSpawn((ServerLevelAccessor) level(),
 										level().getCurrentDifficultyAt(pixie.blockPosition()),
-										MobSpawnType.MOB_SUMMONED, null);
+										EntitySpawnReason.MOB_SUMMONED, null);
 								level().addFreshEntity(pixie);
 							}
 						}

@@ -14,7 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class FabricItemTagProvider extends ItemTagProvider {
 
-	private static TagKey<Item> itemTag(ResourceLocation location) {
+	private static TagKey<Item> itemTag(Identifier location) {
 		return TagKey.create(Registries.ITEM, location);
 	}
 
@@ -117,7 +117,7 @@ public class FabricItemTagProvider extends ItemTagProvider {
 	}
 
 	private void generateCompatTags() {
-		this.tag(itemTag(ResourceLocation.fromNamespaceAndPath("modern_industrialization", "replicator_blacklist")))
+		this.tag(itemTag(Identifier.fromNamespaceAndPath("modern_industrialization", "replicator_blacklist")))
 				.add(DiceOfFateItem.RELIC_STACKS.get().stream().map(ItemStack::getItem).toArray(Item[]::new))
 				.add(
 						BotaniaItems.DICE_OF_FATE, BotaniaItems.MANA_TABLET, BotaniaItems.BAND_OF_MANA,
@@ -128,6 +128,6 @@ public class FabricItemTagProvider extends ItemTagProvider {
 	}
 
 	private static TagKey<Item> accessory(String name) {
-		return itemTag(ResourceLocation.fromNamespaceAndPath("trinkets", name));
+		return itemTag(Identifier.fromNamespaceAndPath("trinkets", name));
 	}
 }

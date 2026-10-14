@@ -8,7 +8,7 @@
  */
 package vazkii.botania.common.item.equipment.bauble;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -18,14 +18,14 @@ import vazkii.botania.common.component.BotaniaDataComponents;
 
 public class PlanestridersSashItem extends SojournersSashItem {
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_SPEED_UP_BELT);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_SPEED_UP_BELT);
 
 	public PlanestridersSashItem(Properties props) {
 		super(props, 0F, 0.2F, 2F);
 	}
 
 	@Override
-	public ResourceLocation getRenderTexture() {
+	public Identifier getRenderTexture() {
 		return texture;
 	}
 

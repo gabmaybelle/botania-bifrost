@@ -11,7 +11,7 @@ package vazkii.botania.api.attachment;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ import java.util.function.Supplier;
  * @param <T> Type of the attached data.
  */
 public final class DataHolderId<T> extends DataIdBase<T> {
-	public DataHolderId(ResourceLocation id, Codec<T> codec) {
+	public DataHolderId(Identifier id, Codec<T> codec) {
 		super(id, codec);
 	}
 

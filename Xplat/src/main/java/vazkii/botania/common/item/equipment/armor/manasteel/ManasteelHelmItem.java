@@ -10,8 +10,8 @@ package vazkii.botania.common.item.equipment.armor.manasteel;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -14,7 +14,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -46,14 +45,14 @@ public class EnderHandItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack enderHandStack = player.getItemInHand(hand);
 		if (ManaItemHandler.instance().requestManaExact(enderHandStack, player, COST_SELF, false)) {
 			openEnderChestMenu(player, hand, enderHandStack, player.getEnderChestInventory(), COST_SELF,
 					Component.translatable("container.enderchest"));
-			return InteractionResultHolder.sidedSuccess(enderHandStack, world.isClientSide());
+			return InteractionResult.SUCCESS.heldItemTransformedTo(enderHandStack);
 		}
-		return InteractionResultHolder.pass(enderHandStack);
+		return InteractionResult.PASS;
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class EnderHandItem extends Item {
 				&& ManaItemHandler.instance().requestManaExact(enderHandStack, player, COST_OTHER, false)) {
 			openEnderChestMenu(player, hand, enderHandStack, other.getEnderChestInventory(), COST_OTHER,
 					Component.translatable("botaniamisc.enderPickpocketing", other.getDisplayName()));
-			return InteractionResult.sidedSuccess(player.level().isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;

@@ -9,7 +9,7 @@
 
 package vazkii.botania.client.integration.shared;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 import vazkii.botania.common.proxy.Proxy;
 

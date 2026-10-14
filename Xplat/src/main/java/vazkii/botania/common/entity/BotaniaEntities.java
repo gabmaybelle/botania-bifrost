@@ -8,7 +8,7 @@
  */
 package vazkii.botania.common.entity;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -129,7 +129,7 @@ public final class BotaniaEntities {
 			.updateInterval(Integer.MAX_VALUE)
 			.build(LibEntityNames.DILUTED_ENDER_ESSENCE_CLOUD.toString());
 
-	public static void registerEntities(BiConsumer<EntityType<?>, ResourceLocation> r) {
+	public static void registerEntities(BiConsumer<EntityType<?>, Identifier> r) {
 		r.accept(MANA_BURST, LibEntityNames.MANA_BURST);
 		r.accept(PIXIE, LibEntityNames.PIXIE);
 		r.accept(FLAME_RING, LibEntityNames.FLAME_RING);

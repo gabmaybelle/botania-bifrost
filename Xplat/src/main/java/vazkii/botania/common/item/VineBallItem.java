@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
@@ -30,7 +30,7 @@ public class VineBallItem extends Item implements ProjectileItem {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		if (!player.hasInfiniteMaterials()) {
 			player.getItemInHand(hand).shrink(1);
 		}
@@ -43,7 +43,7 @@ public class VineBallItem extends Item implements ProjectileItem {
 			world.addFreshEntity(ball);
 		}
 
-		return InteractionResultHolder.success(player.getItemInHand(hand));
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

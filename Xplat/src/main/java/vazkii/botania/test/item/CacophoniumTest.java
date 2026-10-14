@@ -9,13 +9,12 @@
 package vazkii.botania.test.item;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -27,18 +26,19 @@ import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.CacophoniumBlockEntity;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.CacophoniumItem;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 // https://github.com/williewillus/botania-fabric-issues/issues/92
 public class CacophoniumTest {
-	@GameTest(template = "botania:block/cacophonium")
+	@BotaniaGameTest(template = "botania:block/cacophonium")
 	public void testCacophonium(GameTestHelper helper) {
 		BlockPos cowPos = new BlockPos(1, 2, 1);
 		BlockPos noteBlockPos = new BlockPos(1, 2, 3);
 		helper.assertBlockPresent(Blocks.NOTE_BLOCK, noteBlockPos);
 
 		Player player = helper.makeMockPlayer(GameType.CREATIVE);
-		Cow cow = helper.spawnWithNoFreeWill(EntityType.COW, cowPos);
+		Cow cow = helper.spawnWithNoFreeWill(EntityTypes.COW, cowPos);
 
 		//Give a cacophonium to the player.
 		player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BotaniaItems.CACOPHONIUM));

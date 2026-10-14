@@ -42,7 +42,7 @@ public class CorporeaIndexBlock extends BotaniaWaterloggedBlock implements Entit
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override

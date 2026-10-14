@@ -11,7 +11,7 @@ package vazkii.botania.common.internal_caps;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +26,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public record LooniumDrop(ItemStack stack) {
 	public static final Codec<LooniumDrop> CODEC = ItemStack.CODEC.xmap(LooniumDrop::new, LooniumDrop::stack);
-	public static final ResourceLocation ID = botaniaRL("loonium_drop");
+	public static final Identifier ID = botaniaRL("loonium_drop");
 	public static final DataHolderId<LooniumDrop> HOLDER = new DataHolderId<>(ID, CODEC);
 
 	@Override

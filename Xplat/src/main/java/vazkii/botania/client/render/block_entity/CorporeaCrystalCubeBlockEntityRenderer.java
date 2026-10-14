@@ -19,8 +19,8 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
@@ -40,7 +40,7 @@ import java.util.Objects;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRenderer<CorporeaCrystalCubeBlockEntity> {
-	public static final ResourceLocation CUBE_MODEL_ID = botaniaRL("block/corporea_crystal_cube_glass");
+	public static final Identifier CUBE_MODEL_ID = botaniaRL("block/corporea_crystal_cube_glass");
 
 	@Nullable
 	private ItemEntity entity = null;
@@ -110,8 +110,8 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 				}
 			}
 			int alpha = 160;
-			int colorText = FastColor.ARGB32.color(alpha, color);
-			int colorShade = FastColor.ARGB32.color(alpha, (color & 0xfcfcfc) >> 2);
+			int colorText = ARGB.color(alpha, color);
+			int colorShade = ARGB.color(alpha, (color & 0xfcfcfc) >> 2);
 
 			float s = 1F / 64F;
 			ms.scale(s, s, s);

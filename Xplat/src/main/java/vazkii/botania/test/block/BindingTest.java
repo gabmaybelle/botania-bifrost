@@ -25,6 +25,7 @@ import vazkii.botania.api.block_entity.FunctionalFlowerBlockEntity;
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 import java.util.Arrays;
@@ -35,12 +36,12 @@ public class BindingTest {
 	//Empty 33x33x33 structure
 	private static final String TEMPLATE = "botania:block/flower_binding_arena";
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void functionalFlowerAutoBindTest(GameTestHelper helper) {
 		autobindTest(helper, BotaniaBlocks.CREATIVE_MANA_POOL, BotaniaBlocks.FLOATING_CLAYCONIA, 10);
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void generatingFlowerAutoBindTest(GameTestHelper helper) {
 		autobindTest(helper, BotaniaBlocks.MANA_SPREADER, BotaniaBlocks.FLOATING_ENDOFLAME, 6);
 	}
@@ -60,12 +61,12 @@ public class BindingTest {
 		});
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void functionalFlowerManualBindTest(GameTestHelper helper) {
 		manualBindTest(helper, BotaniaBlocks.CREATIVE_MANA_POOL, BotaniaBlocks.FLOATING_CLAYCONIA, 10);
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void generatingFlowerManualBindTest(GameTestHelper helper) {
 		manualBindTest(helper, BotaniaBlocks.MANA_SPREADER, BotaniaBlocks.FLOATING_ENDOFLAME, 6);
 	}
@@ -91,12 +92,12 @@ public class BindingTest {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void functionalFlowerObedienceStick(GameTestHelper helper) {
 		obedienceStickTest(helper, BotaniaBlocks.CREATIVE_MANA_POOL, BotaniaBlocks.FLOATING_CLAYCONIA, 10);
 	}
 
-	@GameTest(template = TEMPLATE)
+	@BotaniaGameTest(template = TEMPLATE)
 	public void generatingFlowerObedienceStick(GameTestHelper helper) {
 		obedienceStickTest(helper, BotaniaBlocks.MANA_SPREADER, BotaniaBlocks.FLOATING_ENDOFLAME, 6);
 	}

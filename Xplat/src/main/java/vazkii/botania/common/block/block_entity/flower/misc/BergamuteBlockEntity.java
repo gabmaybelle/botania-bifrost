@@ -11,7 +11,7 @@ package vazkii.botania.common.block.block_entity.flower.misc;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -86,7 +86,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 		BlockPos destBlockPos = BlockPos.containing(destPos);
 
 		// vibration occlusions assume block centers as source and target positions, so do that here as well
-		Vec3 sourceCenterPos = sourceBlockPos.getCenter();
+		Vec3 sourceCenterPos = Vec3.atCenterOf(sourceBlockPos);
 		if (sourceBlockPos.equals(destBlockPos)) {
 			// trivial case: source and dest are in the same block, check Bergamute proximity to that block's center
 			return isBergamuteNearby(level, sourceCenterPos.x, sourceCenterPos.y, sourceCenterPos.z);
@@ -95,7 +95,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 		// find the point on the line between source and destination that is closest to each Bergamute,
 		// and check whether it's actually in range of that Bergamute
 		// (based on https://stackoverflow.com/questions/51905268/how-to-find-closest-point-on-line)
-		Vec3 destCenterPos = destBlockPos.getCenter();
+		Vec3 destCenterPos = Vec3.atCenterOf(destBlockPos);
 		Vec3 vibrationTravelVector = sourceCenterPos.vectorTo(destCenterPos);
 		double vibrationTravelDist = vibrationTravelVector.length();
 		Vec3 vibrationTravelDir = vibrationTravelVector.normalize();
@@ -105,7 +105,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 				continue;
 			}
 
-			Vec3 flowerPos = f.getEffectivePos().getCenter();
+			Vec3 flowerPos = Vec3.atCenterOf(f.getEffectivePos());
 			Vec3 vecSourceToFlower = sourceCenterPos.vectorTo(flowerPos);
 			double travelPosition = Math.clamp(vibrationTravelDir.dot(vecSourceToFlower), 0, vibrationTravelDist);
 			Vec3 closestPos = sourceCenterPos.add(vibrationTravelDir.scale(travelPosition));
@@ -119,9 +119,9 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 
 	public static void particle(BergamuteBlockEntity berg) {
 		int color = ManaPoolBlockEntity.PARTICLE_COLOR;
-		float red = FastColor.ARGB32.red(color) / 255f;
-		float green = FastColor.ARGB32.green(color) / 255f;
-		float blue = FastColor.ARGB32.blue(color) / 255f;
+		float red = ARGB.red(color) / 255f;
+		float green = ARGB.green(color) / 255f;
+		float blue = ARGB.blue(color) / 255f;
 		SparkleParticleData data = SparkleParticleData.sparkle((float) Math.random() * 0.8f + 0.2f, red, green, blue, 5);
 		berg.emitParticle(data, 0.3 + Math.random() * 0.5, 0.5 + Math.random() * 0.5, 0.3 + Math.random() * 0.5, 0, 0, 0);
 	}

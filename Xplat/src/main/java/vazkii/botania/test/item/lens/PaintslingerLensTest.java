@@ -11,7 +11,6 @@ package vazkii.botania.test.item.lens;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,12 +20,13 @@ import net.minecraft.world.level.block.CandleBlock;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 public class PaintslingerLensTest {
 
 	// TODO: test structure data needs upgrading; maybe useful as first datafixer test, but optional result for now
-	@GameTest(template = "botania:item/lens/paintslinger_lens", required = false)
+	@BotaniaGameTest(template = "botania:item/lens/paintslinger_lens", required = false)
 	public void testPainting(GameTestHelper helper) {
 		BlockPos spreaderPos = new BlockPos(2, 5, 2);
 		BlockPos buttonPos = new BlockPos(2, 5, 3);

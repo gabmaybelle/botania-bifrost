@@ -13,8 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -38,7 +38,7 @@ public class PinkinatorItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		int range = 16;
 		List<WitherBoss> withers = world.getEntitiesOfClass(WitherBoss.class, new AABB(player.getX() - range, player.getY() - range, player.getZ() - range, player.getX() + range, player.getY() + range, player.getZ() + range));
@@ -53,18 +53,18 @@ public class PinkinatorItem extends Item {
 						pink.setCustomName(wither.getCustomName());
 						pink.setCustomNameVisible(wither.isCustomNameVisible());
 					}
-					pink.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(pink.blockPosition()), MobSpawnType.CONVERSION, null);
+					pink.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(pink.blockPosition()), EntitySpawnReason.CONVERSION, null);
 					world.addFreshEntity(pink);
 					pink.spawnAnim();
 					pink.playSound(BotaniaSounds.THE_PINKINATOR, 1F, (1F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 					UseItemSuccessTrigger.INSTANCE.trigger((ServerPlayer) player, stack, (ServerLevel) world, player.getX(), player.getY(), player.getZ());
 					stack.shrink(1);
 				}
-				return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@Override

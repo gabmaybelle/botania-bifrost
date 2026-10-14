@@ -9,7 +9,7 @@
 
 package vazkii.botania.common.internal_caps;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.api.attachment.DataHolderId;
@@ -25,7 +25,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public final class KeptItems {
 
-	public static final ResourceLocation ID = botaniaRL("kept_items");
+	public static final Identifier ID = botaniaRL("kept_items");
 	public static final DataHolderId<List<ItemStack>> HOLDER = new DataHolderId<>(ID, ItemStack.CODEC.listOf());
 
 	private KeptItems() {}

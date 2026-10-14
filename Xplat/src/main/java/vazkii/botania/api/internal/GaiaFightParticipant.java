@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +35,7 @@ public class GaiaFightParticipant {
 					BlockPos.CODEC.fieldOf("sourcePos").forGetter(GaiaFightParticipant::getSourcePos)
 			).apply(instance, GaiaFightParticipant::new)
 	);
-	public static final net.minecraft.resources.ResourceLocation ID = botaniaRL("gaia_fight_participant");
+	public static final net.minecraft.resources.Identifier ID = botaniaRL("gaia_fight_participant");
 	public static final DataHolderId<GaiaFightParticipant> HOLDER = new DataHolderId<>(ID, CODEC);
 
 	private final UUID uuid;
@@ -56,7 +57,7 @@ public class GaiaFightParticipant {
 	}
 
 	public boolean isInBounds(Mob mob) {
-		return mob.position().closerThan(this.sourcePos.getCenter(), GaiaGuardianEntity.ARENA_MOB_RANGE);
+		return mob.position().closerThan(Vec3.atCenterOf(this.sourcePos), GaiaGuardianEntity.ARENA_MOB_RANGE);
 	}
 
 	public boolean isGaiaGuardianAlive(ServerLevel serverLevel) {

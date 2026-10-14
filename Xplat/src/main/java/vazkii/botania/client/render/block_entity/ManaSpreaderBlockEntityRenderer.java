@@ -18,8 +18,8 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<ManaSpreaderBlockEntity> {
-	public static final Map<DyeColor, ResourceLocation> WOOL_PADDING_IDS = new EnumMap<>(
+	public static final Map<DyeColor, Identifier> WOOL_PADDING_IDS = new EnumMap<>(
 			ColorHelper.supportedColors().collect(Collectors.toMap(Function.identity(),
 					color -> botaniaRL("block/" + color.getSerializedName() + "_spreader_padding"))));
 
@@ -73,9 +73,9 @@ public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<Mana
 		ManaSpreaderBlock spreaderBlock = spreader.getSpreaderBlock();
 		if (spreaderBlock.isRainbowRendered()) {
 			int color = Mth.hsvToRgb((time % 180) / 180, 0.4F, 0.9F);
-			r = FastColor.ARGB32.red(color) / 255F;
-			g = FastColor.ARGB32.green(color) / 255F;
-			b = FastColor.ARGB32.blue(color) / 255F;
+			r = ARGB.red(color) / 255F;
+			g = ARGB.green(color) / 255F;
+			b = ARGB.blue(color) / 255F;
 		}
 
 		VertexConsumer buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(spreader.getBlockState(), false));
@@ -135,17 +135,17 @@ public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<Mana
 	}
 
 	private BakedModel getCoreModel(ManaSpreaderBlockEntity tile) {
-		ResourceLocation coreModelId = tile.getSpreaderBlock().getCoreModelId();
+		Identifier coreModelId = tile.getSpreaderBlock().getCoreModelId();
 		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(coreModelId));
 	}
 
 	private BakedModel getPaddingModel(DyeColor color) {
-		ResourceLocation paddingId = WOOL_PADDING_IDS.get(color);
+		Identifier paddingId = WOOL_PADDING_IDS.get(color);
 		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(paddingId));
 	}
 
 	private BakedModel getScaffoldingModel(ManaSpreaderBlockEntity tile) {
-		ResourceLocation scaffoldingModelId = tile.getSpreaderBlock().getScaffoldingModelId();
+		Identifier scaffoldingModelId = tile.getSpreaderBlock().getScaffoldingModelId();
 		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(scaffoldingModelId));
 	}
 }

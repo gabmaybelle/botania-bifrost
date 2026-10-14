@@ -11,7 +11,7 @@ package vazkii.botania.common.block.mana;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -52,7 +52,7 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		RunicAltarBlockEntity altar = level.getBlockEntity(pos, BotaniaBlockEntities.RUNIC_ALTAR).orElseThrow();
 		if (stack.isEmpty()) {
 			if (altar.canAddLastRecipe()) {
@@ -60,18 +60,18 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 			} else if (!altar.isEmpty() && altar.manaToGet == 0) {
 				InventoryHelper.withdrawFromInventory(altar, player);
 				level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
-				return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
 		boolean result = altar.addItem(player, stack, hand);
 		level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
 		if (result) {
-			return ItemInteractionResult.sidedSuccess(level.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

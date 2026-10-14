@@ -18,8 +18,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -274,7 +274,7 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 			tag.putInt(TAG_SPREADER_X, coords.getX());
 			tag.putInt(TAG_SPREADER_Y, coords.getY());
 			tag.putInt(TAG_SPREADER_Z, coords.getZ());
-			tag.putString(TAG_SPREADER_DIM, sourcePos.get().dimension().location().toString());
+			tag.putString(TAG_SPREADER_DIM, sourcePos.get().dimension().identifier().toString());
 		}
 
 		if (lastCollision != null) {
@@ -331,8 +331,8 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 				setBurstSourcePosition(null);
 			} else {
 				BlockPos sourceCoords = new BlockPos(x, y, z);
-				ResourceLocation dim = cmp.contains(TAG_SPREADER_DIM)
-						? ResourceLocation.tryParse(cmp.getString(TAG_SPREADER_DIM))
+				Identifier dim = cmp.contains(TAG_SPREADER_DIM)
+						? Identifier.tryParse(cmp.getString(TAG_SPREADER_DIM))
 						: null;
 				setBurstSourcePosition(
 						GlobalPos.of(dim != null ? ResourceKey.create(Registries.DIMENSION, dim) : level().dimension(),

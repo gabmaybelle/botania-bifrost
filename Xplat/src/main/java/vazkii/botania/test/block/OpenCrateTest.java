@@ -9,29 +9,31 @@
 package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 
+import vazkii.botania.test.BotaniaGameTest;
+
 public class OpenCrateTest {
-	@GameTest(template = "botania:block/opencrate_basic")
+	@BotaniaGameTest(template = "botania:block/opencrate_basic")
 	public void testBasic(GameTestHelper helper) {
 		helper.pullLever(new BlockPos(0, 4, 0));
 		BlockPos belowCrate = new BlockPos(2, 2, 1);
 		helper.succeedWhen(() -> helper.assertItemEntityCountIs(Items.STICK, belowCrate, 0, 8));
 	}
 
-	@GameTest(template = "botania:block/opencrate_blocked")
+	@BotaniaGameTest(template = "botania:block/opencrate_blocked")
 	public void testBlocked(GameTestHelper helper) {
 		helper.startSequence().thenExecute(() -> helper.pullLever(new BlockPos(0, 4, 0)))
-				.thenExecuteFor(70, () -> helper.assertEntityNotPresent(EntityType.ITEM))
+				.thenExecuteFor(70, () -> helper.assertEntityNotPresent(EntityTypes.ITEM))
 				.thenSucceed();
 	}
 
-	@GameTest(template = "botania:block/opencrate_snug")
+	@BotaniaGameTest(template = "botania:block/opencrate_snug")
 	public void testSnug(GameTestHelper helper) {
 		helper.pullLever(new BlockPos(0, 4, 0));
 		BlockPos belowCrate = new BlockPos(2, 2, 1);
@@ -39,7 +41,7 @@ public class OpenCrateTest {
 			var be = helper.getBlockEntity(belowCrate);
 			if (!(be instanceof HopperBlockEntity hopper
 					&& hopper.countItem(Items.STICK) == 8)) {
-				throw new GameTestAssertException("Sticks not in lower hopper");
+				throw new GameTestAssertException(Component.literal("Sticks not in lower hopper"), helper.getTick());
 			}
 		});
 	}

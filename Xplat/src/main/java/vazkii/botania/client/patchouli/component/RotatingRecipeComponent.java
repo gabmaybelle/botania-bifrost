@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
@@ -40,7 +40,7 @@ public class RotatingRecipeComponent extends RotatingItemListComponentBase {
 		Level world = Minecraft.getInstance().level;
 		if ("runic_altar".equals(recipeType)) {
 			var recipe = BotaniaRecipeTypes.getRecipe(world,
-					ResourceLocation.parse(recipeName), BotaniaRecipeTypes.RUNIC_ALTAR_TYPE
+					Identifier.parse(recipeName), BotaniaRecipeTypes.RUNIC_ALTAR_TYPE
 			);
 			if (recipe.isEmpty()) {
 				return ImmutableList.of();
@@ -50,7 +50,7 @@ public class RotatingRecipeComponent extends RotatingItemListComponentBase {
 			return NonNullList.of(Ingredient.EMPTY, ingredients.toArray(Ingredient[]::new));
 		} else if ("petal_apothecary".equals(recipeType)) {
 			var recipe = BotaniaRecipeTypes.getRecipe(world,
-					ResourceLocation.parse(recipeName), BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE
+					Identifier.parse(recipeName), BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE
 			);
 			return recipe.isPresent() ? recipe.get().value().getIngredients() : ImmutableList.of();
 		} else {

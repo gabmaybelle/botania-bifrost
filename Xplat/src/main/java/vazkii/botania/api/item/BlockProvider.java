@@ -8,7 +8,7 @@
  */
 package vazkii.botania.api.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
@@ -27,7 +27,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
  */
 public interface BlockProvider {
 
-	ResourceLocation ID = botaniaRL("block_provider");
+	Identifier ID = botaniaRL("block_provider");
 	ItemApiWithContext<BlockProvider, Player> LOOKUP = new ItemApiWithContext<>(ID, BlockProvider.class, Player.class);
 
 	/**

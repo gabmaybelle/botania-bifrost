@@ -11,6 +11,7 @@ package vazkii.botania.common.block.block_entity.flower.generating;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -195,7 +196,7 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		cooldown = componentInput.getOrDefault(BotaniaDataComponents.COOLDOWN, 0);
 	}
 }

@@ -11,10 +11,13 @@ package vazkii.botania.common.advancements;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.LocationPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +27,7 @@ import java.util.Optional;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class AlfheimPortalTrigger extends SimpleCriterionTrigger<AlfheimPortalTrigger.Instance> {
-	public static final ResourceLocation ID = botaniaRL("open_elf_portal");
+	public static final Identifier ID = botaniaRL("open_elf_portal");
 	public static final AlfheimPortalTrigger INSTANCE = new AlfheimPortalTrigger();
 
 	private AlfheimPortalTrigger() {}

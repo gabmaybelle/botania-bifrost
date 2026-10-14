@@ -12,12 +12,12 @@ package vazkii.botania.test.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.MushroomCow;
+import net.minecraft.world.entity.animal.cow.MushroomCow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.level.GameType;
@@ -29,6 +29,7 @@ import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.mixin.MushroomCowAccessor;
+import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class DrumBlockTest {
 	private static final BlockPos POSITION_DRUM = new BlockPos(10, 11, 10);
 	private static final BlockPos POSITION_BERGAMUTE = new BlockPos(11, 2, 11);
 	private static final BlockPos POSITION_MOB = new BlockPos(10, 2, 10);
-	private static final Vec3 VECTOR_MOB = POSITION_MOB.getCenter();
+	private static final Vec3 VECTOR_MOB = Vec3.atCenterOf(POSITION_MOB);
 
 	private static <T extends Mob> T setup(GameTestHelper helper, EntityType<T> entityType, @Nullable Item item) {
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
@@ -64,29 +65,29 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingGoat(GameTestHelper helper) {
-		testMilkingAdultAnimal(helper, EntityType.GOAT, Items.BUCKET, Items.MILK_BUCKET);
+		testMilkingAdultAnimal(helper, EntityTypes.GOAT, Items.BUCKET, Items.MILK_BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingCow(GameTestHelper helper) {
-		testMilkingAdultAnimal(helper, EntityType.COW, Items.BUCKET, Items.MILK_BUCKET);
+		testMilkingAdultAnimal(helper, EntityTypes.COW, Items.BUCKET, Items.MILK_BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingMooshroom(GameTestHelper helper) {
-		testMilkingAdultAnimal(helper, EntityType.MOOSHROOM, Items.BUCKET, Items.MILK_BUCKET);
+		testMilkingAdultAnimal(helper, EntityTypes.MOOSHROOM, Items.BUCKET, Items.MILK_BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingMooshroomSoup(GameTestHelper helper) {
-		testMilkingAdultAnimal(helper, EntityType.MOOSHROOM, Items.BOWL, Items.MUSHROOM_STEW);
+		testMilkingAdultAnimal(helper, EntityTypes.MOOSHROOM, Items.BOWL, Items.MUSHROOM_STEW);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingBrownMooshroomSuspiciousStew(GameTestHelper helper) {
-		var cow = setup(helper, EntityType.MOOSHROOM, Items.BOWL);
+		var cow = setup(helper, EntityTypes.MOOSHROOM, Items.BOWL);
 		cow.setVariant(MushroomCow.MushroomType.BROWN);
 		var cowAccessor = (MushroomCowAccessor) cow;
 		cowAccessor.botania_setStewEffects(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.BLINDNESS, 15))));
@@ -94,7 +95,7 @@ public class DrumBlockTest {
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
 				.thenWaitUntil(() -> helper.assertItemEntityPresent(Items.SUSPICIOUS_STEW, POSITION_MOB, 1.0))
 				.thenExecute(() -> {
-					final var item = helper.getEntities(EntityType.ITEM, POSITION_MOB, 1.0).stream().findFirst();
+					final var item = helper.getEntities(EntityTypes.ITEM, POSITION_MOB, 1.0).stream().findFirst();
 					helper.assertTrue(item.isPresent() && item.get().getItem().is(Items.SUSPICIOUS_STEW), "Item not found or not suspicious stew");
 					final var effects = item.orElseThrow().getItem().get(DataComponents.SUSPICIOUS_STEW_EFFECTS);
 					helper.assertTrue(effects != null, "Missing effects component");
@@ -116,19 +117,19 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingBabyGoat(GameTestHelper helper) {
-		testMilkingBabyAnimal(helper, EntityType.GOAT, Items.BUCKET);
+		testMilkingBabyAnimal(helper, EntityTypes.GOAT, Items.BUCKET);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingBabyMooshroom(GameTestHelper helper) {
-		testMilkingBabyAnimal(helper, EntityType.MOOSHROOM, Items.BOWL);
+		testMilkingBabyAnimal(helper, EntityTypes.MOOSHROOM, Items.BOWL);
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingDeadAnimal(GameTestHelper helper) {
-		var cow = setup(helper, EntityType.COW, Items.BUCKET);
+		var cow = setup(helper, EntityTypes.COW, Items.BUCKET);
 		helper.startSequence()
 				// mobs play 20 ticks of dying animation when killed, so the cow is still there when the drum goes off
 				.thenExecute(cow::kill)
@@ -137,9 +138,9 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testMilkingNearBergamute(GameTestHelper helper) {
-		setup(helper, EntityType.COW, Items.BUCKET);
+		setup(helper, EntityTypes.COW, Items.BUCKET);
 		// Bergamute should protect from drum interactions
 		helper.setBlock(POSITION_BERGAMUTE, BotaniaBlocks.FLOATING_BERGAMUTE);
 		helper.startSequence()
@@ -148,9 +149,9 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testShearingSheep(GameTestHelper helper) {
-		var sheep = setup(helper, EntityType.SHEEP, null);
+		var sheep = setup(helper, EntityTypes.SHEEP, null);
 		sheep.setColor(DyeColor.LIME);
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
@@ -159,9 +160,9 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testShearingBabySheep(GameTestHelper helper) {
-		var sheep = setup(helper, EntityType.SHEEP, null);
+		var sheep = setup(helper, EntityTypes.SHEEP, null);
 		sheep.setBaby(true);
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
@@ -169,9 +170,9 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testShearingSnowGolem(GameTestHelper helper) {
-		var golem = setup(helper, EntityType.SNOW_GOLEM, null);
+		var golem = setup(helper, EntityTypes.SNOW_GOLEM, null);
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
 				.thenWaitUntil(() -> helper.assertItemEntityPresent(Items.CARVED_PUMPKIN, POSITION_MOB, 1.0))
@@ -179,9 +180,9 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 20)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testShearingPumpkinlessSnowGolem(GameTestHelper helper) {
-		var golem = setup(helper, EntityType.SNOW_GOLEM, null);
+		var golem = setup(helper, EntityTypes.SNOW_GOLEM, null);
 		golem.setPumpkin(false);
 		helper.startSequence()
 				.thenExecute(() -> helper.pressButton(POSITION_BUTTON))
@@ -190,12 +191,12 @@ public class DrumBlockTest {
 				.thenSucceed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 25)
+	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 25)
 	public void testShearingMooshroom(GameTestHelper helper) {
-		setup(helper, EntityType.MOOSHROOM, null);
+		setup(helper, EntityTypes.MOOSHROOM, null);
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
-				.thenExecuteAfter(20, () -> helper.assertEntityNotPresent(EntityType.COW))
+				.thenExecuteAfter(20, () -> helper.assertEntityNotPresent(EntityTypes.COW))
 				.thenSucceed();
 	}
 }

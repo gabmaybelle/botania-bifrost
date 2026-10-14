@@ -10,7 +10,7 @@
 package vazkii.botania.mixin;
 
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import vazkii.botania.common.block.block_entity.flower.functional.VinculotusBlockEntity;
 
-@Mixin(EnderMan.class)
+@Mixin(Enderman.class)
 public abstract class EnderManMixin extends Monster {
 
 	protected EnderManMixin(EntityType<? extends Monster> entityType, Level level) {
@@ -35,7 +35,7 @@ public abstract class EnderManMixin extends Monster {
 		}
 	}
 
-	@Inject(method = "teleport(DDD)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/EnderMan;isSilent()Z"))
+	@Inject(method = "teleport(DDD)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Enderman;isSilent()Z"))
 	private void disableFutureTeleportation(double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
 		if (!level().isClientSide()) {
 			VinculotusBlockEntity.postEndermanTeleport(this);

@@ -12,16 +12,16 @@ package vazkii.botania.fabric.data.xplat;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
@@ -836,7 +836,7 @@ public class CraftingRecipeProvider extends FabricRecipeProvider {
 				.requires(Ingredient.of(BotaniaTags.Items.SHIMMERING_MUSHROOMS), 2)
 				.requires(Items.BOWL)
 				.unlockedBy("has_item", conditionsFromItem(Items.BOWL))
-				.unlockedBy("has_orig_recipe", RecipeUnlockedTrigger.unlocked(ResourceLocation.withDefaultNamespace("mushroom_stew")))
+				.unlockedBy("has_orig_recipe", RecipeUnlockedTrigger.unlocked(Identifier.withDefaultNamespace("mushroom_stew")))
 				.save(recipeOutput, "botania:mushroom_stew");
 
 		WrapperRecipeBuilder.wrap(LexiconReturningShapelessRecipe.SERIALIZER,
@@ -2419,8 +2419,8 @@ public class CraftingRecipeProvider extends FabricRecipeProvider {
 	}
 
 	protected void createFloatingFlowerRecipe(RecipeOutput recipeOutput, ItemLike input) {
-		ResourceLocation inputName = BuiltInRegistries.ITEM.getKey(input.asItem());
-		Item output = getItemOrThrow(ResourceLocation.fromNamespaceAndPath(inputName.getNamespace(), "floating_" + inputName.getPath()));
+		Identifier inputName = BuiltInRegistries.ITEM.getKey(input.asItem());
+		Item output = getItemOrThrow(Identifier.fromNamespaceAndPath(inputName.getNamespace(), "floating_" + inputName.getPath()));
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, output)
 				.requires(BotaniaTags.Items.FLOATING_FLOWERS)
 				.requires(input)
@@ -2827,11 +2827,11 @@ public class CraftingRecipeProvider extends FabricRecipeProvider {
 		BotaniaSpecialRecipeBuilder.special(factory, category).save(recipeOutput);
 	}
 
-	protected Block getBlockOrThrow(ResourceLocation location) {
+	protected Block getBlockOrThrow(Identifier location) {
 		return BuiltInRegistries.BLOCK.getOrThrow(ResourceKey.create(Registries.BLOCK, location));
 	}
 
-	protected Item getItemOrThrow(ResourceLocation location) {
+	protected Item getItemOrThrow(Identifier location) {
 		return BuiltInRegistries.ITEM.getOrThrow(ResourceKey.create(Registries.ITEM, location));
 	}
 

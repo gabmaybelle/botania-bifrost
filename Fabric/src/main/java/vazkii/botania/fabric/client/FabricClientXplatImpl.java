@@ -21,7 +21,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -46,7 +46,7 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	}
 
 	@Override
-	public BakedModel getResourceModel(ResourceLocation id) {
+	public BakedModel getResourceModel(Identifier id) {
 		return Minecraft.getInstance().getModelManager().getModel(id);
 	}
 

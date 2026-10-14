@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -134,15 +134,15 @@ public class BotaniaAPIImpl implements BotaniaAPI {
 		world.addParticle(data, x, y, z, 0, 0, 0);
 	}
 
-	private final Map<ResourceLocation, Function<DyeColor, Block>> paintableBlocks = new ConcurrentHashMap<>();
+	private final Map<Identifier, Function<DyeColor, Block>> paintableBlocks = new ConcurrentHashMap<>();
 
 	@Override
-	public Map<ResourceLocation, Function<DyeColor, Block>> getPaintableBlocks() {
+	public Map<Identifier, Function<DyeColor, Block>> getPaintableBlocks() {
 		return Collections.unmodifiableMap(paintableBlocks);
 	}
 
 	@Override
-	public void registerPaintableBlock(ResourceLocation block, Function<DyeColor, Block> transformer) {
+	public void registerPaintableBlock(Identifier block, Function<DyeColor, Block> transformer) {
 		paintableBlocks.put(block, transformer);
 	}
 

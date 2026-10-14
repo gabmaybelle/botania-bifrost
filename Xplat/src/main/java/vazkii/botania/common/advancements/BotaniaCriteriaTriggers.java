@@ -8,13 +8,13 @@
  */
 package vazkii.botania.common.advancements;
 
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.triggers.CriterionTrigger;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.BiConsumer;
 
 public class BotaniaCriteriaTriggers {
-	public static void init(BiConsumer<CriterionTrigger<?>, ResourceLocation> r) {
+	public static void init(BiConsumer<CriterionTrigger<?>, Identifier> r) {
 		r.accept(AlfheimPortalTrigger.INSTANCE, AlfheimPortalTrigger.ID);
 		r.accept(CorporeaRequestTrigger.INSTANCE, CorporeaRequestTrigger.ID);
 		r.accept(GaiaGuardianNoArmorTrigger.INSTANCE, GaiaGuardianNoArmorTrigger.ID);
