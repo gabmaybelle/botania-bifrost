@@ -10,22 +10,23 @@
 package vazkii.botania.neoforge.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugScreenEntry;
+import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
+import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -60,20 +61,20 @@ import vazkii.botania.client.model.BotaniaLayerDefinitions;
 import vazkii.botania.client.model.armor.ArmorModels;
 import vazkii.botania.client.render.ColorHandler;
 import vazkii.botania.client.render.entity.EntityRenderers;
-import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.client.render.item.BotaniaSpecialModelRenderers;
+import vazkii.botania.common.block.PlatformBlock;
 import vazkii.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
+import vazkii.botania.common.block.flower.FloatingFlowerBaseBlock;
 import vazkii.botania.common.handler.BotaniaRecipeIngredientsCache;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.common.item.equipment.bauble.RingOfDexterousMotionItem;
 import vazkii.botania.xplat.ClientXplatAbstractions;
-import vazkii.patchouli.api.BookDrawScreenEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
@@ -81,7 +82,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 public class NeoForgeClientInitializer {
 	@SubscribeEvent
 	public static void registerGuiOverlays(RegisterGuiLayersEvent e) {
-		e.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, botaniaRL("hud_early"), HUDHandler::onDrawExperienceBarPost);
+		e.registerAbove(VanillaGuiLayers.EXPERIENCE_LEVEL, botaniaRL("hud_early"), HUDHandler::onDrawExperienceBarPost);
 		e.registerAbove(VanillaGuiLayers.AIR_LEVEL, botaniaRL("hud_late"), HUDHandler::onDrawAirLevelPost);
 	}
 
@@ -96,13 +97,13 @@ public class NeoForgeClientInitializer {
 		// Events
 		var bus = NeoForge.EVENT_BUS;
 		// GUIs
-		bus.addListener((BookDrawScreenEvent e) -> KonamiHandler.renderBook(e.getBook(), e.getScreen(), e.getMouseX(), e.getMouseY(), e.getPartialTicks(), e.getGraphics()));
+		// PORT-26.3: disabled. The Konami code's book overlay hooks Patchouli's BookDrawScreenEvent (Phase 5).
 		bus.addListener((ClientTickEvent.Post e) -> {
 			ClientTickHandler.clientTickEnd(Minecraft.getInstance());
 			KonamiHandler.clientTick(Minecraft.getInstance());
 		});
 		bus.addListener((ItemTooltipEvent e) -> TooltipHandler.onTooltipEvent(e.getItemStack(), e.getContext(), e.getFlags(), e.getToolTip()));
-		bus.addListener((ScreenEvent.KeyPressed.Post e) -> CorporeaInputHandler.buttonPressed(e.getKeyCode(), e.getScanCode()));
+		bus.addListener((ScreenEvent.KeyPressed.Post e) -> CorporeaInputHandler.buttonPressed(e.getKeyEvent()));
 
 		// NeoForge bus events done with Mixins on Fabric
 		bus.addListener(EventPriority.HIGH, (ClientChatEvent e) -> {
@@ -111,7 +112,7 @@ public class NeoForgeClientInitializer {
 				e.setCanceled(true);
 			}
 		});
-		bus.addListener((RecipesUpdatedEvent e) -> BotaniaRecipeIngredientsCache.clearClientCache());
+		bus.addListener((RecipesReceivedEvent e) -> BotaniaRecipeIngredientsCache.clearClientCache());
 		bus.addListener((CustomizeGuiOverlayEvent.BossEventProgress e) -> {
 			var result = BossBarHandler.onBarRender(e.getGuiGraphics(), e.getX(), e.getY(),
 					e.getBossEvent(), true);
@@ -120,12 +121,11 @@ public class NeoForgeClientInitializer {
 				e.setIncrement(increment);
 			});
 		});
-		bus.addListener((CustomizeGuiOverlayEvent.DebugText e) -> DebugHandler.onDrawDebugText(e.getLeft()));
 		bus.addListener((InputEvent.Key e) -> {
 			RingOfDexterousMotionItem.ClientLogic.onKeyDown();
-			KonamiHandler.handleInput(e.getKey(), e.getAction(), e.getModifiers());
+			KonamiHandler.handleInput(e.getKey(), e.getAction(), e.getKeyEvent().modifiers());
 		});
-		bus.addListener(EventPriority.LOWEST, (RenderTooltipEvent.Color e) -> {
+		bus.addListener(EventPriority.LOWEST, (RenderTooltipEvent.Pre e) -> {
 			var manaItem = ManaItem.LOOKUP.find(e.getItemStack());
 			if (manaItem == null) {
 				return;
@@ -165,6 +165,19 @@ public class NeoForgeClientInitializer {
 		ClientProxy.initKeybindings(e::register);
 	}
 
+	@SubscribeEvent
+	public static void registerDebugEntries(RegisterDebugEntriesEvent e) {
+		// PORT-26.3: the F3 screen is built from registered entries; DebugHandler still checks the config flag itself
+		DebugScreenEntry entry = (displayer, level, clientChunk, serverChunk) -> {
+			List<String> lines = new ArrayList<>();
+			DebugHandler.onDrawDebugText(lines);
+			lines.forEach(displayer::addLine);
+		};
+		Identifier id = botaniaRL("debug");
+		e.register(id, entry);
+		e.includeInProfile(id, DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
+	}
+
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	private static void createClientCapabilities(RegisterCapabilitiesEvent e) {
 		BotaniaClientCapabilities.registerCapabilityTypes(BotaniaNeoForgeCapabilities.getRegistration());
@@ -180,20 +193,62 @@ public class NeoForgeClientInitializer {
 		BotaniaClientCapabilities.registerCapabilityProviders(BotaniaNeoForgeCapabilities.getProviderRegistration(e));
 	}
 
+	// PORT-26.3: model loaders read the "loader" key of a model file; resource models are standalone models
+	// (NeoForgeStandaloneModels); the floating flower in-world models and the platform camouflage are swapped into the
+	// baking result; the mana blaster loader is gone (special renderer plus the "has_clip" item model test)
 	@SubscribeEvent
-	public static void registerModelLoader(ModelEvent.RegisterGeometryLoaders evt) {
-		evt.register(ClientXplatAbstractions.FLOATING_FLOWER_MODEL_LOADER_ID,
-				NeoForgeFloatingFlowerModel.Loader.INSTANCE);
-		evt.register(ClientXplatAbstractions.MANA_GUN_MODEL_LOADER_ID,
-				NeoForgeManaBlasterModel.Loader.INSTANCE);
+	public static void registerModelLoader(ModelEvent.RegisterLoaders evt) {
+		evt.register(ClientXplatAbstractions.FLOATING_FLOWER_MODEL_LOADER_ID, NeoForgeFloatingFlowerModel.LOADER);
 	}
 
 	@SubscribeEvent
-	public static void onModelRegister(ModelEvent.RegisterAdditional evt) {
+	public static void onModelRegister(ModelEvent.RegisterStandalone evt) {
 		var resourceManager = Minecraft.getInstance().getResourceManager();
-		MiscellaneousModels.INSTANCE.onModelRegister(resourceManager,
-				id -> evt.register(ModelResourceLocation.standalone(id)));
-		BotaniaItemProperties.init(ItemProperties::register);
+		MiscellaneousModels.INSTANCE.onModelRegister(resourceManager, id -> NeoForgeStandaloneModels.register(evt, id));
+		for (Block block : BuiltInRegistries.BLOCK) {
+			if (block instanceof FloatingFlowerBaseBlock) {
+				evt.register(NeoForgeFloatingFlowerModel.key(block), NeoForgeFloatingFlowerModel.Standalone.forBlock(block));
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onModelBake(ModelEvent.ModifyBakingResult evt) {
+		Map<BlockState, BlockStateModel> models = evt.getBakingResult().blockStateModels();
+		for (Block block : BuiltInRegistries.BLOCK) {
+			if (block instanceof FloatingFlowerBaseBlock) {
+				BlockStateModel floating = evt.getBakingResult().standaloneModels().get(NeoForgeFloatingFlowerModel.key(block));
+				if (floating != null) {
+					for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+						models.put(state, floating);
+					}
+				}
+			} else if (block instanceof PlatformBlock) {
+				for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+					models.computeIfPresent(state, (s, model) -> new NeoForgePlatformModel(model));
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onModelsLoaded(ModelEvent.BakingCompleted evt) {
+		MiscellaneousModels.INSTANCE.onModelsLoaded(id -> NeoForgeStandaloneModels.get(evt.getModelManager(), id));
+	}
+
+	@SubscribeEvent
+	public static void registerItemModelProperties(RegisterConditionalItemModelPropertyEvent evt) {
+		BotaniaItemProperties.registerTests(evt::register);
+	}
+
+	@SubscribeEvent
+	public static void registerItemModelRanges(RegisterRangeSelectItemModelPropertyEvent evt) {
+		BotaniaItemProperties.registerRanges(evt::register);
+	}
+
+	@SubscribeEvent
+	public static void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent evt) {
+		BotaniaSpecialModelRenderers.register(evt::register);
 	}
 
 	@SubscribeEvent
@@ -218,24 +273,27 @@ public class NeoForgeClientInitializer {
 			}
 		}
 
+		// PORT-26.3: the armour hooks are keyed by equipment layer; the model is Botania's own, the texture comes from the
+		// item. NeoForge only asks for these when the item's equipment asset lists layers (datagen, step 4).
 		event.registerItem(
 				new IClientItemExtensions() {
 					@Override
-					public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-						return Objects.requireNonNull(ArmorModels.get(stack));
+					public Model getHumanoidArmorModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, Model original) {
+						var model = ArmorModels.get(stack);
+						return model != null ? model : original;
+					}
+
+					@Override
+					public Identifier getArmorTexture(ItemStack stack, EquipmentClientInfo.LayerType type, EquipmentClientInfo.Layer layer, Identifier fallback) {
+						if (stack.getItem() instanceof ManasteelArmorItem armor) {
+							return armor.getArmorTexture(stack, null, armor.getEquipmentSlot(), type == EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS);
+						}
+						return fallback;
 					}
 				},
 				armorItems.toArray(Item[]::new)
 		);
-
-		event.registerItem(
-				NeoForgeBlockEntityItemRendererHelper.PROPS,
-				Stream.of(
-						BotaniaBlocks.BOTANICAL_BREWERY, BotaniaBlocks.MANA_PYLON, BotaniaBlocks.NATURA_PYLON, BotaniaBlocks.GAIA_PYLON,
-						BotaniaBlocks.MANATIDE_BELLOWS, BotaniaBlocks.CORPOREA_INDEX, BotaniaBlocks.HOVERING_HOURGLASS,
-						BotaniaBlocks.TERU_TERU_BOZU, BotaniaBlocks.LIVINGWOOD_AVATAR
-				).map(Block::asItem).toArray(Item[]::new)
-		);
+		// PORT-26.3: block items drawn by their block entity renderer are special model renderers now (BotaniaSpecialModelRenderers)
 	}
 
 	@SubscribeEvent
@@ -249,21 +307,20 @@ public class NeoForgeClientInitializer {
 	}
 
 	@SubscribeEvent
-	public static void registerBlockColors(RegisterColorHandlersEvent.Block evt) {
-		ColorHandler.submitBlocks(evt::register);
+	public static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources evt) {
+		ColorHandler.submitBlocks((source, blocks) -> evt.register(List.of(source), blocks));
 	}
 
 	@SubscribeEvent
-	public static void registerItemColors(RegisterColorHandlersEvent.Item evt) {
-		ColorHandler.submitItems(evt::register);
+	public static void registerItemColors(RegisterColorHandlersEvent.ItemTintSources evt) {
+		ColorHandler.submitItemTintSources(evt::register);
 	}
 
 	@SubscribeEvent
 	public static void initAuxiliaryRender(EntityRenderersEvent.AddLayers evt) {
 		for (var playerModelType : evt.getSkins()) {
-			if (evt.getSkin(playerModelType) instanceof PlayerRenderer renderer) {
-				EntityRenderers.addAuxiliaryPlayerRenders(renderer, renderer::addLayer);
-			}
+			var renderer = evt.getPlayerRenderer(playerModelType);
+			EntityRenderers.addAuxiliaryPlayerRenders(renderer, renderer::addLayer);
 		}
 	}
 
@@ -271,10 +328,5 @@ public class NeoForgeClientInitializer {
 	public static void registerShaders(RegisterRenderPipelinesEvent evt) {
 		// PORT-26.3: shaders are RenderPipelines now (CoreShaders)
 		CoreShaders.init(evt::registerPipeline);
-	}
-
-	@SubscribeEvent
-	public static void onModelBake(ModelEvent.ModifyBakingResult evt) {
-		MiscellaneousModels.INSTANCE.onModelBake(evt.getModelBakery(), evt.getModels());
 	}
 }

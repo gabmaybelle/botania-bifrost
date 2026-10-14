@@ -11,25 +11,19 @@ package vazkii.botania.neoforge.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -38,53 +32,38 @@ import vazkii.botania.xplat.ClientXplatAbstractions;
 
 public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	@Override
-	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		NeoForge.EVENT_BUS.post(new TinyPotatoRenderEvent(potato, name, tickDelta, ms, buffers, light, overlay));
+	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		NeoForge.EVENT_BUS.post(new TinyPotatoRenderEvent(potato, name, tickDelta, ms, collector, light, overlay));
 	}
 
 	@Override
 	public void sendToServer(CustomPacketPayload packet) {
-		PacketDistributor.sendToServer(packet);
+		ClientPacketDistributor.sendToServer(packet);
 	}
 
 	@Nullable
 	@Override
-	public BakedModel getResourceModel(Identifier id) {
-		BakedModel model = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(id));
-		return model != Minecraft.getInstance().getModelManager().getMissingModel() ? model : null;
-	}
-
-	@Override
-	public BakedModel wrapPlatformModel(BakedModel original) {
-		return new NeoForgePlatformModel(original);
+	public BlockStateModel getResourceModel(Identifier id) {
+		return NeoForgeStandaloneModels.get(id);
 	}
 
 	@Override
 	public int getGuiRightHeight(Player player) {
-		return Minecraft.getInstance().gui.rightHeight;
-	}
+		// PORT-26.3: NeoForge no longer tracks the HUD's right-hand stack height; this mirrors what vanilla draws there
+		int rightHeight = 49;
 
-	@Override
-	public void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap) {
-		texture.setBlurMipmap(filter, mipmap);
-	}
-
-	@Override
-	public void restoreLastFilter(AbstractTexture texture) {
-		texture.restoreLastBlurMipmap();
-	}
-
-	@Override
-	public void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay) {
-		var renderer = Minecraft.getInstance().getBlockRenderer();
-		var model = renderer.getBlockModel(state);
-		var modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
-		var rand = RandomSource.create();
-		for (RenderType type : model.getRenderTypes(state, rand, modelData)) {
-			renderer.getModelRenderer().tesselateBlock(level, model,
-					state, pos, ps, buffers.getBuffer(type), false, rand,
-					state.getSeed(pos), overlay, modelData, type);
+		if (player.isEyeInFluid(FluidTags.WATER) || player.getAirSupply() < player.getMaxAirSupply()) {
+			// shift up single row if player is underwater or still recovering air
+			rightHeight += 10;
 		}
+
+		Entity playerVehicle = player.getVehicle();
+		if (playerVehicle instanceof LivingEntity vehicle && vehicle.showVehicleHealth()) {
+			// shift up if vehicle health requires more than one row (vanilla HUD limits vehicle hearts to 3 rows)
+			rightHeight += Math.min(30, (int) (vehicle.getMaxHealth() + 0.5) / 2) - 1;
+		}
+
+		return rightHeight;
 	}
 
 	@Override

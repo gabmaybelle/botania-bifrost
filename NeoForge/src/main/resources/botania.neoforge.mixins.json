@@ -9,9 +9,7 @@
     "ItemStackNeoForgeMixin",
     "WorldPresetNeoForgeAccessor"
   ],
-  "client": [
-    "client.ParticleEngineNeoForgeMixin"
-  ],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1

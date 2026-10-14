@@ -9,193 +9,169 @@
 
 package vazkii.botania.neoforge.client;
 
-import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.mojang.math.Transformation;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
+import net.neoforged.neoforge.client.model.UnbakedModelLoader;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+import net.neoforged.neoforge.client.model.standalone.UnbakedStandaloneModel;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import vazkii.botania.api.BotaniaAPI;
-import vazkii.botania.api.block.FloatingFlower;
 import vazkii.botania.api.block.IslandType;
-import vazkii.botania.api.block_entity.SpecialFlowerBlockEntity;
 import vazkii.botania.common.block.block_entity.flower.BotaniaIslandTypes;
 import vazkii.botania.common.block.block_entity.flower.FloatingFlowerBlockEntity;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class NeoForgeFloatingFlowerModel implements IUnbakedGeometry<NeoForgeFloatingFlowerModel> {
-	public static final ModelProperty<FloatingFlower> FLOATING_PROPERTY = new ModelProperty<>();
-	private final UnbakedModel unbakedFlower;
-	private final Map<IslandType, UnbakedModel> unbakedIslands = new HashMap<>();
+/**
+ * PORT-26.3: the floating flower model loader. The model file ("loader": "botania:floating_flower" with a "flower"
+ * model) loads as an unbaked model whose geometry is the flower, shrunk and lifted, on a grass island; that is what
+ * items and anything else reading the file get. In the world the island follows the flower's island type: every
+ * floating flower block gets a standalone model that bakes the flower and one part per island type, and the baking
+ * result swaps it in for the block's states.
+ */
+public class NeoForgeFloatingFlowerModel implements UnbakedModel {
+	private static final Transformation MOVE_FLOWER = new Transformation(new Vector3f(0F, 0.2F, 0F), null, new Vector3f(0.5F, 0.5F, 0.5F), null);
+	private static final Map<Block, StandaloneModelKey<BlockStateModel>> KEYS = new HashMap<>();
 
-	private NeoForgeFloatingFlowerModel(UnbakedModel flower) {
-		this.unbakedFlower = flower;
+	public static final UnbakedModelLoader<NeoForgeFloatingFlowerModel> LOADER = (json, context) -> new NeoForgeFloatingFlowerModel(flowerModelId(json));
+
+	private final Identifier flowerModelId;
+
+	private NeoForgeFloatingFlowerModel(Identifier flowerModelId) {
+		this.flowerModelId = flowerModelId;
+	}
+
+	private static Identifier flowerModelId(JsonObject json) {
+		JsonElement flower = json.get("flower");
+		if (flower != null && flower.isJsonPrimitive()) {
+			return Identifier.parse(flower.getAsString());
+		} else if (flower != null && flower.isJsonObject() && flower.getAsJsonObject().has("parent")) {
+			// the generated files nest a model that only names its parent: that parent is the flower
+			return Identifier.parse(GsonHelper.getAsString(flower.getAsJsonObject(), "parent"));
+		}
+		throw new JsonParseException("Floating flower model needs a \"flower\" model");
+	}
+
+	@Nullable
+	@Override
+	public Identifier parent() {
+		// textures, item transforms and gui light come from the flower
+		return flowerModelId;
 	}
 
 	@Override
-	public void resolveParents(Function<Identifier, UnbakedModel> modelGetter, IGeometryBakingContext context) {
-		this.unbakedFlower.resolveParents(modelGetter);
-		BotaniaAPI.instance().getIslandTypeRegistry().stream().forEach(islandType -> {
-			UnbakedModel islandModel = modelGetter.apply(islandType.islandModel());
-			islandModel.resolveParents(modelGetter);
-			this.unbakedIslands.put(islandType, islandModel);
-		});
+	public UnbakedGeometry geometry() {
+		return (textureSlots, baker, state, name) -> new QuadCollection.Builder()
+				.addAll(bakeGeometry(baker, flowerModelId, shrinkAndLift(state)))
+				.addAll(bakeGeometry(baker, BotaniaIslandTypes.GRASS.islandModel(), state))
+				.build();
 	}
 
-	@Override
-	public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-			ModelState transform, ItemOverrides overrides) {
-		final Transformation moveFlower = new Transformation(new Vector3f(0F, 0.2F, 0F), null, new Vector3f(0.5F, 0.5F, 0.5F), null);
-		Transformation mul = moveFlower.compose(transform.getRotation());
-		ModelState newTransform = new ModelState() {
+	private static QuadCollection bakeGeometry(ModelBaker baker, Identifier id, ModelState state) {
+		ResolvedModel model = baker.getModel(id);
+		return model.bakeTopGeometry(model.getTopTextureSlots(), baker, state);
+	}
+
+	private static ModelState shrinkAndLift(ModelState state) {
+		Transformation mul = MOVE_FLOWER.compose(state.transformation());
+		return new ModelState() {
 			@Override
-			public Transformation getRotation() {
+			public Transformation transformation() {
 				return mul;
 			}
-
-			@Override
-			public boolean isUvLocked() {
-				return transform.isUvLocked();
-			}
 		};
-		BakedModel bakedFlower = unbakedFlower.bake(baker, spriteGetter, newTransform);
-
-		Map<IslandType, BakedModel> bakedIslands = new HashMap<>();
-		for (Map.Entry<IslandType, UnbakedModel> e : unbakedIslands.entrySet()) {
-			BakedModel bakedIsland = e.getValue().bake(baker, spriteGetter, transform);
-			bakedIslands.put(e.getKey(), bakedIsland);
-		}
-		return new Baked(bakedFlower, bakedIslands);
 	}
 
-	@SuppressWarnings("deprecation") // shut up forge
-	public static class Baked implements BakedModel {
-		private final BakedModel flower;
-		private final Map<IslandType, BakedModel> islands;
+	/** The standalone model that carries a floating flower block's in-world model. */
+	public static StandaloneModelKey<BlockStateModel> key(Block block) {
+		return KEYS.computeIfAbsent(block, b -> new StandaloneModelKey<>(() -> "floating flower " + BuiltInRegistries.BLOCK.getKey(b)));
+	}
 
-		Baked(BakedModel flower, Map<IslandType, BakedModel> islands) {
+	/** Bakes the block model's flower, plus one island part per island type. */
+	public record Standalone(Identifier blockModelId) implements UnbakedStandaloneModel<BlockStateModel> {
+		public static Standalone forBlock(Block block) {
+			return new Standalone(BuiltInRegistries.BLOCK.getKey(block).withPrefix("block/"));
+		}
+
+		@Override
+		public void resolveDependencies(ResolvableModel.Resolver resolver) {
+			resolver.markDependency(blockModelId);
+			BotaniaAPI.instance().getIslandTypeRegistry().forEach(type -> resolver.markDependency(type.islandModel()));
+		}
+
+		@Override
+		public BlockStateModel bake(ModelBaker baker, ModelDebugName name) {
+			if (!(baker.getModel(blockModelId).wrapped() instanceof NeoForgeFloatingFlowerModel floating)) {
+				// a resource pack replaced the model with something else: bake it like a plain variant
+				return new SingleVariant(SimpleModelWrapper.bake(baker, blockModelId, BlockModelRotation.IDENTITY));
+			}
+			BlockStateModelPart flower = SimpleModelWrapper.bake(baker, floating.flowerModelId, shrinkAndLift(BlockModelRotation.IDENTITY));
+			Map<IslandType, BlockStateModelPart> islands = new HashMap<>();
+			BotaniaAPI.instance().getIslandTypeRegistry().forEach(
+					type -> islands.put(type, SimpleModelWrapper.bake(baker, type.islandModel(), BlockModelRotation.IDENTITY)));
+			return new Baked(flower, islands);
+		}
+	}
+
+	public static class Baked implements DynamicBlockStateModel {
+		private final BlockStateModelPart flower;
+		private final Map<IslandType, BlockStateModelPart> islands;
+
+		Baked(BlockStateModelPart flower, Map<IslandType, BlockStateModelPart> islands) {
 			this.flower = flower;
 			this.islands = islands;
 		}
 
 		@Override
-		public boolean useAmbientOcclusion() {
-			return flower.useAmbientOcclusion();
+		public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
+			Object data = level.getBlockEntity(pos) instanceof FloatingFlowerBlockEntity flowerEntity ? flowerEntity.getRenderData() : null;
+			parts.add(flower);
+			parts.add(islands.get(data instanceof IslandType type ? type : BotaniaIslandTypes.GRASS));
 		}
 
 		@Override
-		public boolean isGui3d() {
-			return flower.isGui3d();
+		public Material.Baked particleMaterial() {
+			return flower.particleMaterial();
 		}
 
 		@Override
-		public boolean usesBlockLight() {
-			return flower.usesBlockLight();
-		}
-
-		@Override
-		public boolean isCustomRenderer() {
-			return false;
-		}
-
-		@Override
-		public TextureAtlasSprite getParticleIcon() {
-			return flower.getParticleIcon();
-		}
-
-		@Override
-		public ItemOverrides getOverrides() {
-			return flower.getOverrides();
-		}
-
-		@Override
-		public ItemTransforms getTransforms() {
-			return flower.getTransforms();
-		}
-
-		@Override
-		public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
-			var be = level.getBlockEntity(pos);
-			if (be instanceof FloatingFlowerBlockEntity floating) {
-				return ModelData.builder()
-						.with(FLOATING_PROPERTY, floating.getFloatingData())
-						.build();
-			} else if (be instanceof SpecialFlowerBlockEntity special && special.isFloating()) {
-				return ModelData.builder()
-						.with(FLOATING_PROPERTY, special.getFloatingData())
-						.build();
+		public int materialFlags() {
+			int flags = flower.materialFlags();
+			for (BlockStateModelPart island : islands.values()) {
+				flags |= island.materialFlags();
 			}
-			return modelData;
-		}
-
-		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-			// This shouldn't be called from anywhere on forge (blocks use the other overload,
-			// items call getRenderPasses), but implement a default just in case
-			return getQuads(state, side, rand, ModelData.EMPTY, RenderType.cutout());
-		}
-
-		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-				RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-			IslandType type = BotaniaIslandTypes.GRASS;
-			if (extraData.has(FLOATING_PROPERTY)) {
-				type = extraData.get(FLOATING_PROPERTY).getIslandType();
-			}
-
-			if (renderType != null && state != null && !this.flower.getRenderTypes(state, rand, extraData).contains(renderType)) {
-				return islands.get(type).getQuads(state, side, rand, ModelData.EMPTY, renderType);
-			}
-			List<BakedQuad> flower = this.flower.getQuads(state, side, rand, ModelData.EMPTY, renderType);
-			List<BakedQuad> island = islands.get(type).getQuads(state, side, rand, ModelData.EMPTY, renderType);
-			List<BakedQuad> ret = new ArrayList<>(flower.size() + island.size());
-			ret.addAll(flower);
-			ret.addAll(island);
-			return ret;
-		}
-
-		@Override
-		public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
-			return List.of(flower, islands.get(BotaniaIslandTypes.GRASS));
-		}
-
-		@Override
-		public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-			return ChunkRenderTypeSet.union(BakedModel.super.getRenderTypes(state, rand, data), this.flower.getRenderTypes(state, rand, data));
-		}
-	}
-
-	public enum Loader implements IGeometryLoader<NeoForgeFloatingFlowerModel> {
-		INSTANCE;
-
-		@Override
-		public NeoForgeFloatingFlowerModel read(JsonObject model, JsonDeserializationContext ctx) {
-			BlockModel flower = ctx.deserialize(model.getAsJsonObject("flower"), BlockModel.class);
-			return new NeoForgeFloatingFlowerModel(flower);
+			return flags;
 		}
 	}
 }
