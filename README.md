@@ -1,3 +1,14 @@
+## Botania Bifrost
+
+Botania Bifrost is an unofficial port of Botania to Minecraft 26.3 for Fabric
+and NeoForge, based on the original by Vazkii and the Botania contributors. It
+has been modified from the original and is distributed under the Botania License.
+
+Please don't report problems with this port to Vazkii or the official Botania
+team. Use this repository's issue tracker instead.
+
+Porting progress is tracked in PORTING.md.
+
 ![](web/assets/img/logo.png)  
 Welcome to the Botania repository.  
 
