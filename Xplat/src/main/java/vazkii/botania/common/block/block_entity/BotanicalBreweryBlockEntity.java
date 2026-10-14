@@ -100,7 +100,7 @@ public class BotanicalBreweryBlockEntity extends SimpleInventoryBlockEntity impl
 	}
 
 	private void findRecipe() {
-		Optional<RecipeHolder<BotanicalBreweryRecipe>> maybeRecipe = level.getRecipeManager()
+		Optional<RecipeHolder<BotanicalBreweryRecipe>> maybeRecipe = BotaniaRecipeTypes.recipeManager(level)
 				.getRecipeFor(BotaniaRecipeTypes.BREW_TYPE, getRecipeInput(), level);
 		maybeRecipe.ifPresent(recipeBrew -> {
 			this.recipe = recipeBrew.value();

@@ -8,14 +8,14 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.item.AncientWillContainer;
@@ -25,11 +25,9 @@ import vazkii.botania.common.item.AncientWillItem;
 import java.util.Objects;
 
 public class AncientWillRecipe extends CustomRecipe {
-	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(AncientWillRecipe::new);
+	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(AncientWillRecipe::new), StreamCodec.unit(new AncientWillRecipe()));
 
-	public AncientWillRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public AncientWillRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level world) {
@@ -61,7 +59,7 @@ public class AncientWillRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack item = ItemStack.EMPTY;
 		AncientWillContainer.AncientWillType will = null;
 
@@ -95,12 +93,7 @@ public class AncientWillRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width > 1 || height > 1;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<AncientWillRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

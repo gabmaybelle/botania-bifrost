@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.recipe.OrechidRecipe;
+import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.*;
@@ -56,7 +57,7 @@ public class OrechidManager implements ResourceManagerReloadListener {
 		final var byState = BY_TYPE.computeIfAbsent(type, t -> new IdentityHashMap<>());
 		final var list = byState.computeIfAbsent(state, s -> {
 			var builder = ImmutableList.<T>builder();
-			for (var recipe : manager.getAllRecipesFor(type)) {
+			for (var recipe : BotaniaRecipeTypes.getAllRecipesFor(manager, type)) {
 				if (recipe.value().getInput().test(state)) {
 					builder.add(recipe.value());
 				}
@@ -89,7 +90,7 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	private static int calculateTotalDisplayWeightAtPosition(Level level, RecipeType<? extends OrechidRecipe> type, BlockState state, @Nullable BlockPos pos) {
-		final var recipeList = getMatchingRecipes(level.getRecipeManager(), type, state);
+		final var recipeList = getMatchingRecipes(BotaniaRecipeTypes.recipeManager(level), type, state);
 		if (recipeList.isEmpty()) {
 			return 0;
 		}
@@ -101,7 +102,7 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	private static IntIntPair calculateManaCostRange(Level level, RecipeType<? extends OrechidRecipe> type) {
-		final var recipes = level.getRecipeManager().getAllRecipesFor(type);
+		final var recipes = BotaniaRecipeTypes.getAllRecipesFor(level, type);
 		return IntIntPair.of(
 				recipes.stream().map(RecipeHolder::value).mapToInt(OrechidRecipe::getManaCost).min().orElse(0),
 				recipes.stream().map(RecipeHolder::value).mapToInt(OrechidRecipe::getManaCost).max().orElse(0));

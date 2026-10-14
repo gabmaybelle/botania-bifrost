@@ -27,9 +27,10 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.recipe.StateIngredient;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.mana.ManaPoolBlock;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 
 public class ManaInfusionRecipe implements vazkii.botania.api.recipe.ManaInfusionRecipe {
-	public static final RecipeSerializer<ManaInfusionRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<ManaInfusionRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final ItemStack output;
 	private final Ingredient input;
 	private final int mana;
@@ -64,22 +65,20 @@ public class ManaInfusionRecipe implements vazkii.botania.api.recipe.ManaInfusio
 		return mana;
 	}
 
-	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return output;
 	}
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, input);
+		return RecipeUtils.nonNullList(input);
 	}
 
 	@Override
-	public String getGroup() {
+	public String group() {
 		return group;
 	}
 
-	@Override
 	public ItemStack getToastSymbol() {
 		return new ItemStack(BotaniaBlocks.MANA_POOL);
 	}
@@ -92,14 +91,14 @@ public class ManaInfusionRecipe implements vazkii.botania.api.recipe.ManaInfusio
 		return output;
 	}
 
-	public static class Serializer implements RecipeSerializer<ManaInfusionRecipe> {
+	public static class Serializer {
 		public static final MapCodec<ManaInfusionRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::getOutput),
-				Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(ManaInfusionRecipe::getInput),
+				ItemStack.CODEC.fieldOf("output").forGetter(ManaInfusionRecipe::getOutput),
+				Ingredient.CODEC.fieldOf("input").forGetter(ManaInfusionRecipe::getInput),
 				// Leaving wiggle room for a certain modpack having creative-pool-only recipes
 				ExtraCodecs.intRange(1, ManaPoolBlock.MAX_MANA + 1).fieldOf("mana")
 						.forGetter(ManaInfusionRecipe::getManaToConsume),
-				Codec.STRING.optionalFieldOf("group", "").forGetter(ManaInfusionRecipe::getGroup),
+				Codec.STRING.optionalFieldOf("group", "").forGetter(ManaInfusionRecipe::group),
 				StateIngredients.TYPED_CODEC.optionalFieldOf("catalyst", StateIngredients.NONE)
 						.forGetter(ManaInfusionRecipe::getRecipeCatalyst)
 		).apply(instance, ManaInfusionRecipe::new));
@@ -107,19 +106,10 @@ public class ManaInfusionRecipe implements vazkii.botania.api.recipe.ManaInfusio
 				ItemStack.STREAM_CODEC, ManaInfusionRecipe::getOutput,
 				Ingredient.CONTENTS_STREAM_CODEC, ManaInfusionRecipe::getInput,
 				ByteBufCodecs.VAR_INT, ManaInfusionRecipe::getManaToConsume,
-				ByteBufCodecs.STRING_UTF8, ManaInfusionRecipe::getGroup,
+				ByteBufCodecs.STRING_UTF8, ManaInfusionRecipe::group,
 				StateIngredients.TYPED_STREAM_CODEC, ManaInfusionRecipe::getRecipeCatalyst,
 				ManaInfusionRecipe::new
 		);
 
-		@Override
-		public MapCodec<ManaInfusionRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ManaInfusionRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

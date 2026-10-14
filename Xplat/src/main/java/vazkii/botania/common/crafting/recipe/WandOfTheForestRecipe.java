@@ -8,37 +8,30 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
-
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import vazkii.botania.common.block.ShimmeringMushroomBlock;
 import vazkii.botania.common.item.WandOfTheForestItem;
 import vazkii.botania.common.item.material.MysticalPetalItem;
+import vazkii.botania.mixin.NormalCraftingRecipeAccessor;
 import vazkii.botania.mixin.ShapedRecipeAccessor;
 
-import java.util.function.Function;
-
 public class WandOfTheForestRecipe extends ShapedRecipe {
-	public static final WrappingRecipeSerializer<WandOfTheForestRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<ShapedRecipe> SERIALIZER = WrappingRecipeSerializer.shaped(WandOfTheForestRecipe::new);
 
 	private WandOfTheForestRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).botania_getPattern(),
-				((ShapedRecipeAccessor) recipe).botania_getResult(), recipe.showNotification());
+		super(((NormalCraftingRecipeAccessor) recipe).botania_getCommonInfo(), ((NormalCraftingRecipeAccessor) recipe).botania_getBookInfo(),
+				((ShapedRecipeAccessor) recipe).botania_getPattern(), ((ShapedRecipeAccessor) recipe).botania_getResult());
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		DyeColor first = null;
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
@@ -55,39 +48,14 @@ public class WandOfTheForestRecipe extends ShapedRecipe {
 			if (first == null) {
 				first = colorId;
 			} else {
-				return WandOfTheForestItem.setColors(getResultItem(registries).copy(), first, colorId);
+				return WandOfTheForestItem.setColors(super.assemble(inv), first, colorId);
 			}
 		}
-		return WandOfTheForestItem.setColors(getResultItem(registries).copy(), first != null ? first : DyeColor.WHITE, DyeColor.WHITE);
+		return WandOfTheForestItem.setColors(super.assemble(inv), first != null ? first : DyeColor.WHITE, DyeColor.WHITE);
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
 		return SERIALIZER;
-	}
-
-	private static class Serializer implements WrappingRecipeSerializer<WandOfTheForestRecipe> {
-		public static final MapCodec<WandOfTheForestRecipe> CODEC = SHAPED_RECIPE.codec()
-				.xmap(WandOfTheForestRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, WandOfTheForestRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec()
-				.map(WandOfTheForestRecipe::new, Function.identity());
-
-		@Override
-		public WandOfTheForestRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapedRecipe shapedRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new WandOfTheForestRecipe(shapedRecipe);
-		}
-
-		@Override
-		public MapCodec<WandOfTheForestRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, WandOfTheForestRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

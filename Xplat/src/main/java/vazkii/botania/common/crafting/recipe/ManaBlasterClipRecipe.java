@@ -8,24 +8,22 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.ManaBlasterItem;
 
 public class ManaBlasterClipRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ManaBlasterClipRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ManaBlasterClipRecipe::new);
+	public static final RecipeSerializer<ManaBlasterClipRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(ManaBlasterClipRecipe::new), StreamCodec.unit(new ManaBlasterClipRecipe()));
 
-	public ManaBlasterClipRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public ManaBlasterClipRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level world) {
@@ -50,7 +48,7 @@ public class ManaBlasterClipRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack gun = ItemStack.EMPTY;
 
 		for (int i = 0; i < inv.size(); i++) {
@@ -70,12 +68,7 @@ public class ManaBlasterClipRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ManaBlasterClipRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

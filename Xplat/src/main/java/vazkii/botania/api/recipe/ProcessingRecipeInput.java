@@ -9,7 +9,7 @@
 
 package vazkii.botania.api.recipe;
 
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 
@@ -20,7 +20,8 @@ import java.util.List;
  * that are used by something other than a crafting table.
  */
 public interface ProcessingRecipeInput extends RecipeInput {
-	StackedContents getStackedContents();
+	/** PORT-26.3: vanilla split item counting into {@code StackedItemContents}. */
+	StackedItemContents getStackedContents();
 	List<ItemStack> getItems();
 	ProcessingRecipeInput getSubset(int startSlot, int endSlot);
 }

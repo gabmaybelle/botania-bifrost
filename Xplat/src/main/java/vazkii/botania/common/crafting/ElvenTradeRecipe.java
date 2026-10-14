@@ -10,18 +10,13 @@ package vazkii.botania.common.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntSortedMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -34,25 +29,27 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import vazkii.botania.api.recipe.ProcessingRecipeInput;
 import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRecipe {
-	public static final RecipeSerializer<ElvenTradeRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<ElvenTradeRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final ImmutableList<ItemStack> outputs;
 	private final NonNullList<Ingredient> ingredients;
 
 	public ElvenTradeRecipe(ItemStack[] outputs, Ingredient... ingredients) {
 		this.outputs = ImmutableList.copyOf(outputs);
-		this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredients);
+		this.ingredients = RecipeUtils.nonNullList(ingredients);
 		validateIngredients();
 	}
 
 	public ElvenTradeRecipe(List<ItemStack> outputs, List<Ingredient> ingredients) {
 		this.outputs = ImmutableList.copyOf(outputs);
-		this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredients.toArray(Ingredient[]::new));
+		this.ingredients = RecipeUtils.nonNullList(ingredients.toArray(Ingredient[]::new));
 		validateIngredients();
 	}
 
@@ -69,7 +66,7 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ElvenTradeRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -78,7 +75,6 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 		return ingredients;
 	}
 
-	@Override
 	public ItemStack getToastSymbol() {
 		return new ItemStack(BotaniaBlocks.ELVEN_GATEWAY_CORE);
 	}
@@ -89,7 +85,7 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 	}
 
 	@Override
-	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input, HolderLookup.Provider registries) {
+	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input) {
 		if (ingredients.size() == 1) {
 			// single ingredient, map to first matching slot
 			Ingredient ingredient = ingredients.getFirst();
@@ -99,12 +95,13 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 				}
 			}
 		} else {
-			IntList matchedIngredientItemTypes = new IntArrayList(ingredients.size());
-			if (input.getStackedContents().canCraft(this, matchedIngredientItemTypes)) {
+			// PORT-26.3: the matcher reports item holders now, not item ids, and matches a list of ingredients
+			List<Holder<Item>> matchedIngredientItems = new ArrayList<>(ingredients.size());
+			if (input.getStackedContents().canCraft(ingredients, matchedIngredientItems::add)) {
 				// TODO: figure out how to further optimize this
 				Int2IntSortedMap matchedInputSlots = new Int2IntLinkedOpenHashMap(ingredients.size());
 				for (int ingredientIndex = 0; ingredientIndex < ingredients.size(); ingredientIndex++) {
-					Item inputItem = Item.byId(matchedIngredientItemTypes.getInt(ingredientIndex));
+					Holder<Item> inputItem = matchedIngredientItems.get(ingredientIndex);
 					for (int inputIndex = 0; inputIndex < input.size(); inputIndex++) {
 						if (input.getItem(inputIndex).is(inputItem)) {
 							int alreadyAssigned = matchedInputSlots.get(inputIndex);
@@ -121,37 +118,18 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 		return Optional.empty();
 	}
 
-	public static class Serializer implements RecipeSerializer<ElvenTradeRecipe> {
-		private static final Codec<ItemStack> ITEM_STACK_COMPACT_CODEC = Codec.of(
-				new Encoder<>() {
-					@Override
-					public <T> DataResult<T> encode(ItemStack input, DynamicOps<T> ops, T prefix) {
-						return input.getCount() != 1
-								? ItemStack.STRICT_CODEC.encode(input, ops, prefix)
-								: ItemStack.STRICT_SINGLE_ITEM_CODEC.encode(input, ops, prefix);
-					}
-				},
-				// strict codec can handle the single item output
-				ItemStack.STRICT_CODEC::decode
-		);
+	public static class Serializer {
+		// PORT-26.3: ItemStack's strict codecs are gone; CODEC writes a count only when it isn't 1, which is what this did.
+		private static final Codec<ItemStack> ITEM_STACK_COMPACT_CODEC = ItemStack.CODEC;
 		public static final MapCodec<ElvenTradeRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				ExtraCodecs.nonEmptyList(ITEM_STACK_COMPACT_CODEC.listOf()).fieldOf("output").forGetter(ElvenTradeRecipe::getOutputs),
-				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients").forGetter(ElvenTradeRecipe::getIngredients)
+				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients").forGetter(ElvenTradeRecipe::getIngredients)
 		).apply(instance, ElvenTradeRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ElvenTradeRecipe> STREAM_CODEC = StreamCodec.composite(
-				ItemStack.LIST_STREAM_CODEC, ElvenTradeRecipe::getOutputs,
+				ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), ElvenTradeRecipe::getOutputs,
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), ElvenTradeRecipe::getIngredients,
 				ElvenTradeRecipe::new
 		);
 
-		@Override
-		public MapCodec<ElvenTradeRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ElvenTradeRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

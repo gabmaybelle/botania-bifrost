@@ -46,6 +46,7 @@ import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.PetalApothecaryBlock;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.helper.InventoryHelper;
@@ -106,7 +107,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			return true;
 		}
 
-		Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = level.getRecipeManager()
+		Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.recipeManager(level)
 				.getRecipeFor(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, getRecipeInput(), level);
 		if (maybeRecipe.isPresent()) {
 			var recipe = maybeRecipe.get();
@@ -343,7 +344,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			if (amt > 0) {
 				float anglePer = 360F / amt;
 
-				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = altar.level.getRecipeManager()
+				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.recipeManager(altar.level)
 						.getRecipeFor(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, altar.getRecipeInput(), altar.level);
 				maybeRecipe.ifPresent(recipe -> {
 					RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -352,7 +353,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 					ItemStack stack = recipe.value().assemble(altar.getRecipeInput(), altar.getLevel().registryAccess());
 					gui.renderFakeItem(stack, xc + radius + 32, yc - 8);
 
-					var reagents = recipe.value().getReagent().getItems();
+					var reagents = RecipeUtils.stacksOf(recipe.value().getReagent());
 					ItemStack reagent;
 					if (reagents.length == 0) {
 						reagent = new ItemStack(Items.BARRIER);

@@ -12,7 +12,6 @@ package vazkii.botania.api.recipe;
 import net.minecraft.commands.CacheableFunction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 
@@ -22,7 +21,7 @@ import java.util.Optional;
  * A special category of recipes that don't operate on items, but on blocks in the world, and thus define input and
  * output in the form of block states.
  */
-public interface BlockStateRecipe extends Recipe<RecipeInput> {
+public interface BlockStateRecipe extends BotaniaRecipe<RecipeInput> {
 	/**
 	 * Valid inputs for the recipe
 	 */
@@ -60,23 +59,16 @@ public interface BlockStateRecipe extends Recipe<RecipeInput> {
 	 */
 	@Override
 	@Deprecated
-	default ItemStack assemble(RecipeInput container, HolderLookup.Provider registryAccess) {
+	default ItemStack assemble(RecipeInput container) {
 		return ItemStack.EMPTY;
 	}
 
 	/**
 	 * @deprecated Not meant to be used for item crafting in a container.
 	 */
-	@Override
-	@Deprecated
-	default boolean canCraftInDimensions(int width, int height) {
-		return false;
-	}
-
 	/**
 	 * @deprecated Not meant to be used for item crafting in a container.
 	 */
-	@Override
 	@Deprecated
 	default ItemStack getResultItem(HolderLookup.Provider registryAccess) {
 		return ItemStack.EMPTY;

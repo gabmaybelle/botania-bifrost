@@ -8,7 +8,6 @@
  */
 package vazkii.botania.client.patchouli;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -19,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.StateIngredient;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.xplat.XplatAbstractions;
 import vazkii.patchouli.api.IVariable;
 
@@ -71,12 +71,8 @@ public class PatchouliUtils {
 	 */
 	public static <T extends Recipe<C>, C extends RecipeInput> List<T> getRecipeGroup(RecipeType<T> type, String group) {
 		List<T> list = new ArrayList<>();
-		for (RecipeHolder<T> holder : Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(type)) {
-			T recipe = holder.value();
-			if (group.equals(recipe.getGroup())) {
-				list.add(recipe);
-			}
-		}
+		// PORT-26.3: the client no longer receives machine recipes from the server, so there is nothing to look
+		// through here until Botania syncs its own recipes (Phase 5, with the Lexica and the recipe viewers).
 		if (list.isEmpty()) {
 			BotaniaAPI.LOGGER.warn("Template references empty group {} of recipe type {}", group, type);
 		}
@@ -94,7 +90,7 @@ public class PatchouliUtils {
 	 */
 	public static IVariable interweaveIngredients(List<Ingredient> ingredients, int longestIngredientSize, Level level) {
 		if (ingredients.size() == 1) {
-			return IVariable.wrapList(Arrays.stream(ingredients.getFirst().getItems())
+			return IVariable.wrapList(Arrays.stream(RecipeUtils.stacksOf(ingredients.getFirst()))
 					.map(i -> IVariable.from(i, level.registryAccess()))
 					.collect(Collectors.toList()), level.registryAccess());
 		}
@@ -104,7 +100,7 @@ public class PatchouliUtils {
 		for (Ingredient ingredient : ingredients) {
 			//noinspection ConstantValue
 			if (ingredient != null && !ingredient.isEmpty()) {
-				stacks.add(ingredient.getItems());
+				stacks.add(RecipeUtils.stacksOf(ingredient));
 			} else {
 				stacks.add(empty);
 			}
@@ -122,7 +118,7 @@ public class PatchouliUtils {
 	 * Overload of the method above that uses the provided list's longest ingredient size.
 	 */
 	public static IVariable interweaveIngredients(List<Ingredient> ingredients, Level level) {
-		return interweaveIngredients(ingredients, ingredients.stream().mapToInt(ingr -> ingr.getItems().length).max().orElse(1), level);
+		return interweaveIngredients(ingredients, ingredients.stream().mapToInt(ingr -> RecipeUtils.stacksOf(ingr).length).max().orElse(1), level);
 	}
 
 	/**

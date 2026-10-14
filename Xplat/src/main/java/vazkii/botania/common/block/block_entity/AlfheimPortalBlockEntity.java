@@ -342,7 +342,7 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 					continue;
 				}
 				Optional<ElvenTradeRecipe.AssemblyResult> potentialMatch = candidate.value()
-						.tryAssemble(input, level.registryAccess());
+						.tryAssemble(input);
 				if (potentialMatch.isPresent()) {
 					// input has all ingredients for this recipe
 					ElvenTradeRecipe.AssemblyResult result = potentialMatch.get();

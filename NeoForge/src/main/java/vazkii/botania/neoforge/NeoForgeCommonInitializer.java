@@ -200,6 +200,7 @@ public class NeoForgeCommonInitializer {
 		bind(event, Registries.MENU, BotaniaItems::registerMenuTypes);
 		bind(event, BotaniaRegistries.STATE_INGREDIENT_TYPE, StateIngredients::submitRegistrations);
 		bind(event, Registries.RECIPE_TYPE, BotaniaRecipeTypes::submitRecipeTypes);
+		bind(event, Registries.RECIPE_BOOK_CATEGORY, BotaniaRecipeTypes::submitRecipeBookCategories);
 		bind(event, Registries.RECIPE_SERIALIZER, BotaniaRecipeTypes::submitRecipeSerializers);
 
 		// Entities

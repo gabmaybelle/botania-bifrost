@@ -212,12 +212,12 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 				return holder;
 			}
 		}
-		Optional<RecipeHolder<CraftingRecipe>> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
+		Optional<RecipeHolder<CraftingRecipe>> recipe = BotaniaRecipeTypes.recipeManager(level).getRecipeFor(RecipeType.CRAFTING, input, level);
 		if (recipe.isPresent()) {
 			if (lastRecipes.size() >= 8) {
 				lastRecipes.remove();
 			}
-			lastRecipes.add(recipe.get().id());
+			lastRecipes.add(recipe.get().id().identifier());
 			return recipe;
 		}
 		return Optional.empty();

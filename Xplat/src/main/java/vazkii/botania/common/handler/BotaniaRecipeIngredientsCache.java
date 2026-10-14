@@ -93,7 +93,7 @@ public class BotaniaRecipeIngredientsCache implements ResourceManagerReloadListe
 	private boolean isTerraPlateInputItemInternal(Level level, Item item) {
 		if (terraPlateInputItemIds.isEmpty()) {
 			// TODO: terra plate allows special ingredients, for which this caching approach is incorrect
-			level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.TERRA_PLATE_TYPE).stream()
+			BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.TERRA_PLATE_TYPE).stream()
 					.flatMap(holder -> holder.value().getIngredients().stream())
 					.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
 					.map(ItemStack::getItem)
@@ -118,8 +118,7 @@ public class BotaniaRecipeIngredientsCache implements ResourceManagerReloadListe
 			return;
 		}
 		Int2ObjectMap<Set<RecipeHolder<ElvenTradeRecipe>>> mutableCacheMap = new Int2ObjectOpenHashMap<>();
-		for (RecipeHolder<ElvenTradeRecipe> holder : level.getRecipeManager()
-				.getAllRecipesFor(BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
+		for (RecipeHolder<ElvenTradeRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
 			holder.value().getIngredients().stream()
 					.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
 					.map(ItemStack::getItem)

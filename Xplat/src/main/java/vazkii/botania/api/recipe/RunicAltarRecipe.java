@@ -8,8 +8,10 @@
  */
 package vazkii.botania.api.recipe;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.Objects;
@@ -20,10 +22,14 @@ public interface RunicAltarRecipe extends RecipeWithReagent<ProcessingRecipeInpu
 	Identifier TYPE_ID = botaniaRL("runic_altar");
 	Identifier HEAD_TYPE_ID = botaniaRL("runic_altar_head");
 
+	/** The inputs, other than the reagent. (Vanilla recipes no longer list ingredients.) */
+	NonNullList<Ingredient> getIngredients();
+
 	int getMana();
 
+	@SuppressWarnings("unchecked")
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
+	default RecipeType<? extends RunicAltarRecipe> getType() {
+		return (RecipeType<? extends RunicAltarRecipe>) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 }

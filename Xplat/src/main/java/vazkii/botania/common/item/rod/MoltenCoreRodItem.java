@@ -28,6 +28,7 @@ import net.minecraft.world.phys.HitResult;
 
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.fx.WispParticleData;
+import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 
@@ -77,7 +78,7 @@ public class MoltenCoreRodItem extends Item {
 			BlockState state = world.getBlockState(pos.getBlockPos());
 
 			SingleRecipeInput input = new SingleRecipeInput(new ItemStack(state.getBlock()));
-			world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, p.level())
+			BotaniaRecipeTypes.recipeManager(world).getRecipeFor(RecipeType.SMELTING, input, p.level())
 					.map(r -> r.value().assemble(input, world.registryAccess()))
 					.filter(r -> !r.isEmpty() && r.getItem() instanceof BlockItem)
 					.ifPresent(result -> {

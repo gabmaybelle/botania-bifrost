@@ -98,7 +98,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	private OrechidRecipe findMatchingRecipe(BlockPos coords) {
 		BlockState input = getLevel().getBlockState(coords);
 		List<WeightedEntry.Wrapper<OrechidRecipe>> values = new ArrayList<>();
-		for (OrechidRecipe recipe : OrechidManager.getMatchingRecipes(getLevel().getRecipeManager(), getRecipeType(), input)) {
+		for (OrechidRecipe recipe : OrechidManager.getMatchingRecipes(BotaniaRecipeTypes.recipeManager(getLevel()), getRecipeType(), input)) {
 			values.add(WeightedEntry.wrap(recipe, recipe.getWeight(getLevel(), coords)));
 		}
 		return WeightedRandom.getRandomItem(getLevel().getRandom(), values)
@@ -142,7 +142,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 
 	public Predicate<BlockState> getReplaceMatcher() {
 		return state -> !OrechidManager.getMatchingRecipes(
-				this.getLevel().getRecipeManager(),
+				BotaniaRecipeTypes.recipeManager(this.getLevel()),
 				this.getRecipeType(),
 				state
 		).isEmpty();

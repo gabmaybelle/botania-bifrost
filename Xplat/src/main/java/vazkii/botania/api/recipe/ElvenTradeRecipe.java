@@ -18,7 +18,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -28,14 +27,13 @@ import java.util.Optional;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
+public interface ElvenTradeRecipe extends BotaniaRecipe<ProcessingRecipeInput> {
 	Identifier TYPE_ID = botaniaRL("elven_trade");
 	Identifier TYPE_ID_LEXICON = botaniaRL("elven_trade_lexicon");
 
 	/**
 	 * @return Preview of the inputs
 	 */
-	@Override
 	NonNullList<Ingredient> getIngredients();
 
 	/**
@@ -46,18 +44,20 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 	/**
 	 * Attempt to create the outputs of this recipe. If successful, also return the matched slots in the input.
 	 */
-	Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input, HolderLookup.Provider registries);
+	/** PORT-26.3: no registries any more, vanilla's assemble lost them too. */
+	Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input);
 
+	@SuppressWarnings("unchecked")
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
+	default RecipeType<? extends ElvenTradeRecipe> getType() {
+		return (RecipeType<? extends ElvenTradeRecipe>) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 
 	// Ignored IRecipe boilerplate
 
 	@Override
 	default boolean matches(ProcessingRecipeInput input, Level level) {
-		return tryAssemble(input, level.registryAccess()).isPresent();
+		return tryAssemble(input).isPresent();
 	}
 
 	/**
@@ -66,16 +66,11 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 	 */
 	@Override
 	@Deprecated
-	default ItemStack assemble(ProcessingRecipeInput input, HolderLookup.Provider registries) {
-		Optional<AssemblyResult> potentialResult = tryAssemble(input, registries);
+	default ItemStack assemble(ProcessingRecipeInput input) {
+		Optional<AssemblyResult> potentialResult = tryAssemble(input);
 		return potentialResult.isPresent() && !potentialResult.get().outputs().isEmpty()
 				? potentialResult.get().outputs().getFirst()
 				: ItemStack.EMPTY;
-	}
-
-	@Override
-	default boolean canCraftInDimensions(int width, int height) {
-		return false;
 	}
 
 	/**
@@ -84,7 +79,6 @@ public interface ElvenTradeRecipe extends Recipe<ProcessingRecipeInput> {
 	 *             input.
 	 */
 	@Deprecated
-	@Override
 	default ItemStack getResultItem(HolderLookup.Provider registries) {
 		return getOutputs().stream().findFirst().orElse(ItemStack.EMPTY);
 	}

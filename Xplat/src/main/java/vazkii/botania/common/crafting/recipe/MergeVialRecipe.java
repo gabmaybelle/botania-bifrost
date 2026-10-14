@@ -8,14 +8,14 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.brew.Brew;
@@ -24,11 +24,9 @@ import vazkii.botania.common.item.brew.BaseBrewItem;
 import java.util.Objects;
 
 public class MergeVialRecipe extends CustomRecipe {
-	public static final RecipeSerializer<MergeVialRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(MergeVialRecipe::new);
+	public static final RecipeSerializer<MergeVialRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(MergeVialRecipe::new), StreamCodec.unit(new MergeVialRecipe()));
 
-	public MergeVialRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public MergeVialRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level worldIn) {
@@ -57,7 +55,7 @@ public class MergeVialRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack firstStack = ItemStack.EMPTY;
 		BaseBrewItem brew = null;
 		int swigs = 0;
@@ -119,12 +117,7 @@ public class MergeVialRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height > 2;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<MergeVialRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

@@ -100,7 +100,7 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 					MathHelper.inflateBoxAround(getEffectivePos(), RANGE),
 					itemEntity -> ItemLifetime.canInteractWith(this, itemEntity)
 							&& !itemEntity.getItem().is(BotaniaTags.Items.IGNORED_BY_ENDOFLAME)
-							&& !itemEntity.getItem().getItem().hasCraftingRemainingItem())) {
+							&& itemEntity.getItem().getItem().getCraftingRemainder() == null)) {
 				ItemStack stack = item.getItem();
 				int burnTime = getBurnTime(stack);
 				if (burnTime > 0) {

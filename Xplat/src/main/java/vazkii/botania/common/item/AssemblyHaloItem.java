@@ -24,9 +24,11 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.*;
@@ -62,6 +64,7 @@ import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.annotations.SoftImplement;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.component.StoredIds;
+import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.helper.VecHelper;
@@ -101,7 +104,7 @@ public class AssemblyHaloItem extends Item {
 				if (recipe == null) {
 					RecipeHolder<? extends Recipe<CraftingInput>> lastRecipe = getLastRecipe(world, stack);
 					if (lastRecipe != null) {
-						saveRecipe(stack, lastRecipe.id(), segment);
+						saveRecipe(stack, lastRecipe.id().identifier(), segment);
 					}
 				} else {
 					tryCraft(player, stack, segment, true);
@@ -298,11 +301,11 @@ public class AssemblyHaloItem extends Item {
 		}
 
 		CraftingInput input = CraftingInput.of(cc.getWidth(), cc.getHeight(), cc.getItems());
-		player.level().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, player.level()).ifPresent(recipe -> {
+		BotaniaRecipeTypes.recipeManager(player.level()).getRecipeFor(RecipeType.CRAFTING, input, player.level()).ifPresent(recipe -> {
 			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
 				ItemStack stack = player.getInventory().getItem(i);
 				if (!stack.isEmpty() && stack.getItem() instanceof AssemblyHaloItem) {
-					rememberLastRecipe(recipe.id(), stack);
+					rememberLastRecipe(recipe.id().identifier(), stack);
 				}
 			}
 		});
@@ -320,7 +323,7 @@ public class AssemblyHaloItem extends Item {
 
 	@SuppressWarnings("unchecked")
 	private static @Nullable RecipeHolder<CraftingRecipe> getRecipeHolder(Level world, Identifier id) {
-		Optional<RecipeHolder<?>> recipeHolder = world.getRecipeManager().byKey(id);
+		Optional<RecipeHolder<?>> recipeHolder = BotaniaRecipeTypes.recipeManager(world).byKey(ResourceKey.create(Registries.RECIPE, id));
 		return recipeHolder.isPresent() && recipeHolder.get().value().getType() == RecipeType.CRAFTING
 				? (RecipeHolder<CraftingRecipe>) recipeHolder.get()
 				: null;

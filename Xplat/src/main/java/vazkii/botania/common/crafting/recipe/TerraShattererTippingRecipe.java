@@ -8,27 +8,25 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.tool.terrasteel.TerraShattererItem;
 
 public class TerraShattererTippingRecipe extends CustomRecipe {
-	public static final RecipeSerializer<TerraShattererTippingRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(TerraShattererTippingRecipe::new);
+	public static final RecipeSerializer<TerraShattererTippingRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(TerraShattererTippingRecipe::new), StreamCodec.unit(new TerraShattererTippingRecipe()));
 
-	public TerraShattererTippingRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public TerraShattererTippingRecipe() {}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<TerraShattererTippingRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -55,7 +53,7 @@ public class TerraShattererTippingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack terraPick = ItemStack.EMPTY;
 
 		for (int i = 0; i < inv.size(); i++) {
@@ -74,8 +72,4 @@ public class TerraShattererTippingRecipe extends CustomRecipe {
 		return terraPickCopy;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
 }

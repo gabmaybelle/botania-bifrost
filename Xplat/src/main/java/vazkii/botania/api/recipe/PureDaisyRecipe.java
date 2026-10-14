@@ -39,8 +39,9 @@ public interface PureDaisyRecipe extends BlockStateRecipe {
 	 */
 	int getTime();
 
+	@SuppressWarnings("unchecked")
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
+	default RecipeType<? extends PureDaisyRecipe> getType() {
+		return (RecipeType<? extends PureDaisyRecipe>) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 }

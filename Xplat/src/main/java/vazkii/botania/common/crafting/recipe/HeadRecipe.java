@@ -13,20 +13,20 @@ import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
+import com.mojang.authlib.services.response.MinecraftTexturesPayload;
 import com.mojang.serialization.MapCodec;
 import com.mojang.util.UUIDTypeAdapter;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -43,7 +43,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -51,7 +50,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HeadRecipe extends RunicAltarRecipe {
-	public static final RecipeSerializer<HeadRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<HeadRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private static final Pattern PROFILE_PATTERN = Pattern.compile(
 			"(?<base64>[A-Za-z0-9+/]{100,}={0,2})" +
 					"|(?<url>(?=\\S{50,})https?://(?!bugs|education|feedback)\\w+\\.(?:minecraft\\.net|mojang\\.com)/\\S+)" +
@@ -59,7 +58,8 @@ public class HeadRecipe extends RunicAltarRecipe {
 	public static final String TEXTURE_URL_BASE = "https://textures.minecraft.net/texture/";
 	private static final Supplier<Gson> gson = Suppliers.memoize(() -> new GsonBuilder()
 			.registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create());
-	private static final ResolvableProfile PROFILE_VALID_RESULT = new ResolvableProfile(Optional.of("valid"), Optional.of(Util.NIL_UUID), new PropertyMap());
+	// PORT-26.3: profiles are made through ResolvableProfile's factories now
+	private static final ResolvableProfile PROFILE_VALID_RESULT = ResolvableProfile.createUnresolved("valid");
 	private static final LoadingCache<String, UUID> GENERATED_UUID_CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(1, TimeUnit.MINUTES).build(
 					new CacheLoader<>() {
@@ -110,18 +110,17 @@ public class HeadRecipe extends RunicAltarRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<? extends RunicAltarRecipe> getSerializer() {
+	public RecipeSerializer<HeadRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
 	@Override
-	public ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
-		ItemStack stack = getResultItem(registries).copy();
+	public ItemStack assemble(ProcessingRecipeInput inv) {
+		ItemStack stack = getResultItem(null).copy();
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack ingr = inv.getItem(i);
 			if (ingr.is(Items.NAME_TAG)) {
-				stack.set(DataComponents.PROFILE, new ResolvableProfile(Optional.of(ingr.getHoverName().getString()),
-						Optional.empty(), new PropertyMap()));
+				stack.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved(ingr.getHoverName().getString()));
 				break;
 			}
 			if (ingr.is(Items.WRITTEN_BOOK)) {
@@ -188,30 +187,20 @@ public class HeadRecipe extends RunicAltarRecipe {
 				// we got something that looks like a valid skin texture URL, now build rudimentary profile data
 				String profileTextureJson = "{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}".formatted(textureUrl);
 				String propertyBase64 = Base64.getEncoder().encodeToString(profileTextureJson.getBytes(StandardCharsets.UTF_8));
-				var profile = new ResolvableProfile(Optional.of(component.title().raw()),
-						Optional.of(GENERATED_UUID_CACHE.getUnchecked(propertyBase64)), new PropertyMap());
-				profile.properties().put("textures", new Property("textures", propertyBase64));
-				return profile;
+				PropertyMap properties = new PropertyMap(ImmutableMultimap.of("textures", new Property("textures", propertyBase64)));
+				return ResolvableProfile.createResolved(new GameProfile(
+						GENERATED_UUID_CACHE.getUnchecked(propertyBase64), component.title().raw(), properties));
 			}
 		}
 		return null;
 	}
 
-	public static class Serializer implements RecipeSerializer<HeadRecipe> {
+	public static class Serializer {
 		public static final MapCodec<HeadRecipe> CODEC = RunicAltarRecipe.Serializer.CODEC
 				.xmap(HeadRecipe::new, Function.identity());
 		public static final StreamCodec<RegistryFriendlyByteBuf, HeadRecipe> STREAM_CODEC = RunicAltarRecipe.Serializer.STREAM_CODEC
 				.map(HeadRecipe::new, Function.identity());
 
-		@Override
-		public MapCodec<HeadRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, HeadRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 
 }

@@ -8,7 +8,7 @@
  */
 package vazkii.botania.mixin;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
@@ -27,5 +27,5 @@ public interface ShapedRecipeAccessor {
 	 * Raw accessor so we don't have to deal with janky empty registry access.
 	 */
 	@Accessor("result")
-	ItemStack botania_getResult();
+	ItemStackTemplate botania_getResult();
 }

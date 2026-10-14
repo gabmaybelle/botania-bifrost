@@ -216,6 +216,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaItems.registerMenuTypes(bind(BuiltInRegistries.MENU));
 		StateIngredients.submitRegistrations(bind(STATE_INGREDIENT_TYPE_REGISTRY));
 		BotaniaRecipeTypes.submitRecipeTypes(bind(BuiltInRegistries.RECIPE_TYPE));
+		BotaniaRecipeTypes.submitRecipeBookCategories(bind(BuiltInRegistries.RECIPE_BOOK_CATEGORY));
 		BotaniaRecipeTypes.submitRecipeSerializers(bind(BuiltInRegistries.RECIPE_SERIALIZER));
 
 		// Entities

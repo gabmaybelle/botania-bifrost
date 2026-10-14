@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.api.recipe.TerrestrialAgglomerationRecipe;
 import vazkii.botania.client.patchouli.PatchouliUtils;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
@@ -42,7 +43,7 @@ public class TerraPlateProcessor implements IComponentProcessor {
 			int index = Integer.parseInt(key.substring(5)) - 1;
 			List<Ingredient> list = recipe.getIngredients();
 			if (index >= 0 && index < list.size()) {
-				return IVariable.from(list.get(index).getItems(), level.registryAccess());
+				return IVariable.from(RecipeUtils.stacksOf(list.get(index)), level.registryAccess());
 			}
 		}
 		return null;

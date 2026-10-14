@@ -8,24 +8,22 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.mana.BasicLensItem;
 import vazkii.botania.common.item.ManaBlasterItem;
 
 public class ManaBlasterLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ManaBlasterLensRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ManaBlasterLensRecipe::new);
+	public static final RecipeSerializer<ManaBlasterLensRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(ManaBlasterLensRecipe::new), StreamCodec.unit(new ManaBlasterLensRecipe()));
 
-	public ManaBlasterLensRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public ManaBlasterLensRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level world) {
@@ -49,7 +47,7 @@ public class ManaBlasterLensRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack lens = ItemStack.EMPTY;
 		ItemStack gun = ItemStack.EMPTY;
 
@@ -75,12 +73,7 @@ public class ManaBlasterLensRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ManaBlasterLensRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

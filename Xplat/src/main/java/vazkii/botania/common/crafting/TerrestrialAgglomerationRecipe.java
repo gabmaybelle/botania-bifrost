@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TerrestrialAgglomerationRecipe implements vazkii.botania.api.recipe.TerrestrialAgglomerationRecipe {
-	public static final RecipeSerializer<TerrestrialAgglomerationRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<TerrestrialAgglomerationRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final int mana;
 	private final NonNullList<Ingredient> ingredients;
 	private final ItemStack output;
@@ -38,7 +38,7 @@ public class TerrestrialAgglomerationRecipe implements vazkii.botania.api.recipe
 
 	public TerrestrialAgglomerationRecipe(int mana, ItemStack output, Ingredient... ingredients) {
 		this.mana = mana;
-		this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredients);
+		this.ingredients = RecipeUtils.nonNullList(ingredients);
 		this.output = output;
 		this.requireSpecialMatching = Arrays.stream(ingredients).anyMatch(XplatAbstractions.instance()::requiresCustomTesting);
 	}
@@ -58,15 +58,14 @@ public class TerrestrialAgglomerationRecipe implements vazkii.botania.api.recipe
 
 	@Override
 	public boolean matches(ProcessingRecipeInput input, Level world) {
-		return RecipeUtils.matches(this, input, requireSpecialMatching);
+		return RecipeUtils.matches(getIngredients(), input, requireSpecialMatching);
 	}
 
 	@Override
-	public ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(ProcessingRecipeInput inv) {
 		return output.copy();
 	}
 
-	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return output;
 	}
@@ -81,12 +80,12 @@ public class TerrestrialAgglomerationRecipe implements vazkii.botania.api.recipe
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<TerrestrialAgglomerationRecipe> {
+	public static class Serializer {
 		public static final MapCodec<TerrestrialAgglomerationRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients")
+				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients")
 						.forGetter(TerrestrialAgglomerationRecipe::getIngredients),
 				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(TerrestrialAgglomerationRecipe::getMana),
-				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(TerrestrialAgglomerationRecipe::getOutput)
+				ItemStack.CODEC.fieldOf("result").forGetter(TerrestrialAgglomerationRecipe::getOutput)
 		).apply(instance, TerrestrialAgglomerationRecipe::of));
 		public static final StreamCodec<RegistryFriendlyByteBuf, TerrestrialAgglomerationRecipe> STREAM_CODEC = StreamCodec.composite(
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), TerrestrialAgglomerationRecipe::getIngredients,
@@ -95,14 +94,5 @@ public class TerrestrialAgglomerationRecipe implements vazkii.botania.api.recipe
 				TerrestrialAgglomerationRecipe::of
 		);
 
-		@Override
-		public MapCodec<TerrestrialAgglomerationRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, TerrestrialAgglomerationRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

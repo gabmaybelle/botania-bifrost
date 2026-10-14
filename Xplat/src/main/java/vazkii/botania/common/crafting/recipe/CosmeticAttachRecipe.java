@@ -8,24 +8,22 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.item.CosmeticAttachable;
 import vazkii.botania.api.item.CosmeticBauble;
 
 public class CosmeticAttachRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CosmeticAttachRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(CosmeticAttachRecipe::new);
+	public static final RecipeSerializer<CosmeticAttachRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(CosmeticAttachRecipe::new), StreamCodec.unit(new CosmeticAttachRecipe()));
 
-	public CosmeticAttachRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public CosmeticAttachRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level world) {
@@ -51,7 +49,7 @@ public class CosmeticAttachRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack cosmeticItem = ItemStack.EMPTY;
 		ItemStack attachableItem = ItemStack.EMPTY;
 
@@ -80,12 +78,7 @@ public class CosmeticAttachRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<CosmeticAttachRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

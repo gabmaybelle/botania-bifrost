@@ -8,33 +8,26 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import com.mojang.serialization.MapCodec;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
+import vazkii.botania.mixin.NormalCraftingRecipeAccessor;
 import vazkii.botania.mixin.ShapedRecipeAccessor;
 
-import java.util.function.Function;
-
 public class ArmorUpgradeRecipe extends ShapedRecipe {
-	public static final WrappingRecipeSerializer<ArmorUpgradeRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<ShapedRecipe> SERIALIZER = WrappingRecipeSerializer.shaped(ArmorUpgradeRecipe::new);
 
 	private ArmorUpgradeRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).botania_getPattern(),
-				((ShapedRecipeAccessor) recipe).botania_getResult(), recipe.showNotification());
+		super(((NormalCraftingRecipeAccessor) recipe).botania_getCommonInfo(), ((NormalCraftingRecipeAccessor) recipe).botania_getBookInfo(),
+				((ShapedRecipeAccessor) recipe).botania_getPattern(), ((ShapedRecipeAccessor) recipe).botania_getResult());
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
-		ItemStack out = super.assemble(inv, registries);
+	public ItemStack assemble(CraftingInput inv) {
+		ItemStack out = super.assemble(inv);
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.has(DataComponents.EQUIPPABLE)) { // PORT-26.3: ArmorItem is gone; armor is anything equippable
@@ -47,32 +40,7 @@ public class ArmorUpgradeRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
 		return SERIALIZER;
-	}
-
-	private static class Serializer implements WrappingRecipeSerializer<ArmorUpgradeRecipe> {
-		public static final MapCodec<ArmorUpgradeRecipe> CODEC = SHAPED_RECIPE.codec()
-				.xmap(ArmorUpgradeRecipe::new, Function.identity());
-		public static final StreamCodec<RegistryFriendlyByteBuf, ArmorUpgradeRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec()
-				.map(ArmorUpgradeRecipe::new, Function.identity());
-
-		@Override
-		public ArmorUpgradeRecipe wrap(Recipe<?> recipe) {
-			if (!(recipe instanceof ShapedRecipe shapedRecipe)) {
-				throw new IllegalArgumentException("Unsupported recipe type to wrap: " + recipe.getType());
-			}
-			return new ArmorUpgradeRecipe(shapedRecipe);
-		}
-
-		@Override
-		public MapCodec<ArmorUpgradeRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ArmorUpgradeRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

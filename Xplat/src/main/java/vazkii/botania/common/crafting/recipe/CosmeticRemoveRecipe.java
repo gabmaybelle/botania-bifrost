@@ -8,14 +8,14 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.item.CosmeticAttachable;
@@ -23,11 +23,9 @@ import vazkii.botania.api.item.CosmeticBauble;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
 public class CosmeticRemoveRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(CosmeticRemoveRecipe::new);
+	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(CosmeticRemoveRecipe::new), StreamCodec.unit(new CosmeticRemoveRecipe()));
 
-	public CosmeticRemoveRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public CosmeticRemoveRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level world) {
@@ -48,7 +46,7 @@ public class CosmeticRemoveRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack attachableItem = ItemStack.EMPTY;
 
 		for (int i = 0; i < inv.size(); i++) {
@@ -69,12 +67,7 @@ public class CosmeticRemoveRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height > 0;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<CosmeticRemoveRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

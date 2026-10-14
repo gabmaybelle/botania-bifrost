@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.api.recipe.ElvenTradeRecipe;
 import vazkii.botania.client.patchouli.PatchouliUtils;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
@@ -42,7 +43,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 		for (ElvenTradeRecipe recipe : recipes) {
 			List<Ingredient> inputs = recipe.getIngredients();
 			for (Ingredient ingredient : inputs) {
-				int length = ingredient.getItems().length;
+				int length = RecipeUtils.stacksOf(ingredient).length;
 				if (length > longestIngredientSize) {
 					longestIngredientSize = length;
 				}

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.recipe.BotanicalBreweryRecipe;
 import vazkii.botania.client.patchouli.PatchouliUtils;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
@@ -61,7 +62,7 @@ public class BrewRecipeProcessor implements IComponentProcessor {
 
 			return index < recipe.getIngredients().size() && index >= 0
 					? IVariable.wrapList(
-							Arrays.stream(recipe.getIngredients().get(index).getItems())
+							Arrays.stream(RecipeUtils.stacksOf(recipe.getIngredients().get(index)))
 									.map(o -> IVariable.from(o, level.registryAccess()))
 									.toList(),
 							level.registryAccess())

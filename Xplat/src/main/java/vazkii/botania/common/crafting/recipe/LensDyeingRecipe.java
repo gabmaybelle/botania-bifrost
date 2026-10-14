@@ -8,50 +8,28 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import com.google.common.base.Suppliers;
+import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.mana.BasicLensItem;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.lens.LensItem;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
-
 public class LensDyeingRecipe extends CustomRecipe {
-	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(LensDyeingRecipe::new);
+	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(LensDyeingRecipe::new), StreamCodec.unit(new LensDyeingRecipe()));
 
-	private final Supplier<List<Ingredient>> dyes = Suppliers.memoize(() -> Arrays.asList(
-			Ingredient.of(Items.WHITE_DYE), Ingredient.of(Items.ORANGE_DYE),
-			Ingredient.of(Items.MAGENTA_DYE), Ingredient.of(Items.LIGHT_BLUE_DYE),
-			Ingredient.of(Items.YELLOW_DYE), Ingredient.of(Items.LIME_DYE),
-			Ingredient.of(Items.PINK_DYE), Ingredient.of(Items.GRAY_DYE),
-			Ingredient.of(Items.LIGHT_GRAY_DYE), Ingredient.of(Items.CYAN_DYE),
-			Ingredient.of(Items.PURPLE_DYE), Ingredient.of(Items.BLUE_DYE),
-			Ingredient.of(Items.BROWN_DYE), Ingredient.of(Items.GREEN_DYE),
-			Ingredient.of(Items.RED_DYE), Ingredient.of(Items.BLACK_DYE),
-			Ingredient.of(BotaniaItems.MANA_PEARL)
-	));
-
-	public LensDyeingRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public LensDyeingRecipe() {}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<LensDyeingRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -67,7 +45,8 @@ public class LensDyeingRecipe extends CustomRecipe {
 					foundLens = true;
 				} else if (!foundDye) {
 					// TODO: rainbow tinting items should be a tag
-					if (stack.getItem() instanceof DyeItem || stack.is(BotaniaItems.MANA_PEARL)) {
+					// PORT-26.3: dyes are one item with a DYE component since 26.1
+					if (stack.has(DataComponents.DYE) || stack.is(BotaniaItems.MANA_PEARL)) {
 						foundDye = true;
 					} else {
 						return false;
@@ -82,7 +61,7 @@ public class LensDyeingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack lens = ItemStack.EMPTY;
 		DyeColor color = null;
 
@@ -91,9 +70,9 @@ public class LensDyeingRecipe extends CustomRecipe {
 			if (!stack.isEmpty()) {
 				if (stack.getItem() instanceof BasicLensItem && lens.isEmpty()) {
 					lens = stack;
-				} else if (stack.getItem() instanceof DyeItem dyeItem) {
+				} else if (stack.has(DataComponents.DYE)) {
 					// we can assume that otherwise it's rainbow color, as we matched the ingredients already
-					color = dyeItem.getDyeColor();
+					color = stack.get(DataComponents.DYE);
 				}
 			}
 		}
@@ -112,8 +91,4 @@ public class LensDyeingRecipe extends CustomRecipe {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
 }

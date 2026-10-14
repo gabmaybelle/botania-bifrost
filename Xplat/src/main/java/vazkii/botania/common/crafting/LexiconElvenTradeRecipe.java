@@ -11,10 +11,8 @@ package vazkii.botania.common.crafting;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +24,7 @@ import vazkii.botania.api.recipe.ElvenTradeRecipe;
 import vazkii.botania.api.recipe.ProcessingRecipeInput;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.component.BotaniaDataComponents;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.List;
@@ -34,14 +33,14 @@ import java.util.function.Supplier;
 
 public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 	public static final LexiconElvenTradeRecipe INSTANCE = new LexiconElvenTradeRecipe();
-	public static final RecipeSerializer<LexiconElvenTradeRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<LexiconElvenTradeRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(() -> INSTANCE), StreamCodec.unit(INSTANCE));
 	public static final Supplier<Ingredient> LEXICON_INGREDIENT = Suppliers.memoize(() -> Ingredient.of(BotaniaItems.LEXICA_BOTANIA));
 
 	private LexiconElvenTradeRecipe() {}
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, LEXICON_INGREDIENT.get());
+		return RecipeUtils.nonNullList(LEXICON_INGREDIENT.get());
 	}
 
 	@Override
@@ -49,7 +48,6 @@ public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 		return true;
 	}
 
-	@Override
 	public ItemStack getToastSymbol() {
 		return new ItemStack(BotaniaBlocks.ELVEN_GATEWAY_CORE);
 	}
@@ -66,8 +64,7 @@ public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 	}
 
 	@Override
-	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input,
-			HolderLookup.Provider registries) {
+	public Optional<AssemblyResult> tryAssemble(ProcessingRecipeInput input) {
 		var lexiconIngredient = LEXICON_INGREDIENT.get();
 		for (int slot = 0; slot < input.size(); slot++) {
 			ItemStack inputItem = input.getItem(slot);
@@ -83,15 +80,4 @@ public class LexiconElvenTradeRecipe implements ElvenTradeRecipe {
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<LexiconElvenTradeRecipe> {
-		@Override
-		public MapCodec<LexiconElvenTradeRecipe> codec() {
-			return MapCodec.unit(() -> LexiconElvenTradeRecipe.INSTANCE);
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, LexiconElvenTradeRecipe> streamCodec() {
-			return StreamCodec.unit(LexiconElvenTradeRecipe.INSTANCE);
-		}
-	}
 }

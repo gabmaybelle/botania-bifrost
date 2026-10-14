@@ -51,6 +51,7 @@ import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.helper.InventoryHelper;
@@ -223,7 +224,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 		if (currentRecipe != null && currentRecipe.value().matches(getRecipeInput(), level)) {
 			this.manaToGet = currentRecipe.value().getMana();
 		} else {
-			level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, getRecipeInput(), level).ifPresentOrElse(
+			BotaniaRecipeTypes.recipeManager(level).getRecipeFor(BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, getRecipeInput(), level).ifPresentOrElse(
 					holder -> {
 						currentRecipe = holder;
 						manaToGet = currentRecipe.value().getMana();
@@ -432,7 +433,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, progress == 1F ? 0 : 22, 8, 22, 15);
 
 					if (progress == 1F) {
-						ItemStack[] reagents = altar.currentRecipe.value().getReagent().getItems();
+						ItemStack[] reagents = RecipeUtils.stacksOf(altar.currentRecipe.value().getReagent());
 						ItemStack reagent;
 						if (reagents.length == 0) {
 							reagent = new ItemStack(Items.BARRIER);

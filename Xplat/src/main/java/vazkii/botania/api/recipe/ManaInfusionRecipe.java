@@ -9,11 +9,12 @@
 package vazkii.botania.api.recipe;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -22,7 +23,7 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public interface ManaInfusionRecipe extends Recipe<RecipeInput> {
+public interface ManaInfusionRecipe extends BotaniaRecipe<RecipeInput> {
 	Identifier TYPE_ID = botaniaRL("mana_infusion");
 
 	/**
@@ -40,7 +41,6 @@ public interface ManaInfusionRecipe extends Recipe<RecipeInput> {
 	 *
 	 * @return The output stack of the recipe.
 	 */
-	@Override
 	ItemStack getResultItem(HolderLookup.Provider registries);
 
 	/**
@@ -58,6 +58,9 @@ public interface ManaInfusionRecipe extends Recipe<RecipeInput> {
 	 *
 	 * @return The catalyst ingredient.
 	 */
+	/** The input, as a one-element list. (Vanilla recipes no longer list ingredients.) */
+	NonNullList<Ingredient> getIngredients();
+
 	StateIngredient getRecipeCatalyst();
 
 	/**
@@ -65,25 +68,21 @@ public interface ManaInfusionRecipe extends Recipe<RecipeInput> {
 	 */
 	int getManaToConsume();
 
+	@SuppressWarnings("unchecked")
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
+	default RecipeType<? extends ManaInfusionRecipe> getType() {
+		return (RecipeType<? extends ManaInfusionRecipe>) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 
 	// Ignored IRecipe stuff
 
 	@Override
-	default ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
+	default ItemStack assemble(RecipeInput inv) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	default boolean matches(RecipeInput inv, Level world) {
-		return false;
-	}
-
-	@Override
-	default boolean canCraftInDimensions(int width, int height) {
 		return false;
 	}
 

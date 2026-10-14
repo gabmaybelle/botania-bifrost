@@ -8,17 +8,25 @@
  */
 package vazkii.botania.common.crafting;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import vazkii.botania.api.recipe.BotaniaRecipe;
 import vazkii.botania.common.crafting.recipe.*;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
@@ -60,6 +68,37 @@ public class BotaniaRecipeTypes {
 		public String toString() {
 			return name;
 		}
+	}
+
+	/** PORT-26.3: every recipe needs a recipe-book category; Botania's all share this one. */
+	public static final RecipeBookCategory BOOK_CATEGORY = new RecipeBookCategory();
+
+	public static void submitRecipeBookCategories(BiConsumer<RecipeBookCategory, Identifier> r) {
+		r.accept(BOOK_CATEGORY, BotaniaRecipe.BOOK_CATEGORY_ID);
+	}
+
+	/** PORT-26.3: Level#getRecipeManager is gone; recipes live on the server. */
+	public static RecipeManager recipeManager(Level level) {
+		return Objects.requireNonNull(level.getServer(), "recipes are only available on the server").getRecipeManager();
+	}
+
+	/**
+	 * PORT-26.3: RecipeManager#getAllRecipesFor is gone; filtered from all recipes (worth a cache if it shows up in
+	 * profiles).
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Recipe<?>> List<RecipeHolder<T>> getAllRecipesFor(RecipeManager manager, RecipeType<T> type) {
+		List<RecipeHolder<T>> result = new ArrayList<>();
+		for (RecipeHolder<?> holder : manager.getRecipes()) {
+			if (holder.value().getType() == type) {
+				result.add((RecipeHolder<T>) holder);
+			}
+		}
+		return result;
+	}
+
+	public static <T extends Recipe<?>> List<RecipeHolder<T>> getAllRecipesFor(Level level, RecipeType<T> type) {
+		return getAllRecipesFor(recipeManager(level), type);
 	}
 
 	public static void submitRecipeTypes(BiConsumer<RecipeType<?>, Identifier> r) {
@@ -110,7 +149,7 @@ public class BotaniaRecipeTypes {
 
 	@SuppressWarnings("unchecked")
 	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(Level world, Identifier id, RecipeType<T> expectedType) {
-		var holder = world.getRecipeManager().byKey(id);
+		var holder = recipeManager(world).byKey(ResourceKey.create(Registries.RECIPE, id));
 		return holder.isPresent() && holder.get().value().getType() == expectedType
 				? holder.map(h -> (RecipeHolder<T>) h)
 				: Optional.empty();

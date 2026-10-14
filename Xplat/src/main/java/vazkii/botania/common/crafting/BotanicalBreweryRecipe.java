@@ -32,14 +32,14 @@ import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import java.util.List;
 
 public class BotanicalBreweryRecipe implements vazkii.botania.api.recipe.BotanicalBreweryRecipe {
-	public static final RecipeSerializer<BotanicalBreweryRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<BotanicalBreweryRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 	private final Brew brew;
 	private final NonNullList<Ingredient> inputs;
 	private final String group;
 
 	public BotanicalBreweryRecipe(Brew brew, Ingredient... inputs) {
 		this.brew = brew;
-		this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+		this.inputs = RecipeUtils.nonNullList(inputs);
 		this.group = BotaniaAPI.instance().getBrewRegistry().getKey(brew).toString();
 	}
 
@@ -62,17 +62,16 @@ public class BotanicalBreweryRecipe implements vazkii.botania.api.recipe.Botanic
 	}
 
 	@Override
-	public String getGroup() {
+	public String group() {
 		return group;
 	}
 
-	@Override
 	public ItemStack getToastSymbol() {
 		return new ItemStack(BotaniaBlocks.BOTANICAL_BREWERY);
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<BotanicalBreweryRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -107,10 +106,10 @@ public class BotanicalBreweryRecipe implements vazkii.botania.api.recipe.Botanic
 				&& inputs.equals(brewRecipe.inputs);
 	}
 
-	public static class Serializer implements RecipeSerializer<BotanicalBreweryRecipe> {
+	public static class Serializer {
 		public static final MapCodec<BotanicalBreweryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				BotaniaAPI.instance().getBrewRegistry().byNameCodec().fieldOf("brew").forGetter(BotanicalBreweryRecipe::getBrew),
-				ExtraCodecs.nonEmptyList(Ingredient.CODEC_NONEMPTY.listOf()).fieldOf("ingredients").forGetter(BotanicalBreweryRecipe::getIngredients)
+				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients").forGetter(BotanicalBreweryRecipe::getIngredients)
 		).apply(instance, BotanicalBreweryRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, BotanicalBreweryRecipe> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.registry(BotaniaRegistries.BREWS), BotanicalBreweryRecipe::getBrew,
@@ -118,14 +117,5 @@ public class BotanicalBreweryRecipe implements vazkii.botania.api.recipe.Botanic
 				BotanicalBreweryRecipe::new
 		);
 
-		@Override
-		public MapCodec<BotanicalBreweryRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, BotanicalBreweryRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

@@ -13,7 +13,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import vazkii.botania.api.brew.Brew;
@@ -22,8 +22,11 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public interface BotanicalBreweryRecipe extends Recipe<ProcessingRecipeInput> {
+public interface BotanicalBreweryRecipe extends BotaniaRecipe<ProcessingRecipeInput> {
 	Identifier TYPE_ID = botaniaRL("brew");
+
+	/** The inputs, other than the container. (Vanilla recipes no longer list ingredients.) */
+	NonNullList<Ingredient> getIngredients();
 
 	Brew getBrew();
 
@@ -31,28 +34,32 @@ public interface BotanicalBreweryRecipe extends Recipe<ProcessingRecipeInput> {
 
 	ItemStack getOutput(ItemStack container);
 
+	@SuppressWarnings("unchecked")
 	@Override
-	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
+	default RecipeType<? extends BotanicalBreweryRecipe> getType() {
+		return (RecipeType<? extends BotanicalBreweryRecipe>) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 
-	@Override
 	default ItemStack getResultItem(HolderLookup.Provider registries) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	default ItemStack assemble(ProcessingRecipeInput inv, HolderLookup.Provider registries) {
+	default ItemStack assemble(ProcessingRecipeInput inv) {
 		return inv.isEmpty() ? ItemStack.EMPTY : getOutput(inv.getItem(0));
 	}
 
-	@Override
 	default NonNullList<ItemStack> getRemainingItems(ProcessingRecipeInput input) {
-		return Recipe.super.getRemainingItems(input.isEmpty() ? input : input.getSubset(1, input.size()));
+		// PORT-26.3: vanilla's default remaining-items logic only exists for crafting recipes now; this is the same thing.
+		ProcessingRecipeInput inputs = input.isEmpty() ? input : input.getSubset(1, input.size());
+		NonNullList<ItemStack> remaining = NonNullList.withSize(inputs.size(), ItemStack.EMPTY);
+		for (int i = 0; i < inputs.size(); i++) {
+			var remainder = inputs.getItem(i).getItem().getCraftingRemainder();
+			if (remainder != null) {
+				remaining.set(i, remainder.create());
+			}
+		}
+		return remaining;
 	}
 
-	@Override
-	default boolean canCraftInDimensions(int width, int height) {
-		return width * height >= getIngredients().size() + 1;
-	}
 }

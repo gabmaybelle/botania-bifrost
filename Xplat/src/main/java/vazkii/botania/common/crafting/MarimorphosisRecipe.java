@@ -25,7 +25,7 @@ import vazkii.botania.api.recipe.StateIngredient;
 import java.util.function.Function;
 
 public class MarimorphosisRecipe extends OrechidRecipe {
-	public static final RecipeSerializer<MarimorphosisRecipe> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<MarimorphosisRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 
 	public MarimorphosisRecipe(StateIngredient input, StateIngredient output, int manaCost, int weight, int weightBonus, @Nullable TagKey<Biome> biomes) {
 		super(input, output, 0, manaCost, weight, null, null, weightBonus, biomes);
@@ -44,24 +44,15 @@ public class MarimorphosisRecipe extends OrechidRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<MarimorphosisRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<MarimorphosisRecipe> {
+	public static class Serializer {
 		public static final MapCodec<MarimorphosisRecipe> CODEC = OrechidRecipe.SERIALIZER.codec()
 				.xmap(MarimorphosisRecipe::new, Function.identity());
 		public static final StreamCodec<RegistryFriendlyByteBuf, MarimorphosisRecipe> STREAM_CODEC = OrechidRecipe.SERIALIZER.streamCodec()
 				.map(MarimorphosisRecipe::new, Function.identity());
 
-		@Override
-		public MapCodec<MarimorphosisRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, MarimorphosisRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
 	}
 }

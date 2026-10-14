@@ -9,7 +9,7 @@
 
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.api.recipe.ProcessingRecipeInput;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class StacksProcessingRecipeInput implements ProcessingRecipeInput {
 	private final ItemStack[] stacks;
-	private final StackedContents stackedContents = new StackedContents();
+	private final StackedItemContents stackedContents = new StackedItemContents();
 
 	public StacksProcessingRecipeInput(ItemStack[] stacks) {
 		this.stacks = stacks;
@@ -37,7 +37,7 @@ public class StacksProcessingRecipeInput implements ProcessingRecipeInput {
 	}
 
 	@Override
-	public StackedContents getStackedContents() {
+	public StackedItemContents getStackedContents() {
 		return stackedContents;
 	}
 
@@ -57,7 +57,7 @@ public class StacksProcessingRecipeInput implements ProcessingRecipeInput {
 		private final int startSlot;
 		private final int endSlot;
 		private final List<ItemStack> items;
-		private final StackedContents stackedContents = new StackedContents();
+		private final StackedItemContents stackedContents = new StackedItemContents();
 
 		public SubsetStacksProcessingRecipeInput(ProcessingRecipeInput input, int startSlot, int endSlot) {
 			this.input = input;
@@ -68,7 +68,7 @@ public class StacksProcessingRecipeInput implements ProcessingRecipeInput {
 		}
 
 		@Override
-		public StackedContents getStackedContents() {
+		public StackedItemContents getStackedContents() {
 			return this.stackedContents;
 		}
 

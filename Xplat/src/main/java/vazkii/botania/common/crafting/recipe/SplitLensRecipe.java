@@ -8,33 +8,31 @@
  */
 package vazkii.botania.common.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.mana.BasicLensItem;
 
 public class SplitLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<SplitLensRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(SplitLensRecipe::new);
+	public static final RecipeSerializer<SplitLensRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(SplitLensRecipe::new), StreamCodec.unit(new SplitLensRecipe()));
 
-	public SplitLensRecipe(CraftingBookCategory craftingBookCategory) {
-		super(craftingBookCategory);
-	}
+	public SplitLensRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level level) {
-		return !assemble(inv, level.registryAccess()).isEmpty();
+		return !assemble(inv).isEmpty();
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack found = ItemStack.EMPTY;
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack candidate = inv.getItem(i);
@@ -74,12 +72,7 @@ public class SplitLensRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 1;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<SplitLensRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

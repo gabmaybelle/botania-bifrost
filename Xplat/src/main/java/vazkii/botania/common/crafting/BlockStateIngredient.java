@@ -27,7 +27,6 @@ import vazkii.botania.api.recipe.StateIngredientType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public record BlockStateIngredient(BlockState state) implements StateIngredient {
@@ -49,17 +48,14 @@ public record BlockStateIngredient(BlockState state) implements StateIngredient 
 
 	@Override
 	public List<Component> descriptionTooltip() {
-		Map<Property<?>, Comparable<?>> map = state.getValues();
-		if (map.isEmpty()) {
+		// PORT-26.3: a state's values come as a stream of property-value pairs now
+		List<Property.Value<?>> values = state.getValues().toList();
+		if (values.isEmpty()) {
 			return StateIngredient.super.descriptionTooltip();
 		}
-		List<Component> tooltip = new ArrayList<>(map.size());
-		for (Map.Entry<Property<?>, Comparable<?>> entry : map.entrySet()) {
-			Property<?> key = entry.getKey();
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			String name = ((Property) key).getName(entry.getValue());
-
-			tooltip.add(Component.literal(key.getName() + " = " + name).withStyle(ChatFormatting.GRAY));
+		List<Component> tooltip = new ArrayList<>(values.size());
+		for (Property.Value<?> value : values) {
+			tooltip.add(Component.literal(value.property().getName() + " = " + value.valueName()).withStyle(ChatFormatting.GRAY));
 		}
 		return tooltip;
 	}

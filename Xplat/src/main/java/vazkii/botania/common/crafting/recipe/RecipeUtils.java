@@ -12,7 +12,6 @@ import com.google.common.base.Suppliers;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.Container;
@@ -30,12 +29,13 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.brew.BrewContainer;
+import vazkii.botania.api.recipe.BotaniaRecipe;
 import vazkii.botania.api.recipe.ProcessingRecipeInput;
 import vazkii.botania.api.recipe.RecipeWithCatalysts;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -50,9 +50,8 @@ public final class RecipeUtils {
 	 * @param specialMatching Whether some of the ingredients define a dynamic item set and thus cannot be matched using
 	 *                        the default method.
 	 */
-	public static boolean matches(Recipe<? extends ProcessingRecipeInput> recipe, ProcessingRecipeInput input,
+	public static boolean matches(NonNullList<Ingredient> ingredients, ProcessingRecipeInput input,
 			boolean specialMatching) {
-		NonNullList<Ingredient> ingredients = recipe.getIngredients();
 		if (input.size() != ingredients.size()) {
 			return false;
 		}
@@ -62,7 +61,8 @@ public final class RecipeUtils {
 		if (specialMatching) {
 			return XplatAbstractions.instance().matchesWithCustomTestIngredients(input.getItems(), ingredients);
 		}
-		return input.getStackedContents().canCraft(recipe, null);
+		// PORT-26.3: matching by recipe would go through placementInfo(), which Botania's recipes don't have; by ingredients.
+		return input.getStackedContents().canCraft(ingredients, null);
 	}
 
 	/**
@@ -77,8 +77,8 @@ public final class RecipeUtils {
 			ItemStack special = specialHandler.apply(item);
 			if (special != null) {
 				ret.set(i, special);
-			} else if (item.getItem().hasCraftingRemainingItem()) {
-				ret.set(i, new ItemStack(Objects.requireNonNull(item.getItem().getCraftingRemainingItem())));
+			} else if (item.getItem().getCraftingRemainder() != null) {
+				ret.set(i, item.getItem().getCraftingRemainder().create());
 			}
 		}
 
@@ -179,9 +179,24 @@ public final class RecipeUtils {
 
 	private RecipeUtils() {}
 
-	private record DummyRecipe<T extends RecipeInput>(NonNullList<Ingredient> ingredients) implements Recipe<T> {
+	/**
+	 * PORT-26.3: {@code NonNullList.of(Ingredient.EMPTY, ...)} is gone with {@code Ingredient.EMPTY}; a list without a
+	 * default.
+	 */
+	@SafeVarargs
+	public static <T> NonNullList<T> nonNullList(T... items) {
+		NonNullList<T> list = NonNullList.create();
+		Collections.addAll(list, items);
+		return list;
+	}
 
-		@Override
+	/** PORT-26.3: {@code Ingredient#getItems} is gone; the ingredient's items as stacks, as it used to give them. */
+	public static ItemStack[] stacksOf(Ingredient ingredient) {
+		return ingredient.items().map(ItemStack::new).toArray(ItemStack[]::new);
+	}
+
+	private record DummyRecipe<T extends RecipeInput>(NonNullList<Ingredient> ingredients) implements BotaniaRecipe<T> {
+
 		public NonNullList<Ingredient> getIngredients() {
 			return ingredients;
 		}
@@ -192,27 +207,17 @@ public final class RecipeUtils {
 		}
 
 		@Override
-		public ItemStack assemble(T input, HolderLookup.Provider registries) {
+		public ItemStack assemble(T input) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public boolean canCraftInDimensions(int width, int height) {
+		public RecipeSerializer<? extends Recipe<T>> getSerializer() {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public ItemStack getResultItem(HolderLookup.Provider registries) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public RecipeSerializer<?> getSerializer() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public RecipeType<?> getType() {
+		public RecipeType<? extends Recipe<T>> getType() {
 			throw new UnsupportedOperationException();
 		}
 	}

@@ -29,6 +29,7 @@ import vazkii.botania.api.recipe.OrechidRecipe;
 import vazkii.botania.api.recipe.PureDaisyRecipe;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.crafting.LexiconElvenTradeRecipe;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
@@ -57,12 +58,12 @@ public class RarityConsistencyTest {
 	public void checkRecipeOutputConsistency(GameTestHelper helper) {
 		boolean failedAnyChecks = false;
 		Set<Item> craftableItems = new HashSet<>();
-		for (RecipeHolder<?> recipeHolder : helper.getLevel().getRecipeManager().getRecipes()) {
+		for (RecipeHolder<?> recipeHolder : BotaniaRecipeTypes.recipeManager(helper.getLevel()).getRecipes()) {
 			Rarity highestIngredientRarity = Rarity.COMMON;
 			Set<ItemStack> highestRarityIngredients = new LinkedHashSet<>();
 			Recipe<?> recipe = recipeHolder.value();
 			Collection<ItemStack> resultItems = getResultItems(helper, recipe);
-			if (resultItems.isEmpty() && recipeHolder.id().getNamespace().equals(BotaniaAPI.MODID)) {
+			if (resultItems.isEmpty() && recipeHolder.id().identifier().getNamespace().equals(BotaniaAPI.MODID)) {
 				BotaniaAPI.LOGGER.warn("Empty recipe output for {} ({})", recipeHolder, recipe.getType());
 			}
 			for (ItemStack resultItem : resultItems) {
@@ -74,7 +75,7 @@ public class RarityConsistencyTest {
 					continue;
 				}
 				for (Ingredient ingredient : recipe.getIngredients()) {
-					ItemStack[] items = ingredient.getItems();
+					ItemStack[] items = RecipeUtils.stacksOf(ingredient);
 					Rarity ingredientRarity = Stream.of(items)
 							.map(this::getRarity)
 							.min(Comparator.naturalOrder())
