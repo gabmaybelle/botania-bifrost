@@ -9,12 +9,14 @@
 package vazkii.botania.common.item.rod;
 
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -63,7 +65,7 @@ public class ShadedMesaRodItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean held) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!(entity instanceof Player)) {
 			return;
 		}
@@ -166,8 +168,8 @@ public class ShadedMesaRodItem extends Item {
 
 					if (target instanceof LivingEntity living) {
 						living.fallDistance = 0.0F;
-						if (living.getEffect(MobEffects.MOVEMENT_SLOWDOWN) == null) {
-							living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
+						if (living.getEffect(MobEffects.SLOWNESS) == null) {
+							living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,
 									targetIsPlayer ? 20 : 2, targetIsPlayer ? 1 : 3, true, true));
 						}
 					}
@@ -247,7 +249,7 @@ public class ShadedMesaRodItem extends Item {
 						}
 						target.setDeltaMovement(moveVector.multiply(3, 1.5, 3));
 					}
-					player.getCooldowns().addCooldown(stack.getItem(), 10);
+					player.getCooldowns().addCooldown(stack, 10);
 				}
 			}
 		}

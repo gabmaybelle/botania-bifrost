@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class RegistryHelper {
 	@SuppressWarnings("unchecked")
 	public static <T> Registry<T> getRegistry(ResourceKey<Registry<T>> resourceKey) {
-		return (Registry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.identifier());
+		return (Registry<T>) BuiltInRegistries.REGISTRY.getValue(resourceKey.identifier());
 	}
 
 	public static <T> HolderProxy<T> lazyHolderProxy(ResourceKey<Registry<T>> registryKey, Identifier id, Supplier<T> valueSupplier) {

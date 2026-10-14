@@ -53,7 +53,7 @@ public class HighlandsRodItem extends LandsRodItem {
 				InteractionResult result = PlayerHelper.substituteUse(new UseOnContext(player, hand, hit), new ItemStack(Blocks.DIRT));
 
 				if (result.consumesAction()) {
-					if (!world.isClientSide) {
+					if (!world.isClientSide()) {
 						ManaItemHandler.instance().requestManaExactForTool(stack, player, COST * 2, true);
 					}
 					SparkleParticleData data = SparkleParticleData.sparkle(1F, 0.35F, 0.2F, 0.05F, 5);

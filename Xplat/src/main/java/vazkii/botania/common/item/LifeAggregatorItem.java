@@ -86,7 +86,7 @@ public class LifeAggregatorItem extends Item {
 	private InteractionResult placeSpawner(UseOnContext context) {
 		ItemStack mover = context.getItemInHand();
 		Identifier blockId = mover.get(BotaniaDataComponents.BLOCK_TYPE);
-		Block block = BuiltInRegistries.BLOCK.get(blockId);
+		Block block = BuiltInRegistries.BLOCK.getValue(blockId);
 		if (block == Blocks.AIR || !(block instanceof EntityBlock)) {
 			return InteractionResult.FAIL;
 		}
@@ -149,7 +149,7 @@ public class LifeAggregatorItem extends Item {
 		ItemStack stack = context.getItemInHand();
 		Player player = context.getPlayer();
 
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			stack.set(BotaniaDataComponents.BLOCK_TYPE, BuiltInRegistries.BLOCK.getKey(carryable.getBlockType()));
 			EntityType<?> entityType = carryable.getEntityType(level, level.getRandom(), pos);
 			if (entityType != null) {
@@ -160,7 +160,7 @@ public class LifeAggregatorItem extends Item {
 					carryable.gatherBlockEntityData(level.registryAccess()));
 			level.destroyBlock(pos, false, player);
 			if (player != null) {
-				player.getCooldowns().addCooldown(this, 20);
+				player.getCooldowns().addCooldown(context.getItemInHand(), 20);
 				if (player instanceof ServerPlayer serverPlayer) {
 					UseItemSuccessTrigger.INSTANCE.trigger(serverPlayer, stack, serverPlayer.serverLevel(),
 							pos.getX(), pos.getY(), pos.getZ());

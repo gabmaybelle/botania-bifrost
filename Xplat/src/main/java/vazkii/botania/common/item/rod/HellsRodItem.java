@@ -54,7 +54,7 @@ public class HellsRodItem extends Item {
 					entity.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
 					level.addFreshEntity(entity);
 
-					player.getCooldowns().addCooldown(this, player.isCreative()
+					player.getCooldowns().addCooldown(ctx.getItemInHand(), player.isCreative()
 							? 10
 							: ManaItemHandler.instance().hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
 					ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);

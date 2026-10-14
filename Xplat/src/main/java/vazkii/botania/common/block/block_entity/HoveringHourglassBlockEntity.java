@@ -137,7 +137,7 @@ public class HoveringHourglassBlockEntity extends ExposedSimpleInventoryBlockEnt
 							level.blockEvent(getBlockPos(), getBlockState().getBlock(), EVENT_FLIP, 0);
 						}
 						return false;
-					} else if (!level.isClientSide && time % 10 == 0) {
+					} else if (!level.isClientSide() && time % 10 == 0) {
 						// synchronize count once in a while
 						level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
 					}

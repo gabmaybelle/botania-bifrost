@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -21,6 +22,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +61,7 @@ public class ManaBlasterItem extends Item {
 	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		int effCd = COOLDOWN;
-		MobEffectInstance effect = player.getEffect(MobEffects.DIG_SPEED);
+		MobEffectInstance effect = player.getEffect(MobEffects.HASTE);
 		if (effect != null) {
 			effCd = Math.max(2, COOLDOWN - (effect.getAmplifier() + 1) * 8);
 		}
@@ -67,7 +69,7 @@ public class ManaBlasterItem extends Item {
 		if (player.isSecondaryUseActive() && hasClip(stack)) {
 			rotatePos(stack);
 			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER_CYCLE, SoundSource.PLAYERS, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				ItemStack lens = getLens(stack);
 				ItemsRemainingRenderHandler.send(player, lens, -2);
 				setCooldown(stack, effCd);
@@ -76,7 +78,7 @@ public class ManaBlasterItem extends Item {
 		} else if (getCooldown(stack) <= 0) {
 			ManaBurstEntity burst = getBurst(player, stack, true, hand);
 			if (burst != null && ManaItemHandler.instance().requestManaExact(stack, player, burst.getMana(), true)) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER, SoundSource.PLAYERS, 1F, 1);
 					world.addFreshEntity(burst);
 					ManaBlasterTrigger.INSTANCE.trigger((ServerPlayer) player, stack);
@@ -283,7 +285,7 @@ public class ManaBlasterItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (getCooldown(stack) > 0) {
 			setCooldown(stack, getCooldown(stack) - 1);
 		}

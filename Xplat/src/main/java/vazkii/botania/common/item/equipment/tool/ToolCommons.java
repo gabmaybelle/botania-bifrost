@@ -104,7 +104,7 @@ public final class ToolCommons {
 		BlockState blockstate = world.getBlockState(pos);
 		boolean unminable = blockstate.getDestroyProgress(player, world, pos) == 0;
 
-		if (!world.isClientSide && !unminable && filter.test(blockstate) && !blockstate.isAir()) {
+		if (!world.isClientSide() && !unminable && filter.test(blockstate) && !blockstate.isAir()) {
 			ItemStack save = player.getMainHandItem();
 			player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 			((ServerPlayer) player).connection.send(

@@ -122,7 +122,7 @@ public class BottledManaItem extends Item {
 	private static void effectMegaJump(Level level, LivingEntity living) {
 		if (!level.dimensionType().ultraWarm()) {
 			if (!level.isClientSide()) {
-				living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 5));
+				living.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 300, 5));
 			}
 			living.setDeltaMovement(living.getDeltaMovement().x(), 6, living.getDeltaMovement().z());
 		}
@@ -169,7 +169,7 @@ public class BottledManaItem extends Item {
 
 	private static void effectHyperspeed(Level level, LivingEntity living) {
 		if (!level.isClientSide()) {
-			living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 60, 200));
+			living.addEffect(new MobEffectInstance(MobEffects.SPEED, 60, 200));
 		}
 	}
 
@@ -189,7 +189,7 @@ public class BottledManaItem extends Item {
 
 	private static void effectNauseaBlindness(Level level, LivingEntity living) {
 		if (!level.isClientSide()) {
-			living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 3));
+			living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 160, 3));
 			living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 160, 0));
 		}
 	}

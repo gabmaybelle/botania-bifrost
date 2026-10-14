@@ -45,7 +45,7 @@ public final class PixieHandler {
 	private static final List<Supplier<MobEffectInstance>> effectSuppliers = List.of(
 			() -> new MobEffectInstance(MobEffects.BLINDNESS, 40, 0),
 			() -> new MobEffectInstance(MobEffects.WITHER, 50, 0),
-			() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0),
+			() -> new MobEffectInstance(MobEffects.SLOWNESS, 40, 0),
 			() -> new MobEffectInstance(MobEffects.WEAKNESS, 40, 0)
 	);
 

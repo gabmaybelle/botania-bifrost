@@ -41,6 +41,6 @@ public interface PureDaisyRecipe extends BlockStateRecipe {
 
 	@Override
 	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 }

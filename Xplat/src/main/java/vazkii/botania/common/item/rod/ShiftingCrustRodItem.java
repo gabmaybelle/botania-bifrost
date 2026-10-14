@@ -25,6 +25,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -41,6 +42,8 @@ import net.minecraft.world.level.redstone.NeighborUpdater;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.item.BlockProvider;
@@ -132,7 +135,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean equipped) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
 		if (!canExchange(stack) || !(entity instanceof Player player)) {
 			return;
 		}
@@ -232,7 +235,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 			if (!stateAt.isAir() && stateAt.getDestroyProgress(player, world, pos) > 0
 					&& stateAt.getBlock().asItem() != replacement) {
 				float hardness = stateAt.getDestroySpeed(world, pos);
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					final NeighborUpdater neighborUpdater = ((LevelAccessor) world).botania_getNeighborUpdater();
 					try {
 						if (neighborUpdater instanceof CollectingNeighborUpdaterAccess access) {
@@ -381,7 +384,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 	}
 
 	private Item getItemToPlace(ItemStack stack) {
-		return BuiltInRegistries.ITEM.get(stack.get(BotaniaDataComponents.PLACED_ITEM));
+		return BuiltInRegistries.ITEM.getValue(stack.get(BotaniaDataComponents.PLACED_ITEM));
 	}
 
 	private void setHitPos(ItemStack stack, Vec3 vec) {
@@ -444,7 +447,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 
 	public static Block getTargetState(ItemStack stack) {
 		Identifier id = stack.get(BotaniaDataComponents.TARGET_BLOCK);
-		return BuiltInRegistries.BLOCK.get(id);
+		return BuiltInRegistries.BLOCK.getValue(id);
 	}
 
 	@Override

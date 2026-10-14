@@ -89,7 +89,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
 		if (pos.getY() < world.getMaxBuildHeight() - BASE_OFFSET && !world.dimensionType().hasCeiling()) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				world.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, pos);
 				world.playSound(null, pos, BotaniaSounds.LAPUTA_START, SoundSource.BLOCKS, 1.0F + world.random.nextFloat(), world.random.nextFloat() * 0.7F + 1.3F);
 				ItemStack stack = ctx.getItemInHand();

@@ -50,7 +50,7 @@ public class RedStringInterceptorBlockEntity extends RedStringBlockEntity {
 	}
 
 	public static InteractionResult onInteract(Player player, Level world, BlockPos pos, InteractionHand hand) {
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return InteractionResult.PASS;
 		}
 

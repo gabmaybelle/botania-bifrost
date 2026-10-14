@@ -66,7 +66,7 @@ public class TranslationKeysTest {
 		BuiltInRegistries.BLOCK.keySet().stream()
 				.filter(id -> BotaniaAPI.MODID.equals(id.getNamespace()))
 				.forEach(id -> {
-					Block block = BuiltInRegistries.BLOCK.get(id);
+					Block block = BuiltInRegistries.BLOCK.getValue(id);
 					validateComponent(id, "name of block", block.getName(), missing);
 					String descriptionId = block.getDescriptionId();
 					if (!Language.getInstance().has(descriptionId)) {
@@ -87,7 +87,7 @@ public class TranslationKeysTest {
 		BuiltInRegistries.ITEM.keySet().stream()
 				.filter(id -> BotaniaAPI.MODID.equals(id.getNamespace()))
 				.forEach(id -> {
-					Item item = BuiltInRegistries.ITEM.get(id);
+					Item item = BuiltInRegistries.ITEM.getValue(id);
 
 					validateComponent(id, "description for item", item.getDescription(), missing);
 					validateComponent(id, "name for item", item.getName(item.getDefaultInstance()), missing);

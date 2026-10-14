@@ -268,10 +268,13 @@ public class ManaItemHandlerImpl implements ManaItemHandler {
 	@Override
 	public float getFullDiscountForTools(Player player, ItemStack tool) {
 		float discount = 0F;
-		for (int i = 0; i < player.getInventory().armor.size(); i++) {
-			ItemStack armor = player.getInventory().armor.get(i);
+		for (EquipmentSlot armorSlot : EquipmentSlot.values()) {
+			if (armorSlot.getType() != EquipmentSlot.Type.HUMANOID_ARMOR) {
+				continue;
+			}
+			ItemStack armor = player.getItemBySlot(armorSlot);
 			if (!armor.isEmpty() && armor.getItem() instanceof ManaDiscountArmor discountArmor) {
-				discount += discountArmor.getDiscount(armor, i, player, tool);
+				discount += discountArmor.getDiscount(armor, armorSlot.getIndex(), player, tool);
 			}
 		}
 

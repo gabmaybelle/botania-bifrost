@@ -116,7 +116,7 @@ public abstract class PlatformBlock extends BotaniaBlock implements ManaCollisio
 					&& (changeState.isSolidRender(world, pos) || changeState.getRenderShape() == RenderShape.MODEL)
 					&& !(changeState.getBlock() instanceof PlatformBlock)
 					&& !changeState.isAir()) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					camo.setCamoState(changeState);
 				}
 

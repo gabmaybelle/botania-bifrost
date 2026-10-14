@@ -35,7 +35,7 @@ public class LuminizerToggleBlock extends LuminizerPoweredBlock {
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
 			boolean movedByPiston) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
 				level.setBlock(pos, state.setValue(POWERED, false), Block.UPDATE_CLIENTS);
 			} else if (!state.getValue(POWERED) && level.hasNeighborSignal(pos)) {

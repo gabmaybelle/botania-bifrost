@@ -40,7 +40,7 @@ public class FloralFertilizerItem extends Item {
 	public InteractionResult useOn(UseOnContext ctx) {
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			Optional<HolderSet.Named<Block>> flowersTag =
 					BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 			Optional<HolderSet.Named<Block>> mushroomsTag =

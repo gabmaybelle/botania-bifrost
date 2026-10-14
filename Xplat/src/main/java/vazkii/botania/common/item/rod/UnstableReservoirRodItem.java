@@ -58,7 +58,7 @@ public class UnstableReservoirRodItem extends Item {
 
 	@Override
 	public void onUseTick(Level level, LivingEntity living, ItemStack stack, int remainingUseDuration) {
-		if (level.isClientSide || !(living instanceof Player player)
+		if (level.isClientSide() || !(living instanceof Player player)
 				|| remainingUseDuration == getUseDuration(stack, living)
 				|| remainingUseDuration % (ManaItemHandler.instance().hasProficiency(player, stack) ? 1 : 2) != 0
 				|| !ManaItemHandler.instance().requestManaExactForTool(stack, player, COST_PER, false)) {
@@ -86,7 +86,7 @@ public class UnstableReservoirRodItem extends Item {
 		}
 		missile.setPos(x, y, z);
 		if (missile.findTarget()) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				missile.playSound(level.random.nextInt(100) == 0 ? BotaniaSounds.MISSILE_FUNNY : BotaniaSounds.MISSILE,
 						1, 0.8f + level.getRandom().nextFloat() * 0.2f);
 				level.addFreshEntity(missile);

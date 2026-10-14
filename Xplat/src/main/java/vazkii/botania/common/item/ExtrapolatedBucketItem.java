@@ -74,7 +74,7 @@ public class ExtrapolatedBucketItem extends Item {
 					}
 				} else if (blockState.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
 					CauldronInteraction interaction = ((AbstractCauldronBlockAccessor) cauldronBlock)
-							.botania_getInteractions().map().get(Items.BUCKET);
+							.botania_getInteractions().get(new ItemStack(Items.BUCKET));
 					if (interaction != null) {
 						// pretend the cauldron is full, as otherwise the interaction might not empty it
 						BlockState fullState = blockState.hasProperty(LayeredCauldronBlock.LEVEL)

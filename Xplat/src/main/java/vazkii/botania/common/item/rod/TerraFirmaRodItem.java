@@ -112,8 +112,8 @@ public class TerraFirmaRodItem extends Item {
 
 		int cost = COST_PER * blocks.size();
 
-		if (world.isClientSide || ManaItemHandler.instance().requestManaExactForTool(stack, player, cost, true)) {
-			if (!world.isClientSide) {
+		if (world.isClientSide() || ManaItemHandler.instance().requestManaExactForTool(stack, player, cost, true)) {
+			if (!world.isClientSide()) {
 				for (CoordsWithBlock block : blocks) {
 					world.setBlockAndUpdate(block, block.block.defaultBlockState());
 				}

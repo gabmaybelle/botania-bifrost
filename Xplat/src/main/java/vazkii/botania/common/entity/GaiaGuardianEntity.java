@@ -235,7 +235,7 @@ public class GaiaGuardianEntity extends Mob {
 		xpReward = 825;
 		entityData.set(DATA_BOSS_INFO_UUID_LOWER, bossInfoUUID.getLeastSignificantBits());
 		entityData.set(DATA_BOSS_INFO_UUID_UPPER, bossInfoUUID.getMostSignificantBits());
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			Proxy.INSTANCE.addBoss(this);
 		}
 	}
@@ -261,7 +261,7 @@ public class GaiaGuardianEntity extends Mob {
 
 		//check difficulty
 		if (world.getDifficulty() == Difficulty.PEACEFUL) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				player.sendSystemMessage(Component.translatable("botaniamisc.peacefulNoob").withStyle(ChatFormatting.RED));
 			}
 			return false;
@@ -270,7 +270,7 @@ public class GaiaGuardianEntity extends Mob {
 		//check pylons
 		List<BlockPos> invalidPylonBlocks = checkPylons(world, pos);
 		if (!invalidPylonBlocks.isEmpty()) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				warnInvalidBlocks(world, invalidPylonBlocks);
 			} else {
 				player.sendSystemMessage(Component.translatable("botaniamisc.needsCatalysts").withStyle(ChatFormatting.RED));
@@ -282,7 +282,7 @@ public class GaiaGuardianEntity extends Mob {
 		//check arena shape
 		List<BlockPos> invalidArenaBlocks = checkArena(world, pos);
 		if (!invalidArenaBlocks.isEmpty()) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				warnInvalidBlocks(world, invalidArenaBlocks);
 			} else {
 				XplatAbstractions.instance().sendToPlayer(player, new ArenaIndicatorEffectPacket(pos));
@@ -301,7 +301,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		//all checks ok, spawn the boss
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return true;
 		}
 		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world);
@@ -350,14 +350,14 @@ public class GaiaGuardianEntity extends Mob {
 	private void updateGaiaFight() {
 		if (isAlive()) {
 			getGaiaFightMap(level()).put(this, new GaiaFightData(source, hardMode));
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				level().getEntities(this, MathHelper.inflateBoxAround(source, ARENA_MOB_RANGE),
 						this::isGaiaFightParticipant)
 						.forEach(mob -> ((Mob) mob).restrictTo(source, ARENA_RANGE));
 			}
 		} else {
 			getGaiaFightMap(level()).remove(this);
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				level().getEntities(this, MathHelper.inflateBoxAround(source, ARENA_MOB_RANGE),
 						this::isGaiaFightParticipant)
 						.forEach(mob -> {

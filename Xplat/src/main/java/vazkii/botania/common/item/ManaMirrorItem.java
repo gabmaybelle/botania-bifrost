@@ -12,11 +12,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -67,8 +69,8 @@ public class ManaMirrorItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+		if (world.isClientSide()) {
 			return;
 		}
 
@@ -94,7 +96,7 @@ public class ManaMirrorItem extends Item {
 		if (player != null && player.isSecondaryUseActive()) {
 			var receiver = ManaReceiver.LOOKUP.find(world, ctx.getClickedPos(), null);
 			if (receiver instanceof ManaPool pool) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					bindPool(ctx.getItemInHand(), pool);
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.DING, SoundSource.PLAYERS, 1F, 1F);
 				}

@@ -77,7 +77,7 @@ public final class BotaniaBlocks {
 			// [VanillaCopy] Blocks.POPPY
 			BlockBehaviour.Properties.of()
 					.mapColor(MapColor.PLANT)
-					.noCollission()
+					.noCollision()
 					.instabreak()
 					.offsetType(BlockBehaviour.OffsetType.XZ)
 					.pushReaction(PushReaction.POPPED)
@@ -427,7 +427,7 @@ public final class BotaniaBlocks {
 
 	public static final Block ENDOFLAME = make(LibBlockNames.SUBTILE_ENDOFLAME,
 			new SlowGeneratingFlowerWithCooldownBlock(
-					MobEffects.MOVEMENT_SLOWDOWN,
+					MobEffects.SLOWNESS,
 					10,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.ENDOFLAME));
@@ -478,7 +478,7 @@ public final class BotaniaBlocks {
 
 	public static final Block ENTROPINNYUM = make(LibBlockNames.SUBTILE_ENTROPINNYUM,
 			new SpecialFlowerBlock(
-					MobEffects.DAMAGE_RESISTANCE,
+					MobEffects.RESISTANCE,
 					72,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.ENTROPINNYUM));
@@ -541,7 +541,7 @@ public final class BotaniaBlocks {
 
 	public static final Block DANDELIFEON = make(LibBlockNames.SUBTILE_DANDELIFEON,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.CONFUSION,
+					MobEffects.NAUSEA,
 					240,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.DANDELIFEON));
@@ -644,7 +644,7 @@ public final class BotaniaBlocks {
 
 	public static final Block TIGERSEYE = make(LibBlockNames.SUBTILE_TIGERSEYE,
 			new SpecialFlowerBlock(
-					MobEffects.DAMAGE_BOOST,
+					MobEffects.STRENGTH,
 					90,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.TIGERSEYE));
@@ -657,7 +657,7 @@ public final class BotaniaBlocks {
 
 	public static final Block JADED_AMARANTHUS = make(LibBlockNames.SUBTILE_JADED_AMARANTHUS,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.HEAL,
+					MobEffects.INSTANT_HEALTH,
 					1,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.JADED_AMARANTHUS));
@@ -670,7 +670,7 @@ public final class BotaniaBlocks {
 
 	public static final Block ORECHID = make(LibBlockNames.SUBTILE_ORECHID,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.DIG_SPEED,
+					MobEffects.HASTE,
 					10,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.ORECHID));
@@ -695,7 +695,7 @@ public final class BotaniaBlocks {
 			flowerPot(FALLEN_KANADE, 0));
 
 	public static final Block EXOFLAME = make(LibBlockNames.SUBTILE_EXOFLAME,
-			new SpecialFlowerBlock(MobEffects.MOVEMENT_SPEED,
+			new SpecialFlowerBlock(MobEffects.SPEED,
 					240,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.EXOFLAME));
@@ -732,13 +732,13 @@ public final class BotaniaBlocks {
 			flowerPot(AGRICARNATION_PETITE, 0));
 
 	public static final Block HOPPERHOCK = make(LibBlockNames.SUBTILE_HOPPERHOCK,
-			new HopperhockBlock(MobEffects.MOVEMENT_SPEED,
+			new HopperhockBlock(MobEffects.SPEED,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.HOPPERHOCK));
 	public static final Block HOPPERHOCK_PETITE = make(petite(LibBlockNames.SUBTILE_HOPPERHOCK),
 			new HopperhockBlock(
-					MobEffects.MOVEMENT_SPEED,
+					MobEffects.SPEED,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.HOPPERHOCK_PETITE));
@@ -807,13 +807,13 @@ public final class BotaniaBlocks {
 
 	public static final Block RANNUNCARPUS = make(LibBlockNames.SUBTILE_RANNUNCARPUS,
 			new RannuncarpusBlock(
-					MobEffects.JUMP,
+					MobEffects.JUMP_BOOST,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.RANNUNCARPUS));
 	public static final Block RANNUNCARPUS_PETITE = make(petite(LibBlockNames.SUBTILE_RANNUNCARPUS),
 			new RannuncarpusBlock(
-					MobEffects.JUMP,
+					MobEffects.JUMP_BOOST,
 					30,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.RANNUNCARPUS_PETITE));
@@ -845,7 +845,7 @@ public final class BotaniaBlocks {
 
 	public static final Block POLLIDISIAC = make(LibBlockNames.SUBTILE_POLLIDISIAC,
 			new PollidisiacBlock(
-					MobEffects.DIG_SPEED,
+					MobEffects.HASTE,
 					369,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.POLLIDISIAC));
@@ -935,7 +935,7 @@ public final class BotaniaBlocks {
 
 	public static final Block MEDUMONE = make(LibBlockNames.SUBTILE_MEDUMONE,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.MOVEMENT_SLOWDOWN,
+					MobEffects.SLOWNESS,
 					3600,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.MEDUMONE));
@@ -948,13 +948,13 @@ public final class BotaniaBlocks {
 
 	public static final Block MARIMORPHOSIS = make(LibBlockNames.SUBTILE_MARIMORPHOSIS,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.DIG_SLOWDOWN,
+					MobEffects.MINING_FATIGUE,
 					60,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.MARIMORPHOSIS));
 	public static final Block MARIMORPHOSIS_PETITE = make(petite(LibBlockNames.SUBTILE_MARIMORPHOSIS),
 			new PoweredSpecialFlowerBlock(
-					MobEffects.DIG_SLOWDOWN,
+					MobEffects.MINING_FATIGUE,
 					60,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.MARIMORPHOSIS_PETITE));
@@ -997,13 +997,13 @@ public final class BotaniaBlocks {
 
 	public static final Block SOLEGNOLIA = make(LibBlockNames.SUBTILE_SOLEGNOLIA,
 			new PoweredSpecialFlowerBlock(
-					MobEffects.HARM,
+					MobEffects.INSTANT_DAMAGE,
 					1,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.SOLEGNOLIA));
 	public static final Block SOLEGNOLIA_PETITE = make(petite(LibBlockNames.SUBTILE_SOLEGNOLIA),
 			new PoweredSpecialFlowerBlock(
-					MobEffects.HARM,
+					MobEffects.INSTANT_DAMAGE,
 					1,
 					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
 					() -> BotaniaBlockEntities.SOLEGNOLIA_PETITE));
@@ -1203,20 +1203,20 @@ public final class BotaniaBlocks {
 	public static final Block LIVINGWOOD_PRESSURE_PLATE = make(LibBlockNames.LIVINGWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
 			new PressurePlateBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
 					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.forceSolidOn()
 							.pushReaction(PushReaction.POPPED)));
 	public static final Block LIVINGWOOD_BUTTON = make(LibBlockNames.LIVINGWOOD + LibBlockNames.BUTTON_SUFFIX,
 			new ButtonBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET, 30,
 					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.pushReaction(PushReaction.POPPED)));
 	public static final Block LIVINGWOOD_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.SIGN_SUFFIX,
 			new StandingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
 					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(1.0f)
 							.forceSolidOn()));
 	public static final Block LIVINGWOOD_WALL_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.SIGN_SUFFIX,
@@ -1289,20 +1289,20 @@ public final class BotaniaBlocks {
 	public static final Block DREAMWOOD_PRESSURE_PLATE = make(LibBlockNames.DREAMWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
 			new PressurePlateBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
 					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.forceSolidOn()
 							.pushReaction(PushReaction.POPPED)));
 	public static final Block DREAMWOOD_BUTTON = make(LibBlockNames.DREAMWOOD + LibBlockNames.BUTTON_SUFFIX,
 			new ButtonBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET, 30,
 					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.pushReaction(PushReaction.POPPED)));
 	public static final Block DREAMWOOD_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.SIGN_SUFFIX,
 			new StandingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
 					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(1.0f)
 							.forceSolidOn()));
 	public static final Block DREAMWOOD_WALL_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.SIGN_SUFFIX,
@@ -1480,7 +1480,7 @@ public final class BotaniaBlocks {
 			new PowerGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
 	public static final Block MANA_PRISM = make(LibBlockNames.MANA_PRISM,
 			new ManaPrismBlock(BlockBehaviour.Properties.ofFullCopy(ALFGLASS)
-					.noCollission()));
+					.noCollision()));
 	public static final Block MANA_PUMP = make(LibBlockNames.MANA_PUMP,
 			new ManaPumpBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
 	public static final Block SPARK_TINKERER = make(LibBlockNames.SPARK_TINKERER,
@@ -1589,7 +1589,7 @@ public final class BotaniaBlocks {
 			new SpectralRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL)));
 	public static final Block LUMINIZER = make(LibBlockNames.LUMINIZER,
 			new LuminizerBlock(BlockBehaviour.Properties.of()
-					.noCollission()));
+					.noCollision()));
 	public static final Block DETECTOR_LUMINIZER = make("detector" + LibBlockNames.LUMINIZER_SUFFIX,
 			new LuminizerDetectorBlock(BlockBehaviour.Properties.ofFullCopy(LUMINIZER)));
 	public static final Block FORK_LUMINIZER = make("fork" + LibBlockNames.LUMINIZER_SUFFIX,
@@ -1614,7 +1614,7 @@ public final class BotaniaBlocks {
 	public static final Block FAKE_AIR = make(LibBlockNames.FAKE_AIR,
 			new FakeAirBlock(BlockBehaviour.Properties.of()
 					.replaceable()
-					.noCollission()
+					.noCollision()
 					.noLootTable()
 					.air()
 					.randomTicks()));
@@ -1630,7 +1630,7 @@ public final class BotaniaBlocks {
 					.sound(SoundType.WOOL)));
 	public static final Block ANIMATED_TORCH = make(LibBlockNames.ANIMATED_TORCH,
 			new AnimatedTorchBlock(BlockBehaviour.Properties.of()
-					.noCollission()
+					.noCollision()
 					.instabreak()
 					.lightLevel(state -> state.getValue(AnimatedTorchBlock.TRIGGERED) ? 0 : 7)
 					.sound(SoundType.WOOD)
@@ -1684,7 +1684,7 @@ public final class BotaniaBlocks {
 					.pushReaction(PushReaction.POPPED)
 					.sound(SoundType.WOOL)
 					.lightLevel(constInt(15))
-					.noCollission()));
+					.noCollision()));
 	public static final Block BLAZE_MESH = make(LibBlockNames.BLAZE_BLOCK,
 			new Block(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
 					.instrument(NoteBlockInstrument.PLING)
@@ -1728,14 +1728,14 @@ public final class BotaniaBlocks {
 	public static final Block SHIMMERWOOD_PRESSURE_PLATE = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
 			new PressurePlateBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET,
 					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.forceSolidOn()
 							.pushReaction(PushReaction.POPPED)));
 	public static final Block SHIMMERWOOD_BUTTON = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.BUTTON_SUFFIX,
 			new ButtonBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET, 30,
 					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
-							.noCollission()
+							.noCollision()
 							.strength(0.5F)
 							.pushReaction(PushReaction.POPPED)));
 
@@ -3544,21 +3544,21 @@ public final class BotaniaBlocks {
 
 	private static Holder<MobEffect> effectForFlower(DyeColor color) {
 		return switch (color) {
-			case WHITE -> MobEffects.MOVEMENT_SPEED;
+			case WHITE -> MobEffects.SPEED;
 			case ORANGE -> MobEffects.FIRE_RESISTANCE;
-			case MAGENTA -> MobEffects.DIG_SLOWDOWN;
-			case LIGHT_BLUE -> MobEffects.JUMP;
+			case MAGENTA -> MobEffects.MINING_FATIGUE;
+			case LIGHT_BLUE -> MobEffects.JUMP_BOOST;
 			case YELLOW -> MobEffects.ABSORPTION;
 			case LIME -> MobEffects.POISON;
 			case PINK -> MobEffects.REGENERATION;
-			case GRAY -> MobEffects.DAMAGE_RESISTANCE;
+			case GRAY -> MobEffects.RESISTANCE;
 			case LIGHT_GRAY -> MobEffects.WEAKNESS;
 			case CYAN -> MobEffects.WATER_BREATHING;
-			case PURPLE -> MobEffects.CONFUSION;
+			case PURPLE -> MobEffects.NAUSEA;
 			case BLUE -> MobEffects.NIGHT_VISION;
 			case BROWN -> MobEffects.WITHER;
 			case GREEN -> MobEffects.HUNGER;
-			case RED -> MobEffects.DAMAGE_BOOST;
+			case RED -> MobEffects.STRENGTH;
 			case BLACK -> MobEffects.BLINDNESS;
 		};
 	}
@@ -3600,7 +3600,7 @@ public final class BotaniaBlocks {
 		Identifier referenceId = BuiltInRegistries.BLOCK.getKey(referenceBlock);
 		Identifier targetId = getTargetId(referenceId, referenceColor, targetColor, coloredBlockInfix);
 
-		Block targetBlock = BuiltInRegistries.BLOCK.get(targetId);
+		Block targetBlock = BuiltInRegistries.BLOCK.getValue(targetId);
 		if (!referenceBlock.getClass().isInstance(targetBlock)) {
 			throw new IllegalArgumentException(
 					"No target block for %s in %s (looked for %s, found %s)".formatted(referenceBlock, targetColor, targetId, targetBlock));
@@ -3648,7 +3648,7 @@ public final class BotaniaBlocks {
 		Identifier targetId = referenceId.withPath(path -> path.replaceFirst(
 				"(?<=_|\\b)" + referenceColor.getSerializedName() + "(?=_|\\b)", targetColor.getSerializedName()));
 
-		Block targetBlock = BuiltInRegistries.BLOCK.get(targetId);
+		Block targetBlock = BuiltInRegistries.BLOCK.getValue(targetId);
 		if (!referenceBlock.getClass().isInstance(targetBlock)) {
 			throw new IllegalArgumentException(
 					"No target block for %s in %s (found %s)".formatted(referenceBlock, targetColor, targetBlock));

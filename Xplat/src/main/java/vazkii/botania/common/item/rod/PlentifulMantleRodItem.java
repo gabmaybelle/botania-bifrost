@@ -59,7 +59,7 @@ public class PlentifulMantleRodItem extends Item {
 				XplatAbstractions.instance().sendToPlayer(player,
 						new RodOfThePlentifulMantleEffectPacket(player.blockPosition(), range, true));
 				player.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
-				player.getCooldowns().addCooldown(this, 20);
+				player.getCooldowns().addCooldown(player.getItemInHand(hand), 20);
 			}
 			player.playSound(BotaniaSounds.ROD_OF_THE_PLENTIFUL_MANTLE, 1, 1);
 			return InteractionResult.SUCCESS;

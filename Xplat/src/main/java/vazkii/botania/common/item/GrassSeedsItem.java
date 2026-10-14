@@ -70,7 +70,7 @@ public class GrassSeedsItem extends Item {
 		BlockState state = world.getBlockState(pos);
 
 		if (state.is(BotaniaTags.Blocks.PASTURE_SEED_REPLACEABLE) && !state.is(grassBlock)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				BlockSwapper swapper = addBlockSwapper(world, pos, grassBlock);
 				world.setBlockAndUpdate(pos, swapper.stateToSet);
 				stack.shrink(1);

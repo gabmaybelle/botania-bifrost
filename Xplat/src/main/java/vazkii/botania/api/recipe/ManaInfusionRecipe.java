@@ -67,7 +67,7 @@ public interface ManaInfusionRecipe extends Recipe<RecipeInput> {
 
 	@Override
 	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 
 	// Ignored IRecipe stuff

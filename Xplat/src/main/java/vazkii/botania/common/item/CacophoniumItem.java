@@ -128,7 +128,7 @@ public class CacophoniumItem extends Item {
 
 	@Override
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
-		if (!world.isClientSide && count % (isDOIT(stack) ? 20 : 6) == 0) {
+		if (!world.isClientSide() && count % (isDOIT(stack) ? 20 : 6) == 0) {
 			playSound(living.level(), stack, living.getX(), living.getY(), living.getZ(), living.getSoundSource(), 0.9F);
 			living.gameEvent(GameEvent.INSTRUMENT_PLAY);
 		}
@@ -152,7 +152,7 @@ public class CacophoniumItem extends Item {
 		if (isDOIT(stack)) {
 			return BotaniaSounds.DOIT;
 		} else {
-			return BuiltInRegistries.SOUND_EVENT.get(stack.get(DataComponents.NOTE_BLOCK_SOUND));
+			return BuiltInRegistries.SOUND_EVENT.getValue(stack.get(DataComponents.NOTE_BLOCK_SOUND));
 		}
 	}
 

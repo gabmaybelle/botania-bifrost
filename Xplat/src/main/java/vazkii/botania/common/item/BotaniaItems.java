@@ -11,6 +11,7 @@ package vazkii.botania.common.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
@@ -72,6 +73,7 @@ import vazkii.botania.common.item.relic.*;
 import vazkii.botania.common.item.rod.*;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.lib.LibItemNames;
+import vazkii.botania.mixin.CauldronInteractionDispatcherAccessor;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.LinkedHashMap;
@@ -978,26 +980,23 @@ public final class BotaniaItems {
 		consumer.accept(HAND_OF_ENDER_MENU_TYPE, botaniaRL(LibItemNames.HAND_OF_ENDER));
 	}
 
+	// PORT-26.3: the water cauldron's interactions are a Dispatcher whose put is package-private.
+	private static void waterCauldron(Item item, CauldronInteraction interaction) {
+		((CauldronInteractionDispatcherAccessor) CauldronInteractions.WATER).botania_put(item, interaction);
+	}
+
 	public static void registerCauldronInteractions() {
 		ColorHelper.supportedColors().forEach(color -> {
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
-			CauldronInteraction.WATER.map()
-					.put(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.FABULOUS_MANA_POOL, color).asItem(),
-							MANA_POOL_INTERACTION);
+			waterCauldron(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color).asItem(), MANA_POOL_INTERACTION);
+			waterCauldron(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color).asItem(), MANA_POOL_INTERACTION);
+			waterCauldron(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color).asItem(), MANA_POOL_INTERACTION);
+			waterCauldron(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.FABULOUS_MANA_POOL, color).asItem(), MANA_POOL_INTERACTION);
 		});
 
 		ALL.values().stream().filter(item -> item instanceof LensItem)
-				.forEach(item -> CauldronInteraction.WATER.map().put(item, MANA_LENS_INTERACTION));
+				.forEach(item -> waterCauldron(item, MANA_LENS_INTERACTION));
 		ALL.values().stream().filter(item -> item instanceof PhantomInkable)
-				.forEach(item -> CauldronInteraction.WATER.map().put(item, PHANTOM_INK_INTERACTION));
+				.forEach(item -> waterCauldron(item, PHANTOM_INK_INTERACTION));
 	}
 
 	public static Item getPetal(DyeColor color) {

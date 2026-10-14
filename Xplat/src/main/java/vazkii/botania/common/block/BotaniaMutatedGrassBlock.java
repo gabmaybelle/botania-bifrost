@@ -40,10 +40,10 @@ public class BotaniaMutatedGrassBlock extends BotaniaGrassBlock implements Edibl
 	 * or wither (too dangerous). Also, no glowing, since that's a bit too disruptive.
 	 */
 	public static final List<Holder<MobEffect>> RANDOM_EFFECTS = List.of(
-			MobEffects.ABSORPTION, MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.DAMAGE_BOOST,
-			MobEffects.DAMAGE_RESISTANCE, MobEffects.DIG_SLOWDOWN, MobEffects.DIG_SPEED, MobEffects.FIRE_RESISTANCE,
-			MobEffects.HUNGER, MobEffects.INFESTED, MobEffects.INVISIBILITY, MobEffects.JUMP, MobEffects.LEVITATION,
-			MobEffects.LUCK, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.MOVEMENT_SPEED, MobEffects.NIGHT_VISION,
+			MobEffects.ABSORPTION, MobEffects.BLINDNESS, MobEffects.NAUSEA, MobEffects.STRENGTH,
+			MobEffects.RESISTANCE, MobEffects.MINING_FATIGUE, MobEffects.HASTE, MobEffects.FIRE_RESISTANCE,
+			MobEffects.HUNGER, MobEffects.INFESTED, MobEffects.INVISIBILITY, MobEffects.JUMP_BOOST, MobEffects.LEVITATION,
+			MobEffects.LUCK, MobEffects.SLOWNESS, MobEffects.SPEED, MobEffects.NIGHT_VISION,
 			MobEffects.OOZING, MobEffects.POISON, MobEffects.REGENERATION, MobEffects.SATURATION,
 			MobEffects.SLOW_FALLING, MobEffects.UNLUCK, MobEffects.WATER_BREATHING, MobEffects.WEAKNESS,
 			MobEffects.WEAVING, MobEffects.WIND_CHARGED

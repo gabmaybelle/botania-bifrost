@@ -25,9 +25,11 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -40,6 +42,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.component.BotaniaDataComponents;
@@ -83,7 +87,7 @@ public class SextantItem extends Item {
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
 		if (getUseDuration(stack, living) - count < 10
 				|| !(living instanceof Player)
-				|| !world.isClientSide) {
+				|| !world.isClientSide()) {
 			return;
 		}
 
@@ -111,7 +115,7 @@ public class SextantItem extends Item {
 	 * rendered where it's supposed to be.
 	 */
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slotId) {
 		if (!level.isClientSide() || !(entity instanceof LocalPlayer)) {
 			return;
 		}
@@ -261,7 +265,7 @@ public class SextantItem extends Item {
 
 	private void reset(Level world, Player player, ItemStack stack) {
 		if (!stack.has(BotaniaDataComponents.BINDING_POS)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				SextantMode currentMode = getMode(stack);
 				int numModes = SextantMode.values().length;
 				int nextMode = currentMode.ordinal() + 1;
@@ -272,7 +276,7 @@ public class SextantItem extends Item {
 		} else {
 			stack.remove(BotaniaDataComponents.BINDING_POS);
 		}
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			Proxy.INSTANCE.clearSextantMultiblock();
 		}
 	}
@@ -287,7 +291,7 @@ public class SextantItem extends Item {
 		if (!player.isSecondaryUseActive()) {
 			BlockHitResult rtr = ToolCommons.raytraceFromEntity(player, 128, false);
 			if (rtr.getType() == HitResult.Type.BLOCK) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					BlockPos pos = rtr.getBlockPos();
 					stack.set(BotaniaDataComponents.BINDING_POS, GlobalPos.of(world.dimension(), pos));
 				}

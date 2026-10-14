@@ -82,7 +82,7 @@ public final class SkyblockWorldEvents {
 					SoundEvent sound = st.getBreakSound();
 					player.playSound(sound, st.getVolume() * 0.4F, st.getPitch() + (float) (Math.random() * 0.2 - 0.1));
 
-					if (world.isClientSide) {
+					if (world.isClientSide()) {
 						player.swing(hand);
 					} else if (world instanceof ServerLevel level) {
 						var table = level.getServer().reloadableRegistries().getLootTable(
@@ -102,7 +102,7 @@ public final class SkyblockWorldEvents {
 				if (rtr.getType() == HitResult.Type.BLOCK) {
 					BlockPos pos = rtr.getBlockPos();
 					if (world.getBlockState(pos).is(Blocks.WATER)) {
-						if (!world.isClientSide) {
+						if (!world.isClientSide()) {
 							equipped.shrink(1);
 
 							if (equipped.isEmpty()) {

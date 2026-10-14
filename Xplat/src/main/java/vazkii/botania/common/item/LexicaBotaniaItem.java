@@ -44,7 +44,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	public static final Supplier<DataComponentType<Component>> AKASHIC_DISPLAY_NAME_TYPE_SUPPLIER = Suppliers.memoize(() -> {
 		ResourceKey<DataComponentType<?>> resourceKey = ResourceKey.create(Registries.DATA_COMPONENT_TYPE,
 				Identifier.fromNamespaceAndPath("akashictome", "og_display_name"));
-		return (DataComponentType<Component>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(resourceKey);
+		return (DataComponentType<Component>) BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(resourceKey);
 	});
 
 	public LexicaBotaniaItem(Properties settings) {

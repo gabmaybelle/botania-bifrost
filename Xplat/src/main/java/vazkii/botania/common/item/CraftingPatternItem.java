@@ -42,14 +42,14 @@ public class CraftingPatternItem extends Item {
 		if (state.is(BotaniaBlocks.CRAFTY_CRATE)) {
 			if (pattern != state.getValue(BotaniaStateProperties.CRATE_PATTERN)) {
 				world.setBlockAndUpdate(pos, state.setValue(BotaniaStateProperties.CRATE_PATTERN, this.pattern));
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					world.getBlockEntity(pos, BotaniaBlockEntities.CRAFTY_CRATE)
 							.ifPresent(CraftyCrateBlockEntity::ejectLocked);
 				}
 				return InteractionResult.SUCCESS;
 			}
 		} else if (world.getBlockEntity(pos) instanceof CrafterBlockEntity crafter) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				float clickPitch;
 				if (canApplyConfiguration(pattern, crafter)) {
 					if (isConfigurationDifferent(pattern, crafter)) {

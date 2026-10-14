@@ -68,7 +68,7 @@ public class CorporeaSparkItem extends Item {
 		}
 
 		if (canPlace(world, spark) && !CorporeaHelper.instance().doesBlockHaveSpark(world, pos)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				world.addFreshEntity(spark);
 				stack.shrink(1);
 			}

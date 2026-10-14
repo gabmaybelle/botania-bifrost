@@ -37,7 +37,7 @@ public class VineBallItem extends Item implements ProjectileItem {
 
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.VINE_BALL_THROW, SoundSource.NEUTRAL, 1F, 0.4F / (player.getRandom().nextFloat() * 0.4F + 0.8F));
 
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			VineBallEntity ball = new VineBallEntity(player, true);
 			ball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 			world.addFreshEntity(ball);

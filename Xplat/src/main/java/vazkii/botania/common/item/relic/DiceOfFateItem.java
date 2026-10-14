@@ -59,7 +59,7 @@ public class DiceOfFateItem extends RelicItem {
 		var relic = Relic.LOOKUP.find(stack);
 
 		if (relic != null && relic.isRightPlayer(player)) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				return InteractionResult.SUCCESS;
 			}
 

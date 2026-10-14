@@ -16,7 +16,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -87,7 +86,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 			} else if (XplatAbstractions.INSTANCE.canToolLightFire(stack)) {
 				plate.ignite();
 				world.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
-				stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+				stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
 			} else {
 				player.getInventory().placeItemBackInInventory(plateStack);
 				plate.getItemHandler().setItem(0, ItemStack.EMPTY);

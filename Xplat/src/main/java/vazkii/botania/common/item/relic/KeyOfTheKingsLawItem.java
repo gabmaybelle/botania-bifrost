@@ -57,7 +57,7 @@ public class KeyOfTheKingsLawItem extends RelicItem {
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
 		int spawned = getWeaponsSpawned(stack);
 
-		if (count != getUseDuration(stack, living) && spawned < 20 && !world.isClientSide && (!(living instanceof Player player) || ManaItemHandler.instance().requestManaExact(stack, player, 150, true))) {
+		if (count != getUseDuration(stack, living) && spawned < 20 && !world.isClientSide() && (!(living instanceof Player player) || ManaItemHandler.instance().requestManaExact(stack, player, 150, true))) {
 			Vec3 look = living.getLookAngle().multiply(1, 0, 1);
 
 			double playerRot = Math.toRadians(living.getYRot() + 90);

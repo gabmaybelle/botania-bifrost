@@ -88,7 +88,7 @@ public class PetalApothecaryBlock extends BotaniaBlock implements EntityBlock {
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (!world.isClientSide && entity instanceof ItemEntity itemEntity
+		if (!world.isClientSide() && entity instanceof ItemEntity itemEntity
 				&& world.getBlockEntity(pos) instanceof PetalApothecaryBlockEntity apothecary
 				&& apothecary.collideEntityItem(itemEntity)) {
 			world.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);

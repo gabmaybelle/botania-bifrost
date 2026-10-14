@@ -70,7 +70,7 @@ public class TerraBladeItem extends Item implements LensEffectItem {
 				&& attackStrength == 1) {
 			ManaBurstEntity burst = getBurst(player, player.getMainHandItem());
 			player.level().addFreshEntity(burst);
-			player.getMainHandItem().hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+			player.getMainHandItem().hurtAndBreak(1, player, InteractionHand.MAIN_HAND.asEquipmentSlot());
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.TERRABLADE, SoundSource.PLAYERS, 1F, 1F);
 		}
 	}

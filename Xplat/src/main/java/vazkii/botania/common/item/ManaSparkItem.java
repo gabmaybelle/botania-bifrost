@@ -45,7 +45,7 @@ public class ManaSparkItem extends Item {
 		var attach = ManaSparkAttachable.LOOKUP.find(world, pos);
 		if (attach != null) {
 			if (attach.canAttachSpark(stack) && ManaSparkHelper.getAttachedSpark(world, pos) == null) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					stack.shrink(1);
 					ManaSparkEntity spark = new ManaSparkEntity(world);
 					spark.setPos(pos.getX() + 0.5, pos.getY() + 1.25, pos.getZ() + 0.5);

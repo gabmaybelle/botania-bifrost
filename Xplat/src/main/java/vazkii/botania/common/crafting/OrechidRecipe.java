@@ -106,7 +106,7 @@ public class OrechidRecipe extends BlockStateRecipe implements vazkii.botania.ap
 	@SuppressWarnings("unchecked")
 	@Override
 	public RecipeType<? extends vazkii.botania.api.recipe.OrechidRecipe> getType() {
-		return (RecipeType<? extends vazkii.botania.api.recipe.OrechidRecipe>) BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID);
+		return (RecipeType<? extends vazkii.botania.api.recipe.OrechidRecipe>) BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID);
 	}
 
 	@Override

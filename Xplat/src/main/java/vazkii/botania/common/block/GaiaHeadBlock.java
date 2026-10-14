@@ -43,7 +43,7 @@ public class GaiaHeadBlock extends SkullBlock {
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
 			Level level, BlockState state, BlockEntityType<T> blockEntityType) {
 		// we always create the ticker, since the head might be viewed through a piglin or dragon's eyes
-		return level.isClientSide
+		return level.isClientSide()
 				? createTickerHelper(blockEntityType, BotaniaBlockEntities.GAIA_HEAD, GaiaHeadBlockEntity::animation)
 				: null;
 	}

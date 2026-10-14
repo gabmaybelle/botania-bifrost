@@ -18,11 +18,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
@@ -112,7 +114,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 						setBindingAttempt(stack, globalPos, side, state.getBlock());
 					}
 
-					if (world.isClientSide) {
+					if (world.isClientSide()) {
 						player.playSound(BotaniaSounds.DING, 0.11F, 1F);
 					}
 
@@ -151,7 +153,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	}
 
 	public static void doParticleBeam(Level world, Vec3 orig, Vec3 end) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			return;
 		}
 
@@ -176,7 +178,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
 		getBindingAttempt(stack).ifPresent(pos -> {
 			if (!pos.dimension().equals(world.dimension())
 					|| WandBindable.LOOKUP.find(world, pos.pos(), getBindingSide(stack).orElse(null)) == null) {
@@ -189,7 +191,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (player.isSecondaryUseActive()) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				setBindMode(stack, !getBindMode(stack));
 			} else {
 				player.playSound(BotaniaSounds.DING, 0.1F, 1F);

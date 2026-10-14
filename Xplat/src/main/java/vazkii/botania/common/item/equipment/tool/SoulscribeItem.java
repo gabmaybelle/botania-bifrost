@@ -33,7 +33,7 @@ public class SoulscribeItem extends Item {
 			target.hurt(player.damageSources().playerAttack(player), 20);
 		}
 
-		stack.hurtAndBreak(1, attacker, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+		stack.hurtAndBreak(1, attacker, InteractionHand.MAIN_HAND.asEquipmentSlot());
 	}
 
 	@Override

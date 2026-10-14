@@ -36,14 +36,14 @@ public class MedumoneBlockEntity extends FunctionalFlowerBlockEntity {
 		if (getLevel().isClientSide() || getMana() == 0 || isPowered()) {
 			return;
 		}
-		var testInstance = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 100);
+		var testInstance = new MobEffectInstance(MobEffects.SLOWNESS, 2, 100);
 		List<LivingEntity> entities = getLevel().getEntitiesOfClass(LivingEntity.class,
 				MathHelper.inflateBoxAround(getEffectivePos(), RANGE),
 				livingEntity -> livingEntity.isAlive() && !(livingEntity instanceof Player)
 						&& livingEntity.canBeAffected(testInstance));
 
 		for (LivingEntity entity : entities) {
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 100));
+			entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2, 100));
 			addMana(-1);
 			if (getMana() == 0) {
 				break;

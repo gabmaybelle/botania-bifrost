@@ -48,7 +48,7 @@ public class OrechidIgnemRecipe extends OrechidRecipe {
 	@SuppressWarnings("unchecked")
 	@Override
 	public RecipeType<? extends vazkii.botania.api.recipe.OrechidRecipe> getType() {
-		return (RecipeType<? extends vazkii.botania.api.recipe.OrechidRecipe>) BuiltInRegistries.RECIPE_TYPE.get(IGNEM_TYPE_ID);
+		return (RecipeType<? extends vazkii.botania.api.recipe.OrechidRecipe>) BuiltInRegistries.RECIPE_TYPE.getValue(IGNEM_TYPE_ID);
 	}
 
 	@Override

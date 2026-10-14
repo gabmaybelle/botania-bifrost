@@ -27,6 +27,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.Container;
@@ -34,6 +35,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -83,7 +85,7 @@ public class AssemblyHaloItem extends Item {
 	@Override
 	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			int segment = getSegmentLookedAt(stack, player);
 			RecipeHolder<? extends Recipe<CraftingInput>> recipe = getSavedRecipe(world, stack, segment);
 
@@ -111,7 +113,9 @@ public class AssemblyHaloItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int pos, boolean equipped) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot pos) {
+		// PORT-26.3: inventoryTick gets the equipment slot now (null in the inventory), not a selected flag.
+		boolean equipped = pos == EquipmentSlot.MAINHAND;
 		if (!(entity instanceof LivingEntity living)) {
 			return;
 		}

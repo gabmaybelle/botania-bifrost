@@ -51,7 +51,7 @@ public abstract class HornItem extends Item {
 
 	@Override
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int time) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			if (time != getUseDuration(stack, living) && time % 5 == 0) {
 				living.gameEvent(GameEvent.INSTRUMENT_PLAY);
 				breakBlocks(world, this, living.blockPosition());

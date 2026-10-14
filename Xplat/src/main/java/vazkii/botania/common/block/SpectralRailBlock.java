@@ -73,7 +73,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 
 	@SoftImplement("IBaseRailBlockExtension")
 	public void onMinecartPass(BlockState state, Level world, BlockPos pos, AbstractMinecart cart) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			SpectralFloatTicks.HOLDER.setFor(cart, 20);
 			updateFloating(cart);
 		}

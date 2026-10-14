@@ -42,7 +42,7 @@ public class RingOfMagnetizationItem extends BaubleItem {
 	public static void onTossItem(Player player) {
 		ItemStack ring = EquipmentHandler.findOrEmpty(s -> s.getItem() instanceof RingOfMagnetizationItem, player);
 		if (!ring.isEmpty()) {
-			player.getCooldowns().addCooldown(ring.getItem(), 100);
+			player.getCooldowns().addCooldown(ring, 100);
 		}
 	}
 
@@ -58,7 +58,7 @@ public class RingOfMagnetizationItem extends BaubleItem {
 			boolean isOnCooldown = player.getCooldowns().isOnCooldown(this);
 			if (BotaniaAPI.instance().hasSolegnoliaAround(living)) {
 				if (!isOnCooldown) {
-					player.getCooldowns().addCooldown(this, 2);
+					player.getCooldowns().addCooldown(stack, 2);
 				}
 				return;
 			}

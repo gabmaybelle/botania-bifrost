@@ -35,7 +35,7 @@ public class GaiaWallHeadBlock extends WallSkullBlock {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
 			Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-		return level.isClientSide
+		return level.isClientSide()
 				? createTickerHelper(blockEntityType, BotaniaBlockEntities.GAIA_HEAD, GaiaHeadBlockEntity::animation)
 				: null;
 	}

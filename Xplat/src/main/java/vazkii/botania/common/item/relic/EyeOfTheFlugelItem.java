@@ -12,10 +12,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -57,7 +59,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 		Player player = context.getPlayer();
 
 		if (player != null && player.isSecondaryUseActive()) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				for (int i = 0; i < 10; i++) {
 					float x1 = (float) (pos.getX() + Math.random());
 					float y1 = pos.getY() + 1;
@@ -82,7 +84,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			float x = (float) (livingEntity.getX() - Math.random() * livingEntity.getBbWidth());
 			float y = (float) (livingEntity.getY() + Math.random());
 			float z = (float) (livingEntity.getZ() - Math.random() * livingEntity.getBbWidth());
@@ -98,8 +100,8 @@ public class EyeOfTheFlugelItem extends RelicItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		super.inventoryTick(stack, level, entity, slotId, isSelected);
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slotId) {
+		super.inventoryTick(stack, level, entity, slotId);
 		// we can't access the level while building the tooltip, so the best we can do is figuring it out ahead of time
 		Identifier dimension = level.dimension().identifier();
 		Identifier knownDimension = stack.get(BotaniaDataComponents.LOCAL_DIMENSION);

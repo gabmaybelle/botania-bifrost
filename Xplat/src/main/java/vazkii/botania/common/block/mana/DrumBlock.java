@@ -55,7 +55,7 @@ public abstract class DrumBlock extends BotaniaWaterloggedBlock {
 			if (burst.isFake()) {
 				return;
 			}
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				world.addParticle(ParticleTypes.NOTE, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5D, 1.0 / 24.0, 0, 0);
 				return;
 			} else if (burst.entity().getOwner() instanceof ServerPlayer player

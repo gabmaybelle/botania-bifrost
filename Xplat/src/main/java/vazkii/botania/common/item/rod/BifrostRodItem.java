@@ -58,7 +58,7 @@ public class BifrostRodItem extends SelfReturningItem {
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide && ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_COST, false)) {
+		if (!level.isClientSide() && ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_COST, false)) {
 			BlockState bifrost = BotaniaBlocks.BIFROST_BRIDGE.defaultBlockState();
 			Vec3 vector = player.getLookAngle().normalize();
 
@@ -112,7 +112,7 @@ public class BifrostRodItem extends SelfReturningItem {
 				level.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.BIFROST_ROD, SoundSource.PLAYERS, 1, 1);
 				player.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
 				ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_COST, true);
-				player.getCooldowns().addCooldown(this, player.isCreative() ? 10 : TIME);
+				player.getCooldowns().addCooldown(player.getItemInHand(hand), player.isCreative() ? 10 : TIME);
 			}
 		}
 

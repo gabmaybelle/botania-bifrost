@@ -10,10 +10,12 @@ package vazkii.botania.common.item;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +25,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.component.BotaniaDataComponents;
@@ -40,10 +44,12 @@ public class ManufactoryHaloItem extends AssemblyHaloItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int pos, boolean equipped) {
-		super.inventoryTick(stack, world, entity, pos, equipped);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot pos) {
+		// PORT-26.3: inventoryTick gets the equipment slot now (null in the inventory), not a selected flag.
+		boolean equipped = pos == EquipmentSlot.MAINHAND;
+		super.inventoryTick(stack, world, entity, pos);
 
-		if (!world.isClientSide && entity instanceof Player player && !equipped && isActive(stack)) {
+		if (!world.isClientSide() && entity instanceof Player player && !equipped && isActive(stack)) {
 
 			for (int i = 1; i < SEGMENTS; i++) {
 				tryCraft(player, stack, i, false);

@@ -178,7 +178,7 @@ public class SkyblockSkyRenderer {
 		}
 		effCelAng1 = 0.25F - Math.min(0.25F, effCelAng1);
 
-		long time = world.getDayTime() + 1000;
+		long time = world.getDefaultClockTime() + 1000;
 		int day = (int) (time / 24000L);
 		Random rand = new Random(day * 0xFF);
 		float angle1 = rand.nextFloat() * 360F;

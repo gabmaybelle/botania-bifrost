@@ -104,7 +104,7 @@ public class ManasteelArmorItem extends Item implements PhantomInkable {
 	}
 
 	public boolean hasArmorSetItem(Player player, EquipmentSlot slot) {
-		if (player == null || player.getInventory() == null || player.getInventory().armor == null) {
+		if (player == null) {
 			return false;
 		}
 

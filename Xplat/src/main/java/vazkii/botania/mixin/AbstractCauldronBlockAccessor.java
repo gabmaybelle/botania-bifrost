@@ -18,5 +18,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(AbstractCauldronBlock.class)
 public interface AbstractCauldronBlockAccessor {
 	@Accessor("interactions")
-	CauldronInteraction.InteractionMap botania_getInteractions();
+	CauldronInteraction.Dispatcher botania_getInteractions();
 }

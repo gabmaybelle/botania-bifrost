@@ -59,7 +59,7 @@ public class ManasteelPickaxeItem extends Item implements BotaniaMaterialTool, S
 						if (!context.getLevel().isClientSide()) {
 							ItemsRemainingRenderHandler.send(player, displayStack, BotaniaTags.Items.TOOL_PLACEABLE_PICKAXE);
 						}
-						player.getCooldowns().addCooldown(this, TIME);
+						player.getCooldowns().addCooldown(context.getItemInHand(), TIME);
 						return did;
 					}
 				}

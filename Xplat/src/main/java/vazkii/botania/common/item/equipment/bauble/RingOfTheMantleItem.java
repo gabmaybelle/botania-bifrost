@@ -54,13 +54,13 @@ public class RingOfTheMantleItem extends BaubleItem {
 		boolean hasMana = living instanceof Player player
 				&& ManaItemHandler.instance().requestManaExact(stack, player, MANA_COST, false);
 		if (hasMana) {
-			EntityHelper.addStaticEffect(living, MobEffects.DIG_SPEED, HASTE_AMPLIFIER);
+			EntityHelper.addStaticEffect(living, MobEffects.HASTE, HASTE_AMPLIFIER);
 		}
 	}
 
 	@Override
 	public void onUnequipped(ItemStack stack, LivingEntity living) {
-		EntityHelper.removeStaticEffect(living, MobEffects.DIG_SPEED, HASTE_AMPLIFIER);
+		EntityHelper.removeStaticEffect(living, MobEffects.HASTE, HASTE_AMPLIFIER);
 	}
 
 	/**

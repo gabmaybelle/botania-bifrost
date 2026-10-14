@@ -21,6 +21,6 @@ public interface PetalApothecaryRecipe extends RecipeWithReagent<ProcessingRecip
 
 	@Override
 	default RecipeType<?> getType() {
-		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(TYPE_ID));
+		return Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getValue(TYPE_ID));
 	}
 }

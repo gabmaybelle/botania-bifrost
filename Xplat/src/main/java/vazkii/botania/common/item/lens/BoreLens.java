@@ -45,7 +45,7 @@ public class BoreLens extends Lens {
 		Projectile entity = burst.entity();
 		Level level = entity.level();
 
-		if (level.isClientSide || rtr.getType() != HitResult.Type.BLOCK) {
+		if (level.isClientSide() || rtr.getType() != HitResult.Type.BLOCK) {
 			return false;
 		}
 

@@ -49,7 +49,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e) {
-		if (!world.isClientSide && e instanceof ItemEntity item) {
+		if (!world.isClientSide() && e instanceof ItemEntity item) {
 			ItemStack stack = item.getItem();
 			if (isSunflower(stack) && removeRain(world) || isBlueOrchid(stack) && startRain(world)) {
 				EntityHelper.shrinkItem(item);
