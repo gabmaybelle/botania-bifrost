@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "botania:item/hovering_hourglass",
+    "model": {
+      "type": "botania:block_entity",
+      "block": "botania:hovering_hourglass"
+    }
+  }
+}

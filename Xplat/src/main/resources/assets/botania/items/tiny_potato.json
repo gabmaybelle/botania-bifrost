@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "botania:item/tiny_potato",
+    "model": {
+      "type": "botania:tiny_potato",
+      "model": "botania:block/tiny_potato"
+    }
+  }
+}

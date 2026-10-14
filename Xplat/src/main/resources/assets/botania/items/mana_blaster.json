@@ -1,0 +1,23 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "botania:test",
+    "test": "has_clip",
+    "on_true": {
+      "type": "minecraft:special",
+      "base": "botania:item/mana_blaster",
+      "model": {
+        "type": "botania:mana_blaster",
+        "gun": "botania:item/mana_blaster_clip"
+      }
+    },
+    "on_false": {
+      "type": "minecraft:special",
+      "base": "botania:item/mana_blaster",
+      "model": {
+        "type": "botania:mana_blaster",
+        "gun": "botania:item/mana_blaster"
+      }
+    }
+  }
+}

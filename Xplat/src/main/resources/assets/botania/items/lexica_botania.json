@@ -1,0 +1,61 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "botania:test",
+    "test": "lexicon_3d",
+    "on_true": {
+      "type": "minecraft:select",
+      "property": "minecraft:display_context",
+      "cases": [
+        {
+          "when": "firstperson_righthand",
+          "model": {
+            "type": "minecraft:special",
+            "base": "botania:item/lexica_botania_3d",
+            "model": {
+              "type": "botania:lexicon",
+              "left_handed": false
+            }
+          }
+        },
+        {
+          "when": "firstperson_lefthand",
+          "model": {
+            "type": "minecraft:special",
+            "base": "botania:item/lexica_botania_3d",
+            "model": {
+              "type": "botania:lexicon",
+              "left_handed": true
+            }
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:condition",
+        "property": "botania:test",
+        "test": "elven",
+        "on_true": {
+          "type": "minecraft:model",
+          "model": "botania:item/lexica_botania_elven"
+        },
+        "on_false": {
+          "type": "minecraft:model",
+          "model": "botania:item/lexica_botania"
+        }
+      }
+    },
+    "on_false": {
+      "type": "minecraft:condition",
+      "property": "botania:test",
+      "test": "elven",
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "botania:item/lexica_botania_elven"
+      },
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "botania:item/lexica_botania"
+      }
+    }
+  }
+}

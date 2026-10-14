@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "botania:item/gaia_head",
+    "model": {
+      "type": "botania:gaia_head"
+    }
+  }
+}

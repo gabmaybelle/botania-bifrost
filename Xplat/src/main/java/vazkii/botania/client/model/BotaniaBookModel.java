@@ -12,10 +12,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Unit;
 
 // [VanillaCopy] BookModel, with z-fighting fixes
-public class BotaniaBookModel extends Model<Unit> {
+public class BotaniaBookModel extends Model<BotaniaBookModel.State> {
 	private static final String LEFT_PAGES = "left_pages";
 	private static final String RIGHT_PAGES = "right_pages";
 	private static final String FLIP_PAGE_1 = "flip_page1";
@@ -71,6 +70,16 @@ public class BotaniaBookModel extends Model<Unit> {
 
 	public void render(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
 		this.root.render(poseStack, buffer, packedLight, packedOverlay, color);
+	}
+
+	/** PORT-26.3: the animation goes in as a render state so the game can pose the model when it draws it. */
+	public record State(float time, float rightPageFlipAmount, float leftPageFlipAmount, float bookOpenAmount) {
+	}
+
+	@Override
+	public void setupAnim(State state) {
+		super.setupAnim(state);
+		setupAnim(state.time(), state.rightPageFlipAmount(), state.leftPageFlipAmount(), state.bookOpenAmount());
 	}
 
 	public void setupAnim(float time, float rightPageFlipAmount, float leftPageFlipAmount, float bookOpenAmount) {

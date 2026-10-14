@@ -8,10 +8,11 @@
  */
 package vazkii.botania.client.core.proxy;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -23,7 +24,6 @@ import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-import org.lwjgl.glfw.GLFW;
 
 import vazkii.botania.client.core.handler.*;
 import vazkii.botania.client.fx.BoltParticleOptions;
@@ -41,6 +41,8 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static vazkii.botania.api.BotaniaAPI.botaniaRL;
+
 public class ClientProxy implements Proxy {
 	private static boolean initialized;
 	public static boolean jingleTheBells = false;
@@ -49,8 +51,11 @@ public class ClientProxy implements Proxy {
 	@UnknownNullability
 	public static KeyMapping CORPOREA_REQUEST;
 
+	// PORT-26.3: key categories are registered ids (the old "key.categories.botania" translation key moves with it)
+	public static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(botaniaRL("botania"));
+
 	public static void initKeybindings(Consumer<KeyMapping> consumer) {
-		CORPOREA_REQUEST = new KeyMapping("key.botania_corporea_request", GLFW.GLFW_KEY_C, "key.categories.botania");
+		CORPOREA_REQUEST = new KeyMapping("key.botania_corporea_request", InputConstants.KEY_C, KEY_CATEGORY);
 		consumer.accept(CORPOREA_REQUEST);
 	}
 
@@ -82,7 +87,7 @@ public class ClientProxy implements Proxy {
 	public void lightningFX(Level level, Vec3 vectorStart, Vec3 vectorEnd, float ticksPerMeter, long seed, int colorOuter, int colorInner) {
 		// todo wip, params are ignored
 		BoltRenderer.INSTANCE.add(level, new BoltParticleOptions(vectorStart, vectorEnd).size(0.08F),
-				Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+				Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 	}
 
 	@Override
@@ -102,9 +107,9 @@ public class ClientProxy implements Proxy {
 
 	@Override
 	public void addParticleForceNear(Level world, ParticleOptions particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-		Camera info = Minecraft.getInstance().gameRenderer.getMainCamera();
+		Camera info = Minecraft.getInstance().gameRenderer.mainCamera();
 		if (info.isInitialized() && info.position().distanceToSqr(x, y, z) <= 1024.0D) {
-			world.addParticle(particleData, true, x, y, z, xSpeed, ySpeed, zSpeed);
+			world.addParticle(particleData, true, false, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
 
@@ -150,6 +155,6 @@ public class ClientProxy implements Proxy {
 
 	@Override
 	public boolean hasShiftDown() {
-		return Screen.hasShiftDown();
+		return InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) || InputConstants.isKeyDown(InputConstants.KEY_RSHIFT);
 	}
 }

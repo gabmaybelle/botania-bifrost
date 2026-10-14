@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "botania:item/botanical_brewery",
+    "model": {
+      "type": "botania:block_entity",
+      "block": "botania:botanical_brewery"
+    }
+  }
+}
