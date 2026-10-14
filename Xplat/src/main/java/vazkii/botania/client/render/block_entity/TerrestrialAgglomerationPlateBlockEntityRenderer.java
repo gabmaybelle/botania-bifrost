@@ -9,14 +9,13 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.helper.RenderHelper;
@@ -27,19 +26,17 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class TerrestrialAgglomerationPlateBlockEntityRenderer implements BlockEntityRenderer<TerrestrialAgglomerationPlateBlockEntity> {
+public class TerrestrialAgglomerationPlateBlockEntityRenderer extends BotaniaBlockEntityRenderer<TerrestrialAgglomerationPlateBlockEntity> {
 	private final TextureAtlasSprite overlaySprite;
 
-	public TerrestrialAgglomerationPlateBlockEntityRenderer(BlockEntityRendererProvider.Context manager) {
+	public TerrestrialAgglomerationPlateBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.overlaySprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
-						.apply(botaniaRL("block/terrestrial_agglomeration_plate_overlay"))
+				RenderHelper.getBlockSprite(ctx.sprites(), botaniaRL("block/terrestrial_agglomeration_plate_overlay"))
 		);
 	}
 
 	@Override
-	public void render(TerrestrialAgglomerationPlateBlockEntity plate, float partialTick, PoseStack poseStack,
-			MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+	public void render(@Nullable TerrestrialAgglomerationPlateBlockEntity plate, float partialTick, PoseStack poseStack, SubmitNodeCollector bufferSource, int packedLight, int packedOverlay, @Nullable CameraRenderState camera) {
 		float alphaMod = Math.min(1.0F, plate.getCompletion() / 0.1F);
 
 		poseStack.pushPose();
@@ -48,8 +45,8 @@ public class TerrestrialAgglomerationPlateBlockEntityRenderer implements BlockEn
 
 		float alpha = (float) ((Math.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 8D) + 1D) / 5D + 0.6D) * alphaMod;
 
-		VertexConsumer buffer = bufferSource.getBuffer(RenderHelper.TERRA_PLATE);
-		RenderHelper.renderIconFullBright(poseStack, buffer, this.overlaySprite, alpha);
+		RenderHelper.submit(poseStack, bufferSource, RenderHelper.TERRA_PLATE,
+				(ps, buffer) -> RenderHelper.renderIconFullBright(ps, buffer, this.overlaySprite, alpha));
 
 		poseStack.popPose();
 	}

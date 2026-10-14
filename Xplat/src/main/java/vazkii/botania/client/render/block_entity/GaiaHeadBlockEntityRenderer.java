@@ -9,19 +9,18 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.object.skull.SkullModelBase;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.PlayerSkinRenderCache;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
@@ -30,18 +29,13 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.WallSkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.RotationSegment;
 
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import vazkii.botania.client.core.helper.CoreShaders;
 import vazkii.botania.client.render.entity.GaiaGuardianRenderer;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.GaiaHeadBlockEntity;
@@ -50,12 +44,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class GaiaHeadBlockEntityRenderer implements BlockEntityRenderer<GaiaHeadBlockEntity> {
+public class GaiaHeadBlockEntityRenderer extends BotaniaBlockEntityRenderer<GaiaHeadBlockEntity> {
 	public static final Map<SkullBlock.Type, SkullModelBase> models = new HashMap<>();
 	private static final WeakHashMap<GameProfile, ResolvableProfile> resolvedProfiles = new WeakHashMap<>();
+	private final PlayerSkinRenderCache playerSkinRenderCache;
 
 	public GaiaHeadBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		models.putAll(SkullBlockRenderer.createSkullRenderers(ctx.getModelSet()));
+		// PORT-26.3: vanilla no longer hands out a map of skull models; build one per vanilla skull type
+		EntityModelSet modelSet = ctx.entityModelSet();
+		for (SkullBlock.Types type : SkullBlock.Types.values()) {
+			SkullModelBase model = SkullBlockRenderer.createModel(modelSet, type);
+			if (model != null) {
+				models.put(type, model);
+			}
+		}
+		this.playerSkinRenderCache = ctx.playerSkinRenderCache();
 	}
 
 	public static SkullBlock.Type getViewType() {
@@ -82,51 +85,34 @@ public class GaiaHeadBlockEntityRenderer implements BlockEntityRenderer<GaiaHead
 		return SkullBlock.Types.PLAYER;
 	}
 
-	// [VanillaCopy] SkullBlockRenderer::render
+	// [VanillaCopy] SkullBlockRenderer::extractRenderState + submit
 	@Override
-	public void render(@Nullable GaiaHeadBlockEntity blockEntity, float partialTick, PoseStack poseStack,
-			MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+	public void render(@Nullable GaiaHeadBlockEntity blockEntity, float partialTick, PoseStack poseStack, SubmitNodeCollector bufferSource, int packedLight, int packedOverlay, @Nullable CameraRenderState camera) {
 		// Botania: block entity can be null when rendering the item form
 		float animationProgress = blockEntity != null ? blockEntity.getAnimation(partialTick) : 0;
 		BlockState blockstate = blockEntity != null ? blockEntity.getBlockState() : BotaniaBlocks.GAIA_HEAD.defaultBlockState();
 		boolean isWallSkull = blockstate.getBlock() instanceof WallSkullBlock;
-		Direction facing = isWallSkull ? blockstate.getValue(WallSkullBlock.FACING) : null;
-		int segment = blockEntity == null ? 8 : isWallSkull
-				? RotationSegment.convertToSegment(facing.getOpposite())
-				: blockstate.getValue(SkullBlock.ROTATION);
-		float yRot = RotationSegment.convertToDegrees(segment);
-		SkullBlock.Type skullblock$Type = ((AbstractSkullBlock) blockstate.getBlock()).getType();
-		SkullModelBase skullmodelbase = models.get(skullblock$Type);
+		var transformation = isWallSkull
+				? SkullBlockRenderer.TRANSFORMATIONS.wallTransformation(blockstate.getValue(WallSkullBlock.FACING))
+				: SkullBlockRenderer.TRANSFORMATIONS.freeTransformations(blockEntity == null ? 8 : blockstate.getValue(SkullBlock.ROTATION));
+		// Botania: the head takes the shape of whatever the camera is looking out of, not the block's own type
+		SkullBlock.Type viewType = getViewType();
+		SkullModelBase skullmodelbase = models.get(viewType);
+		if (skullmodelbase == null) {
+			return;
+		}
 		// Botania: using spectated player or local player as reference skin
 		AbstractClientPlayer viewingPlayer = GaiaGuardianRenderer.getViewingPlayer();
-		RenderType rendertype = SkullBlockRenderer.getRenderType(skullblock$Type, viewingPlayer != null
-				? resolvedProfiles.computeIfAbsent(viewingPlayer.getGameProfile(), ResolvableProfile::new)
-				: null);
-		SkullBlockRenderer.renderSkull(facing, yRot, animationProgress, poseStack, bufferSource, packedLight, skullmodelbase, rendertype);
-	}
-
-	public static void hookGetRenderType(CallbackInfoReturnable<RenderType> cir) {
-		SkullBlock.Type type = getViewType();
-		ResolvableProfile profile = null;
-		if (type == SkullBlock.Types.PLAYER && Minecraft.getInstance().getCameraEntity() instanceof Player player) {
-			profile = new ResolvableProfile(player.getGameProfile());
+		RenderType rendertype;
+		if (viewType == SkullBlock.Types.PLAYER && viewingPlayer != null) {
+			ResolvableProfile profile = resolvedProfiles.computeIfAbsent(viewingPlayer.getGameProfile(), ResolvableProfile::createResolved);
+			rendertype = playerSkinRenderCache.getOrDefault(profile).renderType();
+		} else {
+			rendertype = SkullBlockRenderer.getSkullRenderType(viewType, null);
 		}
-
-		RenderType layer = SkullBlockRenderer.getRenderType(type, profile);
-		cir.setReturnValue(new WrapperLayer(layer));
-	}
-
-	private static class WrapperLayer extends RenderType {
-		public WrapperLayer(RenderType compose) {
-			super(compose.toString(), compose.format(), compose.mode(), compose.bufferSize(), compose.affectsCrumbling(), false,
-					() -> {
-						compose.setupRenderState();
-						// Override the shader to ours
-						ShaderInstance shader = CoreShaders.gaiaNoiseConstant();
-						if (shader != null) {
-							RenderSystem.setShader(CoreShaders::gaiaNoiseConstant);
-						}
-					}, compose::clearRenderState);
-		}
+		poseStack.pushPose();
+		poseStack.mulPose(transformation);
+		SkullBlockRenderer.submitSkull(animationProgress, poseStack, bufferSource, packedLight, skullmodelbase, rendertype, 0, null);
+		poseStack.popPose();
 	}
 }

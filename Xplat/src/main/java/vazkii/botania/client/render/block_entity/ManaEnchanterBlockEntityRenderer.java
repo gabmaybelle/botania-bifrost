@@ -9,14 +9,11 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +28,7 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<ManaEnchanterBlockEntity> {
+public class ManaEnchanterBlockEntityRenderer extends BotaniaBlockEntityRenderer<ManaEnchanterBlockEntity> {
 
 	private final TextureAtlasSprite overlaySprite;
 	@Nullable
@@ -39,13 +36,12 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 
 	public ManaEnchanterBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.overlaySprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
-						.apply(botaniaRL("block/mana_enchanter_overlay"))
+				RenderHelper.getBlockSprite(ctx.sprites(), botaniaRL("block/mana_enchanter_overlay"))
 		);
 	}
 
 	@Override
-	public void render(ManaEnchanterBlockEntity enchanter, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable ManaEnchanterBlockEntity enchanter, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		float alphaMod = 0F;
 
 		if (enchanter.stage == ManaEnchanterBlockEntity.State.GATHER_MANA) {
@@ -67,7 +63,7 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 			item.setItem(enchanter.itemToEnchant);
 
 			ms.translate(0.5F, 1.25F, 0.5F);
-			Minecraft.getInstance().getEntityRenderDispatcher().render(item, 0, 0, 0, 0, partialTick, ms, buffers, light);
+			RenderHelper.submitEntity(item, partialTick, ms, buffers, camera);
 			ms.translate(-0.5F, -1.25F, -0.5F);
 		}
 
@@ -89,13 +85,12 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 				ms.translate(-2.5F, -2.5F, 0F);
 			}
 
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.ENCHANTER);
-			RenderHelper.renderIconFullBright(
-					ms, buffer,
+			RenderHelper.submit(ms, buffers, RenderHelper.ENCHANTER, (ps, buffer) -> RenderHelper.renderIconFullBright(
+					ps, buffer,
 					0, 0, 5, 5,
 					0, 0, 1, 1,
 					this.overlaySprite, 0xFFFFFF, alpha, light
-			);
+			));
 		}
 
 		ms.popPose();

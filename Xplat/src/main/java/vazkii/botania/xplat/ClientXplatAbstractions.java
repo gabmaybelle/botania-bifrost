@@ -11,18 +11,15 @@ package vazkii.botania.xplat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +32,7 @@ public interface ClientXplatAbstractions {
 	Identifier MANA_GUN_MODEL_LOADER_ID = botaniaRL("mana_blaster");
 
 	// Event firing
-	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay);
+	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, SubmitNodeCollector collector, int light, int overlay);
 
 	// Networking
 	void sendToServer(CustomPacketPayload packet);
@@ -45,14 +42,13 @@ public interface ClientXplatAbstractions {
 	/**
 	 * Try to load the resource/standalone model with the specified resource location.
 	 * Returns null if no model was found.
+	 * PORT-26.3: extra models are baked block state models now (a list of parts); see RenderHelper#submitBlockModel.
 	 */
 	@Nullable
-	BakedModel getResourceModel(Identifier id);
-	BakedModel wrapPlatformModel(BakedModel original);
+	BlockStateModel getResourceModel(Identifier id);
 	int getGuiRightHeight(Player player);
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);
 	void restoreLastFilter(AbstractTexture texture);
-	void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay);
 	/** Marks an animated sprite as "active" for Sodium, if present. */
 	void markSpriteActive(TextureAtlasSprite sprite);
 

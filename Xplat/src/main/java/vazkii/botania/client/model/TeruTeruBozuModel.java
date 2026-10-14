@@ -8,18 +8,15 @@
  */
 package vazkii.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Unit;
 
-public class TeruTeruBozuModel extends Model {
+public class TeruTeruBozuModel extends Model<Unit> {
 
 	private final ModelPart thread;
 	private final ModelPart cloth;
@@ -27,7 +24,7 @@ public class TeruTeruBozuModel extends Model {
 	private final ModelPart sadFace;
 
 	public TeruTeruBozuModel(ModelPart root) {
-		super(RenderType::entityCutoutNoCull);
+		super(root, RenderTypes::entityCutout);
 		sadFace = root.getChild("sad_face");
 		happyFace = root.getChild("happy_face");
 		thread = root.getChild("thread");
@@ -52,14 +49,9 @@ public class TeruTeruBozuModel extends Model {
 		return mesh;
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		if (Minecraft.getInstance().level.isRaining()) {
-			sadFace.render(ms, buffer, light, overlay, color);
-		} else {
-			happyFace.render(ms, buffer, light, overlay, color);
-		}
-		thread.render(ms, buffer, light, overlay, color);
-		cloth.render(ms, buffer, light, overlay, color);
+	// PORT-26.3: the model can't pick its face while drawing any more (renderToBuffer is final); the renderer sets it
+	public void setRaining(boolean raining) {
+		sadFace.visible = raining;
+		happyFace.visible = !raining;
 	}
 }

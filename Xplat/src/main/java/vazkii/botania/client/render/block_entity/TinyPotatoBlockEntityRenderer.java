@@ -9,23 +9,20 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +39,7 @@ import org.joml.Quaternionf;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.handler.MiscellaneousModels;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.core.proxy.ClientProxy;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.block.block_entity.TinyPotatoBlockEntity;
@@ -58,25 +56,22 @@ import java.util.regex.Pattern;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class TinyPotatoBlockEntityRenderer implements BlockEntityRenderer<TinyPotatoBlockEntity> {
+public class TinyPotatoBlockEntityRenderer extends BotaniaBlockEntityRenderer<TinyPotatoBlockEntity> {
 	public static final String DEFAULT = "default";
 	public static final String HALLOWEEN = "halloween";
 	private static final Pattern ESCAPED = Pattern.compile("[^a-z0-9/._-]");
-	private final BlockRenderDispatcher blockRenderDispatcher;
 
-	public TinyPotatoBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
-	}
+	public TinyPotatoBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
-	public static BakedModel getModelFromDisplayName(Component displayName) {
+	public static BlockStateModel getModelFromDisplayName(Component displayName) {
 		var nameBuilder = new StringBuilder();
 		TinyPotatoBlockItem.isEnchantedName(displayName, nameBuilder);
 		return getModel(nameBuilder.toString().toLowerCase(Locale.ROOT));
 	}
 
-	private static BakedModel getModel(String name) {
+	private static BlockStateModel getModel(String name) {
 		Identifier location = taterLocation(name);
-		BakedModel model = ClientXplatAbstractions.instance().getResourceModel(location);
+		BlockStateModel model = ClientXplatAbstractions.instance().getResourceModel(location);
 		if (model == null) {
 			if (ClientProxy.dootDoot) {
 				return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(taterLocation(HALLOWEEN)));
@@ -96,14 +91,13 @@ public class TinyPotatoBlockEntityRenderer implements BlockEntityRenderer<TinyPo
 	}
 
 	@Override
-	public void render(TinyPotatoBlockEntity potato, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable TinyPotatoBlockEntity potato, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 
 		StringBuilder nameBuilder = new StringBuilder();
 		boolean enchanted = TinyPotatoBlockItem.isEnchantedName(potato.name, nameBuilder);
 		String name = nameBuilder.toString().toLowerCase(Locale.ROOT);
-		RenderType layer = Sheets.translucentCullBlockSheet();
-		BakedModel model = getModel(name);
+		BlockStateModel model = getModel(name);
 
 		ms.translate(0.5F, 0F, 0.5F);
 		Direction potatoFacing = potato.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -140,9 +134,9 @@ public class TinyPotatoBlockEntityRenderer implements BlockEntityRenderer<TinyPo
 		if (render) {
 			ms.pushPose();
 			ms.translate(-0.5F, 0, -0.5F);
-			VertexConsumer buffer = ItemRenderer.getFoilBuffer(buffers, layer, true, enchanted);
+			// PORT-26.3: the enchanted glint on taters needs the item model pass
 
-			renderModel(ms, buffer, light, overlay, model);
+			renderModel(ms, buffers, light, overlay, model);
 			ms.popPose();
 		}
 
@@ -159,41 +153,44 @@ public class TinyPotatoBlockEntityRenderer implements BlockEntityRenderer<TinyPo
 		ms.rotate(VecHelper.rotateZ(-rotZ));
 		ms.rotate(VecHelper.rotateY(rotY));
 
-		renderName(potato, name, ms, buffers, light);
+		renderName(potato, name, ms, buffers, light, camera);
 		ms.popPose();
 	}
 
-	private void renderName(TinyPotatoBlockEntity potato, String name, PoseStack ms, MultiBufferSource buffers, int light) {
+	private void renderName(TinyPotatoBlockEntity potato, String name, PoseStack ms, SubmitNodeCollector buffers, int light, @Nullable CameraRenderState camera) {
 		Minecraft mc = Minecraft.getInstance();
 		HitResult pos = mc.hitResult;
-		if (Minecraft.renderNames()
+		if (!Minecraft.getInstance().gui.hud.isHidden()
 				&& !name.isEmpty() && pos != null && pos.getType() == HitResult.Type.BLOCK
 				&& potato.getBlockPos().equals(((BlockHitResult) pos).getBlockPos())) {
 			ms.pushPose();
 			ms.translate(0F, -0.6F, 0F);
-			ms.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
+			if (camera != null) {
+				ms.rotate(camera.orientation);
+			}
 			float f1 = 0.016666668F * 1.6F;
 			ms.scale(-f1, -f1, f1);
 			int halfWidth = mc.font.width(potato.name.getString()) / 2;
 
 			float opacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
 			int opacityRGB = (int) (opacity * 255.0F) << 24;
-			mc.font.drawInBatch(potato.name, -halfWidth, 0, 0x20FFFFFF, false, ms.last().pose(), buffers, Font.DisplayMode.SEE_THROUGH, opacityRGB, light);
-			mc.font.drawInBatch(potato.name, -halfWidth, 0, 0xFFFFFFFF, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+			buffers.submitText(ms, -halfWidth, 0, potato.name.getVisualOrderText(), false, Font.DisplayMode.SEE_THROUGH, light, 0x20FFFFFF, opacityRGB, 0);
+			buffers.submitText(ms, -halfWidth, 0, potato.name.getVisualOrderText(), false, Font.DisplayMode.NORMAL, light, 0xFFFFFFFF, 0, 0);
 			if (name.equals("pahimar") || name.equals("soaryn")) {
 				ms.translate(0F, 14F, 0F);
 				String str = name.equals("pahimar") ? "[WIP]" : "(soon)";
 				halfWidth = mc.font.width(str) / 2;
 
-				mc.font.drawInBatch(str, -halfWidth, 0, 0x20FFFFFF, false, ms.last().pose(), buffers, Font.DisplayMode.SEE_THROUGH, opacityRGB, light);
-				mc.font.drawInBatch(str, -halfWidth, 0, 0xFFFFFFFF, false, ms.last().pose(), buffers, Font.DisplayMode.SEE_THROUGH, 0, light);
+				FormattedCharSequence text = FormattedCharSequence.forward(str, Style.EMPTY);
+				buffers.submitText(ms, -halfWidth, 0, text, false, Font.DisplayMode.SEE_THROUGH, light, 0x20FFFFFF, opacityRGB, 0);
+				buffers.submitText(ms, -halfWidth, 0, text, false, Font.DisplayMode.SEE_THROUGH, light, 0xFFFFFFFF, 0, 0);
 			}
 
 			ms.popPose();
 		}
 	}
 
-	private void renderItems(TinyPotatoBlockEntity potato, Direction facing, String name, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	private void renderItems(TinyPotatoBlockEntity potato, Direction facing, String name, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay) {
 		ms.pushPose();
 		ms.rotate(VecHelper.rotateZ(180F));
 		ms.translate(0F, -1F, 0F);
@@ -361,8 +358,7 @@ public class TinyPotatoBlockEntityRenderer implements BlockEntityRenderer<TinyPo
 						ms.rotate(VecHelper.rotateX(180));
 						ms.rotate(VecHelper.rotateY(180));
 						ms.translate(0, -0.78, -0.5);
-						Minecraft.getInstance().getItemRenderer().renderStatic(icon, ItemDisplayContext.HEAD,
-								light, overlay, ms, buffers, potato.getLevel(), 0);
+						RenderHelper.submitItem(icon, ItemDisplayContext.HEAD, ms, buffers, potato.getLevel(), light, overlay, 0);
 					}
 				}
 			}
@@ -370,20 +366,15 @@ public class TinyPotatoBlockEntityRenderer implements BlockEntityRenderer<TinyPo
 		ms.popPose();
 	}
 
-	private void renderModel(PoseStack ms, MultiBufferSource buffers, int light, int overlay, BakedModel model) {
-		renderModel(ms, buffers.getBuffer(Sheets.translucentCullBlockSheet()), light, overlay, model);
+	private void renderModel(PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, BlockStateModel model) {
+		RenderHelper.submitBlockModel(model, ms, buffers, light, overlay);
 	}
 
-	private void renderModel(PoseStack ms, VertexConsumer buffer, int light, int overlay, BakedModel model) {
-		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, overlay);
+	private void renderItem(PoseStack ms, SubmitNodeCollector buffers, @Nullable Level level, int light, int overlay, ItemStack stack) {
+		RenderHelper.submitItem(stack, ItemDisplayContext.HEAD, ms, buffers, level, light, overlay, 0);
 	}
 
-	private void renderItem(PoseStack ms, MultiBufferSource buffers, @Nullable Level level, int light, int overlay, ItemStack stack) {
-		Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.HEAD,
-				light, overlay, ms, buffers, level, 0);
-	}
-
-	private void renderBlock(PoseStack ms, MultiBufferSource buffers, int light, int overlay, Block block) {
-		blockRenderDispatcher.renderSingleBlock(block.defaultBlockState(), ms, buffers, light, overlay);
+	private void renderBlock(PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, Block block) {
+		RenderHelper.submitBlockState(block.defaultBlockState(), ms, buffers, light, overlay);
 	}
 }

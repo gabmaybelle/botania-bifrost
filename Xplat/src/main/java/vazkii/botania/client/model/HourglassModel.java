@@ -16,11 +16,12 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Unit;
 
 import vazkii.botania.common.helper.VecHelper;
 
-public class HourglassModel extends Model {
+public class HourglassModel extends Model<Unit> {
 
 	private final ModelPart top;
 	private final ModelPart glassT;
@@ -32,7 +33,7 @@ public class HourglassModel extends Model {
 	private final ModelPart sandB;
 
 	public HourglassModel(ModelPart root) {
-		super(RenderType::entityTranslucent);
+		super(root, RenderTypes::entityTranslucent);
 
 		top = root.getChild("top");
 		glassT = root.getChild("glass_top");
@@ -61,11 +62,6 @@ public class HourglassModel extends Model {
 		root.addOrReplaceChild("sand_bottom", CubeListBuilder.create().texOffs(20, 14)
 				.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4), PartPose.ZERO);
 		return mesh;
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		render(ms, buffer, light, overlay, color, 0, 1, false);
 	}
 
 	public void render(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color, float fract1, float fract2, boolean flip) {

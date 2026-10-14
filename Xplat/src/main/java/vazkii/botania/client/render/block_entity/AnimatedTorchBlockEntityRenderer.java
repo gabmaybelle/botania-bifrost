@@ -9,39 +9,34 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
+import org.jetbrains.annotations.Nullable;
+
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.AnimatedTorchBlock;
 import vazkii.botania.common.block.block_entity.AnimatedTorchBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class AnimatedTorchBlockEntityRenderer implements BlockEntityRenderer<AnimatedTorchBlockEntity> {
+public class AnimatedTorchBlockEntityRenderer extends BotaniaBlockEntityRenderer<AnimatedTorchBlockEntity> {
 	private static final double ANIM_HORIZONTAL_TICK_SCALE = 0.05;
 	private static final double ANIM_VERTICAL_TICK_SCALE = 0.04;
 	private static final double ANIM_TICK_CYCLE = 2 * Math.PI / ANIM_HORIZONTAL_TICK_SCALE / ANIM_VERTICAL_TICK_SCALE;
 
-	private final BlockRenderDispatcher blockRenderDispatcher;
-
-	public AnimatedTorchBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
-	}
+	public AnimatedTorchBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(AnimatedTorchBlockEntity torch, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable AnimatedTorchBlockEntity torch, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 
 		Level level = torch.getLevel();
@@ -90,9 +85,7 @@ public class AnimatedTorchBlockEntityRenderer implements BlockEntityRenderer<Ani
 		BlockState torchState = torch.getBlockState().getValue(AnimatedTorchBlock.TRIGGERED)
 				? torchBaseState.setValue(RedstoneTorchBlock.LIT, false)
 				: torchBaseState;
-		BakedModel model = blockRenderDispatcher.getBlockModel(torchState);
-		VertexConsumer buffer = buffers.getBuffer(ItemBlockRenderTypes.getChunkRenderType(torchState));
-		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, torchState, model, 1, 1, 1, light, overlay);
+		RenderHelper.submitBlockState(torchState, ms, buffers, light, overlay);
 		ms.popPose();
 	}
 

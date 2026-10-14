@@ -8,29 +8,19 @@
  */
 package vazkii.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.object.skull.SkullModelBase;
 
-import vazkii.botania.client.render.block_entity.GaiaHeadBlockEntityRenderer;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * PORT-26.3: a model can no longer hand its drawing to another model (renderToBuffer is final), so the Gaia head
+ * renderer picks the viewed skull's model itself. This stays as the registered model for the Gaia head's skull type
+ * and draws nothing on its own.
+ */
 public class GaiaHeadModel extends SkullModelBase {
-	@Override
-	public void setupAnim(float animationProgress, float yRot, float xRot) {
-		var type = GaiaHeadBlockEntityRenderer.getViewType();
-		var model = GaiaHeadBlockEntityRenderer.models.get(type);
-		if (model != null) {
-			model.setupAnim(animationProgress, yRot, xRot);
-		}
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		var type = GaiaHeadBlockEntityRenderer.getViewType();
-		var model = GaiaHeadBlockEntityRenderer.models.get(type);
-		if (model != null) {
-			model.renderToBuffer(ms, buffer, light, overlay, color);
-		}
+	public GaiaHeadModel() {
+		super(new ModelPart(List.of(), Map.of()));
 	}
 }

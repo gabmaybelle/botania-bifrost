@@ -9,19 +9,14 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -42,7 +37,7 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPoolBlockEntity> {
+public class ManaPoolBlockEntityRenderer extends BotaniaBlockEntityRenderer<ManaPoolBlockEntity> {
 
 	// Overrides for when we call this renderer from a cart
 	public static int cartMana = -1;
@@ -51,18 +46,17 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 	public static ManaPoolBlock cartBlock;
 
 	private final TextureAtlasSprite waterSprite;
-	private final BlockRenderDispatcher blockRenderDispatcher;
+	private final SpriteGetter sprites;
 
 	public ManaPoolBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
+		this.sprites = ctx.sprites();
 		this.waterSprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
-						.apply(botaniaRL("block/mana_water"))
+				RenderHelper.getBlockSprite(ctx.sprites(), botaniaRL("block/mana_water"))
 		);
 	}
 
 	@Override
-	public void render(@Nullable ManaPoolBlockEntity pool, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable ManaPoolBlockEntity pool, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 		Minecraft minecraft = Minecraft.getInstance();
 
@@ -102,22 +96,15 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 		int uvEndY = (int) (16 * innerShape.max(Direction.Axis.Z));
 
 		if (fabulous) {
-			int color = minecraft.getBlockColors().getColor(state, level, pool != null ? pool.getBlockPos() : null, 0);
-
-			float red = ARGB.red(color) / 255f;
-			float green = ARGB.green(color) / 255f;
-			float blue = ARGB.blue(color) / 255f;
-			BakedModel model = blockRenderDispatcher.getBlockModel(state);
-			VertexConsumer buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
-			blockRenderDispatcher.getModelRenderer()
-					.renderModel(ms.last(), buffer, state, model, red, green, blue, light, overlay);
+			// PORT-26.3: the block model carries its own tint now
+			RenderHelper.submitBlockState(state, ms, buffers, light, overlay);
 		}
 
 		if (pool != null) {
 			Block below = pool.getLevel().getBlockState(pool.getBlockPos().below()).getBlock();
 			if (below instanceof PoolOverlayProvider overlayProvider) {
 				var overlaySpriteId = overlayProvider.getIcon(pool.getLevel(), pool.getBlockPos());
-				var overlayIcon = minecraft.getTextureAtlas(AtlasIds.BLOCKS).apply(overlaySpriteId);
+				var overlayIcon = RenderHelper.getBlockSprite(this.sprites, overlaySpriteId);
 				ms.pushPose();
 
 				float alpha = (float) ((Mth.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 20.0f) + 1) * 0.3 + 0.2);
@@ -125,12 +112,11 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 				ms.translate(0, poolBottom, 0);
 				ms.rotate(VecHelper.rotateX(90F));
 
-				VertexConsumer buffer = buffers.getBuffer(RenderHelper.ICON_OVERLAY);
-				RenderHelper.renderIconCropped(
-						ms, buffer,
+				RenderHelper.submit(ms, buffers, RenderHelper.ICON_OVERLAY, (ps, buffer) -> RenderHelper.renderIconCropped(
+						ps, buffer,
 						uvStartX, uvStartY, uvEndX, uvEndY,
 						overlayIcon, 0xFFFFFF, alpha, light
-				);
+				));
 
 				ms.popPose();
 			}
@@ -142,11 +128,10 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 			ms.translate(0, Mth.clampedMap(manaLevel, 0, 1, poolBottom, poolTop), 0);
 			ms.rotate(VecHelper.rotateX(90F));
 
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.MANA_POOL_WATER);
-			RenderHelper.renderIconCropped(
-					ms, buffer,
+			RenderHelper.submit(ms, buffers, RenderHelper.MANA_POOL_WATER, (ps, buffer) -> RenderHelper.renderIconCropped(
+					ps, buffer,
 					uvStartX, uvStartY, uvEndX, uvEndY,
-					this.waterSprite, 0xFFFFFF, 1, light);
+					this.waterSprite, 0xFFFFFF, 1, light));
 
 			ms.popPose();
 		}

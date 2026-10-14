@@ -8,9 +8,7 @@
  */
 package vazkii.botania.client.core.handler;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -19,7 +17,6 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.client.lib.ResourcesLib;
-import vazkii.botania.client.model.TinyPotatoModel;
 import vazkii.botania.client.render.block_entity.CorporeaCrystalCubeBlockEntityRenderer;
 import vazkii.botania.client.render.block_entity.ManaPumpBlockEntityRenderer;
 import vazkii.botania.client.render.block_entity.ManaSpreaderBlockEntityRenderer;
@@ -27,8 +24,6 @@ import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.item.equipment.bauble.FlugelTiaraItem;
 import vazkii.botania.common.item.equipment.bauble.ThirdEyeItem;
 import vazkii.botania.common.item.relic.KeyOfTheKingsLawItem;
-import vazkii.botania.common.lib.LibBlockNames;
-import vazkii.botania.xplat.ClientXplatAbstractions;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -60,16 +55,15 @@ public class MiscellaneousModels {
 
 	public static final MiscellaneousModels INSTANCE = new MiscellaneousModels();
 
-	private final Map<Identifier, Function<BakedModel, BakedModel>> afterBakeModifiers;
-	private final Map<Identifier, Consumer<BakedModel>> modelConsumers;
+	private final Map<Identifier, Consumer<BlockStateModel>> modelConsumers;
 
 	public boolean registeredModels = false;
 
-	public final BakedModel[] tiaraWingIcons;
-	public final BakedModel[] thirdEyeLayers;
+	public final BlockStateModel[] tiaraWingIcons;
+	public final BlockStateModel[] thirdEyeLayers;
 
 	@UnknownNullability
-	public BakedModel goldfishModel,
+	public BlockStateModel goldfishModel,
 			phiFlowerModel,
 			nerfBatModel,
 			bloodPendantChain,
@@ -82,7 +76,7 @@ public class MiscellaneousModels {
 			nimbusGem,
 			terrasteelHelmWillModel;
 
-	public final BakedModel[] kingKeyWeaponModels;
+	public final BlockStateModel[] kingKeyWeaponModels;
 
 	public void onModelRegister(ResourceManager rm, Consumer<Identifier> consumer) {
 		modelConsumers.keySet().forEach(consumer);
@@ -118,40 +112,18 @@ public class MiscellaneousModels {
 		}
 	}
 
-	// NeoForge
-	public void onModelBake(ModelBakery loader, Map<ModelResourceLocation, BakedModel> map) {
+	// PORT-26.3: both loaders now resolve extra models by id once loading finishes; each one calls this with its lookup
+	public void onModelsLoaded(Function<Identifier, @Nullable BlockStateModel> lookup) {
 		if (!registeredModels) {
 			BotaniaAPI.LOGGER.error("Additional models failed to register! Aborting baking models to avoid early crashing.");
 			return;
 		}
-		afterBakeModifiers.forEach((resourceLocation, afterBakeModifier) -> map
-				.computeIfPresent(new ModelResourceLocation(resourceLocation, ""),
-						(resourceLoc, bakedModel) -> afterBakeModifier.apply(bakedModel)));
-		modelConsumers.forEach((resourceLocation, bakedModelConsumer) -> bakedModelConsumer
-				.accept(map.get(new ModelResourceLocation(resourceLocation, "standalone"))));
-	}
-
-	// Fabric
-	public BakedModel modifyModelAfterbake(BakedModel bakedModel, @Nullable Identifier id) {
-		if (id == null) {
-			return bakedModel;
-		}
-		modelConsumers.getOrDefault(id, model -> {}).accept(bakedModel);
-		return afterBakeModifiers.getOrDefault(stripBlockPrefix(id), Function.identity()).apply(bakedModel);
-	}
-
-	private Identifier stripBlockPrefix(Identifier id) {
-		String path = id.getPath();
-		return Identifier.fromNamespaceAndPath(id.getNamespace(), path.startsWith("block/") ? path.substring(6) : path);
+		modelConsumers.forEach((resourceLocation, bakedModelConsumer) -> bakedModelConsumer.accept(lookup.apply(resourceLocation)));
 	}
 
 	private MiscellaneousModels() {
-		afterBakeModifiers = new HashMap<>();
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.PLATFORM_ABSTRUSE), ClientXplatAbstractions.INSTANCE::wrapPlatformModel);
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.PLATFORM_SPECTRAL), ClientXplatAbstractions.INSTANCE::wrapPlatformModel);
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.PLATFORM_INFRANGIBLE), ClientXplatAbstractions.INSTANCE::wrapPlatformModel);
-		afterBakeModifiers.put(botaniaRL(LibBlockNames.TINY_POTATO), TinyPotatoModel::new);
-
+		// PORT-26.3: the platform (camouflage) models and the named tiny potato item model were wrapped after baking;
+		// 26.3 has no after-bake hook, so they return with the loader model plugins and the item model pass
 		modelConsumers = new HashMap<>();
 
 		modelConsumers.put(goldfishModelId, bakedModel -> this.goldfishModel = bakedModel);
@@ -172,8 +144,8 @@ public class MiscellaneousModels {
 		tiaraWingIcons = getBakedModels(modelConsumers, tiaraWingIconIds);
 	}
 
-	private static BakedModel[] getBakedModels(Map<Identifier, Consumer<BakedModel>> consumers, Identifier[] ids) {
-		final BakedModel[] bakedModels = new BakedModel[ids.length];
+	private static BlockStateModel[] getBakedModels(Map<Identifier, Consumer<BlockStateModel>> consumers, Identifier[] ids) {
+		final BlockStateModel[] bakedModels = new BlockStateModel[ids.length];
 		for (int i = 0; i < ids.length; i++) {
 			int index = i;
 			consumers.put(ids[index], bakedModel -> bakedModels[index] = bakedModel);

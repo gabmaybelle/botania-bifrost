@@ -12,15 +12,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.helper.RenderHelper;
@@ -30,7 +32,7 @@ import vazkii.botania.common.item.WandOfTheForestItem;
 
 import java.util.Random;
 
-public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implements BlockEntityRenderer<T> {
+public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> extends BotaniaBlockEntityRenderer<T> {
 	// 0 -> none, 10 -> full
 	private static int transparency = 0;
 
@@ -47,7 +49,7 @@ public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implem
 	public RedStringBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(RedStringBlockEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable RedStringBlockEntity tile, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		if (transparency <= 0) {
 			return;
 		}
@@ -60,22 +62,24 @@ public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implem
 			ms.translate(0.5, 0.5, 0.5);
 			Vec3 span = new Vec3(bind.getX() - tile.getBlockPos().getX(), bind.getY() - tile.getBlockPos().getY(), bind.getZ() - tile.getBlockPos().getZ());
 			Vec3 step = span.normalize().scale(0.025);
-			Vec3 cur = step;
 
 			int stepCount = (int) (span.length() / step.length());
 
-			double len = (double) -(ClientTickHandler.getEntityTicksInGame() + partialTicks) / 100F
+			double startLen = (double) -(ClientTickHandler.getEntityTicksInGame() + partialTicks) / 100F
 					+ new Random(dir.ordinal() ^ tile.getBlockPos().asLong()).nextInt(10000);
 			double add = step.length();
-			double rand = Math.random() - 0.5;
-			VertexConsumer buffer = buffers.getBuffer(RenderHelper.RED_STRING);
-			for (int i = 0; i < stepCount; i++) {
-				vertex(ms, buffer, dir, cur.x, cur.y, cur.z, rand, len);
-				rand = Math.random() - 0.5;
-				cur = cur.add(step);
-				len += add;
-				vertex(ms, buffer, dir, cur.x, cur.y, cur.z, rand, len);
-			}
+			RenderHelper.submit(ms, buffers, RenderHelper.RED_STRING, (ps, buffer) -> {
+				Vec3 cur = step;
+				double len = startLen;
+				double rand = Math.random() - 0.5;
+				for (int i = 0; i < stepCount; i++) {
+					vertex(ps, buffer, dir, cur.x, cur.y, cur.z, rand, len);
+					rand = Math.random() - 0.5;
+					cur = cur.add(step);
+					len += add;
+					vertex(ps, buffer, dir, cur.x, cur.y, cur.z, rand, len);
+				}
+			});
 
 			ms.popPose();
 		}
@@ -105,7 +109,7 @@ public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implem
 				+ (dir.getStepY() == 0 ? sin : cos) * ampl * killNonZero(dir.getStepZ())
 				+ lastTerm;
 
-		buffer.addVertex(ms.last().pose(), x, y, z).setColor(0xFF, 0, 0, ARGB.as8BitChannel(sizeAlpha));
+		buffer.addVertex(ms.last().pose(), x, y, z).setColor(0xFF, 0, 0, ARGB.as8BitChannel(sizeAlpha)).setLineWidth(1F);
 		switch (dir.getAxis().getPlane()) {
 			case HORIZONTAL -> buffer.setNormal(ms.last(), 0, 1, 0);
 			case VERTICAL -> buffer.setNormal(ms.last(), 1, 0, 0);

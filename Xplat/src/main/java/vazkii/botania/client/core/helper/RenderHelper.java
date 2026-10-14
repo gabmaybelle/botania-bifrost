@@ -23,23 +23,40 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.LayeringTransform;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
@@ -288,6 +305,130 @@ public final class RenderHelper {
 		buffer.addVertex(mat, xMin, y, zMin).setColor(r, g, b, a);
 		buffer.addVertex(mat, xMin, y, zMax).setColor(r, g, b, a);
 		buffer.addVertex(mat, xMax, y, zMax).setColor(r, g, b, a);
+	}
+
+	/** Drawing code written against a vertex consumer, run later by the collector. */
+	@FunctionalInterface
+	public interface LegacyDraw {
+		void draw(PoseStack ms, VertexConsumer buffer);
+	}
+
+	/**
+	 * Submits drawing code that writes into a buffer of the given render type, the way the old
+	 * {@code buffers.getBuffer(type)} code did.
+	 * <p>
+	 * PORT-26.3: the geometry is built later, from a copy of the pose the collector is given here, so the drawing code
+	 * gets a fresh pose stack seeded with that pose and must not touch the caller's.
+	 */
+	public static void submit(PoseStack ms, SubmitNodeCollector collector, RenderType type, LegacyDraw draw) {
+		collector.submitCustomGeometry(ms, type, (pose, buffer) -> {
+			PoseStack ps = new PoseStack();
+			ps.mulPose(pose.pose());
+			draw.draw(ps, buffer);
+		});
+	}
+
+	/** Submits an item stack for drawing, as {@code ItemRenderer#renderStatic} used to. */
+	public static void submitItem(ItemStack stack, ItemDisplayContext context, PoseStack ms, SubmitNodeCollector collector,
+			@Nullable Level level, int light, int overlay, int seed) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		// PORT-26.3: resolved here rather than in an extract step; the resolver is cheap but this does allocate per frame
+		ItemStackRenderState state = new ItemStackRenderState();
+		Minecraft.getInstance().getItemModelResolver().updateForTopItem(state, stack, context, level, null, seed);
+		state.submit(ms, collector, light, overlay, 0);
+	}
+
+	private static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
+	@Nullable
+	private static BlockModelResolver blockModelResolver;
+
+	/** Submits a block state's model, tints included, as {@code BlockRenderDispatcher#renderSingleBlock} used to. */
+	public static void submitBlockState(BlockState state, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		if (blockModelResolver == null) {
+			blockModelResolver = new BlockModelResolver(Minecraft.getInstance().getModelManager());
+		}
+		BlockModelRenderState renderState = new BlockModelRenderState();
+		blockModelResolver.update(renderState, state, BLOCK_DISPLAY_CONTEXT);
+		renderState.submit(ms, collector, light, overlay, 0);
+	}
+
+	/** The baked model of a block state, for drawing its quads by hand. */
+	public static BlockStateModel getBlockStateModel(BlockState state) {
+		return Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
+	}
+
+	/** The sprite a block state's particles use. */
+	public static TextureAtlasSprite getParticleSprite(BlockState state) {
+		return Minecraft.getInstance().getModelManager().getBlockStateModelSet().getParticleMaterial(state).sprite();
+	}
+
+	/** A block atlas sprite by its texture name, e.g. {@code botania:block/mana_water}. */
+	public static TextureAtlasSprite getBlockSprite(SpriteGetter sprites, Identifier texture) {
+		return sprites.get(new SpriteId(AtlasIds.BLOCKS, texture));
+	}
+
+	private static RenderType blockRenderType(ChunkSectionLayer layer) {
+		return switch (layer) {
+			case SOLID -> RenderTypes.solidMovingBlock();
+			case CUTOUT -> RenderTypes.cutoutMovingBlock();
+			default -> RenderTypes.translucentMovingBlock();
+		};
+	}
+
+	/**
+	 * Submits every quad of a baked block model, each on its own layer's render type, with one colour (alpha included)
+	 * forced on all of them: this is what {@code ModelBlockRenderer#renderModel} with a colour did.
+	 */
+	public static void submitBlockModel(BlockStateModel model, PoseStack ms, SubmitNodeCollector collector, int color, int light, int overlay) {
+		List<BlockStateModelPart> parts = new ArrayList<>();
+		model.collectParts(RandomSource.create(42L), parts);
+		submitBlockModelParts(parts, ms, collector, color, light, overlay);
+	}
+
+	public static void submitBlockModelParts(List<BlockStateModelPart> parts, PoseStack ms, SubmitNodeCollector collector, int color, int light, int overlay) {
+		Map<RenderType, List<BakedQuad>> byType = new LinkedHashMap<>();
+		for (BlockStateModelPart part : parts) {
+			for (Direction direction : Direction.values()) {
+				for (BakedQuad quad : part.getQuads(direction)) {
+					byType.computeIfAbsent(blockRenderType(quad.materialInfo().layer()), t -> new ArrayList<>()).add(quad);
+				}
+			}
+			for (BakedQuad quad : part.getQuads(null)) {
+				byType.computeIfAbsent(blockRenderType(quad.materialInfo().layer()), t -> new ArrayList<>()).add(quad);
+			}
+		}
+		QuadInstance instance = new QuadInstance();
+		instance.setColor(color);
+		instance.setLightCoords(light);
+		instance.setOverlayCoords(overlay);
+		for (var entry : byType.entrySet()) {
+			List<BakedQuad> quads = entry.getValue();
+			collector.submitCustomGeometry(ms, entry.getKey(), (pose, buffer) -> {
+				for (BakedQuad quad : quads) {
+					buffer.putBakedQuad(pose, quad, instance);
+				}
+			});
+		}
+	}
+
+	/**
+	 * Submits an entity for drawing at the current pose, as {@code EntityRenderDispatcher#render} with zero offsets
+	 * used to. Needs the frame's camera, so it draws nothing for the item form of a block.
+	 */
+	public static void submitEntity(Entity entity, float partialTick, PoseStack ms, SubmitNodeCollector collector, @Nullable CameraRenderState camera) {
+		if (camera == null) {
+			return;
+		}
+		EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+		EntityRenderState state = dispatcher.extractEntity(entity, partialTick);
+		dispatcher.submit(state, camera, 0, 0, 0, ms, collector);
+	}
+
+	/** Submits a baked block model with no colour change. */
+	public static void submitBlockModel(BlockStateModel model, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		submitBlockModel(model, ms, collector, -1, light, overlay);
 	}
 
 	/**

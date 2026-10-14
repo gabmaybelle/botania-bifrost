@@ -9,28 +9,29 @@
 package vazkii.botania.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.block.block_entity.BotanicalBreweryBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 
-public class BotanicalBreweryModel extends Model {
+public class BotanicalBreweryModel extends Model<Unit> {
 	private static final Identifier TEXTURE = Identifier.parse(ResourcesLib.MODEL_BOTANICAL_BREWERY);
 	final ModelPart top;
 	final ModelPart pole;
@@ -39,7 +40,7 @@ public class BotanicalBreweryModel extends Model {
 	final ModelPart plate;
 
 	public BotanicalBreweryModel(ModelPart root) {
-		super(RenderType::entitySolid);
+		super(root, RenderTypes::entitySolid);
 
 		top = root.getChild("top");
 		pole = root.getChild("pole");
@@ -65,7 +66,7 @@ public class BotanicalBreweryModel extends Model {
 		return mesh;
 	}
 
-	public void render(@Nullable BotanicalBreweryBlockEntity brewery, double time, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable BotanicalBreweryBlockEntity brewery, double time, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay) {
 		float offset = (float) Math.sin(time / 40) * 0.1F + 0.05F;
 		boolean hasTile = brewery != null;
 		int plates = hasTile ? brewery.inventorySize() - 1 : 7;
@@ -83,9 +84,11 @@ public class BotanicalBreweryModel extends Model {
 		}
 
 		RenderType layer = renderType(TEXTURE);
-		pole.render(ms, buffers.getBuffer(layer), light, overlay);
-		top.render(ms, buffers.getBuffer(layer), light, overlay);
-		bottom.render(ms, buffers.getBuffer(layer), light, overlay);
+		RenderHelper.submit(ms, buffers, layer, (ps, buffer) -> {
+			pole.render(ps, buffer, light, overlay);
+			top.render(ps, buffer, light, overlay);
+			bottom.render(ps, buffer, light, overlay);
+		});
 		ms.rotate(VecHelper.rotateY(-polerot));
 
 		float degper = (float) (2F * Math.PI) / plates;
@@ -110,7 +113,7 @@ public class BotanicalBreweryModel extends Model {
 				renderItemStack(brewery.getItemHandler().getItem(i + 1), ms, buffers, brewery.getLevel(), light, overlay);
 				ms.popPose();
 			}
-			plate.render(ms, buffers.getBuffer(layer), light, overlay);
+			RenderHelper.submit(ms, buffers, layer, (ps, buffer) -> plate.render(ps, buffer, light, overlay));
 			ms.translate(0F, -offset1, 0F);
 
 			deg += degper;
@@ -118,21 +121,15 @@ public class BotanicalBreweryModel extends Model {
 		ms.translate(0F, -offset, 0F);
 	}
 
-	private void renderItemStack(ItemStack stack, PoseStack ms, MultiBufferSource buffers, @Nullable Level level, int light, int overlay) {
+	private void renderItemStack(ItemStack stack, PoseStack ms, SubmitNodeCollector buffers, @Nullable Level level, int light, int overlay) {
 		if (!stack.isEmpty()) {
-			Minecraft mc = Minecraft.getInstance();
 			ms.pushPose();
 
 			float s = 0.25F;
 			ms.scale(s, s, s);
-			mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-					light, overlay, ms, buffers, level, 0);
+			RenderHelper.submitItem(stack, ItemDisplayContext.GROUND, ms, buffers, level, light, overlay, 0);
 			ms.popPose();
 		}
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		throw new UnsupportedOperationException("unimplemented, call using other render method");
-	}
 }

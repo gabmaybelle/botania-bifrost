@@ -9,17 +9,17 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import org.jetbrains.annotations.Nullable;
+
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.mana.ManaPumpBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.xplat.ClientXplatAbstractions;
@@ -28,17 +28,13 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class ManaPumpBlockEntityRenderer implements BlockEntityRenderer<ManaPumpBlockEntity> {
+public class ManaPumpBlockEntityRenderer extends BotaniaBlockEntityRenderer<ManaPumpBlockEntity> {
 	public static final Identifier PUMP_HEAD_ID = botaniaRL("block/mana_pump_head");
 
-	private final BlockRenderDispatcher blockRenderDispatcher;
-
-	public ManaPumpBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
-	}
+	public ManaPumpBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(ManaPumpBlockEntity pump, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable ManaPumpBlockEntity pump, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 		ms.translate(0.5, 0, 0.5);
 		float angle = 0;
@@ -60,12 +56,11 @@ public class ManaPumpBlockEntityRenderer implements BlockEntityRenderer<ManaPump
 		ms.translate(-0.5, 0, -0.5);
 		double diff = Math.max(0F, Math.min(8F, pump.innerRingPos + pump.moving * partialTicks));
 		ms.translate(0, 0, diff / 14);
-		VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
-		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, getHeadModel(), 1, 1, 1, light, overlay);
+		RenderHelper.submitBlockModel(getHeadModel(), ms, buffers, light, overlay);
 		ms.popPose();
 	}
 
-	private BakedModel getHeadModel() {
+	private BlockStateModel getHeadModel() {
 		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(PUMP_HEAD_ID));
 	}
 }

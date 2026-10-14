@@ -9,17 +9,18 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.core.proxy.ClientProxy;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.client.model.BotaniaModelLayers;
@@ -29,7 +30,7 @@ import vazkii.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<TeruTeruBozuBlockEntity> {
+public class TeruTeruBozuBlockEntityRenderer extends BotaniaBlockEntityRenderer<TeruTeruBozuBlockEntity> {
 
 	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_TERU_TERU_BOZU);
 	private static final Identifier textureHalloween = Identifier.parse(ResourcesLib.MODEL_TERU_TERU_BOZU_HALLOWEEN);
@@ -40,7 +41,7 @@ public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<Teru
 	}
 
 	@Override
-	public void render(@Nullable TeruTeruBozuBlockEntity teruTeruBozu, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable TeruTeruBozuBlockEntity teruTeruBozu, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 		ms.rotate(VecHelper.rotateX(180));
 		double time = ClientTickHandler.getEntityTicksInGame() + partialTicks;
@@ -57,8 +58,9 @@ public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<Teru
 			ms.scale(s, s, s);
 		}
 
-		VertexConsumer buffer = buffers.getBuffer(model.renderType(ClientProxy.dootDoot ? textureHalloween : texture));
-		model.renderToBuffer(ms, buffer, light, overlay, ARGB.colorFromFloat(1, 1, 1, 1));
+		model.setRaining(Minecraft.getInstance().level != null && Minecraft.getInstance().level.isRaining());
+		RenderHelper.submit(ms, buffers, model.renderType(ClientProxy.dootDoot ? textureHalloween : texture),
+				(ps, buffer) -> model.renderToBuffer(ps, buffer, light, overlay, ARGB.colorFromFloat(1, 1, 1, 1)));
 		ms.popPose();
 	}
 

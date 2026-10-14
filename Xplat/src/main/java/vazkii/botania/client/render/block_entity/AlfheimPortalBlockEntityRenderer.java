@@ -9,19 +9,18 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.api.state.enums.AlfheimPortalState;
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.AlfheimPortalBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 
@@ -29,18 +28,17 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class AlfheimPortalBlockEntityRenderer implements BlockEntityRenderer<AlfheimPortalBlockEntity> {
+public class AlfheimPortalBlockEntityRenderer extends BotaniaBlockEntityRenderer<AlfheimPortalBlockEntity> {
 	private final TextureAtlasSprite portalSprite;
 
 	public AlfheimPortalBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.portalSprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
-						.apply(botaniaRL("block/alfheim_portal_swirl"))
+				RenderHelper.getBlockSprite(ctx.sprites(), botaniaRL("block/alfheim_portal_swirl"))
 		);
 	}
 
 	@Override
-	public void render(AlfheimPortalBlockEntity portal, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable AlfheimPortalBlockEntity portal, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		AlfheimPortalState state = portal.getBlockState().getValue(BotaniaStateProperties.ALFPORTAL_STATE);
 		if (state == AlfheimPortalState.OFF) {
 			return;
@@ -73,13 +71,14 @@ public class AlfheimPortalBlockEntityRenderer implements BlockEntityRenderer<Alf
 		ms.popPose();
 	}
 
-	public void renderIcon(PoseStack ms, MultiBufferSource buffers, TextureAtlasSprite icon, int x, int y, int width, int height, float alpha, int overlay) {
-		VertexConsumer buffer = buffers.getBuffer(Sheets.translucentItemSheet());
-		PoseStack.Pose pose = ms.last();
-		buffer.addVertex(pose, x, y + height, 0).setColor(1, 1, 1, alpha).setUv(icon.getU0(), icon.getV1()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
-		buffer.addVertex(pose, x + width, y + height, 0).setColor(1, 1, 1, alpha).setUv(icon.getU1(), icon.getV1()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
-		buffer.addVertex(pose, x + width, y, 0).setColor(1, 1, 1, alpha).setUv(icon.getU1(), icon.getV0()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
-		buffer.addVertex(pose, x, y, 0).setColor(1, 1, 1, alpha).setUv(icon.getU0(), icon.getV0()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
+	public void renderIcon(PoseStack ms, SubmitNodeCollector buffers, TextureAtlasSprite icon, int x, int y, int width, int height, float alpha, int overlay) {
+		RenderHelper.submit(ms, buffers, RenderHelper.ICON_OVERLAY, (ps, buffer) -> {
+			PoseStack.Pose pose = ps.last();
+			buffer.addVertex(pose, x, y + height, 0).setColor(1, 1, 1, alpha).setUv(icon.getU0(), icon.getV1()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
+			buffer.addVertex(pose, x + width, y + height, 0).setColor(1, 1, 1, alpha).setUv(icon.getU1(), icon.getV1()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
+			buffer.addVertex(pose, x + width, y, 0).setColor(1, 1, 1, alpha).setUv(icon.getU1(), icon.getV0()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
+			buffer.addVertex(pose, x, y, 0).setColor(1, 1, 1, alpha).setUv(icon.getU0(), icon.getV0()).setOverlay(overlay).setLight(0xF000F0).setNormal(pose, 1, 0, 0);
+		});
 	}
 
 }

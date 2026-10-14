@@ -9,18 +9,17 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.corporea.CorporeaCrystalCubeBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.mixin.ItemEntityAccessor;
@@ -39,19 +39,16 @@ import java.util.Objects;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRenderer<CorporeaCrystalCubeBlockEntity> {
+public class CorporeaCrystalCubeBlockEntityRenderer extends BotaniaBlockEntityRenderer<CorporeaCrystalCubeBlockEntity> {
 	public static final Identifier CUBE_MODEL_ID = botaniaRL("block/corporea_crystal_cube_glass");
 
 	@Nullable
 	private ItemEntity entity = null;
-	private final BlockRenderDispatcher blockRenderDispatcher;
 
-	public CorporeaCrystalCubeBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
-	}
+	public CorporeaCrystalCubeBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(@Nullable CorporeaCrystalCubeBlockEntity cube, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable CorporeaCrystalCubeBlockEntity cube, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ItemStack stack;
 		if (cube != null) {
 			if (entity == null) {
@@ -83,14 +80,13 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 			ms.translate(0F, 0.96F, 0F);
 			ms.scale(0.64F, 0.64F, 0.64F);
 			ms.rotate(VecHelper.rotateZ(180F));
-			Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity).render(entity, 0, partialTick, ms, buffers, light);
+			RenderHelper.submitEntity(entity, partialTick, ms, buffers, camera);
 			ms.popPose();
 		}
 
 		ms.pushPose();
 		ms.translate(-0.5F, 0.25F, -0.5F);
-		VertexConsumer buffer = buffers.getBuffer(Sheets.translucentCullBlockSheet());
-		blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, getCubeModel(), 1, 1, 1, light, overlay);
+		RenderHelper.submitBlockModel(getCubeModel(), ms, buffers, light, overlay);
 		ms.popPose();
 
 		if (!stack.isEmpty() && cube != null && !cube.isHiddenCount()) {
@@ -116,6 +112,7 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 			float s = 1F / 64F;
 			ms.scale(s, s, s);
 			int l = mc.font.width(countStr);
+			FormattedCharSequence text = FormattedCharSequence.forward(countStr, Style.EMPTY);
 
 			ms.translate(0F, 55F, 0F);
 			float tr = -16.5F;
@@ -123,9 +120,9 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 				ms.rotate(VecHelper.rotateY(90F));
 				ms.translate(0F, 0F, tr);
 				// cannot use dropshadow parameter as that shadow somehow renders in front of the text, not behind it
-				mc.font.drawInBatch(countStr, -l / 2, 0, colorText, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+				buffers.submitText(ms, -l / 2, 0, text, false, Font.DisplayMode.NORMAL, light, colorText, 0, 0);
 				ms.translate(0F, 0F, 0.1F);
-				mc.font.drawInBatch(countStr, -l / 2 + 1, 1, colorShade, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
+				buffers.submitText(ms, -l / 2 + 1, 1, text, false, Font.DisplayMode.NORMAL, light, colorShade, 0, 0);
 				ms.translate(0F, 0F, -tr - 0.1F);
 			}
 		}
@@ -133,7 +130,7 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 		ms.popPose();
 	}
 
-	private BakedModel getCubeModel() {
+	private BlockStateModel getCubeModel() {
 		return Objects.requireNonNull(ClientXplatAbstractions.instance().getResourceModel(CUBE_MODEL_ID));
 	}
 }

@@ -10,22 +10,24 @@ package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
+
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.SparkTinkererBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 
-public class SparkTinkererBlockEntityRenderer implements BlockEntityRenderer<SparkTinkererBlockEntity> {
+public class SparkTinkererBlockEntityRenderer extends BotaniaBlockEntityRenderer<SparkTinkererBlockEntity> {
 
 	public SparkTinkererBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(SparkTinkererBlockEntity tileentity, float pticks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable SparkTinkererBlockEntity tileentity, float pticks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 		ms.rotate(VecHelper.rotateX(90));
 		ms.translate(1.0F, -0.125F, -0.25F);
@@ -33,8 +35,7 @@ public class SparkTinkererBlockEntityRenderer implements BlockEntityRenderer<Spa
 		if (!stack.isEmpty()) {
 			ms.rotate(VecHelper.rotateY(180));
 			ms.translate(0.5F, 0.5F, 0);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-					light, overlay, ms, buffers, tileentity.getLevel(), 0);
+			RenderHelper.submitItem(stack, ItemDisplayContext.GROUND, ms, buffers, tileentity.getLevel(), light, overlay, 0);
 		}
 		ms.popPose();
 	}

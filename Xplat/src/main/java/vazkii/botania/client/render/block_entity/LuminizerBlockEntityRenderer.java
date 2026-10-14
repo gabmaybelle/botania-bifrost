@@ -12,13 +12,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import vazkii.botania.api.block_entity.RadiusDescriptor;
@@ -28,12 +29,12 @@ import vazkii.botania.common.block.block_entity.LuminizerBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.common.item.equipment.bauble.ManaseerMonocleItem;
 
-public class LuminizerBlockEntityRenderer implements BlockEntityRenderer<LuminizerBlockEntity> {
+public class LuminizerBlockEntityRenderer extends BotaniaBlockEntityRenderer<LuminizerBlockEntity> {
 
 	public LuminizerBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(LuminizerBlockEntity tile, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable LuminizerBlockEntity tile, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		BlockState state = tile.getBlockState();
 
 		Minecraft mc = Minecraft.getInstance();
@@ -44,7 +45,7 @@ public class LuminizerBlockEntityRenderer implements BlockEntityRenderer<Luminiz
 			}
 		}
 
-		TextureAtlasSprite sprite = mc.getBlockRenderer().getBlockModel(state).getParticleIcon();
+		TextureAtlasSprite sprite = RenderHelper.getParticleSprite(state);
 
 		ms.pushPose();
 		ms.translate(0.5, 0.3, 0.5);
@@ -54,15 +55,16 @@ public class LuminizerBlockEntityRenderer implements BlockEntityRenderer<Luminiz
 		float scale = 0.75F;
 		ms.scale(scale, scale, scale);
 
-		ms.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
+		if (camera != null) {
+			ms.rotate(camera.orientation);
+		}
 
 		float off = 0.25F;
 		ms.translate(0F, off, 0F);
 		ms.rotate(VecHelper.rotateZ((float) time));
 		ms.translate(0F, -off, 0F);
 
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.LIGHT_RELAY);
-		renderIcon(ms, buffer, sprite);
+		RenderHelper.submit(ms, buffers, RenderHelper.LIGHT_RELAY, (ps, buffer) -> renderIcon(ps, buffer, sprite));
 
 		ms.popPose();
 	}

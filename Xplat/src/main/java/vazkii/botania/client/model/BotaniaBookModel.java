@@ -10,11 +10,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 
 // [VanillaCopy] BookModel, with z-fighting fixes
-public class BotaniaBookModel extends Model {
+public class BotaniaBookModel extends Model<Unit> {
 	private static final String LEFT_PAGES = "left_pages";
 	private static final String RIGHT_PAGES = "right_pages";
 	private static final String FLIP_PAGE_1 = "flip_page1";
@@ -28,7 +29,7 @@ public class BotaniaBookModel extends Model {
 	private final ModelPart flipPage2;
 
 	public BotaniaBookModel(ModelPart root) {
-		super(RenderType::entitySolid);
+		super(root, RenderTypes::entitySolid);
 		this.root = root;
 		this.leftLid = root.getChild("left_lid");
 		this.rightLid = root.getChild("right_lid");
@@ -66,11 +67,6 @@ public class BotaniaBookModel extends Model {
 		partdefinition.addOrReplaceChild(FLIP_PAGE_1, cubelistbuilder, PartPose.ZERO);
 		partdefinition.addOrReplaceChild(FLIP_PAGE_2, cubelistbuilder, PartPose.ZERO);
 		return LayerDefinition.create(meshdefinition, 64, 32);
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-		this.render(poseStack, buffer, packedLight, packedOverlay, color);
 	}
 
 	public void render(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {

@@ -9,16 +9,16 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
@@ -31,8 +31,8 @@ import vazkii.botania.client.model.BotaniaModelLayers;
 import vazkii.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 
-public class CorporeaIndexBlockEntityRenderer implements BlockEntityRenderer<CorporeaIndexBlockEntity> {
-	private static final RenderType LAYER = RenderType.entityCutoutNoCull(Identifier.parse(ResourcesLib.MODEL_CORPOREA_INDEX));
+public class CorporeaIndexBlockEntityRenderer extends BotaniaBlockEntityRenderer<CorporeaIndexBlockEntity> {
+	private static final RenderType LAYER = RenderTypes.entityCutout(Identifier.parse(ResourcesLib.MODEL_CORPOREA_INDEX));
 	private static final float ANGLE = (float) Math.sin(Math.toRadians(45));
 	private final ModelPart ring;
 	private final ModelPart cube;
@@ -56,12 +56,12 @@ public class CorporeaIndexBlockEntityRenderer implements BlockEntityRenderer<Cor
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(CorporeaIndexBlockEntity blockEntity) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 
 	@Override
-	public void render(@Nullable CorporeaIndexBlockEntity index, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable CorporeaIndexBlockEntity index, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 		ms.translate(0.5, 0, 0.5);
 
@@ -75,23 +75,22 @@ public class CorporeaIndexBlockEntityRenderer implements BlockEntityRenderer<Cor
 			translation = (float) ((Math.cos((index.ticksWithCloseby + (index.hasCloseby ? partialTicks : 0)) / 10F) * 0.5 + 0.5) * 0.25);
 		}
 
-		VertexConsumer buffer = buffers.getBuffer(LAYER);
-		ms.pushPose();
-		ms.translate(0.0D, -1, 0.0D);
+		RenderHelper.submit(ms, buffers, LAYER, (ps, buffer) -> {
+			ps.translate(0.0D, -1, 0.0D);
 
-		ms.rotate(VecHelper.rotateY(rotation));
-		ms.translate(0.0D, 1.5F + translation / 2.0F, 0.0D);
-		ms.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
-		this.ring.render(ms, buffer, light, overlay);
-		ms.scale(0.875F, 0.875F, 0.875F);
-		ms.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
-		ms.rotate(VecHelper.rotateY(rotation));
-		this.ring.render(ms, buffer, light, overlay);
-		ms.scale(0.875F, 0.875F, 0.875F);
-		ms.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
-		ms.rotate(VecHelper.rotateY(rotation));
-		this.cube.render(ms, buffer, light, overlay);
-		ms.popPose();
+			ps.rotate(VecHelper.rotateY(rotation));
+			ps.translate(0.0D, 1.5F + translation / 2.0F, 0.0D);
+			ps.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
+			this.ring.render(ms, buffer, light, overlay);
+			ps.scale(0.875F, 0.875F, 0.875F);
+			ps.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
+			ps.rotate(VecHelper.rotateY(rotation));
+			this.ring.render(ms, buffer, light, overlay);
+			ps.scale(0.875F, 0.875F, 0.875F);
+			ps.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(60.0F), ANGLE, 0.0F, ANGLE));
+			ps.rotate(VecHelper.rotateY(rotation));
+			this.cube.render(ms, buffer, light, overlay);
+		});
 
 		if (index != null && index.closeby > 0F) {
 			float starScale = 0.02F;

@@ -9,11 +9,10 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.client.model.BotaniaModelLayers;
 import vazkii.botania.client.model.HourglassModel;
@@ -31,7 +31,7 @@ import vazkii.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer<HoveringHourglassBlockEntity> {
+public class HoveringHourglassBlockEntityRenderer extends BotaniaBlockEntityRenderer<HoveringHourglassBlockEntity> {
 	private static final double ANIM_HORIZONTAL_TICK_SCALE = 0.05;
 	private static final double ANIM_VERTICAL_TICK_SCALE = 0.04;
 	private static final double ANIM_TICK_CYCLE = 2 * Math.PI / ANIM_HORIZONTAL_TICK_SCALE / ANIM_VERTICAL_TICK_SCALE;
@@ -44,7 +44,7 @@ public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer
 	}
 
 	@Override
-	public void render(@Nullable HoveringHourglassBlockEntity hourglass, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable HoveringHourglassBlockEntity hourglass, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 
 		Level level = hourglass != null ? hourglass.getLevel() : null;
@@ -92,8 +92,8 @@ public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer
 		int color = hourglass != null ? hourglass.getColor() : 0;
 
 		ms.scale(1F, -1F, -1F);
-		VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
-		model.render(ms, buffer, light, overlay, color | 0xFF000000, topFraction, bottomFraction, flipped);
+		RenderHelper.submit(ms, buffers, model.renderType(texture),
+				(ps, buffer) -> model.render(ps, buffer, light, overlay, color | 0xFF000000, topFraction, bottomFraction, flipped));
 		ms.popPose();
 	}
 

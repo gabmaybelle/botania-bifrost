@@ -13,33 +13,37 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import vazkii.botania.api.block.PetalApothecary;
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.PetalApothecaryBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 
-public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<PetalApothecaryBlockEntity> {
-	private final BlockRenderDispatcher blockRenderDispatcher;
+public class PetalApothecaryBlockEntityRenderer extends BotaniaBlockEntityRenderer<PetalApothecaryBlockEntity> {
+
+	private final TextureAtlasSprite waterSprite;
+	private final TextureAtlasSprite lavaSprite;
 
 	public PetalApothecaryBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.blockRenderDispatcher = context.getBlockRenderDispatcher();
+		this.waterSprite = RenderHelper.getBlockSprite(context.sprites(), Identifier.withDefaultNamespace("block/water_still"));
+		this.lavaSprite = RenderHelper.getBlockSprite(context.sprites(), Identifier.withDefaultNamespace("block/lava_still"));
 	}
 
 	@Override
-	public void render(PetalApothecaryBlockEntity altar, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable PetalApothecaryBlockEntity altar, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 		ms.translate(0.5, 1.25, 0.5);
 
@@ -94,15 +98,11 @@ public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<P
 						v *= 2F;
 
 						ItemStack stack = altar.getItemHandler().getItem(i);
-						Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-								light, overlay, ms, buffers, altar.getLevel(), 0);
+						RenderHelper.submitItem(stack, ItemDisplayContext.GROUND, ms, buffers, altar.getLevel(), light, overlay, 0);
 						ms.popPose();
 					}
 
 					ms.popPose();
-					if (buffers instanceof MultiBufferSource.BufferSource bs) {
-						bs.endBatch();
-					}
 				}
 			}
 
@@ -112,12 +112,11 @@ public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<P
 			ms.rotate(VecHelper.rotateX(90));
 			ms.scale(1 / 16F, 1 / 16F, 1 / 16F);
 
-			TextureAtlasSprite sprite = lava ? this.blockRenderDispatcher.getBlockModel(Blocks.LAVA.defaultBlockState()).getParticleIcon()
-					: this.blockRenderDispatcher.getBlockModel(Blocks.WATER.defaultBlockState()).getParticleIcon();
+			TextureAtlasSprite sprite = lava ? this.lavaSprite : this.waterSprite;
 			int color = lava ? -1
-					: BiomeColors.getAverageWaterColor(altar.getLevel(), altar.getBlockPos());
-			VertexConsumer buffer = buffers.getBuffer(Sheets.translucentCullBlockSheet());
-			renderIcon(ms, buffer, sprite, color, alpha, overlay, lava ? 0xF000F0 : light);
+					: Minecraft.getInstance().level.getBlockTint(altar.getBlockPos(), BiomeColors.WATER_COLOR_RESOLVER);
+			RenderHelper.submit(ms, buffers, RenderTypes.translucentMovingBlock(),
+					(ps, buffer) -> renderIcon(ps, buffer, sprite, color, alpha, overlay, lava ? 0xF000F0 : light));
 			ms.popPose();
 		}
 		ms.popPose();

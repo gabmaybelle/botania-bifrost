@@ -10,29 +10,31 @@ package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import org.jetbrains.annotations.Nullable;
+
 import vazkii.botania.client.core.handler.ClientTickHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.flower.FloatingFlowerBlockEntity;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.xplat.BotaniaConfig;
-import vazkii.botania.xplat.ClientXplatAbstractions;
 
 import java.util.Random;
 
-public class FloatingFlowerBlockEntityRenderer implements BlockEntityRenderer<FloatingFlowerBlockEntity> {
+public class FloatingFlowerBlockEntityRenderer extends BotaniaBlockEntityRenderer<FloatingFlowerBlockEntity> {
 
 	public FloatingFlowerBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(FloatingFlowerBlockEntity tile, float t, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		renderFloatingIsland(tile, t, ms, buffers, overlay);
+	public void render(@Nullable FloatingFlowerBlockEntity tile, float t, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
+		renderFloatingIsland(tile, t, ms, buffers, light, overlay);
 	}
 
-	public static void renderFloatingIsland(BlockEntity tile, float partialTick, PoseStack ms, MultiBufferSource buffers, int overlay) {
+	public static void renderFloatingIsland(BlockEntity tile, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay) {
 		if (BotaniaConfig.client().staticFloaters()) {
 			return;
 		}
@@ -51,8 +53,8 @@ public class FloatingFlowerBlockEntityRenderer implements BlockEntityRenderer<Fl
 		ms.rotate(VecHelper.rotateX(4F * (float) Math.sin(worldTime * 0.04F)));
 		ms.rotate(VecHelper.rotateY(90.0F));
 
-		ClientXplatAbstractions.INSTANCE.tessellateBlock(tile.getLevel(), tile.getBlockState(),
-				tile.getBlockPos(), ms, buffers, overlay);
+		// PORT-26.3: drawn as a plain block model; the world-aware tessellation (ambient occlusion) is gone with the old renderer
+		RenderHelper.submitBlockState(tile.getBlockState(), ms, buffers, light, overlay);
 
 		ms.popPose();
 	}

@@ -13,7 +13,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -35,12 +35,12 @@ public class BlockEntityItemRenderer {
 		this.dummy = Suppliers.memoize(() -> ((EntityBlock) block).newBlockEntity(Bound.UNBOUND_POS, block.defaultBlockState()));
 	}
 
-	public void render(ItemStack stack, ItemDisplayContext mode, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(ItemStack stack, ItemDisplayContext mode, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay) {
 		if (stack.is(block.asItem())) {
 			Minecraft minecraft = Minecraft.getInstance();
-			BlockEntityRenderer<?> r = minecraft.getBlockEntityRenderDispatcher().getRenderer(dummy.get());
-			if (r != null) {
-				r.render(null, minecraft.getTimer().getGameTimeDeltaPartialTick(true), ms, buffers, light, overlay);
+			BlockEntityRenderer<?, ?> r = minecraft.getBlockEntityRenderDispatcher().getRenderer(dummy.get());
+			if (r instanceof BotaniaBlockEntityRenderer<?> botaniaRenderer) {
+				botaniaRenderer.render(null, minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true), ms, buffers, light, overlay, null);
 			}
 		}
 	}

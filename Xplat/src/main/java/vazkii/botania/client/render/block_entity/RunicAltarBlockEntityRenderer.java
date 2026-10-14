@@ -9,7 +9,6 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -17,15 +16,17 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import vazkii.botania.client.core.helper.RenderHelper;
@@ -34,7 +35,7 @@ import vazkii.botania.common.helper.VecHelper;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicAltarBlockEntity> {
+public class RunicAltarBlockEntityRenderer extends BotaniaBlockEntityRenderer<RunicAltarBlockEntity> {
 	private final ModelPart spinningCube;
 	private static final Identifier cubeTex = botaniaRL("textures/block/runic_altar_cube.png");
 
@@ -46,7 +47,7 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 	}
 
 	@Override
-	public void render(RunicAltarBlockEntity altar, float partialTick, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable RunicAltarBlockEntity altar, float partialTick, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		ms.pushPose();
 
 		int items = 0;
@@ -78,8 +79,7 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 			ItemStack stack = altar.getItemHandler().getItem(i);
 			Minecraft mc = Minecraft.getInstance();
 			if (!stack.isEmpty()) {
-				mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-						light, overlay, ms, buffers, altar.getLevel(), 0);
+				RenderHelper.submitItem(stack, ItemDisplayContext.GROUND, ms, buffers, altar.getLevel(), light, overlay, 0);
 			}
 			ms.popPose();
 		}
@@ -101,7 +101,7 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 		ms.popPose();
 	}
 
-	private void renderSpinningCubes(PoseStack ms, MultiBufferSource buffers, int overlay, int cubes, int iters, double time) {
+	private void renderSpinningCubes(PoseStack ms, SubmitNodeCollector buffers, int overlay, int cubes, int iters, double time) {
 		for (int curIter = iters; curIter > 0; curIter--) {
 			final float modifier = 6F;
 			final float rotationModifier = 0.2F;
@@ -130,13 +130,10 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 				float zRotate = (float) Math.cos(ticks * rotationModifier) / 2F;
 
 				ms.rotate(new Quaternionf().rotateAxis(rad, xRotate, yRotate, zRotate));
-				float alpha = 1;
-				if (curIter < iters) {
-					alpha = (float) curIter / (float) iters * 0.4F;
-				}
+				float alpha = curIter < iters ? (float) curIter / (float) iters * 0.4F : 1;
 
-				VertexConsumer buffer = buffers.getBuffer(curIter < iters ? RenderType.entityTranslucentCull(cubeTex) : RenderType.entitySolid(cubeTex));
-				spinningCube.render(ms, buffer, 0xF000F0, overlay, ARGB.colorFromFloat(alpha, 1, 1, 1));
+				RenderType type = curIter < iters ? RenderTypes.entityTranslucentCull(cubeTex) : RenderTypes.entitySolid(cubeTex);
+				RenderHelper.submit(ms, buffers, type, (ps, buffer) -> spinningCube.render(ps, buffer, 0xF000F0, overlay, ARGB.colorFromFloat(alpha, 1, 1, 1)));
 
 				ms.popPose();
 			}

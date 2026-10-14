@@ -200,7 +200,7 @@ public class BottledManaItem extends Item {
 		if (!level.isClientSide() && living instanceof Player player) {
 			living.hurt(living.damageSources().magic(), living.getHealth() - 1);
 			ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
-			skull.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
+			skull.set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
 			living.spawnAtLocation((ServerLevel) level, skull, 0);
 		}
 	}

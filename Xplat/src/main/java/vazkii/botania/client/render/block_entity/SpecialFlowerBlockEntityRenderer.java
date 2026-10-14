@@ -9,12 +9,11 @@
 package vazkii.botania.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.util.Mth;
@@ -36,7 +35,7 @@ import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.item.WandOfTheForestItem;
 import vazkii.botania.common.item.equipment.bauble.ManaseerMonocleItem;
 
-public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity> implements BlockEntityRenderer<T> {
+public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity> extends BotaniaBlockEntityRenderer<T> {
 
 	public static final int INNER_ALPHA = 32;
 	public static final int OUTER_ALPHA = 64;
@@ -49,11 +48,11 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 	public SpecialFlowerBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(SpecialFlowerBlockEntity flower, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable SpecialFlowerBlockEntity flower, float partialTicks, PoseStack ms, SubmitNodeCollector buffers, int light, int overlay, @Nullable CameraRenderState camera) {
 		if (flower.isFloating()) {
-			FloatingFlowerBlockEntityRenderer.renderFloatingIsland(flower, partialTicks, ms, buffers, overlay);
+			FloatingFlowerBlockEntityRenderer.renderFloatingIsland(flower, partialTicks, ms, buffers, light, overlay);
 		}
-		if (!(Minecraft.getInstance().cameraEntity instanceof LivingEntity view)) {
+		if (!(Minecraft.getInstance().getCameraEntity() instanceof LivingEntity view)) {
 			return;
 		}
 
@@ -80,7 +79,7 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 		}
 	}
 
-	public static void renderRadius(BlockEntity tile, float partialTick, PoseStack ms, MultiBufferSource buffers, @Nullable RadiusDescriptor descriptor) {
+	public static void renderRadius(BlockEntity tile, float partialTick, PoseStack ms, SubmitNodeCollector buffers, @Nullable RadiusDescriptor descriptor) {
 		if (descriptor != null) {
 			ms.pushPose();
 			ms.translate(0, RenderHelper.getOffY(), 0);
@@ -102,7 +101,7 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 		return false;
 	}
 
-	public static void renderCircle(PoseStack ms, MultiBufferSource buffers, float partialTick, BlockPos tilePos, BlockPos center, double radius) {
+	public static void renderCircle(PoseStack ms, SubmitNodeCollector buffers, float partialTick, BlockPos tilePos, BlockPos center, double radius) {
 		ms.pushPose();
 		ms.translate(center.getX() - tilePos.getX() + 0.5, center.getY() - tilePos.getY(), center.getZ() - tilePos.getZ() + 0.5);
 
@@ -111,38 +110,39 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 		int g = (color >> 8 & 0xFF);
 		int b = (color & 0xFF);
 
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.CIRCLE);
-		Matrix4f mat = ms.last().pose();
-
 		double innerRadius = radius - FRAME_WIDTH;
-		Runnable centerFuncInner = () -> buffer.addVertex(mat, 0, Y_OFFSET_INNER, 0).setColor(r, g, b, INNER_ALPHA);
-		Runnable centerFuncOuter = () -> buffer.addVertex(mat, 0, Y_OFFSET_OUTER, 0).setColor(r, g, b, OUTER_ALPHA);
-		Runnable[] vertexFuncsInner = new Runnable[TOTAL_ANGLES + 1];
-		Runnable[] vertexFuncsOuter = new Runnable[TOTAL_ANGLES + 1];
+		RenderHelper.submit(ms, buffers, RenderHelper.CIRCLE, (ps, buffer) -> {
+			Matrix4f mat = ps.last().pose();
 
-		for (int i = 0; i < TOTAL_ANGLES; i++) {
-			double rad = (TOTAL_ANGLES - i) * DEGREES_TO_RADIAN;
-			double cos = Math.cos(rad);
-			double sin = Math.sin(rad);
+			Runnable centerFuncInner = () -> buffer.addVertex(mat, 0, Y_OFFSET_INNER, 0).setColor(r, g, b, INNER_ALPHA);
+			Runnable centerFuncOuter = () -> buffer.addVertex(mat, 0, Y_OFFSET_OUTER, 0).setColor(r, g, b, OUTER_ALPHA);
+			Runnable[] vertexFuncsInner = new Runnable[TOTAL_ANGLES + 1];
+			Runnable[] vertexFuncsOuter = new Runnable[TOTAL_ANGLES + 1];
 
-			float xpInner = (float) (cos * innerRadius);
-			float zpInner = (float) (sin * innerRadius);
-			vertexFuncsInner[i] = (() -> buffer.addVertex(mat, xpInner, Y_OFFSET_INNER, zpInner).setColor(r, g, b, INNER_ALPHA));
+			for (int i = 0; i < TOTAL_ANGLES; i++) {
+				double rad = (TOTAL_ANGLES - i) * DEGREES_TO_RADIAN;
+				double cos = Math.cos(rad);
+				double sin = Math.sin(rad);
 
-			float xpOuter = (float) (Math.cos(rad) * radius);
-			float zpOuter = (float) (Math.sin(rad) * radius);
-			vertexFuncsOuter[i] = (() -> buffer.addVertex(mat, xpOuter, Y_OFFSET_OUTER, zpOuter).setColor(r, g, b, OUTER_ALPHA));
-		}
-		vertexFuncsInner[TOTAL_ANGLES] = vertexFuncsInner[0];
-		vertexFuncsOuter[TOTAL_ANGLES] = vertexFuncsOuter[0];
+				float xpInner = (float) (cos * innerRadius);
+				float zpInner = (float) (sin * innerRadius);
+				vertexFuncsInner[i] = (() -> buffer.addVertex(mat, xpInner, Y_OFFSET_INNER, zpInner).setColor(r, g, b, INNER_ALPHA));
 
-		RenderHelper.triangleFan(centerFuncInner, vertexFuncsInner);
-		RenderHelper.triangleFan(centerFuncOuter, vertexFuncsOuter);
+				float xpOuter = (float) (Math.cos(rad) * radius);
+				float zpOuter = (float) (Math.sin(rad) * radius);
+				vertexFuncsOuter[i] = (() -> buffer.addVertex(mat, xpOuter, Y_OFFSET_OUTER, zpOuter).setColor(r, g, b, OUTER_ALPHA));
+			}
+			vertexFuncsInner[TOTAL_ANGLES] = vertexFuncsInner[0];
+			vertexFuncsOuter[TOTAL_ANGLES] = vertexFuncsOuter[0];
+
+			RenderHelper.triangleFan(centerFuncInner, vertexFuncsInner);
+			RenderHelper.triangleFan(centerFuncOuter, vertexFuncsOuter);
+		});
 
 		ms.popPose();
 	}
 
-	public static void renderRectangle(PoseStack ms, MultiBufferSource buffers, float partialTick, BlockPos tilePos, AABB aabb) {
+	public static void renderRectangle(PoseStack ms, SubmitNodeCollector buffers, float partialTick, BlockPos tilePos, AABB aabb) {
 		ms.pushPose();
 		ms.translate(aabb.minX - tilePos.getX(), aabb.minY - tilePos.getY(), aabb.minZ - tilePos.getZ());
 
@@ -156,11 +156,12 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 		float xSizeInner = xSize - FRAME_WIDTH;
 		float zSizeInner = zSize - FRAME_WIDTH;
 
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.RECTANGLE);
-		Matrix4f mat = ms.last().pose();
-		RenderHelper.flatRectangle(buffer, mat, FRAME_WIDTH, xSizeInner, Y_OFFSET_INNER, FRAME_WIDTH, zSizeInner,
-				r, g, b, INNER_ALPHA);
-		RenderHelper.flatRectangle(buffer, mat, 0, xSize, Y_OFFSET_OUTER, 0, zSize, r, g, b, OUTER_ALPHA);
+		RenderHelper.submit(ms, buffers, RenderHelper.RECTANGLE, (ps, buffer) -> {
+			Matrix4f mat = ps.last().pose();
+			RenderHelper.flatRectangle(buffer, mat, FRAME_WIDTH, xSizeInner, Y_OFFSET_INNER, FRAME_WIDTH, zSizeInner,
+					r, g, b, INNER_ALPHA);
+			RenderHelper.flatRectangle(buffer, mat, 0, xSize, Y_OFFSET_OUTER, 0, zSize, r, g, b, OUTER_ALPHA);
+		});
 
 		ms.popPose();
 	}

@@ -16,11 +16,12 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Unit;
 
 import vazkii.botania.common.helper.VecHelper;
 
-public class BellowsModel extends Model {
+public class BellowsModel extends Model<Unit> {
 
 	private final ModelPart top;
 	private final ModelPart base;
@@ -28,7 +29,7 @@ public class BellowsModel extends Model {
 	private final ModelPart funnel;
 
 	public BellowsModel(ModelPart root) {
-		super(RenderType::entityCutout);
+		super(root, RenderTypes::entityCutoutCull);
 
 		top = root.getChild("top");
 		base = root.getChild("base");
@@ -52,11 +53,6 @@ public class BellowsModel extends Model {
 				.addBox(0.0F, 0.0F, 0.0F, 6, 7, 6),
 				PartPose.ZERO);
 		return mesh;
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		render(ms, buffer, light, overlay, color, 1);
 	}
 
 	public void render(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color, float fract) {
