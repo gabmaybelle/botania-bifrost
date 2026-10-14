@@ -9,19 +9,18 @@
 
 package vazkii.botania.client.model;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 
 import vazkii.botania.client.core.helper.RenderHelper;
-import vazkii.botania.common.entity.GaiaGuardianEntity;
+import vazkii.botania.client.render.entity.GaiaGuardianRenderState;
 
 // [VanillaCopy] PlayerModel, only the parts relevant to the Gaia Guardian
-public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianEntity> {
+public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderState> {
 	public final ModelPart leftSleeve;
 	public final ModelPart rightSleeve;
 	public final ModelPart leftPants;
@@ -40,32 +39,25 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianEntity> {
 	}
 
 	@Override
-	protected Iterable<ModelPart> bodyParts() {
-		return Iterables.concat(super.bodyParts(), ImmutableList.of(this.leftPants, this.rightPants, this.leftSleeve, this.rightSleeve, this.jacket));
+	public void setupAnim(GaiaGuardianRenderState state) {
+		// PORT-26.3: part visibility comes from the render state now (the renderer used to set it before drawing)
+		this.hat.visible = state.showHat;
+		this.jacket.visible = state.showJacket;
+		this.leftPants.visible = state.showLeftPants;
+		this.rightPants.visible = state.showRightPants;
+		this.leftSleeve.visible = state.showLeftSleeve;
+		this.rightSleeve.visible = state.showRightSleeve;
+		super.setupAnim(state);
+		this.leftPants.loadPose(this.leftLeg.storePose());
+		this.rightPants.loadPose(this.rightLeg.storePose());
+		this.leftSleeve.loadPose(this.leftArm.storePose());
+		this.rightSleeve.loadPose(this.rightArm.storePose());
+		this.jacket.loadPose(this.body.storePose());
 	}
 
 	@Override
-	public void setupAnim(GaiaGuardianEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		this.leftPants.copyFrom(this.leftLeg);
-		this.rightPants.copyFrom(this.rightLeg);
-		this.leftSleeve.copyFrom(this.leftArm);
-		this.rightSleeve.copyFrom(this.rightArm);
-		this.jacket.copyFrom(this.body);
-	}
-
-	@Override
-	public void setAllVisible(boolean visible) {
-		super.setAllVisible(visible);
-		this.leftSleeve.visible = visible;
-		this.rightSleeve.visible = visible;
-		this.leftPants.visible = visible;
-		this.rightPants.visible = visible;
-		this.jacket.visible = visible;
-	}
-
-	@Override
-	public void translateToHand(HumanoidArm side, PoseStack poseStack) {
+	public void translateToHand(HumanoidRenderState state, HumanoidArm side, PoseStack poseStack) {
+		this.root().translateAndRotate(poseStack);
 		ModelPart modelpart = this.getArm(side);
 		if (this.slim) {
 			float f = 0.5F * (float) (side == HumanoidArm.RIGHT ? 1 : -1);

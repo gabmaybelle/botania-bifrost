@@ -9,19 +9,17 @@
 package vazkii.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -39,13 +37,13 @@ import vazkii.botania.api.brew.BrewContainer;
 import vazkii.botania.api.brew.BrewItem;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.core.handler.MiscellaneousModels;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
 import vazkii.botania.common.brew.BotaniaBrews;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 import vazkii.botania.common.proxy.Proxy;
-import vazkii.botania.mixin.client.MinecraftAccessor;
 
 import java.util.function.Consumer;
 
@@ -113,24 +111,19 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.25, 0.4, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
 
-			BakedModel model = MiscellaneousModels.INSTANCE.bloodPendantChain;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			BlockStateModel model = MiscellaneousModels.INSTANCE.bloodPendantChain;
+			RenderHelper.submitBlockModel(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 
 			model = MiscellaneousModels.INSTANCE.bloodPendantGem;
-			int color = ((MinecraftAccessor) Minecraft.getInstance()).botania_getItemColors().getColor(stack, 1);
-			float r = (color >> 16 & 0xFF) / 255F;
-			float g = (color >> 8 & 0xFF) / 255F;
-			float b = (color & 0xFF) / 255F;
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, r, g, b, 0xF000F0, OverlayTexture.NO_OVERLAY);
+			// PORT-26.3: item colour handlers are gone (tints are data-driven); the gem takes the brew colour directly
+			int color = ((TaintedBloodPendantItem) stack.getItem()).getBrew(stack).getColor(stack);
+			RenderHelper.submitBlockModel(model, ms, buffers, ARGB.opaque(color), 0xF000F0, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

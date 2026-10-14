@@ -12,20 +12,22 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.block.Bound;
+import vazkii.botania.client.render.block_entity.BotaniaBlockEntityRenderer;
 import vazkii.botania.client.render.block_entity.ManaPoolBlockEntityRenderer;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import vazkii.botania.common.block.mana.ManaPoolBlock;
 import vazkii.botania.common.entity.ManaPoolMinecartEntity;
 
-public class ManaPoolMinecartRenderer extends MinecartRenderer<ManaPoolMinecartEntity> {
+public class ManaPoolMinecartRenderer extends AbstractMinecartRenderer<ManaPoolMinecartEntity, ManaPoolMinecartRenderState> {
 	private static final ManaPoolBlockEntity DUMMY = new ManaPoolBlockEntity(Bound.UNBOUND_POS, BotaniaBlocks.MANA_POOL.defaultBlockState());
 
 	public ManaPoolMinecartRenderer(EntityRendererProvider.Context ctx) {
@@ -33,14 +35,26 @@ public class ManaPoolMinecartRenderer extends MinecartRenderer<ManaPoolMinecartE
 	}
 
 	@Override
-	protected void renderMinecartContents(ManaPoolMinecartEntity poolCart, float partialTicks, BlockState state, PoseStack ms, MultiBufferSource buffers, int light) {
-		super.renderMinecartContents(poolCart, partialTicks, state, ms, buffers, light);
-		ManaPoolBlockEntityRenderer.cartMana = poolCart.getMana();
+	public ManaPoolMinecartRenderState createRenderState() {
+		return new ManaPoolMinecartRenderState();
+	}
+
+	@Override
+	public void extractRenderState(ManaPoolMinecartEntity poolCart, ManaPoolMinecartRenderState state, float partialTicks) {
+		super.extractRenderState(poolCart, state, partialTicks);
+		state.mana = poolCart.getMana();
+	}
+
+	@Override
+	protected void submitMinecartContents(ManaPoolMinecartRenderState state, BlockModelRenderState blockModel, PoseStack ms, SubmitNodeCollector buffers, int light) {
+		super.submitMinecartContents(state, blockModel, ms, buffers, light);
+		ManaPoolBlockEntityRenderer.cartMana = state.mana;
 		// TODO: Support other pool types
 		ManaPoolBlockEntityRenderer.cartMaxMana = ManaPoolBlock.MAX_MANA;
 		ManaPoolBlockEntityRenderer.cartBlock = BotaniaBlocks.MANA_POOL;
-		Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(DUMMY)
-				.render(null, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false), ms, buffers, light, OverlayTexture.NO_OVERLAY);
+		BlockEntityRenderer<?, ?> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(DUMMY);
+		if (renderer instanceof BotaniaBlockEntityRenderer<?> botaniaRenderer) {
+			botaniaRenderer.render(null, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false), ms, buffers, light, OverlayTexture.NO_OVERLAY, null);
+		}
 	}
-
 }

@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -76,7 +76,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			Variant variant = ((CosmeticBaubleItem) stack.getItem()).variant;
 			if (variant.isHead) {
 				bipedModel.head.translateAndRotate(ms);
@@ -280,9 +280,8 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 			}
 		}
 
-		private static void renderItem(ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light) {
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
-					light, OverlayTexture.NO_OVERLAY, ms, buffers, Minecraft.getInstance().level, 0);
+		private static void renderItem(ItemStack stack, PoseStack ms, SubmitNodeCollector buffers, int light) {
+			RenderHelper.submitItem(stack, ItemDisplayContext.NONE, ms, buffers, Minecraft.getInstance().level, light, OverlayTexture.NO_OVERLAY, 0);
 		}
 	}
 

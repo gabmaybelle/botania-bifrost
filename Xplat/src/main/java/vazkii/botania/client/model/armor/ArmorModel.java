@@ -8,16 +8,13 @@
  */
 package vazkii.botania.client.model.armor;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
-public class ArmorModel extends HumanoidModel<LivingEntity> {
+public class ArmorModel extends HumanoidModel<HumanoidRenderState> {
 	protected final EquipmentSlot slot;
 
 	public ArmorModel(ModelPart root, EquipmentSlot slot) {
@@ -28,45 +25,42 @@ public class ArmorModel extends HumanoidModel<LivingEntity> {
 	// [VanillaCopy] ArmorStandArmorModel.setupAnim because armor stands are dumb
 	// This fixes the armor "breathing" and helmets always facing south on armor stands
 	@Override
-	public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (!(entity instanceof ArmorStand entityIn)) {
-			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setupAnim(HumanoidRenderState state) {
+		// PORT-26.3: renderToBuffer is final, so the slot's part visibility is applied here, right before drawing
+		setPartVisibility(slot);
+		if (!(state instanceof ArmorStandRenderState entityIn)) {
+			super.setupAnim(state);
 			return;
 		}
-
-		this.head.xRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().x();
-		this.head.yRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().y();
-		this.head.zRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().z();
+		this.head.xRot = ((float) Math.PI / 180F) * entityIn.headPose.x();
+		this.head.yRot = ((float) Math.PI / 180F) * entityIn.headPose.y();
+		this.head.zRot = ((float) Math.PI / 180F) * entityIn.headPose.z();
 		this.head.setPos(0.0F, 1.0F, 0.0F);
-		this.body.xRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().x();
-		this.body.yRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().y();
-		this.body.zRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().z();
-		this.leftArm.xRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().x();
-		this.leftArm.yRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().y();
-		this.leftArm.zRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().z();
-		this.rightArm.xRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().x();
-		this.rightArm.yRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().y();
-		this.rightArm.zRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().z();
-		this.leftLeg.xRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().x();
-		this.leftLeg.yRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().y();
-		this.leftLeg.zRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().z();
+		this.body.xRot = ((float) Math.PI / 180F) * entityIn.bodyPose.x();
+		this.body.yRot = ((float) Math.PI / 180F) * entityIn.bodyPose.y();
+		this.body.zRot = ((float) Math.PI / 180F) * entityIn.bodyPose.z();
+		this.leftArm.xRot = ((float) Math.PI / 180F) * entityIn.leftArmPose.x();
+		this.leftArm.yRot = ((float) Math.PI / 180F) * entityIn.leftArmPose.y();
+		this.leftArm.zRot = ((float) Math.PI / 180F) * entityIn.leftArmPose.z();
+		this.rightArm.xRot = ((float) Math.PI / 180F) * entityIn.rightArmPose.x();
+		this.rightArm.yRot = ((float) Math.PI / 180F) * entityIn.rightArmPose.y();
+		this.rightArm.zRot = ((float) Math.PI / 180F) * entityIn.rightArmPose.z();
+		this.leftLeg.xRot = ((float) Math.PI / 180F) * entityIn.leftLegPose.x();
+		this.leftLeg.yRot = ((float) Math.PI / 180F) * entityIn.leftLegPose.y();
+		this.leftLeg.zRot = ((float) Math.PI / 180F) * entityIn.leftLegPose.z();
 		this.leftLeg.setPos(1.9F, 11.0F, 0.0F);
-		this.rightLeg.xRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().x();
-		this.rightLeg.yRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().y();
-		this.rightLeg.zRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().z();
+		this.rightLeg.xRot = ((float) Math.PI / 180F) * entityIn.rightLegPose.x();
+		this.rightLeg.yRot = ((float) Math.PI / 180F) * entityIn.rightLegPose.y();
+		this.rightLeg.zRot = ((float) Math.PI / 180F) * entityIn.rightLegPose.z();
 		this.rightLeg.setPos(-1.9F, 11.0F, 0.0F);
-		this.hat.copyFrom(this.head);
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		setPartVisibility(slot);
-		super.renderToBuffer(ms, buffer, light, overlay, color);
+		this.hat.loadPose(this.head.storePose());
 	}
 
 	// [VanillaCopy] HumanoidArmorLayer
 	private void setPartVisibility(EquipmentSlot slot) {
-		setAllVisible(false);
+		for (ModelPart part : allParts()) {
+			part.visible = false;
+		}
 		switch (slot) {
 			case HEAD -> {
 				head.visible = true;

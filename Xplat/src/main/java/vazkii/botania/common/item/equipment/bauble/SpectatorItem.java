@@ -9,18 +9,15 @@
 package vazkii.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -41,6 +38,7 @@ import net.minecraft.world.phys.AABB;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.client.core.handler.MiscellaneousModels;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
@@ -83,16 +81,14 @@ public class SpectatorItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			boolean armor = !living.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(-0.35, -0.2, armor ? 0.05 : 0.1);
 			ms.scale(0.75F, -0.75F, -0.75F);
 
-			BakedModel model = MiscellaneousModels.INSTANCE.itemFinderGem;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			BlockStateModel model = MiscellaneousModels.INSTANCE.itemFinderGem;
+			RenderHelper.submitBlockModel(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

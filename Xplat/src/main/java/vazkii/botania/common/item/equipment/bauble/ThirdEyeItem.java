@@ -9,14 +9,11 @@
 package vazkii.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -27,6 +24,7 @@ import net.minecraft.world.phys.AABB;
 
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.core.handler.MiscellaneousModels;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
 import vazkii.botania.common.entity.MagicMissileEntity;
@@ -66,7 +64,7 @@ public class ThirdEyeItem extends BaubleItem {
 		public static final int NUM_LAYERS = 3;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 
 			for (int i = 0; i < NUM_LAYERS; i++) {
@@ -91,10 +89,8 @@ public class ThirdEyeItem extends BaubleItem {
 
 				ms.translate(-0.3, 0.6, armor ? 0.10 : 0.15);
 				ms.scale(0.6F, -0.6F, -0.6F);
-				BakedModel model = MiscellaneousModels.INSTANCE.thirdEyeLayers[i];
-				VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-				Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-						.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+				BlockStateModel model = MiscellaneousModels.INSTANCE.thirdEyeLayers[i];
+				RenderHelper.submitBlockModel(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 				ms.popPose();
 			}
 		}

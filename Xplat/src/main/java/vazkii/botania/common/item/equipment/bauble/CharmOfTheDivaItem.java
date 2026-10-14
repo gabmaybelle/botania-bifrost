@@ -10,9 +10,8 @@ package vazkii.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -27,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
 import vazkii.botania.api.mana.ManaItemHandler;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
 import vazkii.botania.common.block.block_entity.flower.functional.HeiseiDreamBlockEntity;
@@ -103,12 +103,11 @@ public class CharmOfTheDivaItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(0.15, -0.42, -0.35);
 			ms.scale(0.4F, -0.4F, -0.4F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
-					light, OverlayTexture.NO_OVERLAY, ms, buffers, living.level(), living.getId());
+			RenderHelper.submitItem(stack, ItemDisplayContext.NONE, ms, buffers, living.level(), light, OverlayTexture.NO_OVERLAY, living.getId());
 		}
 	}
 }

@@ -9,17 +9,13 @@
 package vazkii.botania.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.Identifier;
 
 import org.joml.Matrix4f;
 
@@ -30,20 +26,36 @@ import vazkii.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
-
+public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity, BabylonWeaponRenderState> {
 	public BabylonWeaponRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
 	}
 
 	@Override
-	public void render(BabylonWeaponEntity weapon, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		ms.pushPose();
-		ms.rotate(VecHelper.rotateY(weapon.getRotation()));
+	public BabylonWeaponRenderState createRenderState() {
+		return new BabylonWeaponRenderState();
+	}
 
-		int live = weapon.getLiveTicks();
-		int delay = weapon.getDelay();
-		float charge = Math.min(10F, Math.max(live, weapon.getChargeTicks()) + partialTicks);
+	@Override
+	public void extractRenderState(BabylonWeaponEntity weapon, BabylonWeaponRenderState state, float partialTicks) {
+		super.extractRenderState(weapon, state, partialTicks);
+		state.rotation = weapon.getRotation();
+		state.liveTicks = weapon.getLiveTicks();
+		state.delay = weapon.getDelay();
+		state.chargeTicks = weapon.getChargeTicks();
+		state.variety = weapon.getVariety();
+		state.seed = weapon.getUUID().getMostSignificantBits();
+		state.partialTick = partialTicks;
+	}
+
+	@Override
+	public void submit(BabylonWeaponRenderState state, PoseStack ms, SubmitNodeCollector buffers, CameraRenderState camera) {
+		float partialTicks = state.partialTick;
+		ms.pushPose();
+		ms.rotate(VecHelper.rotateY(state.rotation));
+		int live = state.liveTicks;
+		int delay = state.delay;
+		float charge = Math.min(10F, Math.max(live, state.chargeTicks) + partialTicks);
 		float chargeMul = charge / 10F;
 
 		ms.pushPose();
@@ -52,37 +64,29 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 		ms.scale(s, s, s);
 		ms.rotate(VecHelper.rotateY(90F)); // Rotate to make it match facing, instead of perpendicular to the circle
 		ms.rotate(VecHelper.rotateZ(-45F)); // Perpendicular to the ground, instead of the rising 45 deg of the sprite
-
-		BakedModel model = MiscellaneousModels.INSTANCE.kingKeyWeaponModels[weapon.getVariety()];
-		Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffers.getBuffer(Sheets.translucentItemSheet()), null, model, 1, 1, 1, 0xF000F0, OverlayTexture.NO_OVERLAY);
+		BlockStateModel model = MiscellaneousModels.INSTANCE.kingKeyWeaponModels[state.variety];
+		RenderHelper.submitBlockModel(model, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 		ms.popPose();
 
-		Random rand = new Random(weapon.getUUID().getMostSignificantBits());
+		Random rand = new Random(state.seed);
 		ms.rotate(VecHelper.rotateX(-90F)); // Lay the circle horizontally
 		ms.translate(0F, -0.3F + rand.nextFloat() * 0.1F, 0F); // Randomly offset how deep the item is in the circle
-
 		s = chargeMul;
 		if (live > delay) {
 			s -= Math.min(1F, (live - delay + partialTicks) * 0.2F);
 		}
 		s *= 2F;
 		ms.scale(s, s, s);
+		ms.rotate(VecHelper.rotateY(charge * 9F + state.ageInTicks * 0.5F + rand.nextFloat() * 360F));
 
-		ms.rotate(VecHelper.rotateY(charge * 9F + (weapon.tickCount + partialTicks) * 0.5F + rand.nextFloat() * 360F));
-
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.BABYLON_ICON);
-		Matrix4f mat = ms.last().pose();
-		buffer.addVertex(mat, -1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(0, 0);
-		buffer.addVertex(mat, -1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(0, 1);
-		buffer.addVertex(mat, 1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(1, 1);
-		buffer.addVertex(mat, 1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(1, 0);
-
+		RenderHelper.submit(ms, buffers, RenderHelper.BABYLON_ICON, (ps, buffer) -> {
+			Matrix4f mat = ps.last().pose();
+			buffer.addVertex(mat, -1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(0, 0);
+			buffer.addVertex(mat, -1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(0, 1);
+			buffer.addVertex(mat, 1, 0, 1).setColor(1, 1, 1, chargeMul).setUv(1, 1);
+			buffer.addVertex(mat, 1, 0, -1).setColor(1, 1, 1, chargeMul).setUv(1, 0);
+		});
 		ms.popPose();
+		super.submit(state, ms, buffers, camera);
 	}
-
-	@Override
-	public Identifier getTextureLocation(BabylonWeaponEntity entity) {
-		return AtlasIds.BLOCKS;
-	}
-
 }

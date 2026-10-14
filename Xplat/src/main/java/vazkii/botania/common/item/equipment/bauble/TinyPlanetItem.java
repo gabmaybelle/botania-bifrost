@@ -11,9 +11,8 @@ package vazkii.botania.common.item.equipment.bauble;
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -24,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.mana.TinyPlanetExcempt;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
 import vazkii.botania.common.block.BotaniaBlocks;
@@ -49,11 +49,11 @@ public class TinyPlanetItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(-0.25, -0.4, 0);
 			ms.scale(0.5F, -0.5F, -0.5F);
-			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(BotaniaBlocks.TINY_PLANET.defaultBlockState(), ms, buffers, light, OverlayTexture.NO_OVERLAY);
+			RenderHelper.submitBlockState(BotaniaBlocks.TINY_PLANET.defaultBlockState(), ms, buffers, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

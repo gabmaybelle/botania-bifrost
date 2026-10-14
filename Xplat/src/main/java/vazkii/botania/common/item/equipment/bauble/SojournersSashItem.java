@@ -9,15 +9,14 @@
 package vazkii.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -29,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.core.helper.AccessoryRenderHelper;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
@@ -148,10 +148,10 @@ public class SojournersSashItem extends BaubleItem {
 	}
 
 	public static class Renderer implements AccessoryRenderer {
-		private static HumanoidModel<LivingEntity> model = null;
+		private static HumanoidModel<HumanoidRenderState> model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 
 			float s = 1.15F;
@@ -162,8 +162,7 @@ public class SojournersSashItem extends BaubleItem {
 			}
 
 			Identifier texture = ((SojournersSashItem) stack.getItem()).getRenderTexture();
-			VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
-			model.body.render(ms, buffer, light, OverlayTexture.NO_OVERLAY, ARGB.color(1, 1, 1, 1));
+			RenderHelper.submit(ms, buffers, model.renderType(texture), (ps, buffer) -> model.body.render(ps, buffer, light, OverlayTexture.NO_OVERLAY));
 		}
 	}
 

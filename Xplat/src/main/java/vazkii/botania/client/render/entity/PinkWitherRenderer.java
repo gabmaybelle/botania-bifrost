@@ -10,8 +10,8 @@ package vazkii.botania.client.render.entity;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WitherBossRenderer;
+import net.minecraft.client.renderer.entity.state.WitherRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 
 import vazkii.botania.client.lib.ResourcesLib;
 
@@ -24,7 +24,7 @@ public class PinkWitherRenderer extends WitherBossRenderer {
 	}
 
 	@Override
-	public Identifier getTextureLocation(WitherBoss entity) {
+	public Identifier getTextureLocation(WitherRenderState state) {
 		return resource;
 	}
 

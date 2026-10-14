@@ -8,11 +8,10 @@
  */
 package vazkii.botania.client.render.entity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.entity.CorporeaSparkEntity;
 
 import java.util.Objects;
@@ -26,10 +25,9 @@ public class CorporeaSparkRenderer extends BaseSparkRenderer<CorporeaSparkEntity
 
 	public CorporeaSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		var atlas = Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS);
-		this.corporeaWorldSprite = Objects.requireNonNull(atlas.apply(botaniaRL("item/corporea_spark")));
-		this.corporeaMasterWorldSprite = Objects.requireNonNull(atlas.apply(botaniaRL("item/master_corporea_spark")));
-		this.corporeaCreativeWorldSprite = Objects.requireNonNull(atlas.apply(botaniaRL("item/creative_corporea_spark")));
+		this.corporeaWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/corporea_spark")));
+		this.corporeaMasterWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/master_corporea_spark")));
+		this.corporeaCreativeWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/creative_corporea_spark")));
 	}
 
 	@Override

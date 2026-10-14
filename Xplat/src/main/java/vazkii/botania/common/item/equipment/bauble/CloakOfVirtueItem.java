@@ -9,11 +9,10 @@
 package vazkii.botania.common.item.equipment.bauble;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
@@ -27,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 import vazkii.botania.client.core.helper.AccessoryRenderHelper;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.client.model.BotaniaModelLayers;
@@ -74,7 +74,7 @@ public class CloakOfVirtueItem extends BaubleItem {
 		private static CloakModel model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			CloakOfVirtueItem item = ((CloakOfVirtueItem) stack.getItem());
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
@@ -84,11 +84,10 @@ public class CloakOfVirtueItem extends BaubleItem {
 				model = new CloakModel(Minecraft.getInstance().getEntityModels().bakeLayer(BotaniaModelLayers.CLOAK));
 			}
 
-			VertexConsumer buffer = buffers.getBuffer(model.renderType(item.getCloakTexture()));
-			model.renderToBuffer(ms, buffer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFF);
-
-			buffer = buffers.getBuffer(model.renderType(item.getCloakGlowTexture()));
-			model.renderToBuffer(ms, buffer, 0xF000F0, OverlayTexture.NO_OVERLAY, 0xFFFFFF);
+			RenderHelper.submit(ms, buffers, model.renderType(item.getCloakTexture()),
+					(ps, buffer) -> model.renderToBuffer(ps, buffer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFF));
+			RenderHelper.submit(ms, buffers, model.renderType(item.getCloakGlowTexture()),
+					(ps, buffer) -> model.renderToBuffer(ps, buffer, 0xF000F0, OverlayTexture.NO_OVERLAY, 0xFFFFFF));
 		}
 	}
 

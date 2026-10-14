@@ -13,40 +13,42 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.xplat.BotaniaConfig;
 
-public final class ManaTabletRenderHandler extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-
-	public ManaTabletRenderHandler(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer) {
+public final class ManaTabletRenderHandler extends RenderLayer<AvatarRenderState, PlayerModel> {
+	public ManaTabletRenderHandler(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
 		super(renderer);
 	}
 
 	@Override
-	public void render(PoseStack ms, MultiBufferSource buffers, int light, AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (BotaniaConfig.client().renderAccessories() && !player.isInvisible()) {
+	public void submit(PoseStack ms, SubmitNodeCollector buffers, int light, AvatarRenderState state, float yRot, float xRot) {
+		// PORT-26.3: the layer only gets the render state; the inventory comes from the player it belongs to
+		if (BotaniaConfig.client().renderAccessories() && !state.isInvisible
+				&& Minecraft.getInstance().level.getEntity(state.id) instanceof AbstractClientPlayer player) {
 			renderManaTablet(ms, buffers, player);
 		}
 	}
 
-	private void renderManaTablet(PoseStack ms, MultiBufferSource buffers, Player player) {
+	private void renderManaTablet(PoseStack ms, SubmitNodeCollector buffers, Player player) {
 		boolean renderedOne = false;
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
 			ItemStack stack = player.getInventory().getItem(i);
 			if (!stack.isEmpty() && stack.is(BotaniaItems.MANA_TABLET)) {
 				ms.pushPose();
 				boolean armor = !player.getItemBySlot(EquipmentSlot.LEGS).isEmpty();
-
 				getParentModel().body.translateAndRotate(ms);
 				ms.translate(0, 0.65, 0);
 				if (renderedOne) {
@@ -58,8 +60,7 @@ public final class ManaTabletRenderHandler extends RenderLayer<AbstractClientPla
 				}
 
 				ms.scale(0.375F, -0.375F, -0.375F);
-				Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
-						0xF000F0, OverlayTexture.NO_OVERLAY, ms, buffers, player.level(), player.getId());
+				RenderHelper.submitItem(stack, ItemDisplayContext.NONE, ms, buffers, player.level(), 0xF000F0, OverlayTexture.NO_OVERLAY, player.getId());
 				ms.popPose();
 
 				if (renderedOne) {

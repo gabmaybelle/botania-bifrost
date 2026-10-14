@@ -8,30 +8,28 @@
  */
 package vazkii.botania.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Unit;
 
 /**
  * Model for the Cloaks of Judgement.
  * 
  * @author wiiv
  */
-public class CloakModel extends Model {
+public class CloakModel extends Model<Unit> {
 
 	private final ModelPart collar;
 	private final ModelPart sideL;
 	private final ModelPart sideR;
 
 	public CloakModel(ModelPart root) {
-		super(RenderType::entityCutout);
+		super(root, RenderTypes::entityCutoutCull);
 
 		collar = root.getChild("collar");
 		sideL = root.getChild("sideL");
@@ -54,10 +52,5 @@ public class CloakModel extends Model {
 		return mesh;
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		collar.render(ms, buffer, light, overlay, color);
-		sideL.render(ms, buffer, light, overlay, color);
-		sideR.render(ms, buffer, light, overlay, color);
-	}
+	// PORT-26.3: renderToBuffer is final now and draws the root with all of its parts, which is what this did
 }

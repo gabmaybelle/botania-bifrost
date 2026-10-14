@@ -8,15 +8,14 @@
  */
 package vazkii.botania.client.render.entity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.entity.ManaSparkEntity;
 
@@ -39,7 +38,7 @@ public class ManaSparkRenderer extends BaseSparkRenderer<ManaSparkEntity> {
 			return null;
 		}
 
-		return Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS).apply(icon);
+		return RenderHelper.getBlockSprite(this.sprites, icon);
 	}
 
 }
