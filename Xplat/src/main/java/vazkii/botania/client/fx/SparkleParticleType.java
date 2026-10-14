@@ -17,6 +17,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.RandomSource;
 
 public class SparkleParticleType extends ParticleType<SparkleParticleData> {
 	public SparkleParticleType() {
@@ -41,7 +42,7 @@ public class SparkleParticleType extends ParticleType<SparkleParticleData> {
 		}
 
 		@Override
-		public Particle createParticle(SparkleParticleData data, ClientLevel world, double x, double y, double z, double mx, double my, double mz) {
+		public Particle createParticle(SparkleParticleData data, ClientLevel world, double x, double y, double z, double mx, double my, double mz, RandomSource random) {
 			return new FXSparkle(world, x, y, z, data.size, data.r, data.g, data.b, data.m, data.fake, data.noClip, data.corrupt, sprite);
 		}
 	}

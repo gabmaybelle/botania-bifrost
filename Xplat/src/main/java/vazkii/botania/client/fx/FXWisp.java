@@ -8,32 +8,22 @@
  */
 package vazkii.botania.client.fx;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-import org.lwjgl.opengl.GL11;
+import vazkii.botania.client.core.helper.CoreShaders;
 
-import vazkii.botania.xplat.ClientXplatAbstractions;
-
-public class FXWisp extends TextureSheetParticle {
+public class FXWisp extends SingleQuadParticle {
 	private final boolean depthTest;
 	private final float moteParticleScale;
 	private final int moteHalfLife;
 
 	public FXWisp(ClientLevel world, double d, double d1, double d2, double xSpeed, double ySpeed, double zSpeed,
-			float size, float red, float green, float blue, boolean depthTest, float maxAgeMul, boolean noClip, float g) {
-		super(world, d, d1, d2);
+			float size, float red, float green, float blue, boolean depthTest, float maxAgeMul, boolean noClip, float g,
+			TextureAtlasSprite sprite) {
+		super(world, d, d1, d2, sprite);
 		// super applies wiggle to motion so set it here instead
 		xd = xSpeed;
 		yd = ySpeed;
@@ -69,13 +59,13 @@ public class FXWisp extends TextureSheetParticle {
 	}
 
 	@Override
-	protected int getLightColor(float partialTicks) {
+	protected int getLightCoords(float partialTicks) {
 		return 0xF000F0;
 	}
 
 	@Override
-	public ParticleRenderType getRenderType() {
-		return depthTest ? NORMAL_RENDER : DIW_RENDER;
+	protected Layer getLayer() {
+		return depthTest ? NORMAL_LAYER : DIW_LAYER;
 	}
 
 	// [VanillaCopy] of super, without drag when onGround is true
@@ -102,61 +92,7 @@ public class FXWisp extends TextureSheetParticle {
 		gravity = value;
 	}
 
-	private static BufferBuilder beginRenderCommon(Tesselator tesselator, TextureManager textureManager) {
-		Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-		RenderSystem.depthMask(false);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-		AbstractTexture tex = textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.setFilterSave(tex, true, false);
-		return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-	}
-
-	//TODO there's end method in ParticleRenderType anymore. Check where the method below should be used instead
-	private static void endRenderCommon() {
-		AbstractTexture tex = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.restoreLastFilter(tex);
-		RenderSystem.disableBlend();
-		RenderSystem.depthMask(true);
-	}
-
-	public static final ParticleRenderType NORMAL_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-			RenderSystem.enableDepthTest();
-			return beginRenderCommon(tesselator, textureManager);
-		}
-
-		@Override
-		public void end() {
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:wisp";
-		}
-	};
-
-	public static final ParticleRenderType DIW_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-			RenderSystem.disableDepthTest();
-			return beginRenderCommon(tesselator, textureManager);
-
-		}
-
-		@Override
-		public void end() {
-			RenderSystem.enableDepthTest();
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:depth_ignoring_wisp";
-		}
-	};
+	// PORT-26.3: see FXSparkle for the layer notes
+	private static final Layer NORMAL_LAYER = new Layer(false, TextureAtlas.LOCATION_PARTICLES, CoreShaders.ADDITIVE_PARTICLE);
+	private static final Layer DIW_LAYER = new Layer(false, TextureAtlas.LOCATION_PARTICLES, CoreShaders.ADDITIVE_PARTICLE_NO_DEPTH);
 }

@@ -17,6 +17,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.RandomSource;
 
 public class WispParticleType extends ParticleType<WispParticleData> {
 	public WispParticleType() {
@@ -41,10 +42,9 @@ public class WispParticleType extends ParticleType<WispParticleData> {
 		}
 
 		@Override
-		public Particle createParticle(WispParticleData data, ClientLevel world, double x, double y, double z, double mx, double my, double mz) {
-			FXWisp ret = new FXWisp(world, x, y, z, mx, my, mz, data.size, data.r, data.g, data.b, data.depthTest, data.maxAgeMul, data.noClip, data.gravity);
-			ret.pickSprite(sprite);
-			return ret;
+		public Particle createParticle(WispParticleData data, ClientLevel world, double x, double y, double z, double mx, double my, double mz, RandomSource random) {
+			return new FXWisp(world, x, y, z, mx, my, mz, data.size, data.r, data.g, data.b, data.depthTest, data.maxAgeMul, data.noClip, data.gravity,
+					sprite.get(random));
 		}
 	}
 }

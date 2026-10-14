@@ -20,8 +20,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -51,20 +50,17 @@ public class BoltRenderer {
 
 	private final List<BoltEmitter> boltEmitters = new LinkedList<>();
 
-	public static void onWorldRenderLast(Camera camera, float partialTicks, PoseStack ps, RenderBuffers buffers) {
+	public static void onWorldRenderLast(Camera camera, float partialTicks, PoseStack ps, SubmitNodeCollector collector) {
 		ps.pushPose();
 		// here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
 		Vec3 camVec = camera.position();
 		ps.translate(-camVec.x, -camVec.y, -camVec.z);
-		var bufferSource = buffers.bufferSource();
-		BoltRenderer.INSTANCE.render(partialTicks, ps, bufferSource);
-		bufferSource.endBatch(RenderHelper.LIGHTNING);
+		RenderHelper.submit(ps, collector, RenderHelper.LIGHTNING,
+				(pose, buffer) -> BoltRenderer.INSTANCE.render(partialTicks, pose.last().pose(), buffer));
 		ps.popPose();
 	}
 
-	public void render(float partialTicks, PoseStack matrixStack, MultiBufferSource buffers) {
-		VertexConsumer buffer = buffers.getBuffer(RenderHelper.LIGHTNING);
-		Matrix4f matrix = matrixStack.last().pose();
+	public void render(float partialTicks, Matrix4f matrix, VertexConsumer buffer) {
 		Timestamp timestamp = new Timestamp(Minecraft.getInstance().level.getGameTime(), partialTicks);
 		boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
 		if (refresh) {

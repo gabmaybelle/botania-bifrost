@@ -8,30 +8,17 @@
  */
 package vazkii.botania.client.fx;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
-import org.lwjgl.opengl.GL11;
-
 import vazkii.botania.client.core.helper.CoreShaders;
-import vazkii.botania.xplat.ClientXplatAbstractions;
 
-public class FXSparkle extends TextureSheetParticle {
+public class FXSparkle extends SingleQuadParticle {
 	private final boolean corrupt;
 	public final boolean fake;
 	public final int particle = 16;
@@ -41,7 +28,7 @@ public class FXSparkle extends TextureSheetParticle {
 	public FXSparkle(ClientLevel world, double x, double y, double z, float size,
 			float red, float green, float blue, int m,
 			boolean fake, boolean noClip, boolean corrupt, SpriteSet sprite) {
-		super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+		super(world, x, y, z, 0.0D, 0.0D, 0.0D, sprite.first());
 		rCol = red;
 		gCol = green;
 		bCol = blue;
@@ -102,8 +89,8 @@ public class FXSparkle extends TextureSheetParticle {
 	}
 
 	@Override
-	public ParticleRenderType getRenderType() {
-		return corrupt ? CORRUPT_RENDER : NORMAL_RENDER;
+	protected Layer getLayer() {
+		return corrupt ? CORRUPT_LAYER : NORMAL_LAYER;
 	}
 
 	public void setGravity(float value) {
@@ -151,58 +138,9 @@ public class FXSparkle extends TextureSheetParticle {
 		}
 	}
 
-	private static BufferBuilder beginRenderCommon(Tesselator tesselator, TextureManager textureManager) {
-		Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-		RenderSystem.enableDepthTest();
-		RenderSystem.depthMask(false);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-		AbstractTexture tex = textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.setFilterSave(tex, true, false);
-		return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-	}
-
-	//TODO there's end method in ParticleRenderType anymore. Check where the method below should be used instead
-	private static void endRenderCommon() {
-		AbstractTexture tex = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.restoreLastFilter(tex);
-		RenderSystem.disableBlend();
-		RenderSystem.depthMask(true);
-	}
-
-	public static final ParticleRenderType NORMAL_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-			return beginRenderCommon(tesselator, textureManager);
-		}
-
-		@Override
-		public void end() {
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:sparkle";
-		}
-	};
-
-	public static final ParticleRenderType CORRUPT_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-			RenderSystem.setShader(CoreShaders::filmGrainParticle); //Todo
-			return beginRenderCommon(tesselator, textureManager);
-		}
-
-		@Override
-		public void end() {
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:corrupt_sparkle";
-		}
-	};
+	// PORT-26.3: a particle names a layer (atlas + pipeline) instead of setting up GL state around a draw. The
+	// particle atlas keeps its own sampler now, so the bilinear filtering the old code switched on is gone.
+	// The layers are "solid" so the engine never asks them for an order-independent-transparency pipeline.
+	private static final Layer NORMAL_LAYER = new Layer(false, TextureAtlas.LOCATION_PARTICLES, CoreShaders.ADDITIVE_PARTICLE);
+	private static final Layer CORRUPT_LAYER = new Layer(false, TextureAtlas.LOCATION_PARTICLES, CoreShaders.filmGrainParticle());
 }

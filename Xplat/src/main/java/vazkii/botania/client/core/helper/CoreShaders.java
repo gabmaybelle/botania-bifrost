@@ -17,7 +17,6 @@ import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 import net.minecraft.client.renderer.BindGroupLayouts;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 import vazkii.botania.xplat.BotaniaConfig;
@@ -200,16 +199,31 @@ public class CoreShaders {
 			.withDepthStencilState(DepthStencilState.DEFAULT)
 			.build();
 
-	/** Vanilla's translucent particle with the film-grain fragment shader (the Gaia Guardian's particles). */
-	public static final RenderPipeline FILM_GRAIN_PARTICLE = RenderPipeline.builder(MATRICES_FOG_SNIPPET)
-			.withLocation(botaniaRL("pipeline/film_grain_particle"))
+	/** Vanilla's particle shaders with additive blending and no depth write: wisps and sparkles. */
+	private static final RenderPipeline.Snippet ADDITIVE_PARTICLE_SNIPPET = RenderPipeline.builder(MATRICES_FOG_SNIPPET)
 			.withVertexShader("core/particle")
-			.withFragmentShader(botaniaRL("core/film_grain_particle"))
+			.withFragmentShader("core/particle")
 			.withBindGroupLayout(BindGroupLayouts.SAMPLER0_SAMPLER2)
 			.withVertexBinding(0, DefaultVertexFormat.PARTICLE)
 			.withPrimitiveTopology(PrimitiveTopology.QUADS)
-			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+			.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
+			.buildSnippet();
+
+	public static final RenderPipeline ADDITIVE_PARTICLE = RenderPipeline.builder(ADDITIVE_PARTICLE_SNIPPET)
+			.withLocation(botaniaRL("pipeline/additive_particle"))
+			.build();
+
+	/** The same, drawn through everything (the depth-ignoring wisps). */
+	public static final RenderPipeline ADDITIVE_PARTICLE_NO_DEPTH = RenderPipeline.builder(ADDITIVE_PARTICLE_SNIPPET)
+			.withLocation(botaniaRL("pipeline/additive_particle_no_depth"))
+			.withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
+			.build();
+
+	/** The additive particle with the film-grain fragment shader (the Gaia Guardian's corrupt sparkles). */
+	public static final RenderPipeline FILM_GRAIN_PARTICLE = RenderPipeline.builder(ADDITIVE_PARTICLE_SNIPPET)
+			.withLocation(botaniaRL("pipeline/film_grain_particle"))
+			.withFragmentShader(botaniaRL("core/film_grain_particle"))
 			.build();
 
 	/**
@@ -233,7 +247,7 @@ public class CoreShaders {
 			POSITION_COLOR_TRANSLUCENT, POSITION_COLOR_TRANSLUCENT_TRIANGLES, STAR, LINES_NO_DEPTH,
 			POSITION_COLOR_TEX_LIGHTMAP, MANA_POOL, TERRA_PLATE, ENCHANTER,
 			POSITION_TEX_COLOR, HALO, ENTITY_TRANSLUCENT, PYLON, GAIA_NOISE,
-			STARFIELD, FILM_GRAIN_PARTICLE, GAIA_BOSS_BAR
+			STARFIELD, ADDITIVE_PARTICLE, ADDITIVE_PARTICLE_NO_DEPTH, FILM_GRAIN_PARTICLE, GAIA_BOSS_BAR
 	);
 
 	/** Hands every pipeline to the loader, where it wants to know about them ahead of time (NeoForge precompiles). */
@@ -270,9 +284,9 @@ public class CoreShaders {
 		return useShaders() ? HALO : POSITION_TEX_COLOR;
 	}
 
-	/** The film-grain particle shader, or vanilla's translucent particle pipeline when the shaders are off. */
+	/** The film-grain particle shader, or the plain additive particle pipeline when the shaders are off. */
 	public static RenderPipeline filmGrainParticle() {
-		return useShaders() ? FILM_GRAIN_PARTICLE : RenderPipelines.TRANSLUCENT_PARTICLE;
+		return useShaders() ? FILM_GRAIN_PARTICLE : ADDITIVE_PARTICLE;
 	}
 
 	/** The boss bar shader, or null when the shaders are off (the bar is then drawn plainly). */
