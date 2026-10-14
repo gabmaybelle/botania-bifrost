@@ -65,9 +65,10 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft_version}")
+    // PORT-26.3: no Parchment release for 26.x yet (see parchment_version in gradle.properties).
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
+        //parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
     }
 
     modImplementation(libs.fabric.loader)

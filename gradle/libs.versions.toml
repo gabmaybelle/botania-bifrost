@@ -1,15 +1,16 @@
 [versions]
 # see https://fabricmc.net/develop/ for new versions
-fabric-loom = "1.14.7"
-fabric-loader = "0.17.3"
-fabric-api = "0.116.12+1.21.1"
+fabric-loom = "1.18.4"
+fabric-loader = "0.19.5"
+fabric-api = "0.163.0+26.3"
 
 # see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-mdg = "2.0.142"
+mdg = "2.0.148"
 
 # we need to manually depend on mixin (+extras) in common
-mixin = "0.15.2+mixin.0.8.7"
-mixin-extras = "0.4.1"
+# PORT-26.3: the versions Fabric Loader 0.19.5 and NeoForge 26.3.0.77 ship with.
+mixin = "0.17.4+mixin.0.8.7"
+mixin-extras = "0.5.5"
 
 jetbrains-annotations = "26.1.0"
 

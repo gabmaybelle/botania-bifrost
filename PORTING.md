@@ -48,7 +48,9 @@ The branch is still an unfinished upstream port, so expect some bugs that exist 
 | ModDevGradle | `2.0.148` |
 | Fabric Loader | `0.19.5` |
 | Fabric API | `0.163.0+26.3` |
-| Fabric Loom | latest stable is `1.18.4`; confirm in Fabric's docs which Loom version supports 26.3 |
+| Fabric Loom | `1.18.4` (builds 26.3 mods already; Fabric's develop page is script-rendered, so the maven listing was the check) |
+| Mixin / MixinExtras | `0.17.4+mixin.0.8.7` / `0.5.5`: what Fabric Loader 0.19.5 and NeoForge 26.3.0.77 ship with |
+| Parchment | none for any 26.x version yet (404 on parchment-26.1 to 26.3, 14 Oct 2026); plain Mojang mappings until there is |
 
 Re-check these before Phase 1 and update the table.
 
@@ -144,3 +146,4 @@ Alfheim portal, elven trades, Gaia Guardian, Corporea, Garden of Glass. First pu
 |---|---|---|
 | 2026-10-14 | Planning | Inspected upstream `1.21.1-porting` (commit `f0367399`). Checked 26.3 toolchain and dependencies. Baseline build not yet run. |
 | 2026-10-14 | Phase 0 | Baseline on the untouched `1.21.1-porting` code (commit `f0367399`), Java 21 (Gradle 9.6.1 provisioned Temurin 21 itself), Windows 11. `./gradlew build`: Xplat, Fabric and NeoForge all build and pass their unit tests, PMD and Spotless checks (28 min 39 s cold). `./gradlew :Fabric:runGameTest`: 207 required tests passed, 1 optional test failed: `paintslingerlenstest.testpainting`, which upstream marks `required = false` with a note that its structure data needs upgrading (a datafixer job). 103 `@GameTest` methods expand to 207 tests because `IdleFlowerTickingTest` generates one test per flower. The NeoForge GameTests weren't run (upstream's CI only runs Fabric's). Added the Botania Bifrost section to the README and this file plus `COMPATIBILITY-AND-REVIEW.md`. Forked as `gabmaybelle/botania-bifrost`, branch `26.3` tracking `upstream/1.21.1-porting`. Next: Phase 1 step 1, the toolchain. |
+| 2026-10-14 | Phase 1, step 1 | Re-checked every toolchain version against its source: all as in the table (Fabric API 0.163.0+26.3 was released the same day). Found no Parchment for 26.x, so the three parchment blocks are commented out and the builds use plain Mojang names; Mixin and MixinExtras raised to the versions the loaders ship. `gradle.properties`, `libs.versions.toml`, `multiloader-common.gradle` (jar names), the three `build.gradle` files, the CI workflow (Java 25) changed; display name Botania Bifrost, sources and issues URLs point at this fork. Not compiled yet: diff shown for review first. |

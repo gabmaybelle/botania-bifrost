@@ -18,10 +18,11 @@ neoForge {
         accessTransformers.from(at.absolutePath)
     }
 
-    parchment {
-        minecraftVersion = minecraft_version
-        mappingsVersion = parchment_version
-    }
+    // PORT-26.3: no Parchment release for 26.x yet (see parchment_version in gradle.properties).
+    //parchment {
+    //    minecraftVersion = minecraft_version
+    //    mappingsVersion = parchment_version
+    //}
 
     runs {
         configureEach {
