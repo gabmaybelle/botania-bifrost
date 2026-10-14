@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.TriState;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,9 +32,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -45,8 +43,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.TriState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.*;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
@@ -61,8 +57,10 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.BotaniaRegistries;
@@ -124,7 +122,6 @@ import vazkii.botania.xplat.XplatAbstractions;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
@@ -149,10 +146,8 @@ public class NeoForgeCommonInitializer {
 		registerEvents();
 
 		evt.enqueueWork(BotaniaBlocks::addDispenserBehaviours);
-		evt.enqueueWork(() -> {
-			BiConsumer<Identifier, Supplier<? extends Block>> consumer = (resourceLocation, blockSupplier) -> ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(resourceLocation, blockSupplier);
-			BotaniaBlocks.registerFlowerPotPlants(consumer);
-		});
+		// PORT-26.3: potted plants register themselves: NeoForge's FlowerPotBlock constructor keeps the plant and the
+		// registry callback fills the empty-pot/plant table, so FlowerPotBlock#addPlant is gone
 		BotaniaItems.registerCauldronInteractions();
 		PaintableData.init();
 		DefaultCorporeaMatchers.init();
@@ -213,7 +208,7 @@ public class NeoForgeCommonInitializer {
 		bind(event, BotaniaRegistries.BREWS, BotaniaBrews::submitRegistrations);
 
 		// Worldgen
-		bind(event, Registries.FEATURE, BotaniaFeatures::registerFeatures);
+		bind(event, Registries.FEATURE_TYPE, BotaniaFeatures::registerFeatures);
 		bind(event, Registries.CHUNK_GENERATOR, SkyblockChunkGenerator::submitRegistration);
 
 		// Rest
@@ -344,7 +339,7 @@ public class NeoForgeCommonInitializer {
 		// FabricMixinExplosion
 		bus.addListener((ExplosionEvent.Detonate e) -> {
 			if (BenevolentGoddessCharmItem.shouldProtectExplosion(e.getLevel(), e.getExplosion().center())) {
-				e.getExplosion().clearToBlow();
+				e.getAffectedBlocks().clear();
 			}
 		});
 		// FabricMixinItemEntity
@@ -405,7 +400,7 @@ public class NeoForgeCommonInitializer {
 			});
 			bus.addListener((LivingFallEvent e) -> {
 				if (e.getEntity() instanceof Player player) {
-					e.setDistance(SojournersSashItem.onPlayerFall(player, e.getDistance()));
+					e.setDistance(SojournersSashItem.onPlayerFall(player, (float) e.getDistance()));
 				}
 			});
 			bus.addListener(EventPriority.LOW, (CriticalHitEvent e) -> {
@@ -442,18 +437,20 @@ public class NeoForgeCommonInitializer {
 		// PORT-26.3: disabled. Curios' capability registration comes back with Curios in Phase 5
 		// (src/disabled/integration/curios).
 
-		e.registerItem(Capabilities.FluidHandler.ITEM,
-				(stack, context) -> new WaterBowlFluidHandler(stack),
+		// PORT-26.3: NeoForge's transfer API: fluids and items are ResourceHandlers, items are reached through an ItemAccess,
+		// energy is an EnergyHandler, and every change happens inside a Transaction
+		e.registerItem(Capabilities.Fluid.ITEM,
+				(stack, access) -> new WaterBowlFluidHandler(access),
 				BotaniaItems.WATER_BOWL
 		);
-		e.registerItem(Capabilities.FluidHandler.ITEM,
-				(stack, context) -> new ExtrapolatedBucketFluidHandler(stack),
+		e.registerItem(Capabilities.Fluid.ITEM,
+				(stack, access) -> new ExtrapolatedBucketFluidHandler(),
 				BotaniaItems.EXTRAPOLATED_BUCKET
 		);
 
 		Stream.of(BotaniaBlockEntities.RED_STRINGED_CONTAINER, BotaniaBlockEntities.RED_STRINGED_DISPENSER)
 				.forEach(blockEntityType -> e.registerBlockEntity(
-						Capabilities.ItemHandler.BLOCK, blockEntityType, new RedStringContainerCapProvider()));
+						Capabilities.Item.BLOCK, blockEntityType, new RedStringContainerCapProvider()));
 
 		// apparently NeoForge needs a hint that these have automation-accessible storage
 		Stream.of(
@@ -461,39 +458,29 @@ public class NeoForgeCommonInitializer {
 				BotaniaBlockEntities.HOVERING_HOURGLASS, BotaniaBlockEntities.INCENSE_PLATE,
 				BotaniaBlockEntities.OPEN_CRATE, BotaniaBlockEntities.SPARK_TINKERER, BotaniaBlockEntities.TINY_POTATO
 		).forEach(blockEntityType -> e.registerBlockEntity(
-				Capabilities.ItemHandler.BLOCK, blockEntityType, SidedInvWrapper::new));
+				Capabilities.Item.BLOCK, blockEntityType, WorldlyContainerWrapper::new));
 
-		e.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BotaniaBlockEntities.MANA_FLUXFIELD,
+		e.registerBlockEntity(Capabilities.Energy.BLOCK, BotaniaBlockEntities.MANA_FLUXFIELD,
 				// we only provide a view of the energy level, no interaction allowed
-				(gen, context) -> new IEnergyStorage() {
+				(gen, context) -> new EnergyHandler() {
 					@Override
-					public int getEnergyStored() {
+					public long getAmountAsLong() {
 						return gen.getEnergy();
 					}
 
 					@Override
-					public int getMaxEnergyStored() {
+					public long getCapacityAsLong() {
 						return PowerGeneratorBlockEntity.MAX_ENERGY;
 					}
 
 					@Override
-					public boolean canExtract() {
-						return false;
-					}
-
-					@Override
-					public int extractEnergy(int maxExtract, boolean simulate) {
+					public int insert(int amount, TransactionContext transaction) {
 						return 0;
 					}
 
 					@Override
-					public int receiveEnergy(int maxReceive, boolean simulate) {
+					public int extract(int amount, TransactionContext transaction) {
 						return 0;
-					}
-
-					@Override
-					public boolean canReceive() {
-						return false;
 					}
 				});
 	}

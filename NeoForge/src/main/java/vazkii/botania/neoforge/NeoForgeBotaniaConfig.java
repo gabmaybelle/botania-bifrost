@@ -393,7 +393,8 @@ public final class NeoForgeBotaniaConfig {
 	}
 
 	public static void setup(ModContainer modContainer) {
-		modContainer.registerConfig(ModConfig.Type.COMMON, COMMON_SPEC);
+		// PORT-26.3: FancyModLoader 12 renamed the config types; COMMON (per installation, not synced) is LOCAL now
+		modContainer.registerConfig(ModConfig.Type.LOCAL, COMMON_SPEC);
 
 		if (XplatAbstractions.INSTANCE.isPhysicalClient()) {
 			modContainer.registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC);
@@ -418,7 +419,7 @@ public final class NeoForgeBotaniaConfig {
 
 	private static void updateModConfig(ModConfig config) {
 		switch (config.getType()) {
-			case COMMON -> {
+			case LOCAL -> {
 				BotaniaConfig.setCommon(COMMON);
 				BotaniaConfig.resetPatchouliFlags();
 			}

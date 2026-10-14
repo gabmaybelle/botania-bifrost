@@ -9,29 +9,51 @@
 
 package vazkii.botania.neoforge.internal_caps;
 
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.fluids.capability.templates.VoidFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class ExtrapolatedBucketFluidHandler extends VoidFluidHandler implements IFluidHandlerItem {
-	private final ItemStack container;
-
-	public ExtrapolatedBucketFluidHandler(ItemStack container) {
-		this.container = container;
+/**
+ * PORT-26.3: the extrapolated bucket swallows fluid, one bucket's worth per insertion, and never holds anything
+ * (NeoForge's transfer API; was a VoidFluidHandler).
+ */
+public class ExtrapolatedBucketFluidHandler implements ResourceHandler<FluidResource> {
+	@Override
+	public int size() {
+		return 1;
 	}
 
 	@Override
-	public ItemStack getContainer() {
-		return container;
+	public FluidResource getResource(int index) {
+		return FluidResource.EMPTY;
+	}
+
+	@Override
+	public long getAmountAsLong(int index) {
+		return 0;
+	}
+
+	@Override
+	public long getCapacityAsLong(int index, FluidResource resource) {
+		return FluidType.BUCKET_VOLUME;
+	}
+
+	@Override
+	public boolean isValid(int index, FluidResource resource) {
+		return true;
 	}
 
 	/**
 	 * Drain things one bucket worth of fluid at a time.
 	 */
 	@Override
-	public int fill(FluidStack resource, FluidAction action) {
-		return Math.min(FluidType.BUCKET_VOLUME, resource.getAmount());
+	public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+		return Math.min(FluidType.BUCKET_VOLUME, amount);
+	}
+
+	@Override
+	public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+		return 0;
 	}
 }

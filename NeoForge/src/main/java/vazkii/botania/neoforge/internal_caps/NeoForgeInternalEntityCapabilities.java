@@ -39,7 +39,8 @@ public final class NeoForgeInternalEntityCapabilities {
 		AttachmentType.Builder<T> builder = AttachmentType.builder((Supplier<T>) () -> {
 			throw new UnsupportedOperationException(
 					"This data attachments must not be created implicitly. Use hasData(), getExistingData(), or getExistingDataOrNull() instead of getData() for it.");
-		}).serialize(id.getCodec());
+			// PORT-26.3: attachments save through a MapCodec now, so the value sits under a "value" key
+		}).serialize(id.getCodec().fieldOf("value"));
 		Supplier<AttachmentType<T>> deferredHolder = ATTACHMENT_TYPES.register(id.getId().getPath(), builder::build);
 		FOR_ENTITIES.put(id, deferredHolder);
 	}

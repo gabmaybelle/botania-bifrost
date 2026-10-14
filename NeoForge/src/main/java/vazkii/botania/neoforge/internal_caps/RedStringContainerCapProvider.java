@@ -13,26 +13,24 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.common.block.block_entity.red_string.RedStringContainerBlockEntity;
 
-public class RedStringContainerCapProvider implements ICapabilityProvider<RedStringContainerBlockEntity, @Nullable Direction, IItemHandler> {
-	private static final Lazy<IItemHandler> EMPTY = Lazy.of(EmptyItemHandler::new);
-
+public class RedStringContainerCapProvider implements ICapabilityProvider<RedStringContainerBlockEntity, @Nullable Direction, ResourceHandler<ItemResource>> {
 	@Override
-	public IItemHandler getCapability(RedStringContainerBlockEntity container, @Nullable Direction side) {
+	public ResourceHandler<ItemResource> getCapability(RedStringContainerBlockEntity container, @Nullable Direction side) {
 		BlockPos bindingPos = container.getBinding();
 		if (bindingPos != null) {
-			IItemHandler handler = container.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, bindingPos, side);
+			ResourceHandler<ItemResource> handler = container.getLevel().getCapability(Capabilities.Item.BLOCK, bindingPos, side);
 			if (handler != null) {
 				return handler;
 			}
 		}
-		return EMPTY.get();
+		return EmptyResourceHandler.instance();
 	}
 }
