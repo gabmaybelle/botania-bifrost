@@ -18,7 +18,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.level.Level;
@@ -50,10 +49,9 @@ public class BoltRenderer {
 
 	private final List<BoltEmitter> boltEmitters = new LinkedList<>();
 
-	public static void onWorldRenderLast(Camera camera, float partialTicks, PoseStack ps, SubmitNodeCollector collector) {
+	public static void onWorldRenderLast(Vec3 camVec, float partialTicks, PoseStack ps, SubmitNodeCollector collector) {
 		ps.pushPose();
 		// here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-		Vec3 camVec = camera.position();
 		ps.translate(-camVec.x, -camVec.y, -camVec.z);
 		RenderHelper.submit(ps, collector, RenderHelper.LIGHTNING,
 				(pose, buffer) -> BoltRenderer.INSTANCE.render(partialTicks, pose.last().pose(), buffer));

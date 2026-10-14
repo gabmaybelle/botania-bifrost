@@ -436,6 +436,28 @@ public final class RenderHelper {
 		submitBlockModel(model, ms, collector, -1, light, overlay);
 	}
 
+	/** Submits every quad of a block model on one render type, whatever layer the quads belong to. */
+	public static void submitBlockModel(BlockStateModel model, PoseStack ms, SubmitNodeCollector collector, RenderType type, int color, int light, int overlay) {
+		List<BlockStateModelPart> parts = new ArrayList<>();
+		model.collectParts(RandomSource.create(42L), parts);
+		List<BakedQuad> quads = new ArrayList<>();
+		for (BlockStateModelPart part : parts) {
+			for (Direction direction : Direction.values()) {
+				quads.addAll(part.getQuads(direction));
+			}
+			quads.addAll(part.getQuads(null));
+		}
+		QuadInstance instance = new QuadInstance();
+		instance.setColor(color);
+		instance.setLightCoords(light);
+		instance.setOverlayCoords(overlay);
+		collector.submitCustomGeometry(ms, type, (pose, buffer) -> {
+			for (BakedQuad quad : quads) {
+				buffer.putBakedQuad(pose, quad, instance);
+			}
+		});
+	}
+
 	/**
 	 * Adds a line with a width to a lines buffer (the width is a vertex attribute in 26.3).
 	 */

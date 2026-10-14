@@ -243,11 +243,28 @@ public class CoreShaders {
 			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 			.build();
 
+	/**
+	 * Vanilla's celestial pipeline (textured quads in the sky pass, no fog) with ordinary translucent blending: the
+	 * Garden of Glass planets and rainbow. The additive one (rays) is {@code RenderPipelines.CELESTIAL} itself.
+	 */
+	public static final RenderPipeline SKY_TEXTURED_TRANSLUCENT = RenderPipeline.builder()
+			.withBindGroupLayout(BindGroupLayouts.GLOBALS)
+			.withBindGroupLayout(BindGroupLayouts.PROJECTION)
+			.withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+			.withLocation(botaniaRL("pipeline/sky_textured_translucent"))
+			.withVertexShader("core/position_tex")
+			.withFragmentShader("core/position_tex")
+			.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+			.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX)
+			.withPrimitiveTopology(PrimitiveTopology.QUADS)
+			.build();
+
 	private static final List<RenderPipeline> ALL = List.of(
 			POSITION_COLOR_TRANSLUCENT, POSITION_COLOR_TRANSLUCENT_TRIANGLES, STAR, LINES_NO_DEPTH,
 			POSITION_COLOR_TEX_LIGHTMAP, MANA_POOL, TERRA_PLATE, ENCHANTER,
 			POSITION_TEX_COLOR, HALO, ENTITY_TRANSLUCENT, PYLON, GAIA_NOISE,
-			STARFIELD, ADDITIVE_PARTICLE, ADDITIVE_PARTICLE_NO_DEPTH, FILM_GRAIN_PARTICLE, GAIA_BOSS_BAR
+			STARFIELD, ADDITIVE_PARTICLE, ADDITIVE_PARTICLE_NO_DEPTH, FILM_GRAIN_PARTICLE, GAIA_BOSS_BAR, SKY_TEXTURED_TRANSLUCENT
 	);
 
 	/** Hands every pipeline to the loader, where it wants to know about them ahead of time (NeoForge precompiles). */

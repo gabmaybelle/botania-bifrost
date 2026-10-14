@@ -9,16 +9,12 @@
 package vazkii.botania.client.render.world;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -37,10 +33,11 @@ import vazkii.botania.common.item.AstrolabeItem;
 import java.util.List;
 
 public final class AstrolabePreviewHandler {
-	public static void onWorldRenderLast(PoseStack ms, RenderBuffers buffers, Level level) {
-		MultiBufferSource.BufferSource bufferSource = buffers.bufferSource();
-		VertexConsumer buffer = bufferSource.getBuffer(RenderHelper.ASTROLABE_PREVIEW);
+	// PORT-26.3: the preview layer no longer carries its 40% alpha; it goes in as the colour of every quad instead.
+	// The block's own tints (grass, leaves) are lost for the preview.
+	private static final int PREVIEW_COLOR = ARGB.colorFromFloat(0.4F, 1F, 1F, 1F);
 
+	public static void onWorldRenderLast(Vec3 cameraPos, PoseStack ms, SubmitNodeCollector collector, Level level) {
 		for (Player player : level.players()) {
 			ItemStack currentStack = player.getMainHandItem();
 			InteractionHand hand = InteractionHand.MAIN_HAND;
@@ -52,25 +49,24 @@ public final class AstrolabePreviewHandler {
 			if (!currentStack.isEmpty() && currentStack.getItem() instanceof AstrolabeItem) {
 				Block block = AstrolabeItem.getBlock(currentStack, level.holderLookup(Registries.BLOCK));
 				if (block != Blocks.AIR) {
-					renderPlayerLook(ms, buffer, player, currentStack, hand);
+					renderPlayerLook(cameraPos, ms, collector, player, currentStack, hand);
 				}
 			}
 		}
-
-		bufferSource.endBatch(RenderHelper.ASTROLABE_PREVIEW);
 	}
 
-	private static void renderPlayerLook(PoseStack ms, VertexConsumer buffer, Player player, ItemStack stack, InteractionHand hand) {
+	private static void renderPlayerLook(Vec3 cameraPos, PoseStack ms, SubmitNodeCollector collector, Player player, ItemStack stack, InteractionHand hand) {
 		Block blockToPlace = AstrolabeItem.getBlock(stack, player.level().holderLookup(Registries.BLOCK));
 		int size = AstrolabeItem.getSize(stack);
 		BlockPlaceContext ctx = AstrolabeItem.getBlockPlaceContext(player, hand, blockToPlace);
 		List<BlockPos> placePositions = AstrolabeItem.getPlacePositions(ctx, size);
+
 		if (ctx != null && AstrolabeItem.hasBlocks(stack, player, placePositions.size(), blockToPlace)) {
 			for (BlockPos pos : placePositions) {
 				BlockPlaceContext placeContext = getPlaceContext(player, ctx, pos);
 				BlockState state = blockToPlace.getStateForPlacement(placeContext);
 				if (state != null && placeContext.canPlace() && state.canSurvive(player.level(), pos)) {
-					renderBlockAt(ms, buffer, state, pos);
+					renderBlockAt(cameraPos, ms, collector, state, pos);
 				}
 			}
 		}
@@ -84,25 +80,12 @@ public final class AstrolabePreviewHandler {
 		return new BlockPlaceContext(player, ctx.getHand(), ctx.getItemInHand(), newHit);
 	}
 
-	private static void renderBlockAt(PoseStack ms, VertexConsumer buffer, BlockState state, BlockPos pos) {
-		double renderPosX = Minecraft.getInstance().getEntityRenderDispatcher().camera.position().x();
-		double renderPosY = Minecraft.getInstance().getEntityRenderDispatcher().camera.position().y();
-		double renderPosZ = Minecraft.getInstance().getEntityRenderDispatcher().camera.position().z();
-
+	private static void renderBlockAt(Vec3 cameraPos, PoseStack ms, SubmitNodeCollector collector, BlockState state, BlockPos pos) {
 		ms.pushPose();
-		ms.translate(-renderPosX, -renderPosY, -renderPosZ);
-
-		BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
+		ms.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
 		ms.translate(pos.getX(), pos.getY(), pos.getZ());
-		BakedModel model = brd.getBlockModel(state);
-		int color = Minecraft.getInstance().getBlockColors().getColor(state, null, null, 0);
-		float r = (float) (color >> 16 & 255) / 255.0F;
-		float g = (float) (color >> 8 & 255) / 255.0F;
-		float b = (float) (color & 255) / 255.0F;
-		// always use entity translucent layer so blending is turned on
-		brd.getModelRenderer().renderModel(ms.last(), buffer, state, model, r, g, b, 0xF000F0, OverlayTexture.NO_OVERLAY);
-
+		// always use the translucent layer so blending is turned on
+		RenderHelper.submitBlockModel(RenderHelper.getBlockStateModel(state), ms, collector, RenderHelper.ASTROLABE_PREVIEW, PREVIEW_COLOR, 0xF000F0, OverlayTexture.NO_OVERLAY);
 		ms.popPose();
 	}
-
 }

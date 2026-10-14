@@ -10,15 +10,12 @@ package vazkii.botania.common.item;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
@@ -54,6 +51,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -352,25 +350,21 @@ public class AssemblyHaloItem extends Item {
 	}
 
 	public static class Rendering {
-		public static void onRenderWorldLast(Camera camera, float partialTicks, PoseStack ms, RenderBuffers buffers) {
+		public static void onRenderWorldLast(Vec3 cameraPos, float partialTicks, PoseStack ms, SubmitNodeCollector collector) {
 			Player player = Objects.requireNonNull(Minecraft.getInstance().player);
 			ItemStack stack = PlayerHelper.getFirstHeldItemClass(player, AssemblyHaloItem.class);
 			if (stack.isEmpty()) {
 				return;
 			}
 
-			MultiBufferSource.BufferSource bufferSource = buffers.bufferSource();
-
-			double renderPosX = camera.getPosition().x();
-			double renderPosY = camera.getPosition().y();
-			double renderPosZ = camera.getPosition().z();
+			double renderPosX = cameraPos.x();
+			double renderPosY = cameraPos.y();
+			double renderPosZ = cameraPos.z();
 
 			ms.pushPose();
-
 			double posX = player.xo + (player.getX() - player.xo) * partialTicks;
 			double posY = player.yo + (player.getY() - player.yo) * partialTicks + player.getEyeHeight();
 			double posZ = player.zo + (player.getZ() - player.zo) * partialTicks;
-
 			ms.translate(posX - renderPosX, posY - renderPosY, posZ - renderPosZ);
 
 			float base = getRotationBase(stack);
@@ -409,8 +403,7 @@ public class AssemblyHaloItem extends Item {
 					ms.translate(seg == 0 ? 0.5F : 0F, seg == 0 ? -0.1F : 0.6F, 0F);
 
 					ms.rotate(VecHelper.rotateY(90.0F));
-					Minecraft.getInstance().getItemRenderer().renderStatic(slotStack, ItemDisplayContext.GUI,
-							0xF000F0, OverlayTexture.NO_OVERLAY, ms, bufferSource, player.level(), player.getId());
+					RenderHelper.submitItem(slotStack, ItemDisplayContext.GUI, ms, collector, player.level(), 0xF000F0, OverlayTexture.NO_OVERLAY, player.getId());
 				}
 				ms.popPose();
 
@@ -429,27 +422,30 @@ public class AssemblyHaloItem extends Item {
 					r = g = b = 0.6F;
 				}
 
-				VertexConsumer buffer = bufferSource.getBuffer(layer);
-				for (int i = 0; i < segAngles; i++) {
-					Matrix4f mat = ms.last().pose();
-					float ang = i + seg * segAngles + shift;
-					float xp = (float) Math.cos(ang * Math.PI / 180F) * s;
-					float zp = (float) Math.sin(ang * Math.PI / 180F) * s;
+				float segY0 = y0;
+				float segR = r, segG = g, segB = b, segA = a;
+				int segment = seg;
+				RenderHelper.submit(ms, collector, layer, (ps, buffer) -> {
+					for (int i = 0; i < segAngles; i++) {
+						Matrix4f mat = ps.last().pose();
+						float ang = i + segment * segAngles + shift;
+						float xp = (float) Math.cos(ang * Math.PI / 180F) * s;
+						float zp = (float) Math.sin(ang * Math.PI / 180F) * s;
 
-					buffer.addVertex(mat, xp * m, y, zp * m).setColor(r, g, b, a).setUv(u, v);
-					buffer.addVertex(mat, xp, y0, zp).setColor(r, g, b, a).setUv(u, 0);
+						buffer.addVertex(mat, xp * m, y, zp * m).setColor(segR, segG, segB, segA).setUv(u, v);
+						buffer.addVertex(mat, xp, segY0, zp).setColor(segR, segG, segB, segA).setUv(u, 0);
 
-					xp = (float) Math.cos((ang + 1) * Math.PI / 180F) * s;
-					zp = (float) Math.sin((ang + 1) * Math.PI / 180F) * s;
+						xp = (float) Math.cos((ang + 1) * Math.PI / 180F) * s;
+						zp = (float) Math.sin((ang + 1) * Math.PI / 180F) * s;
 
-					buffer.addVertex(mat, xp, y0, zp).setColor(r, g, b, a).setUv(0, 0);
-					buffer.addVertex(mat, xp * m, y, zp * m).setColor(r, g, b, a).setUv(0, v);
-				}
+						buffer.addVertex(mat, xp, segY0, zp).setColor(segR, segG, segB, segA).setUv(0, 0);
+						buffer.addVertex(mat, xp * m, y, zp * m).setColor(segR, segG, segB, segA).setUv(0, v);
+					}
+				});
 				y0 = 0;
 				ms.popPose();
 			}
 			ms.popPose();
-			bufferSource.endBatch();
 		}
 
 		public static void renderHUD(GuiGraphicsExtractor gui, Player player, ItemStack stack, Window window, Font font) {

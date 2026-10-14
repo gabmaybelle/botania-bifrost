@@ -8,23 +8,18 @@
  */
 package vazkii.botania.client.render.world;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import vazkii.botania.api.BotaniaAPI;
@@ -32,25 +27,14 @@ import vazkii.botania.api.item.CoordBoundItem;
 import vazkii.botania.api.item.WireframeCoordinateListProvider;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.helper.RenderHelper;
-import vazkii.botania.mixin.client.LevelRendererAccessor;
 import vazkii.botania.xplat.BotaniaConfig;
 
 import java.util.List;
-import java.util.SequencedMap;
 
 public final class BoundBlockRenderer {
-	private static final MultiBufferSource.BufferSource LINE_BUFFERS = MultiBufferSource.immediateWithBuffers(Util.make(() -> {
-		SequencedMap<RenderType, ByteBufferBuilder> ret = new Object2ObjectLinkedOpenHashMap<>();
-		ret.put(RenderHelper.LINE_1_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_1_NO_DEPTH.bufferSize()));
-		ret.put(RenderHelper.LINE_4_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_4_NO_DEPTH.bufferSize()));
-		ret.put(RenderHelper.LINE_5_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_5_NO_DEPTH.bufferSize()));
-		ret.put(RenderHelper.LINE_8_NO_DEPTH, new ByteBufferBuilder(RenderHelper.LINE_8_NO_DEPTH.bufferSize()));
-		return ret;
-	}), new ByteBufferBuilder(786432)); //Todo confirm the capacity is correct. This is just taken from `RenderBuffers`
-
 	private BoundBlockRenderer() {}
 
-	public static void onWorldRenderLast(Camera camera, float partialTick, PoseStack ms, Level level) {
+	public static void onWorldRenderLast(Vec3 cameraPos, float partialTick, PoseStack ms, SubmitNodeCollector collector, Level level) {
 		Player player = Minecraft.getInstance().player;
 		if (!BotaniaConfig.client().boundBlockWireframe()
 				|| player == null
@@ -59,7 +43,6 @@ public final class BoundBlockRenderer {
 		}
 
 		ms.pushPose();
-
 		int color = ARGB.opaque(Mth.hsvToRgb((ClientTickHandler.getEntityTicksInGame() + partialTick) % 200 / 200F, 0.6F, 1F));
 
 		if (!player.getMainHandItem().isEmpty()) {
@@ -67,7 +50,7 @@ public final class BoundBlockRenderer {
 			if (coordBoundItem != null) {
 				BlockPos coords = coordBoundItem.getBinding();
 				if (coords != null) {
-					renderBlockOutlineAt(camera, ms, LINE_BUFFERS, player.level(), coords, color);
+					renderBlockOutlineAt(cameraPos, ms, collector, player.level(), coords, color);
 				}
 			}
 		}
@@ -77,70 +60,53 @@ public final class BoundBlockRenderer {
 			if (coordBoundItem != null) {
 				BlockPos coords = coordBoundItem.getBinding();
 				if (coords != null) {
-					renderBlockOutlineAt(camera, ms, LINE_BUFFERS, player.level(), coords, color);
+					renderBlockOutlineAt(cameraPos, ms, collector, player.level(), coords, color);
 				}
 			}
 		}
 
-		renderWireframeProviders(camera, player.getInventory(), player, ms, color);
-		renderWireframeProviders(camera, BotaniaAPI.instance().getAccessoriesInventory(player), player, ms, color);
+		renderWireframeProviders(cameraPos, player.getInventory(), player, ms, collector, color);
+		renderWireframeProviders(cameraPos, BotaniaAPI.instance().getAccessoriesInventory(player), player, ms, collector, color);
 
 		ms.popPose();
-		RenderSystem.disableDepthTest();
-		LINE_BUFFERS.endBatch();
 	}
 
-	private static void renderWireframeProviders(Camera camera, Container inv,
-			Player player, PoseStack ms, int color) {
+	private static void renderWireframeProviders(Vec3 cameraPos, Container inv,
+			Player player, PoseStack ms, SubmitNodeCollector collector, int color) {
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stackInSlot = inv.getItem(i);
 
 			if (!stackInSlot.isEmpty() && stackInSlot.getItem() instanceof WireframeCoordinateListProvider provider) {
 				List<BlockPos> coordsList = provider.getWireframesToDraw(player, stackInSlot);
 				for (BlockPos coords : coordsList) {
-					renderBlockOutlineAt(camera, ms, LINE_BUFFERS, player.level(), coords, color);
+					renderBlockOutlineAt(cameraPos, ms, collector, player.level(), coords, color);
 				}
 
 				BlockPos coords = provider.getSourceWireframe(player, stackInSlot);
 				if (coords != null && coords.getY() != Integer.MIN_VALUE) {
-					renderBlockOutlineAt(camera, ms, LINE_BUFFERS, player.level(), coords, color, true);
+					renderBlockOutlineAt(cameraPos, ms, collector, player.level(), coords, color, true);
 				}
 			}
 		}
 	}
 
-	private static void renderBlockOutlineAt(Camera camera, PoseStack ms, MultiBufferSource buffers, Level level, BlockPos pos, int color) {
-		renderBlockOutlineAt(camera, ms, buffers, level, pos, color, false);
+	private static void renderBlockOutlineAt(Vec3 cameraPos, PoseStack ms, SubmitNodeCollector collector, Level level, BlockPos pos, int color) {
+		renderBlockOutlineAt(cameraPos, ms, collector, level, pos, color, false);
 	}
 
-	private static void renderBlockOutlineAt(Camera camera, PoseStack ms, MultiBufferSource buffers, Level level, BlockPos pos, int color, boolean thick) {
+	private static void renderBlockOutlineAt(Vec3 cameraPos, PoseStack ms, SubmitNodeCollector collector, Level level, BlockPos pos, int color, boolean thick) {
 		VoxelShape shape = level.getBlockState(pos).getShape(level, pos);
-
 		if (!shape.isEmpty()) {
-			double renderPosX = camera.position().x();
-			double renderPosY = camera.position().y();
-			double renderPosZ = camera.position().z();
-
 			ms.pushPose();
-			ms.translate(pos.getX() - renderPosX, pos.getY() - renderPosY, pos.getZ() - renderPosZ);
+			ms.translate(pos.getX() - cameraPos.x(), pos.getY() - cameraPos.y(), pos.getZ() - cameraPos.z());
 
-			VertexConsumer buffer = buffers.getBuffer(thick ? RenderHelper.LINE_5_NO_DEPTH : RenderHelper.LINE_1_NO_DEPTH);
-			renderBlockOutline(ms, buffer, shape, color);
-
-			buffer = buffers.getBuffer(thick ? RenderHelper.LINE_8_NO_DEPTH : RenderHelper.LINE_4_NO_DEPTH);
+			// PORT-26.3: vanilla submits shape outlines itself, with the line width per submit
+			collector.submitShapeOutline(ms, shape, RenderHelper.LINES_NO_DEPTH, color, thick ? 5F : 1F, false);
 			int alpha = 64;
 			color = ARGB.color(alpha, color);
-			renderBlockOutline(ms, buffer, shape, color);
+			collector.submitShapeOutline(ms, shape, RenderHelper.LINES_NO_DEPTH, color, thick ? 8F : 4F, false);
 
 			ms.popPose();
 		}
-	}
-
-	private static void renderBlockOutline(PoseStack pose, VertexConsumer buffer, VoxelShape shape, int color) {
-		float a = ((color >> 24) & 0xFF) / 255.0F;
-		float r = ((color >> 16) & 0xFF) / 255.0F;
-		float g = ((color >> 8) & 0xFF) / 255.0F;
-		float b = (color & 0xFF) / 255.F;
-		LevelRendererAccessor.botania_renderShape(pose, buffer, shape, 0.0, 0.0, 0.0, r, g, b, a);
 	}
 }
