@@ -89,14 +89,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 		BotaniaAPI.LOGGER.debug("Client API instances: {}",
 				List.of(BotaniaAPIClient.instance(), ClientXplatAbstractions.instance()));
 
-		CoreShaderRegistrationCallback.EVENT.register(ctx -> CoreShaders.init((id, vertexFormat, onLoaded) -> {
-			try {
-				ctx.register(id, vertexFormat, onLoaded);
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		}
-		));
+		// PORT-26.3: shaders are RenderPipelines now (CoreShaders); Fabric needs no registration for them
 		FabricPacketHandler.initClient();
 
 		// Guis
@@ -109,7 +102,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 			MiscellaneousModels.INSTANCE.onModelRegister(Minecraft.getInstance().getResourceManager(), pluginContext::addModels);
 			pluginContext.modifyModelAfterBake().register((bakedModel, context) -> MiscellaneousModels.INSTANCE.modifyModelAfterbake(bakedModel, context.resourceId()));
 		});
-		BlockRenderLayers.init(BlockRenderLayerMap.INSTANCE::putBlock);
+		// PORT-26.3: block render layers are read off the textures since 26.1, BlockRenderLayers is gone
 		BotaniaItemProperties.init(ItemProperties::register);
 
 		// BE/Entity Renderer

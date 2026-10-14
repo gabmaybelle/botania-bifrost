@@ -8,64 +8,80 @@
  */
 package vazkii.botania.client.core.helper;
 
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-import com.mojang.renderpearl.backend.opengl.GlStateManager;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.textures.FilterMode;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.LayeringTransform;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fc;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-import org.lwjgl.opengl.GL11;
+import org.joml.Matrix4fc;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.client.render.block_entity.PylonBlockEntityRenderer;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.common.item.equipment.bauble.FlugelTiaraItem;
-import vazkii.botania.mixin.client.ItemRendererAccessor;
+import vazkii.botania.mixin.client.GuiGraphicsExtractorAccessor;
+import vazkii.botania.mixin.client.ItemStackRenderStateAccessor;
+import vazkii.botania.mixin.client.LayerRenderStateAccessor;
 import vazkii.botania.mixin.client.RenderTypeAccessor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.OptionalDouble;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
-public final class RenderHelper extends RenderType {
+/**
+ * Botania's render types and small drawing helpers.
+ * <p>
+ * PORT-26.3: a render type is now a {@link RenderPipeline} (the shader and GPU state, see {@link CoreShaders}) plus a
+ * {@link RenderSetup} (its textures, lightmap, overlay and sorting). Nothing draws straight into a buffer any more:
+ * world drawing goes through a {@link SubmitNodeCollector}, GUI drawing through a {@link GuiGraphicsExtractor}, and
+ * both are drawn later by the game. The "item entity target" the old types wrote to no longer exists, so the
+ * {@code _DIRECT} pylon types are the same as the plain ones. Line widths are a per-vertex value now
+ * ({@link VertexConsumer#setLineWidth}), so the four {@code LINE_*_NO_DEPTH} types are one type and the width is
+ * given with the vertices.
+ */
+public final class RenderHelper {
 	private static final RenderType STAR;
 	public static final RenderType RECTANGLE;
 	public static final RenderType CIRCLE;
 	public static final RenderType RED_STRING;
+	public static final RenderType LINES_NO_DEPTH;
 	public static final RenderType LINE_1_NO_DEPTH;
 	public static final RenderType LINE_4_NO_DEPTH;
 	public static final RenderType LINE_5_NO_DEPTH;
@@ -81,11 +97,11 @@ public final class RenderHelper extends RenderType {
 	public static final RenderType MANA_PYLON_GLOW = getPylonGlow("mana_pylon_glow", PylonBlockEntityRenderer.MANA_TEXTURE);
 	public static final RenderType NATURA_PYLON_GLOW = getPylonGlow("natura_pylon_glow", PylonBlockEntityRenderer.NATURA_TEXTURE);
 	public static final RenderType GAIA_PYLON_GLOW = getPylonGlow("gaia_pylon_glow", PylonBlockEntityRenderer.GAIA_TEXTURE);
-	public static final RenderType MANA_PYLON_GLOW_DIRECT = getPylonGlowDirect("mana_pylon_glow_direct", PylonBlockEntityRenderer.MANA_TEXTURE);
-	public static final RenderType NATURA_PYLON_GLOW_DIRECT = getPylonGlowDirect("natura_pylon_glow_direct", PylonBlockEntityRenderer.NATURA_TEXTURE);
-	public static final RenderType GAIA_PYLON_GLOW_DIRECT = getPylonGlowDirect("gaia_pylon_glow_direct", PylonBlockEntityRenderer.GAIA_TEXTURE);
+	public static final RenderType MANA_PYLON_GLOW_DIRECT = MANA_PYLON_GLOW;
+	public static final RenderType NATURA_PYLON_GLOW_DIRECT = NATURA_PYLON_GLOW;
+	public static final RenderType GAIA_PYLON_GLOW_DIRECT = GAIA_PYLON_GLOW;
 
-	public static final RenderType ASTROLABE_PREVIEW = new AstrolabeLayer();
+	public static final RenderType ASTROLABE_PREVIEW;
 	public static final RenderType STARFIELD;
 	public static final RenderType LIGHTNING;
 	public static final RenderType TRANSLUCENT;
@@ -109,239 +125,144 @@ public final class RenderHelper extends RenderType {
 		offY = INITIAL_OFFSET;
 	}
 
-	private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
-			int bufSize, boolean hasCrumbling, boolean sortOnUpload, CompositeState glState) {
-		return RenderTypeAccessor.botania_create(name, format, mode, bufSize, hasCrumbling, sortOnUpload, glState);
-	}
-
-	private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
-			int bufSize, CompositeState glState) {
-		return makeLayer(name, format, mode, bufSize, false, false, glState);
+	private static RenderType makeLayer(String name, RenderSetup setup) {
+		return RenderTypeAccessor.botania_create(ResourcesLib.PREFIX_MOD + name, setup);
 	}
 
 	static {
-		RenderType.CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setWriteMaskState(COLOR_WRITE)
-				.setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-				.createCompositeState(false);
-		STAR = makeLayer(ResourcesLib.PREFIX_MOD + "star", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES, 256, false, false, glState);
+		STAR = makeLayer("star", RenderSetup.builder(CoreShaders.STAR).createRenderSetup());
 
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setCullState(NO_CULL)
-				.createCompositeState(false);
-		RECTANGLE = makeLayer(ResourcesLib.PREFIX_MOD + "rectangle_highlight", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, glState);
-		CIRCLE = makeLayer(ResourcesLib.PREFIX_MOD + "circle_highlight", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES, 256, false, false, glState);
+		RECTANGLE = makeLayer("rectangle_highlight", RenderSetup.builder(CoreShaders.POSITION_COLOR_TRANSLUCENT).sortOnUpload().createRenderSetup());
+		CIRCLE = makeLayer("circle_highlight", RenderSetup.builder(CoreShaders.POSITION_COLOR_TRANSLUCENT_TRIANGLES).createRenderSetup());
 
-		RED_STRING = makeLayer(ResourcesLib.PREFIX_MOD + "red_string", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 128, lineState(1, false, false));
-		LINE_1_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_1_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 128, lineState(1, true, true));
-		LINE_4_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_4_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 128, lineState(4, true, true));
-		LINE_5_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_5_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 64, lineState(5, true, true));
-		LINE_8_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_8_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 64, lineState(8, true, true));
+		RED_STRING = makeLayer("red_string", RenderSetup.builder(RenderPipelines.LINES)
+				.setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING).createRenderSetup());
+		LINES_NO_DEPTH = makeLayer("lines_no_depth", RenderSetup.builder(CoreShaders.LINES_NO_DEPTH)
+				.setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING).createRenderSetup());
+		LINE_1_NO_DEPTH = LINES_NO_DEPTH;
+		LINE_4_NO_DEPTH = LINES_NO_DEPTH;
+		LINE_5_NO_DEPTH = LINES_NO_DEPTH;
+		LINE_8_NO_DEPTH = LINES_NO_DEPTH;
 
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-				.setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(true);
-		SPARK = makeLayer(ResourcesLib.PREFIX_MOD + "spark", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, glState);
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::halo))
-				.setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.createCompositeState(true);
-		LIGHT_RELAY = makeLayer(ResourcesLib.PREFIX_MOD + "luminizer", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
+		SPARK = makeLayer("spark", blockAtlas(CoreShaders.POSITION_COLOR_TEX_LIGHTMAP).useLightmap().createRenderSetup());
+		LIGHT_RELAY = makeLayer("luminizer", blockAtlas(CoreShaders.halo()).createRenderSetup());
+		ICON_OVERLAY = makeLayer("icon_overlay", blockAtlas(CoreShaders.POSITION_COLOR_TEX_LIGHTMAP).useLightmap().createRenderSetup());
+		MANA_POOL_WATER = makeLayer("mana_pool_water", blockAtlas(CoreShaders.manaPool()).useLightmap().createRenderSetup());
+		TERRA_PLATE = makeLayer("terrestrial_agglomeration_plate_rune", blockAtlas(CoreShaders.terraPlate()).useLightmap().createRenderSetup());
+		ENCHANTER = makeLayer("mana_enchanter_rune", blockAtlas(CoreShaders.enchanter()).useLightmap().createRenderSetup());
 
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(true);
-		ICON_OVERLAY = makeLayer(ResourcesLib.PREFIX_MOD + "icon_overlay", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(new ShaderStateShard(CoreShaders::manaPool))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(false);
-		MANA_POOL_WATER = makeLayer(ResourcesLib.PREFIX_MOD + "mana_pool_water", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(new ShaderStateShard(CoreShaders::terraPlate))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(false);
-		TERRA_PLATE = makeLayer(ResourcesLib.PREFIX_MOD + "terrestrial_agglomeration_plate_rune", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(new ShaderStateShard(CoreShaders::enchanter))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(false);
-		ENCHANTER = makeLayer(ResourcesLib.PREFIX_MOD + "mana_enchanter_rune", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-
-		RenderStateShard.TextureStateShard babylonTexture = new RenderStateShard.TextureStateShard(Identifier.parse(ResourcesLib.MISC_BABYLON), false, true);
-		glState = RenderType.CompositeState.builder().setTextureState(babylonTexture)
-				.setShaderState(new ShaderStateShard(CoreShaders::halo))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setCullState(NO_CULL)
-				.createCompositeState(true);
-		BABYLON_ICON = makeLayer(ResourcesLib.PREFIX_MOD + "babylon", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
-
-		RenderStateShard.TextureStateShard haloTexture = new RenderStateShard.TextureStateShard(FlugelTiaraItem.textureHalo, false, true);
-		glState = RenderType.CompositeState.builder().setTextureState(haloTexture)
-				.setShaderState(new ShaderStateShard(CoreShaders::halo))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.createCompositeState(true);
-		HALO = makeLayer(ResourcesLib.PREFIX_MOD + "halo", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
+		BABYLON_ICON = makeLayer("babylon", RenderSetup.builder(CoreShaders.halo())
+				.withTexture("Sampler0", Identifier.parse(ResourcesLib.MISC_BABYLON)).createRenderSetup());
+		HALO = makeLayer("halo", RenderSetup.builder(CoreShaders.halo())
+				.withTexture("Sampler0", FlugelTiaraItem.textureHalo).createRenderSetup());
 
 		// [VanillaCopy] End portal, with own shader
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::starfield))
-				.setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-						.add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
-						.add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
-				.createCompositeState(false);
-		STARFIELD = makeLayer(ResourcesLib.PREFIX_MOD + "starfield_creator", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, glState);
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setTransparencyState(LIGHTNING_TRANSPARENCY)
-				.createCompositeState(false);
-		LIGHTNING = makeLayer(ResourcesLib.PREFIX_MOD + "lightning", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, glState);
-		TRANSLUCENT = RenderType.entityTranslucentCull(TextureAtlas.LOCATION_BLOCKS);
+		STARFIELD = makeLayer("starfield_creator", RenderSetup.builder(CoreShaders.starfield())
+				.withTexture("Sampler0", AbstractEndPortalRenderer.END_SKY_LOCATION)
+				.withTexture("Sampler1", AbstractEndPortalRenderer.END_PORTAL_LOCATION)
+				.createRenderSetup());
+		LIGHTNING = RenderTypes.lightning();
+		TRANSLUCENT = RenderTypes.entityTranslucentCull(TextureAtlas.LOCATION_BLOCKS);
+		// PORT-26.3: the astrolabe used the block sheet with a 40% colour modulator; the alpha comes with the tint now
+		ASTROLABE_PREVIEW = RenderTypes.translucentMovingBlock();
 	}
 
-	private RenderHelper(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
-		super(string, vertexFormat, mode, i, bl, bl2, runnable, runnable2);
-		throw new UnsupportedOperationException("Should not be instantiated");
-	}
+	private RenderHelper() {}
 
-	private static RenderType getPylonGlowDirect(String name, Identifier texture) {
-		return getPylonGlow(name, texture, true);
+	private static RenderSetup.RenderSetupBuilder blockAtlas(RenderPipeline pipeline) {
+		return RenderSetup.builder(pipeline).withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS);
 	}
 
 	private static RenderType getPylonGlow(String name, Identifier texture) {
-		return getPylonGlow(name, texture, false);
+		return makeLayer(name, RenderSetup.builder(CoreShaders.pylon())
+				.withTexture("Sampler0", texture)
+				.useLightmap()
+				.useOverlay()
+				.createRenderSetup());
 	}
 
-	private static RenderType getPylonGlow(String name, Identifier texture, boolean direct) {
-		RenderType.CompositeState.CompositeStateBuilder glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::pylon))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(OVERLAY);
-		if (!direct) {
-			glState = glState.setOutputState(RenderStateShard.ITEM_ENTITY_TARGET);
-		}
-		return makeLayer(ResourcesLib.PREFIX_MOD + name, DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 128, glState.createCompositeState(false));
-	}
-
-	private static CompositeState lineState(double width, boolean direct, boolean noDepth) {
-		// [VanillaCopy] vanilla LINES layer with line width defined (and optionally depth disabled)
-		var builder = RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_LINES_SHADER)
-				.setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(width)))
-				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setWriteMaskState(noDepth ? COLOR_WRITE : COLOR_DEPTH_WRITE)
-				.setCullState(NO_CULL);
-		if (!direct) {
-			builder = builder.setOutputState(ITEM_ENTITY_TARGET);
-		}
-		if (noDepth) {
-			builder = builder.setDepthTestState(NO_DEPTH_TEST);
-		}
-		return builder.createCompositeState(false);
-	}
+	private static final Function<Identifier, RenderType> HALO_LAYER = Util.memoize(texture -> makeLayer("assembly_halo",
+			RenderSetup.builder(CoreShaders.POSITION_TEX_COLOR)
+					// the old texture state blurred the halo (linear filtering)
+					.withTexture("Sampler0", texture, () -> RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR))
+					.sortOnUpload()
+					.createRenderSetup()));
 
 	public static RenderType getHaloLayer(Identifier texture) {
-		RenderType.CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, true, false))
-				.setCullState(new RenderStateShard.CullStateShard(false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(false);
-		return makeLayer(ResourcesLib.PREFIX_MOD + "assembly_halo", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, false, true, glState);
+		return HALO_LAYER.apply(texture);
 	}
 
-	private static final Function<Identifier, RenderType> GAIA_NOISE_DYNAMIC_LAYER = Util.memoize(texture -> {
-		// [VanillaCopy] entity_translucent, with own shader
-		CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::gaiaNoiseDynamic))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(OVERLAY)
-				.createCompositeState(true);
-		return makeLayer(ResourcesLib.PREFIX_MOD + "gaia_noise_dynamic", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, glState);
-	});
+	// [VanillaCopy] entity_translucent, with own shader
+	private static final Function<Identifier, RenderType> GAIA_NOISE_LAYER = Util.memoize(texture -> makeLayer("gaia_noise",
+			RenderSetup.builder(CoreShaders.gaiaNoise())
+					.withTexture("Sampler0", texture)
+					.useLightmap()
+					.useOverlay()
+					.affectsCrumbling()
+					.sortOnUpload()
+					.createRenderSetup()));
 
-	private static final Function<Identifier, RenderType> GAIA_NOISE_CONSTANT_LAYER = Util.memoize(texture -> {
-		// [VanillaCopy] entity_translucent, with own shader
-		CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::gaiaNoiseConstant))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(OVERLAY)
-				.createCompositeState(true);
-		return makeLayer(ResourcesLib.PREFIX_MOD + "gaia_noise_constant", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, glState);
-	});
-
+	/**
+	 * The Gaia Guardian's noise layer. PORT-26.3: the "dynamic" and "constant" variants were one shader with
+	 * different uniform values; the values travel with the model's tint colour now (see
+	 * {@link CoreShaders#GAIA_NOISE}), so both names give the same layer.
+	 */
 	public static RenderType getGaiaNoiseDynamicLayer(Identifier texture) {
-		return GAIA_NOISE_DYNAMIC_LAYER.apply(texture);
+		return GAIA_NOISE_LAYER.apply(texture);
 	}
 
 	public static RenderType getGaiaNoiseConstantLayer(Identifier texture) {
-		return GAIA_NOISE_CONSTANT_LAYER.apply(texture);
+		return GAIA_NOISE_LAYER.apply(texture);
 	}
 
-	public static void drawTexturedModalRect(GuiGraphics gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {
-		gui.blit(textureId, x, y, u, v, width, height, 256, 256);
+	/** Packs the Gaia noise amounts into a tint colour for {@link #getGaiaNoiseDynamicLayer}. */
+	public static int gaiaNoiseTint(float disfiguration, float grainIntensity) {
+		return ARGB.colorFromFloat(Mth.clamp(grainIntensity, 0F, 1F), Mth.clamp(disfiguration / 0.1F, 0F, 1F), 1F, 1F);
 	}
 
-	public static void renderStar(PoseStack ms, MultiBufferSource buffers, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
-		VertexConsumer buffer = buffers.getBuffer(STAR);
+	/** The default Gaia noise amounts, what the "constant" layer used to show. */
+	public static int gaiaNoiseConstantTint() {
+		return gaiaNoiseTint(0.025F, 0.05F);
+	}
 
+	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256);
+	}
+
+	public static void renderStar(PoseStack ms, SubmitNodeCollector collector, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
 		float ticks = ClientTickHandler.getEntityTicksInGame() + partialTicks;
 		float semiPeriodTicks = 200;
 		float f1 = Mth.abs(Mth.sin((float) Math.PI / semiPeriodTicks * ticks)) * 0.9F + 0.1F; // shift to [0.1, 1.0]
 
 		float f2 = f1 > 0.F ? (f1 - 0.7F) / 0.2F : 0;
-		Random random = new Random(seed);
+		int alphaColor = ARGB.color(ARGB.as8BitChannel(f1), color);
+		int count = (int) ((f1 + f1 * f1) / 2F * 90F + 30F);
 
-		ms.pushPose();
-		ms.scale(xScale, yScale, zScale);
-
-		for (int i = 0; i < (f1 + f1 * f1) / 2F * 90F + 30F; i++) {
-			ms.rotate(VecHelper.rotateX(random.nextFloat() * 360F));
-			ms.rotate(VecHelper.rotateY(random.nextFloat() * 360F));
-			ms.rotate(VecHelper.rotateZ(random.nextFloat() * 360F));
-			ms.rotate(VecHelper.rotateX(random.nextFloat() * 360F));
-			ms.rotate(VecHelper.rotateY(random.nextFloat() * 360F));
-			ms.rotate(VecHelper.rotateZ(random.nextFloat() * 360F + f1 * 90F));
-			float f3 = random.nextFloat() * 20F + 5F + f2 * 10F;
-			float f4 = random.nextFloat() * 2F + 1F + f2 * 2F;
-			int alphaColor = ARGB.color(ARGB.as8BitChannel(f1), color);
-			Matrix4f mat = ms.last().pose();
-			Runnable center = () -> buffer.addVertex(mat, 0, 0, 0).setColor(alphaColor);
-			Runnable[] vertices = {
-					() -> buffer.addVertex(mat, -0.866F * f4, f3, -0.5F * f4).setColor(0, 0, 0, 0),
-					() -> buffer.addVertex(mat, 0.866F * f4, f3, -0.5F * f4).setColor(0, 0, 0, 0),
-					() -> buffer.addVertex(mat, 0, f3, 1F * f4).setColor(0, 0, 0, 0),
-					() -> buffer.addVertex(mat, -0.866F * f4, f3, -0.5F * f4).setColor(0, 0, 0, 0)
-			};
-			triangleFan(center, vertices);
-		}
-
-		ms.popPose();
+		// PORT-26.3: the geometry is built later, from the pose the collector was given, so the per-star rotations
+		// are applied to copies of that matrix instead of pushing and popping the pose stack
+		collector.submitCustomGeometry(ms, STAR, (pose, buffer) -> {
+			Random random = new Random(seed);
+			Matrix4f base = new Matrix4f(pose.pose()).scale(xScale, yScale, zScale);
+			for (int i = 0; i < count; i++) {
+				Matrix4f mat = new Matrix4f(base);
+				mat.rotate(VecHelper.rotateX(random.nextFloat() * 360F));
+				mat.rotate(VecHelper.rotateY(random.nextFloat() * 360F));
+				mat.rotate(VecHelper.rotateZ(random.nextFloat() * 360F));
+				mat.rotate(VecHelper.rotateX(random.nextFloat() * 360F));
+				mat.rotate(VecHelper.rotateY(random.nextFloat() * 360F));
+				mat.rotate(VecHelper.rotateZ(random.nextFloat() * 360F + f1 * 90F));
+				float f3 = random.nextFloat() * 20F + 5F + f2 * 10F;
+				float f4 = random.nextFloat() * 2F + 1F + f2 * 2F;
+				Runnable center = () -> buffer.addVertex(mat, 0, 0, 0).setColor(alphaColor);
+				Runnable[] vertices = {
+						() -> buffer.addVertex(mat, -0.866F * f4, f3, -0.5F * f4).setColor(0, 0, 0, 0),
+						() -> buffer.addVertex(mat, 0.866F * f4, f3, -0.5F * f4).setColor(0, 0, 0, 0),
+						() -> buffer.addVertex(mat, 0, f3, 1F * f4).setColor(0, 0, 0, 0),
+						() -> buffer.addVertex(mat, -0.866F * f4, f3, -0.5F * f4).setColor(0, 0, 0, 0)
+				};
+				triangleFan(center, vertices);
+			}
+		});
 	}
 
 	public static void triangleFan(Runnable center, Runnable... vertices) {
@@ -360,7 +281,7 @@ public final class RenderHelper extends RenderType {
 		}
 	}
 
-	public static void flatRectangle(VertexConsumer buffer, Matrix4f mat,
+	public static void flatRectangle(VertexConsumer buffer, Matrix4fc mat,
 			float xMin, float xMax, float y, float zMin, float zMax,
 			int r, int g, int b, int a) {
 		buffer.addVertex(mat, xMax, y, zMin).setColor(r, g, b, a);
@@ -369,94 +290,113 @@ public final class RenderHelper extends RenderType {
 		buffer.addVertex(mat, xMax, y, zMax).setColor(r, g, b, a);
 	}
 
-	public static void renderProgressPie(GuiGraphics gui, float partialTick, int x, int y, float progress, ItemStack stack) {
-		PoseStack ms = gui.pose();
-		Minecraft mc = Minecraft.getInstance();
+	/**
+	 * Adds a line with a width to a lines buffer (the width is a vertex attribute in 26.3).
+	 */
+	public static void line(VertexConsumer buffer, PoseStack.Pose pose, float x1, float y1, float z1, float x2, float y2, float z2, int color, float width) {
+		float dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+		float len = Mth.sqrt(dx * dx + dy * dy + dz * dz);
+		if (len > 0) {
+			dx /= len;
+			dy /= len;
+			dz /= len;
+		}
+		buffer.addVertex(pose, x1, y1, z1).setColor(color).setNormal(pose, dx, dy, dz).setLineWidth(width);
+		buffer.addVertex(pose, x2, y2, z2).setColor(color).setNormal(pose, dx, dy, dz).setLineWidth(width);
+	}
 
+	public static void renderProgressPie(GuiGraphicsExtractor gui, float partialTick, int x, int y, float progress, ItemStack stack) {
 		int r = 10;
 		int centerX = x + 8;
 		int centerY = y + 8;
 		int degs = (int) (360 * progress);
 		float a = 0.5F + 0.2F * (Mth.cos(ClientTickHandler.getUiAnimationTicks() / 10) * 0.5F + 0.5F);
 
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		// PORT-26.3: GUI drawing is collected as elements now; the pie is one custom element of coloured quads
+		((GuiGraphicsExtractorAccessor) gui).botania_getGuiRenderState()
+				.addGuiElement(new ProgressPie(new Matrix3x2f(gui.pose()), centerX, centerY, r, degs, a));
 
-		Matrix4f mat = ms.last().pose();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		BufferBuilder buf = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-		buf.addVertex(mat, centerX, centerY, 0).setColor(0, 0.5F, 0.5F, a);
+		gui.item(stack, x, y);
+	}
 
-		for (int i = degs; i >= 0; i--) {
-			float rad = (i - 90) / 180F * (float) Math.PI;
-			buf.addVertex(mat, centerX + Mth.cos(rad) * r, centerY + Mth.sin(rad) * r, 0).setColor(0F, 1F, 0.5F, a);
+	/** The progress pie around an item in the HUD. The fan is sent as quads, the shape the GUI pipeline draws. */
+	private record ProgressPie(Matrix3x2fc pose, int centerX, int centerY, int radius, int degrees, float alpha) implements GuiElementRenderState {
+		@Override
+		public void buildVertices(VertexConsumer buffer) {
+			int centerColor = ARGB.colorFromFloat(alpha, 0F, 0.5F, 0.5F);
+			int edgeColor = ARGB.colorFromFloat(alpha, 0F, 1F, 0.5F);
+			float lastX = centerX;
+			float lastY = centerY - radius;
+			for (int i = degrees - 1; i >= 0; i--) {
+				float rad = (i - 90) / 180F * (float) Math.PI;
+				float px = centerX + Mth.cos(rad) * radius;
+				float py = centerY + Mth.sin(rad) * radius;
+				buffer.addVertexWith2DPose(pose, centerX, centerY).setColor(centerColor);
+				buffer.addVertexWith2DPose(pose, lastX, lastY).setColor(edgeColor);
+				buffer.addVertexWith2DPose(pose, px, py).setColor(edgeColor);
+				buffer.addVertexWith2DPose(pose, px, py).setColor(edgeColor);
+				lastX = px;
+				lastY = py;
+			}
 		}
 
-		buf.addVertex(mat, centerX, centerY, 0).setColor(0F, 1F, 0.5F, a);
-		BufferUploader.drawWithShader(buf.buildOrThrow());
-		RenderSystem.disableBlend();
+		@Override
+		public RenderPipeline pipeline() {
+			return RenderPipelines.GUI;
+		}
 
-		gui.renderItem(stack, x, y);
+		@Override
+		public TextureSetup textureSetup() {
+			return TextureSetup.noTexture();
+		}
+
+		@Override
+		public @Nullable ScreenRectangle scissorArea() {
+			return null;
+		}
+
+		@Override
+		public @Nullable ScreenRectangle bounds() {
+			return new ScreenRectangle(centerX - radius, centerY - radius, radius * 2, radius * 2);
+		}
 	}
 
 	/**
+	 * Draws an item with every quad in one colour (alpha included).
+	 * <p>
+	 * PORT-26.3: there is no baked model to walk any more. The item's render state is resolved as usual and its
+	 * quads are submitted as custom geometry with the colour forced on every vertex.
+	 *
 	 * @param color Must include alpha
 	 */
-	// [VanillaCopy] ItemRenderer.renderItem with simplifications + color support + custom model
-	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, MultiBufferSource buffers, int light, int overlay, @Nullable BakedModel model) {
-		ms.pushPose();
-		ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-		if (model == null) {
-			model = itemRenderer.getModel(stack, entity.level(), entity, entity.getId());
-		}
-		model.getTransforms().getTransform(ItemDisplayContext.NONE).apply(false, ms);
-		ms.translate(-0.5D, -0.5D, -0.5D);
+	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		ItemStackRenderState state = new ItemStackRenderState();
+		Minecraft.getInstance().getItemModelResolver().updateForLiving(state, stack, ItemDisplayContext.NONE, entity);
 
-		if (!model.isCustomRenderer() && !stack.is(Items.TRIDENT)) {
-			RenderType rendertype = ItemBlockRenderTypes.getRenderType(stack, true);
-			VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffers, rendertype, true, stack.hasFoil());
-			renderBakedItemModel(itemRenderer, model, stack, color, light, overlay, ms, ivertexbuilder
-			);
-		} else {
-			throw new IllegalArgumentException("Custom renderer items not supported");
-		}
-
-		ms.popPose();
-	}
-
-	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		renderItemCustomColor(entity, stack, color, ms, buffers, light, overlay, null);
-	}
-
-	// [VanillaCopy] ItemRenderer with custom color
-	private static void renderBakedItemModel(ItemRenderer itemRenderer, BakedModel model, ItemStack stack, int color, int light, int overlay, PoseStack ms, VertexConsumer buffer) {
-		var random = RandomSource.create();
-		long seed = 42L;
-
-		for (Direction direction : Direction.values()) {
-			random.setSeed(seed);
-			renderBakedItemQuads(itemRenderer, ms, buffer, color, model.getQuads(null, direction, random), stack, light, overlay);
-		}
-
-		random.setSeed(seed);
-		renderBakedItemQuads(itemRenderer, ms, buffer, color, model.getQuads(null, null, random), stack, light, overlay);
-	}
-
-	// Wraps ItemRenderer#renderQuadList for custom color support
-	private static void renderBakedItemQuads(ItemRenderer itemRenderer, PoseStack ms, VertexConsumer buffer, int color, List<BakedQuad> quads, ItemStack stack, int light, int overlay) {
-		float a = ((color >> 24) & 0xFF) / 255.0F;
-		float r = (float) (color >> 16 & 0xFF) / 255.0F;
-		float g = (float) (color >> 8 & 0xFF) / 255.0F;
-		float b = (float) (color & 0xFF) / 255.0F;
-
-		buffer = new DelegatedVertexConsumer(buffer) {
-			@Override
-			public VertexConsumer setColor(float red, float green, float blue, float alpha) {
-				return super.setColor(r, g, b, a);
+		Map<RenderType, List<BakedQuad>> byType = new LinkedHashMap<>();
+		ItemStackRenderStateAccessor layers = (ItemStackRenderStateAccessor) state;
+		for (int i = 0; i < layers.botania_getActiveLayerCount(); i++) {
+			var quads = ((LayerRenderStateAccessor) layers.botania_getLayers()[i]).botania_getQuads();
+			for (BakedQuad quad : quads.all()) {
+				byType.computeIfAbsent(quad.materialInfo().itemRenderType(), t -> new ArrayList<>()).add(quad);
 			}
-		};
-		((ItemRendererAccessor) itemRenderer)
-				.botania_renderQuadList(ms, buffer, quads, stack, light, overlay);
+		}
+
+		ms.pushPose();
+		ms.translate(-0.5D, -0.5D, -0.5D);
+		QuadInstance instance = new QuadInstance();
+		instance.setColor(color);
+		instance.setLightCoords(light);
+		instance.setOverlayCoords(overlay);
+		for (var entry : byType.entrySet()) {
+			List<BakedQuad> quads = entry.getValue();
+			collector.submitCustomGeometry(ms, entry.getKey(), (pose, buffer) -> {
+				for (BakedQuad quad : quads) {
+					buffer.putBakedQuad(pose, quad, instance);
+				}
+			});
+		}
+		ms.popPose();
 	}
 
 	/**
@@ -543,84 +483,24 @@ public final class RenderHelper extends RenderType {
 		renderIconFullBright(ms, buffer, icon, 0xFFFFFF, alpha);
 	}
 
-	private static class AstrolabeLayer extends RenderType {
-		public AstrolabeLayer() {
-			super(ResourcesLib.PREFIX_MOD + "worldshapers_astrolabe", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true,
-					() -> {
-						Sheets.translucentCullBlockSheet().setupRenderState();
-						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.4F);
-					}, () -> {
-						Sheets.translucentCullBlockSheet().clearRenderState();
-						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-					});
-		}
-	}
-
-	public static void renderGuiItemAlpha(ItemStack stack, int x, int y, int alpha, ItemRenderer renderer) {
-		renderGuiItemAlpha(stack, x, y, alpha, renderer.getModel(stack, null, null, 0), renderer);
-	}
-
 	/**
-	 * Like
-	 * {@link ItemRenderer#render(ItemStack, ItemDisplayContext, boolean, PoseStack, MultiBufferSource, int, int, BakedModel)}
-	 * but with alpha
+	 * Draws an item in the GUI.
+	 * <p>
+	 * PORT-26.3: the old version drew the item through a wrapped buffer to make it translucent. GUI items are
+	 * collected and drawn by the game now, with no way to fade one, so the alpha is ignored until the GUI pass
+	 * finds a way (the item is drawn fully instead of not at all).
 	 */
-	// [VanillaCopy] with a small change
-	public static void renderGuiItemAlpha(ItemStack stack, int x, int y, int alpha, BakedModel model, ItemRenderer renderer) {
-		Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
-
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
-		modelViewStack.pushMatrix();
-		modelViewStack.translate(x, y, 100.0F);
-		modelViewStack.translate(8.0F, 8.0F, 0.0F);
-		modelViewStack.scale(1.0F, -1.0F, 1.0F);
-		modelViewStack.scale(16.0F, 16.0F, 16.0F);
-		RenderSystem.applyModelViewMatrix();
-
-		boolean flatLight = !model.usesBlockLight();
-		if (flatLight) {
-			Lighting.setupForFlatItems();
+	public static void renderGuiItemAlpha(GuiGraphicsExtractor gui, ItemStack stack, int x, int y, int alpha) {
+		if (alpha > 0) {
+			gui.item(stack, x, y);
 		}
-
-		MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-		renderer.render(
-				stack,
-				ItemDisplayContext.GUI,
-				false,
-				new PoseStack(),
-				// This part differs from vanilla. We wrap the buffer to allow drawing translucently
-				wrapBuffer(buffer, alpha, alpha < 255),
-				LightTexture.FULL_BRIGHT,
-				OverlayTexture.NO_OVERLAY,
-				model
-		);
-		buffer.endBatch();
-
-		RenderSystem.enableDepthTest();
-
-		if (flatLight) {
-			Lighting.setupFor3DItems();
-		}
-
-		modelViewStack.popMatrix();
-		RenderSystem.applyModelViewMatrix();
-	}
-
-	private static MultiBufferSource wrapBuffer(MultiBufferSource buffer, int alpha, boolean forceTranslucent) {
-		return renderType -> new GhostVertexConsumer(buffer.getBuffer(forceTranslucent ? TRANSLUCENT : renderType), alpha);
 	}
 
 	/*
 	* Renders a transparent black box with a soft border. The parameters describe the inner box, there will also be drawn
 	* another box that is 2px bigger in each direction
 	*/
-	public static void renderHUDBox(GuiGraphics gui, int startX, int startY, int endX, int endY) {
+	public static void renderHUDBox(GuiGraphicsExtractor gui, int startX, int startY, int endX, int endY) {
 		gui.fill(startX, startY, endX, endY, 0x40000000);
 		gui.fill(startX - 2, startY - 2, endX + 2, endY + 2, 0x40000000);
 	}
@@ -629,14 +509,14 @@ public final class RenderHelper extends RenderType {
 	* Renders an item and its name, vertically centered next to it. Renders nothing if the stack is empty
 	* Note: The item renderer does not respect the PoseStack
 	*/
-	public static void renderItemWithName(GuiGraphics gui, Font font, ItemStack itemStack, int startX, int startY, int color) {
+	public static void renderItemWithName(GuiGraphicsExtractor gui, Font font, ItemStack itemStack, int startX, int startY, int color) {
 		if (!itemStack.isEmpty()) {
-			gui.drawString(font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, color);
-			gui.renderItem(itemStack, startX, startY);
+			gui.text(font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, color);
+			gui.item(itemStack, startX, startY);
 		}
 	}
 
-	public static void renderItemWithNameCentered(GuiGraphics gui, Window window, Font font, ItemStack itemStack, int startY, int color) {
+	public static void renderItemWithNameCentered(GuiGraphicsExtractor gui, Window window, Font font, ItemStack itemStack, int startY, int color) {
 		int centerX = window.getGuiScaledWidth() / 2;
 		int startX = centerX - itemWithNameWidth(itemStack, font) / 2;
 		renderItemWithName(gui, font, itemStack, startX, startY, color);
@@ -663,6 +543,11 @@ public final class RenderHelper extends RenderType {
 		}
 
 		@Override
+		public VertexConsumer setColor(int color) {
+			return setColor(ARGB.red(color), ARGB.green(color), ARGB.blue(color), ARGB.alpha(color));
+		}
+
+		@Override
 		public VertexConsumer setUv(float u, float v) {
 			return wrapped.setUv(u, v);
 		}
@@ -678,8 +563,18 @@ public final class RenderHelper extends RenderType {
 		}
 
 		@Override
+		public VertexConsumer setUv3(float u, float v) {
+			return wrapped.setUv3(u, v);
+		}
+
+		@Override
 		public VertexConsumer setNormal(float x, float y, float z) {
 			return wrapped.setNormal(x, y, z);
+		}
+
+		@Override
+		public VertexConsumer setLineWidth(float width) {
+			return wrapped.setLineWidth(width);
 		}
 	}
 }

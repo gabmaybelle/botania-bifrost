@@ -8,8 +8,7 @@
  */
 package vazkii.botania.mixin.client;
 
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,10 +16,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(RenderType.class)
 public interface RenderTypeAccessor {
+	// PORT-26.3: RenderType#create(String, RenderSetup) replaced the old create with the composite state
 	@Invoker("create")
-	static RenderType.CompositeRenderType botania_create(String string, VertexFormat vertexFormat,
-			VertexFormat.Mode mode, int bufSize, boolean hasCrumbling, boolean sortOnUpload,
-			RenderType.CompositeState compositeState) {
+	static RenderType botania_create(String name, RenderSetup setup) {
 		throw new IllegalStateException();
 	}
 }

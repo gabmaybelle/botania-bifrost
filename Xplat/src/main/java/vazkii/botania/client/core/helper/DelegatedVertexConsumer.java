@@ -10,9 +10,6 @@ package vazkii.botania.client.core.helper;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-/**
- * Dirty hack to override some vertex data in {@link RenderHelper}.
- */
 class DelegatedVertexConsumer implements VertexConsumer {
 	private final VertexConsumer delegate;
 
@@ -31,6 +28,11 @@ class DelegatedVertexConsumer implements VertexConsumer {
 	}
 
 	@Override
+	public VertexConsumer setColor(int color) {
+		return delegate.setColor(color);
+	}
+
+	@Override
 	public VertexConsumer setUv(float u, float v) {
 		return delegate.setUv(u, v);
 	}
@@ -46,7 +48,17 @@ class DelegatedVertexConsumer implements VertexConsumer {
 	}
 
 	@Override
+	public VertexConsumer setUv3(float u, float v) {
+		return delegate.setUv3(u, v);
+	}
+
+	@Override
 	public VertexConsumer setNormal(float x, float y, float z) {
 		return delegate.setNormal(x, y, z);
+	}
+
+	@Override
+	public VertexConsumer setLineWidth(float width) {
+		return delegate.setLineWidth(width);
 	}
 }

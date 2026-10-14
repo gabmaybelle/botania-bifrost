@@ -96,8 +96,7 @@ public class NeoForgeClientInitializer {
 		BotaniaAPI.LOGGER.debug("Client API instances: {}",
 				List.of(BotaniaAPIClient.instance(), ClientXplatAbstractions.instance()));
 
-		BlockRenderLayers.skipPlatformBlocks = true; // platforms can use standard rendering on NeoForge
-		BlockRenderLayers.init(ItemBlockRenderTypes::setRenderLayer);
+		// PORT-26.3: block render layers are read off the textures since 26.1, BlockRenderLayers is gone
 
 		// Events
 		var bus = NeoForge.EVENT_BUS;
@@ -274,17 +273,9 @@ public class NeoForgeClientInitializer {
 	}
 
 	@SubscribeEvent
-	public static void registerShaders(RegisterShadersEvent evt) {
-		CoreShaders.init((id, vertexFormat, onLoaded) -> {
-			try {
-				evt.registerShader(
-						new ShaderInstance(evt.getResourceProvider(), id, vertexFormat),
-						onLoaded
-				);
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		});
+	public static void registerShaders(RegisterRenderPipelinesEvent evt) {
+		// PORT-26.3: shaders are RenderPipelines now (CoreShaders)
+		CoreShaders.init(evt::registerPipeline);
 	}
 
 	@SubscribeEvent

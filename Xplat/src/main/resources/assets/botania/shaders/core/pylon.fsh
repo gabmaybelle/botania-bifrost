@@ -1,24 +1,25 @@
-#version 150
+#version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <fog.glsl>
-// [VanillaCopy] Originally based on rendertype_entity_translucent.fsh, but heavily changed
+// [VanillaCopy] Originally based on entity.fsh (the translucent variant), but heavily changed
+// PORT-26.3: paired with vanilla's core/entity vertex shader without its lighting defines, so the inputs are the
+// plain vertexColor, lightMapColor, overlayColor and texCoord0 at the locations entity.vsh writes them to.
+// GameTime comes from the Globals block.
+
+#include <minecraft:fog.glsl>
+#include <minecraft:globals.glsl>
+#include <minecraft:dynamictransforms.glsl>
 
 uniform sampler2D Sampler0;
 
-uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-uniform vec4 FogColor;
-uniform float GameTime;
+layout(location = 0) in float sphericalVertexDistance;
+layout(location = 1) in float cylindricalVertexDistance;
+layout(location = 2) in vec4 vertexColor;
+layout(location = 4) in vec4 lightMapColor;
+layout(location = 5) in vec4 overlayColor;
+layout(location = 6) in vec2 texCoord0;
 
-in float vertexDistance;
-in vec4 vertexColor;
-in vec4 lightMapColor;
-in vec4 overlayColor;
-in vec2 texCoord0;
-in vec4 normal;
-
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 void main() {
     vec4 color = vec4(0);
@@ -37,8 +38,7 @@ void main() {
 
     color = vec4((color * color * 0.0005 * brightness + texture(Sampler0, texCoord0)).rgb, alpha * vertexColor.a);
     color *= ColorModulator;
-
     color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
     color *= lightMapColor;
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = apply_fog(color, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
 }

@@ -1,26 +1,23 @@
-#version 150
+#version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <fog.glsl>
+// [VanillaCopy] entity.fsh (the translucent variant), changes noted
+// PORT-26.3: the grain intensity arrives from gaia_noise.vsh (it rides on the tint colour's alpha)
 
-// [VanillaCopy] rendertype_entity_translucent.fsh, changes noted
+#include <minecraft:fog.glsl>
+#include <minecraft:dynamictransforms.glsl>
 
 uniform sampler2D Sampler0;
 
-uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-uniform vec4 FogColor;
+layout(location = 0) in float sphericalVertexDistance;
+layout(location = 1) in float cylindricalVertexDistance;
+layout(location = 2) in vec4 vertexColor;
+layout(location = 4) in vec4 lightMapColor;
+layout(location = 5) in vec4 overlayColor;
+layout(location = 6) in vec2 texCoord0;
+layout(location = 7) in float grainIntensity;
 
-in float vertexDistance;
-in vec4 vertexColor;
-in vec4 lightMapColor;
-in vec4 overlayColor;
-in vec2 texCoord0;
-in vec4 normal;
-
-out vec4 fragColor;
-
-uniform float BotaniaGrainIntensity;
+layout(location = 0) out vec4 fragColor;
 
 float rand(vec2 co) {
     return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
@@ -38,7 +35,7 @@ void main() {
     // Botania - Grayscale + Noise with grain intensity
     float r = rand(texCoord0);
     float gs = dot(vec3(0.3, 0.59, 0.11), color.rgb) / 4.5;
-    color.rgb = vec3(mix(gs, r, BotaniaGrainIntensity));
+    color.rgb = vec3(mix(gs, r, grainIntensity));
 
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = apply_fog(color, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
 }

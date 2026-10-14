@@ -1,14 +1,18 @@
-#version 150
+#version 330
+#extension GL_ARB_separate_shader_objects : require
+
+// [VanillaCopy] position_tex_color.fsh with the halo glow added
+// PORT-26.3: GameTime comes from the Globals block, ColorModulator from DynamicTransforms
+
+#include <minecraft:globals.glsl>
+#include <minecraft:dynamictransforms.glsl>
 
 uniform sampler2D Sampler0;
 
-uniform vec4 ColorModulator;
-uniform float GameTime;
+layout(location = 0) in vec2 texCoord0;
+layout(location = 1) in vec4 vertexColor;
 
-in vec4 vertexColor;
-in vec2 texCoord0;
-
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 void main() {
     float timeTicks = GameTime * 24000;
@@ -20,6 +24,7 @@ void main() {
             sum += texture(Sampler0, texCoord0 + vec2(j, i)) * 0.25;
         }
     }
+
     vec4 sampled = texture(Sampler0, texCoord0);
     vec4 color = vec4(0);
     if(sampled.r < 0.3) {
