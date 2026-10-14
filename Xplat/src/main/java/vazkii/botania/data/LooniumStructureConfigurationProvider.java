@@ -11,7 +11,6 @@ package vazkii.botania.data;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.core.HolderLookup;
@@ -23,12 +22,14 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.ExpirableValue;
+import net.minecraft.world.entity.ai.memory.MemoryMap;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
@@ -45,7 +46,6 @@ import vazkii.botania.common.loot.BotaniaLootTables;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -765,7 +765,7 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 				};
 	}
 
-	public static MobSpawnData getCreeperSpawnData(int weight, boolean charged,
+	public static Weighted<MobSpawnData> getCreeperSpawnData(int weight, boolean charged,
 			MobEffectToApply... creeperEffects) {
 		MobSpawnData.Builder builder = MobSpawnData.entityWeight(EntityTypes.CREEPER, weight);
 		builder.effectsToApply(creeperEffects);
@@ -779,21 +779,21 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 		return builder.build();
 	}
 
-	public static MobSpawnData getPiglinSpawnData(int weight, ResourceKey<LootTable> equipmentTable,
+	public static Weighted<MobSpawnData> getPiglinSpawnData(int weight, ResourceKey<LootTable> equipmentTable,
 			boolean needWaterBreathing, boolean zombificationImmune) {
 		CompoundTag piglinNbt = new CompoundTag();
 		if (zombificationImmune) {
 			piglinNbt.putBoolean("IsImmuneToZombification", true);
 		}
 
-		Brain<LivingEntity> piglinBrain = Brain.provider(List.of(MemoryModuleType.UNIVERSAL_ANGER,
-				MemoryModuleType.ADMIRING_DISABLED, MemoryModuleType.ATE_RECENTLY), List.of())
-				.makeBrain(new Dynamic<>(NbtOps.INSTANCE));
-		piglinBrain.setMemory(MemoryModuleType.UNIVERSAL_ANGER, true);
-		piglinBrain.setMemory(MemoryModuleType.ADMIRING_DISABLED, true);
-		piglinBrain.setMemory(MemoryModuleType.ATE_RECENTLY, true);
+		// PORT-26.3: brains are saved as a packed memory map now; a brain itself needs a living body
+		MemoryMap piglinMemories = new MemoryMap.Builder()
+				.add(MemoryModuleType.UNIVERSAL_ANGER, ExpirableValue.of(true))
+				.add(MemoryModuleType.ADMIRING_DISABLED, ExpirableValue.of(true))
+				.add(MemoryModuleType.ATE_RECENTLY, ExpirableValue.of(true))
+				.build();
 
-		DataResult<Tag> dataResult = piglinBrain.serializeStart(NbtOps.INSTANCE);
+		DataResult<Tag> dataResult = Brain.Packed.CODEC.encodeStart(NbtOps.INSTANCE, new Brain.Packed(piglinMemories));
 		dataResult.resultOrPartial(BotaniaAPI.LOGGER::error).ifPresent(tag -> piglinNbt.put("Brain", tag));
 
 		return MobSpawnData.entityWeight(EntityTypes.PIGLIN, weight)

@@ -36,7 +36,7 @@ public class DamageTypeTagProvider extends TagsProvider<DamageType> {
 				.add(DamageTypes.IN_WALL)
 				.add(DamageTypes.STARVE)
 				.add(DamageTypes.FLY_INTO_WALL)
-				.addOptionalTag(DamageTypeTags.IS_FIRE.identifier());
+				.addOptionalTag(DamageTypeTags.IS_FIRE);
 
 		/*
 		Optional tag workaround for error:

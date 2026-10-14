@@ -16,11 +16,13 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 import vazkii.botania.common.crafting.recipe.TiaraWingsRecipe;
 import vazkii.botania.common.item.BotaniaItems;
@@ -52,13 +54,14 @@ public class TiaraWingsRecipeBuilder {
 
 	public void save(RecipeOutput recipeOutput) {
 		Identifier tiaraId = BuiltInRegistries.ITEM.getKey(BotaniaItems.FLUGEL_TIARA);
-		Identifier id = tiaraId.withSuffix("_" + variant);
+		ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, tiaraId.withSuffix("_" + variant));
+		// [VanillaCopy] RecipeUnlockAdvancementBuilder#build
 		Advancement.Builder builder = recipeOutput.advancement()
-				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeOutput.lookup(Registries.RECIPE).getOrThrow(id)))
 				.rewards(AdvancementRewards.Builder.recipe(id))
 				.requirements(AdvancementRequirements.Strategy.OR);
 		this.criteria.forEach(builder::addCriterion);
-		TiaraWingsRecipe recipe = new TiaraWingsRecipe(RecipeBuilder.determineBookCategory(category), material, variant);
-		recipeOutput.accept(id, recipe, builder.build(id.withPrefix("recipes/" + this.category.getFolderName() + "/")));
+		TiaraWingsRecipe recipe = new TiaraWingsRecipe(material, variant);
+		recipeOutput.accept(id, recipe, builder.build(id.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
 	}
 }

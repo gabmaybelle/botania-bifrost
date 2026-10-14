@@ -11,12 +11,11 @@
 package vazkii.botania.data.loot;
 
 import net.minecraft.advancements.predicates.StatePropertiesPredicate;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -25,8 +24,9 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.block.BotaniaBlocks;
@@ -52,8 +52,8 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 
 	private final Set<Block> specialHandling = new HashSet<>();
 
-	public BotaniaBlockLoot(HolderLookup.Provider registries) {
-		super(EXPLOSION_RESISTANT, FeatureFlags.REGISTRY.allFlags(), registries);
+	public BotaniaBlockLoot(LootTableSubProvider.Context output) {
+		super(EXPLOSION_RESISTANT, FeatureFlags.REGISTRY.allFlags(), output);
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 
 		// Special
 		dropWhenSilkTouch(BotaniaBlocks.CELLULAR_BLOCK);
-		specialCases.put(BotaniaBlocks.LIVING_ROOT, createSingleItemTable(BotaniaItems.LIVING_ROOT, ConstantValue.exactly(4)));
-		specialCases.put(BotaniaBlocks.SOLID_VINE, BotaniaLootTableProvider.copyReferencedLootTable(Blocks.VINE.getLootTable()));
+		specialCases.put(BotaniaBlocks.LIVING_ROOT, createSingleItemTable(BotaniaItems.LIVING_ROOT, ContextIntProviders.exactly(4)));
+		specialCases.put(BotaniaBlocks.SOLID_VINE, BotaniaLootTableProvider.copyReferencedLootTable(this.output, Blocks.VINE.getLootTable().orElseThrow()));
 		specialCases.put(BotaniaBlocks.TINY_POTATO, createNameableBlockEntityTable(BotaniaBlocks.TINY_POTATO));
 
 		// Flower component saving
@@ -135,17 +135,17 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 	private LootTable.Builder createManaSpreaderTable(ManaSpreaderBlock block) {
 		LootTable.Builder builder = LootTable.lootTable()
 				.withPool(this.applyExplosionCondition(block,
-						LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+						LootPool.lootPool().setRolls(ContextIntProviders.exactly(1))
 								.add(LootItem.lootTableItem(ManaSpreaderBlock.getBaseBlock(block)))))
 				.withPool(this.applyExplosionCondition(Blocks.SCAFFOLDING,
-						LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+						LootPool.lootPool().setRolls(ContextIntProviders.exactly(1))
 								.add(LootItem.lootTableItem(Blocks.SCAFFOLDING))
-								.when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-										.setProperties(StatePropertiesPredicate.Builder.properties()
+								.when(MatchBlock.blockMatches(this.blocks, block,
+										StatePropertiesPredicate.Builder.properties()
 												.hasProperty(ManaSpreaderBlock.HAS_SCAFFOLDING, true)))));
 		if (block.getCoverColor() != null) {
 			builder.withPool(this.applyExplosionCondition(block,
-					LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+					LootPool.lootPool().setRolls(ContextIntProviders.exactly(1))
 							.add(LootItem.lootTableItem(ColorHelper.WOOL_MAP.apply(block.getCoverColor())))));
 		}
 		return builder;
@@ -164,16 +164,12 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 	}
 
 	protected LootTable.Builder createBlockEntityTableWithComponents(Block block, DataComponentType<?>... componentsToInclude) {
-		CopyComponentsFunction.Builder copyComponents = CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY);
+		CopyComponentsFunction.Builder copyComponents = CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY);
 		for (DataComponentType<?> component : componentsToInclude) {
 			copyComponents.include(component);
 		}
 		return LootTable.lootTable().withPool(this.applyExplosionCondition(block, LootPool.lootPool()
-				.setRolls(ConstantValue.exactly(1.0F))
+				.setRolls(ContextIntProviders.exactly(1))
 				.add(LootItem.lootTableItem(block).apply(copyComponents))));
-	}
-
-	public Map<? extends ResourceKey<LootTable>, ? extends LootTable.Builder> getMap() {
-		return Collections.unmodifiableMap(this.map);
 	}
 }

@@ -12,7 +12,7 @@ package vazkii.botania.data.recipes.builder;
 
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class CapturingRecipeOutput {
-	private final MutableObject<@UnknownNullability Identifier> partialRecipeId = new MutableObject<>();
+	private final MutableObject<@UnknownNullability ResourceKey<Recipe<?>>> partialRecipeId = new MutableObject<>();
 	private final MutableObject<@UnknownNullability Recipe<?>> partialRecipe = new MutableObject<>();
 	private final MutableObject<@Nullable AdvancementHolder> partialAdvancementHolder = new MutableObject<>();
 	private final RecipeOutput partialOutput;
@@ -38,13 +38,13 @@ public class CapturingRecipeOutput {
 					partialRecipe.setValue(recipe);
 					partialAdvancementHolder.setValue(advancement);
 				},
-				recipeOutput::advancement);
+				recipeOutput::advancement, recipeOutput);
 	}
 
-	public Triple<Identifier, Recipe<?>, Optional<AdvancementHolder>> captureSave(Consumer<RecipeOutput> recipeOutputConsumer) {
+	public Triple<ResourceKey<Recipe<?>>, Recipe<?>, Optional<AdvancementHolder>> captureSave(Consumer<RecipeOutput> recipeOutputConsumer) {
 		recipeOutputConsumer.accept(partialOutput);
 
-		Identifier recipeId = partialRecipeId.getValue();
+		ResourceKey<Recipe<?>> recipeId = partialRecipeId.getValue();
 		Recipe<?> recipe = partialRecipe.getValue();
 		AdvancementHolder advancementHolder = partialAdvancementHolder.getValue();
 

@@ -12,17 +12,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 
 import vazkii.botania.common.entity.BotaniaEntities;
 import vazkii.botania.common.lib.BotaniaTags;
+import vazkii.botania.data.util.IntrinsicTagsProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class EntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>> {
+public class EntityTagProvider extends IntrinsicTagsProvider<EntityType<?>> {
 	public EntityTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.ENTITY_TYPE, lookupProvider,
 				entityType -> BuiltInRegistries.ENTITY_TYPE.getResourceKey(entityType).orElseThrow());

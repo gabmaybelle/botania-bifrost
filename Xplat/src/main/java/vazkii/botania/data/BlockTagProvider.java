@@ -12,8 +12,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -40,13 +40,14 @@ import vazkii.botania.common.helper.ColorHelper;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.lib.LibBlockNames;
 import vazkii.botania.data.util.DummyTagLookup;
+import vazkii.botania.data.util.IntrinsicTagsProvider;
 
 import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
-public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
+public class BlockTagProvider extends IntrinsicTagsProvider<Block> {
 	public static final Predicate<Block> BOTANIA_BLOCK =
 			block -> BotaniaAPI.MODID.equals(BuiltInRegistries.BLOCK.getKey(block).getNamespace());
 	private static final Set<TagKey<Block>> REQUIRED_TAGS = Set.of(
@@ -246,7 +247,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.addTag(BotaniaTags.Blocks.POTTED_GLIMMERING_FLOWERS);
 
 		// Special flowers intentionally excluded due to unwanted behaviors with tree growth and mod compat.
-		tag(BlockTags.TALL_FLOWERS).addTag(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS);
+		tag(BlockTags.FLOWERS).addTag(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS); // PORT-26.3: no tall flowers tag any more
 		tag(BlockTags.SMALL_FLOWERS).addTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 		// intentionally not added to small flowers so Endermen don't grab them
 		tag(BlockTags.FLOWERS).addTag(BotaniaTags.Blocks.GLIMMERING_FLOWERS);
@@ -362,7 +363,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 						BotaniaBlocks.STRIPPED_DREAMWOOD_LOG, BotaniaBlocks.STRIPPED_DREAMWOOD
 				)
 				.addTag(BotaniaTags.Blocks.DREAMWOOD_LOGS_GLIMMERING);
-		tag(BlockTags.LOGS_THAT_BURN)
+		tag(BlockItemTags.LOGS_THAT_BURN.block())
 				.addTag(BotaniaTags.Blocks.LIVINGWOOD_LOGS)
 				.addTag(BotaniaTags.Blocks.DREAMWOOD_LOGS);
 
@@ -377,7 +378,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.WEIGHT_LENS_AFFECTED);
 
-		tag(BlockTags.MUSHROOM_GROW_BLOCK).add(
+		tag(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT).add(
 				BotaniaBlocks.MYCELITE, BotaniaBlocks.MYCELITE_SLAB, BotaniaBlocks.MYCELITE_STAIRS,
 				BotaniaBlocks.MYCELITE_WALL, BotaniaBlocks.MYCELITE_BRICKS, BotaniaBlocks.MYCELITE_BRICK_SLAB,
 				BotaniaBlocks.MYCELITE_BRICK_STAIRS, BotaniaBlocks.MYCELITE_BRICK_WALL, BotaniaBlocks.COBBLED_MYCELITE,

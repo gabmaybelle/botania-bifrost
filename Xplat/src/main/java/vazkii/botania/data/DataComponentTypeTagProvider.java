@@ -15,14 +15,14 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceKey;
 
 import vazkii.botania.common.lib.BotaniaTags;
+import vazkii.botania.data.util.IntrinsicTagsProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DataComponentTypeTagProvider extends IntrinsicHolderTagsProvider<DataComponentType<?>> {
+public class DataComponentTypeTagProvider extends IntrinsicTagsProvider<DataComponentType<?>> {
 
 	public DataComponentTypeTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(packOutput, Registries.DATA_COMPONENT_TYPE, lookupProvider, DataComponentTypeTagProvider::getResourceKey);

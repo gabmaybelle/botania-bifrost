@@ -15,10 +15,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -197,13 +199,13 @@ public interface XplatAbstractions {
 	WoodType registerWoodType(String name, BlockSetType setType, SoundType soundType, SoundType hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen);
 
 	// (hopefully temporary) workaround for NeoForge changing RecipeOutput::accept signature
-	RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder);
+	RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder, BootstrapContextAccess lookups);
 
 	boolean shouldShowExtendedItemTooltip(TooltipFlag flags);
 
 	@FunctionalInterface
 	interface RecipeAcceptor {
-		void accept(Identifier location, Recipe<?> recipe, @Nullable AdvancementHolder advancement);
+		void accept(ResourceKey<Recipe<?>> id, Recipe<?> recipe, @Nullable AdvancementHolder advancement);
 	}
 
 	// SpeedrunIGT integration

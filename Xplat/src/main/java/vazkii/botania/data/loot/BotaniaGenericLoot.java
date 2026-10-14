@@ -10,11 +10,13 @@
 
 package vazkii.botania.data.loot;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -26,7 +28,7 @@ import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.lib.BotaniaTags;
@@ -51,6 +53,21 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 	public static final EnumSet<VillageLoot> TAIGA_VILLAGE_LOOT = EnumSet
 			.of(VillageLoot.CARTOGRAPHER, VillageLoot.FLETCHER, VillageLoot.TANNERY, VillageLoot.TOOLSMITH, VillageLoot.WEAPONSMITH);
 
+	private final LootTableSubProvider.Context output;
+	private final HolderGetter<Item> items;
+	private final HolderGetter<LootTable> lootTables;
+
+	public BotaniaGenericLoot(LootTableSubProvider.Context output) {
+		this.output = output;
+		this.items = output.lookup(Registries.ITEM);
+		this.lootTables = output.lookup(Registries.LOOT_TABLE);
+	}
+
+	@Override
+	public void run() {
+		generate(output::accept);
+	}
+
 	public static ResourceKey<LootTable> getStructureId(ResourceKey<Structure> structureKey) {
 		return getStructureId(structureKey.identifier());
 	}
@@ -60,28 +77,27 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 				Registries.LOOT_TABLE, botaniaRL("loonium/%s/%s".formatted(structureId.getNamespace(), structureId.getPath())));
 	}
 
-	@Override
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
 
 		output.accept(BotaniaLootTables.GAIA_GUARDIAN_LOTUSES, LootTable.lootTable().withPool(LootPool.lootPool()
 				.add(LootItem.lootTableItem(BotaniaItems.BLACKER_LOTUS).setWeight(3).setQuality(1))
 				.add(LootItem.lootTableItem(BotaniaItems.BLACK_LOTUS).setWeight(7)
-						.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+						.apply(SetItemCountFunction.setCount(ContextIntProviders.between(1, 3))))
 		));
 		output.accept(BotaniaLootTables.GAIA_GUARDIAN_MATERIALS, LootTable.lootTable()
 				.withPool(LootPool.lootPool().add(LootItem.lootTableItem(BotaniaItems.MANASTEEL_INGOT)
-						.apply(SetItemCountFunction.setCount(UniformGenerator.between(16, 27))))
+						.apply(SetItemCountFunction.setCount(ContextIntProviders.between(16, 27))))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f)))
 				.withPool(LootPool.lootPool().add(LootItem.lootTableItem(BotaniaItems.MANA_PEARL)
-						.apply(SetItemCountFunction.setCount(UniformGenerator.between(8, 13))))
+						.apply(SetItemCountFunction.setCount(ContextIntProviders.between(8, 13))))
 						.when(LootItemRandomChanceCondition.randomChance(0.7f)))
 				.withPool(LootPool.lootPool().add(LootItem.lootTableItem(BotaniaItems.MANA_DIAMOND)
-						.apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 6))))
+						.apply(SetItemCountFunction.setCount(ContextIntProviders.between(4, 6))))
 						.when(LootItemRandomChanceCondition.randomChance(0.5f)))
 		);
 		output.accept(BotaniaLootTables.GAIA_GUARDIAN_RUNES, LootTable.lootTable().withPool(LootPool.lootPool()
-				.add(TagEntry.expandTag(BotaniaTags.Items.RUNES))
-				.apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+				.add(TagEntry.expandTag(items.getOrThrow(BotaniaTags.Items.RUNES)))
+				.apply(SetItemCountFunction.setCount(ContextIntProviders.between(2, 4)))
 		));
 
 		// Note: As far as world generating is concerned, dungeons are "features" (i.e. like trees or geodes),
@@ -99,30 +115,30 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 
 		output.accept(getStructureId(BuiltinStructures.ANCIENT_CITY),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.ANCIENT_CITY).setWeight(9))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.ANCIENT_CITY_ICE_BOX).setWeight(1))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.ANCIENT_CITY)).setWeight(9))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.ANCIENT_CITY_ICE_BOX)).setWeight(1))
 				)
 		);
 		output.accept(getStructureId(BuiltinStructures.BASTION_REMNANT),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.BASTION_BRIDGE).setWeight(1))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.BASTION_HOGLIN_STABLE).setWeight(1))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.BASTION_TREASURE).setWeight(1))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.BASTION_OTHER).setWeight(7))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.BASTION_BRIDGE)).setWeight(1))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.BASTION_HOGLIN_STABLE)).setWeight(1))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.BASTION_TREASURE)).setWeight(1))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.BASTION_OTHER)).setWeight(7))
 				)
 		);
 		output.accept(getStructureId(BuiltinStructures.BURIED_TREASURE), buildDelegateLootTable(BuiltInLootTables.BURIED_TREASURE));
 		output.accept(getStructureId(BuiltinStructures.DESERT_PYRAMID),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.DESERT_PYRAMID).setWeight(37))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY).setWeight(2))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.DESERT_PYRAMID)).setWeight(37))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY)).setWeight(2))
 						// desert wells are features, so not detectable by the Loonium
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY)))
 				)
 		);
 		output.accept(getStructureId(BuiltinStructures.END_CITY),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.END_CITY_TREASURE).setWeight(49))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.END_CITY_TREASURE)).setWeight(49))
 						.add(LootItem.lootTableItem(Items.ELYTRA))
 				)
 		);
@@ -130,15 +146,15 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 		// skipping igloo, because the laboratory piece, which is the only part that has loot, can't be detected reliably
 		output.accept(getStructureId(BuiltinStructures.JUNGLE_TEMPLE),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.JUNGLE_TEMPLE).setWeight(9))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.JUNGLE_TEMPLE_DISPENSER))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.JUNGLE_TEMPLE)).setWeight(9))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.JUNGLE_TEMPLE_DISPENSER)))
 				)
 		);
 		output.accept(getStructureId(BuiltinStructures.MINESHAFT), buildDelegateLootTable(BuiltInLootTables.ABANDONED_MINESHAFT));
 		output.accept(getStructureId(BuiltinStructures.MINESHAFT_MESA), buildDelegateLootTable(BuiltInLootTables.ABANDONED_MINESHAFT));
 		output.accept(getStructureId(BuiltinStructures.OCEAN_MONUMENT),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(EntityTypes.ELDER_GUARDIAN.getDefaultLootTable()).setWeight(5))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(EntityTypes.ELDER_GUARDIAN.getDefaultLootTable().orElseThrow())).setWeight(5))
 						// sponge is a player-kill drop and won't be rolled for the elder guardian table by the Loonium
 						.add(LootItem.lootTableItem(Items.WET_SPONGE))
 
@@ -163,9 +179,9 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 		output.accept(getStructureId(BuiltinStructures.STRONGHOLD),
 				// Strongholds generate up to 4 corridor chests, up to 6 crossings, and up to 2 libraries with 1 or 2 chests
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CORRIDOR).setWeight(4))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CROSSING).setWeight(6))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_LIBRARY).setWeight(3))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.STRONGHOLD_CORRIDOR)).setWeight(4))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.STRONGHOLD_CROSSING)).setWeight(6))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.STRONGHOLD_LIBRARY)).setWeight(3))
 				)
 		);
 		// skipping swamp hut, because it doesn't contain unique loot (could merge witch/cat tables, I guess)
@@ -173,21 +189,21 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 				// Trail ruins have 2 common suspicious gravel for the tower top and each road section,
 				// and 6 common plus 3 rare suspicious gravel per building and for the tower bottom.
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_COMMON).setWeight(9))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_COMMON)).setWeight(9))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE)))
 				)
 		);
 		output.accept(getStructureId(BuiltinStructures.TRIAL_CHAMBERS),
 				// TODO: figure out appropriate weights (rewards are probably drowned out by other choices)
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR_POT))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_ENTRANCE))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_INTERSECTION))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_INTERSECTION_BARREL))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_REWARD).setWeight(2))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS))
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.TRIAL_CHAMBERS_SUPPLY))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR)))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR_POT)))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_ENTRANCE)))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_INTERSECTION)))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_INTERSECTION_BARREL)))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_REWARD)).setWeight(2))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS)))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.TRIAL_CHAMBERS_SUPPLY)))
 				)
 		);
 		output.accept(getStructureId(BuiltinStructures.VILLAGE_PLAINS),
@@ -207,42 +223,42 @@ public class BotaniaGenericLoot implements LootTableSubProvider {
 		);
 		output.accept(getStructureId(BuiltinStructures.WOODLAND_MANSION),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(BuiltInLootTables.WOODLAND_MANSION).setWeight(99))
+						.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.WOODLAND_MANSION)).setWeight(99))
 						.add(LootItem.lootTableItem(Items.TOTEM_OF_UNDYING).setWeight(1))
 				)
 		);
 	}
 
-	public static LootTable.Builder buildVillageLootTable(ResourceKey<LootTable> house, Set<VillageLoot> villageLootSet) {
-		LootPool.Builder lootPool = LootPool.lootPool().add(NestedLootTable.lootTableReference(house).setWeight(3));
+	public LootTable.Builder buildVillageLootTable(ResourceKey<LootTable> house, Set<VillageLoot> villageLootSet) {
+		LootPool.Builder lootPool = LootPool.lootPool().add(NestedLootTable.lootTableReference(lootTables.getOrThrow(house)).setWeight(3));
 		for (VillageLoot loot : villageLootSet) {
-			lootPool.add(NestedLootTable.lootTableReference(loot.lootTable));
+			lootPool.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(loot.lootTable)));
 		}
 		return LootTable.lootTable().withPool(lootPool);
 	}
 
-	public static LootTable.Builder buildShipwreckLootTable() {
+	public LootTable.Builder buildShipwreckLootTable() {
 		return LootTable.lootTable().withPool(LootPool.lootPool()
-				.add(NestedLootTable.lootTableReference(BuiltInLootTables.SHIPWRECK_MAP))
-				.add(NestedLootTable.lootTableReference(BuiltInLootTables.SHIPWRECK_SUPPLY))
-				.add(NestedLootTable.lootTableReference(BuiltInLootTables.SHIPWRECK_TREASURE))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.SHIPWRECK_MAP)))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.SHIPWRECK_SUPPLY)))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.SHIPWRECK_TREASURE)))
 		);
 	}
 
-	public static LootTable.Builder buildDelegateLootTable(ResourceKey<LootTable> reference) {
+	public LootTable.Builder buildDelegateLootTable(ResourceKey<LootTable> reference) {
 		return LootTable.lootTable().withPool(LootPool.lootPool()
-				.add(NestedLootTable.lootTableReference(reference))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(reference)))
 		);
 	}
 
-	public static LootTable.Builder buildOceanRuinLootTable(ResourceKey<LootTable> archaeology) {
+	public LootTable.Builder buildOceanRuinLootTable(ResourceKey<LootTable> archaeology) {
 		// Note: since the Loonium does not supply a location, treasure maps will roll as empty maps
 		return LootTable.lootTable().withPool(LootPool.lootPool()
 				// 30% of ocean ruin sites generate with a big ruin instead of a small one,
 				// but 90% of those big ruin sites additionally generate 4-8 small ruins around the big one.
-				.add(NestedLootTable.lootTableReference(BuiltInLootTables.UNDERWATER_RUIN_BIG))
-				.add(NestedLootTable.lootTableReference(BuiltInLootTables.UNDERWATER_RUIN_SMALL).setWeight(8))
-				.add(NestedLootTable.lootTableReference(archaeology))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.UNDERWATER_RUIN_BIG)))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(BuiltInLootTables.UNDERWATER_RUIN_SMALL)).setWeight(8))
+				.add(NestedLootTable.lootTableReference(lootTables.getOrThrow(archaeology)))
 		);
 	}
 

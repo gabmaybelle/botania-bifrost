@@ -10,12 +10,15 @@ package vazkii.botania.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -31,22 +34,50 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.lens.LensItem;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.data.util.DummyTagLookup;
+import vazkii.botania.data.util.IntrinsicTagAppender;
+import vazkii.botania.data.util.IntrinsicTagsProvider;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
-public class ItemTagProvider extends ItemTagsProvider {
+public class ItemTagProvider extends IntrinsicTagsProvider<Item> {
 	private static final Set<TagKey<Item>> REQUIRED_TAGS = Set.of(
 			ItemTags.SAND,
 			ItemTags.ARROWS,
 			ItemTags.SAPLINGS
 	);
 
+	private final CompletableFuture<TagsProvider.TagLookup<Block>> blockTags;
+	// PORT-26.3: vanilla's ItemTagsProvider (and its block tag copying) is gone, so the copying lives here now
+	private final Map<TagKey<Block>, TagKey<Item>> tagsToCopy = new LinkedHashMap<>();
+
 	public ItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
 			CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
-		super(output, lookupProvider, DummyTagLookup.completedFuture(REQUIRED_TAGS), blockTags);
+		super(output, Registries.ITEM, lookupProvider, DummyTagLookup.completedFuture(REQUIRED_TAGS),
+				item -> BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow());
+		this.blockTags = blockTags;
+	}
+
+	/** Every entry of the block tag is copied into the item tag once the block tags are generated. */
+	protected void copy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
+		tagsToCopy.put(blockTag, itemTag);
+	}
+
+	@Override
+	protected CompletableFuture<HolderLookup.Provider> createContentsProvider() {
+		return super.createContentsProvider().thenCombine(blockTags, (registries, lookup) -> {
+			tagsToCopy.forEach((blockTag, itemTag) -> {
+				TagBuilder itemBuilder = getOrCreateRawBuilder(itemTag);
+				TagBuilder blockBuilder = lookup.apply(blockTag)
+						.orElseThrow(() -> new IllegalStateException("Missing block tag " + blockTag.location()));
+				blockBuilder.build().forEach(itemBuilder::add);
+			});
+			return registries;
+		});
 	}
 
 	@Override
@@ -81,10 +112,10 @@ public class ItemTagProvider extends ItemTagsProvider {
 				BotaniaItems.ELEMENTIUM_BOOTS, BotaniaItems.TERRASTEEL_BOOTS);
 
 		this.copy(BlockTags.RAILS, ItemTags.RAILS);
-		this.copy(BlockTags.SLABS, ItemTags.SLABS);
+		this.copy(BlockTags.SLABS, BlockItemTags.SLABS.item());
 		this.copy(BlockTags.PLANKS, ItemTags.PLANKS);
 		this.copy(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS);
-		this.copy(BlockTags.STAIRS, ItemTags.STAIRS);
+		this.copy(BlockTags.STAIRS, BlockItemTags.STAIRS.item());
 		this.copy(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
 		this.copy(BlockTags.WALLS, ItemTags.WALLS);
 		this.copy(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES);
@@ -95,7 +126,7 @@ public class ItemTagProvider extends ItemTagsProvider {
 		this.copy(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS);
 		this.copy(BlockTags.STANDING_SIGNS, ItemTags.SIGNS);
 		this.copy(BlockTags.CEILING_HANGING_SIGNS, ItemTags.HANGING_SIGNS);
-		this.copy(BlockTags.STONE_BUTTONS, ItemTags.STONE_BUTTONS);
+		this.copy(BlockTags.STONE_BUTTONS, BlockItemTags.STONE_BUTTONS.item());
 
 		this.copy(BotaniaTags.Blocks.MUNDANE_FLOATING_FLOWERS, BotaniaTags.Items.MUNDANE_FLOATING_FLOWERS);
 		this.copy(BotaniaTags.Blocks.MISC_FLOATING_FLOWERS, BotaniaTags.Items.MISC_FLOATING_FLOWERS);
@@ -117,8 +148,8 @@ public class ItemTagProvider extends ItemTagsProvider {
 				.addTag(BotaniaTags.Items.SPECIAL_FLOWERS)
 				.add(BotaniaBlocks.DAYBLOOM_MOTIF.asItem(), BotaniaBlocks.NIGHTSHADE_MOTIF.asItem());
 
-		this.tag(ItemTags.TALL_FLOWERS).addTag(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS);
-		this.tag(ItemTags.SMALL_FLOWERS)
+		this.tag(BlockItemTags.FLOWERS.item()).addTag(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS);
+		this.tag(BlockItemTags.SMALL_FLOWERS.item())
 				.addTag(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS)
 				.addTag(BotaniaTags.Items.GLIMMERING_FLOWERS)
 				.addTag(BotaniaTags.Items.SPECIAL_FLOWERS)
@@ -145,7 +176,7 @@ public class ItemTagProvider extends ItemTagsProvider {
 				BotaniaItems.MANASTEEL_INGOT, BotaniaItems.TERRASTEEL_INGOT, BotaniaItems.ELEMENTIUM_INGOT,
 				BotaniaItems.MANA_DIAMOND, BotaniaItems.DRAGONSTONE);
 
-		this.copy(BlockTags.LOGS_THAT_BURN, ItemTags.LOGS_THAT_BURN);
+		this.copy(BlockItemTags.LOGS_THAT_BURN.block(), ItemTags.LOGS_THAT_BURN);
 		this.copy(BotaniaTags.Blocks.WOODEN_WALLS, BotaniaTags.Items.WOODEN_WALLS);
 		this.copy(BotaniaTags.Blocks.LIVINGWOOD_LOGS, BotaniaTags.Items.LIVINGWOOD_LOGS);
 		this.copy(BotaniaTags.Blocks.LIVINGWOOD_LOGS_GLIMMERING, BotaniaTags.Items.LIVINGWOOD_LOGS_GLIMMERING);

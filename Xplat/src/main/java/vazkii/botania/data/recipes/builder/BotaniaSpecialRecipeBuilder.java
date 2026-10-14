@@ -9,8 +9,10 @@
 package vazkii.botania.data.recipes.builder;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -36,6 +38,6 @@ public class BotaniaSpecialRecipeBuilder {
 		Identifier serializerKey = BuiltInRegistries.RECIPE_SERIALIZER.getKey(serializer);
 		Identifier recipeId = Identifier.fromNamespaceAndPath(serializerKey.getNamespace(),
 				"dynamic/" + serializerKey.getPath().replaceFirst("crafting_(?:special|shaped|shapeless)_", ""));
-		recipeOutput.accept(recipeId, recipe, null);
+		recipeOutput.accept(ResourceKey.create(Registries.RECIPE, recipeId), recipe, null);
 	}
 }

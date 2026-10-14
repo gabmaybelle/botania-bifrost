@@ -39,6 +39,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -618,11 +619,11 @@ public class FabricXplatImpl implements XplatAbstractions {
 	}
 
 	@Override
-	public RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder) {
+	public RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder, BootstrapContextAccess lookups) {
 		return new RecipeOutput() {
 			@Override
 			public void accept(ResourceKey<Recipe<?>> id, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
-				recipeAcceptor.accept(id.identifier(), recipe, advancement);
+				recipeAcceptor.accept(id, recipe, advancement);
 			}
 
 			@Override
@@ -632,14 +633,12 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 			@Override
 			public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
-				// PORT-26.3: RecipeOutput hands out registry lookups now; the parked recipe datagen is the only caller
-				// and has to supply them when it comes back (Phase 1, step 4).
-				throw new UnsupportedOperationException("Registry lookups are not available here yet");
+				return lookups.lookup(key);
 			}
 
 			@Override
 			public <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {
-				throw new UnsupportedOperationException("Registry lookups are not available here yet");
+				return lookups.listContextElements(key);
 			}
 		};
 	}
