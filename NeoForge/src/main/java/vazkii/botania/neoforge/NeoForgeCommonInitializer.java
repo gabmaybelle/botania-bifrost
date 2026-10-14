@@ -15,7 +15,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -94,7 +93,6 @@ import vazkii.botania.common.config.ConfigDataManagerImpl;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.crafting.StateIngredients;
 import vazkii.botania.common.entity.BotaniaEntities;
-import vazkii.botania.common.entity.GaiaGuardianEntity;
 import vazkii.botania.common.handler.*;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.impl.BotaniaAPIImpl;
@@ -114,7 +112,6 @@ import vazkii.botania.common.world.SkyblockChunkGenerator;
 import vazkii.botania.common.world.SkyblockWorldEvents;
 import vazkii.botania.neoforge.integration.InventorySorterIntegration;
 import vazkii.botania.neoforge.integration.corporea.NeoForgeCapCorporeaNodeDetector;
-import vazkii.botania.neoforge.integration.curios.CurioIntegration;
 import vazkii.botania.neoforge.internal_caps.BotaniaNeoforgeDataComponents;
 import vazkii.botania.neoforge.internal_caps.ExtrapolatedBucketFluidHandler;
 import vazkii.botania.neoforge.internal_caps.NeoForgeInternalEntityCapabilities;
@@ -123,7 +120,6 @@ import vazkii.botania.neoforge.internal_caps.WaterBowlFluidHandler;
 import vazkii.botania.neoforge.network.NeoForgePacketHandler;
 import vazkii.botania.network.clientbound.ItemLifeTimePacket;
 import vazkii.botania.xplat.XplatAbstractions;
-import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -162,10 +158,8 @@ public class NeoForgeCommonInitializer {
 		DefaultCorporeaMatchers.init();
 		PlayerHelper.setFakePlayerClass(FakePlayer.class);
 
-		PatchouliAPI.get().registerMultiblock(botaniaRL("alfheim_portal"), AlfheimPortalBlockEntity.MULTIBLOCK.get());
-		PatchouliAPI.get().registerMultiblock(BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.TERRESTRIAL_AGGLOMERATION_PLATE), TerrestrialAgglomerationPlateBlockEntity.MULTIBLOCK.get());
-		PatchouliAPI.get().registerMultiblock(BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.MANA_ENCHANTER), ManaEnchanterBlockEntity.MULTIBLOCK.get());
-		PatchouliAPI.get().registerMultiblock(botaniaRL("gaia_ritual"), GaiaGuardianEntity.ARENA_MULTIBLOCK.get());
+		// PORT-26.3: disabled. Registering the multiblocks with Patchouli (for the Lexica's visualiser) waits for
+		// a 26.3 Patchouli in Phase 5. The multiblocks themselves still exist on their block entities.
 
 		OrechidManager.registerListener();
 		BotaniaRecipeIngredientsCache.registerListener();
@@ -445,12 +439,8 @@ public class NeoForgeCommonInitializer {
 		BotaniaCapabilities.registerCapabilityProviders(BotaniaNeoForgeCapabilities.getProviderRegistration(e));
 
 		// NeoForge-specific implementations
-		if (EquipmentHandler.instance instanceof CurioIntegration ci) {
-			Item[] baubleItems = BuiltInRegistries.ITEM.stream()
-					.filter(item -> item instanceof BaubleItem)
-					.toArray(Item[]::new);
-			ci.initCapability(e, baubleItems);
-		}
+		// PORT-26.3: disabled. Curios' capability registration comes back with Curios in Phase 5
+		// (src/disabled/integration/curios).
 
 		e.registerItem(Capabilities.FluidHandler.ITEM,
 				(stack, context) -> new WaterBowlFluidHandler(stack),

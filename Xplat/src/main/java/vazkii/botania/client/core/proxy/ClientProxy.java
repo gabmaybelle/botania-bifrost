@@ -31,11 +31,9 @@ import vazkii.botania.client.fx.BoltRenderer;
 import vazkii.botania.common.entity.GaiaGuardianEntity;
 import vazkii.botania.common.item.*;
 import vazkii.botania.common.proxy.Proxy;
-import vazkii.botania.mixin.client.MultiblockVisualizationHandlerMixin;
 import vazkii.botania.xplat.BotaniaConfig;
 import vazkii.patchouli.api.IMultiblock;
 import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.client.handler.MultiblockVisualizationHandler;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -125,12 +123,14 @@ public class ClientProxy implements Proxy {
 
 	@Override
 	public BlockPos getMultiblockAnchor() {
-		return MultiblockVisualizationHandlerMixin.botania_getPos();
+		// PORT-26.3: disabled. The Sextant's ring preview is drawn by Patchouli's multiblock visualiser, which has
+		// no 26.3 build; the anchor lives in that visualiser (Xplat/src/disabled/patchouli-mixins). Phase 5.
+		return null;
 	}
 
 	@Override
 	public void setMultiblockAnchor(BlockPos anchor) {
-		MultiblockVisualizationHandler.anchorTo(anchor, Rotation.NONE);
+		// PORT-26.3: disabled, see getMultiblockAnchor.
 	}
 
 	@Nullable

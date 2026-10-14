@@ -48,9 +48,10 @@ The branch is still an unfinished upstream port, so expect some bugs that exist 
 | ModDevGradle | `2.0.148` |
 | Fabric Loader | `0.19.5` |
 | Fabric API | `0.163.0+26.3` |
-| Fabric Loom | `1.18.4` (builds 26.3 mods already; Fabric's develop page is script-rendered, so the maven listing was the check) |
+| Fabric Loom | `1.18.4` (builds 26.3 mods already; Fabric's develop page is script-rendered, so the maven listing was the check). Needs Gradle 9.7 and a Java 25 Gradle daemon. Use the plain `net.fabricmc.fabric-loom` plugin id, not `-remap` (26.x needs no remapping); it has no `mod*` configurations, so mods are plain `implementation`/`compileOnly`/`localRuntime`. |
+| Gradle | `9.7.1` (upstream had 9.6.1; Loom 1.18.4 needs the 9.7 plugin API). `gradle/gradle-daemon-jvm.properties` pins the daemon JVM: 25 now, was 21. |
 | Mixin / MixinExtras | `0.17.4+mixin.0.8.7` / `0.5.5`: what Fabric Loader 0.19.5 and NeoForge 26.3.0.77 ship with |
-| Parchment | none for any 26.x version yet (404 on parchment-26.1 to 26.3, 14 Oct 2026); plain Mojang mappings until there is |
+| Parchment | none for any 26.x version yet (404 on parchment-26.1 to 26.3, 14 Oct 2026). Minecraft ships unobfuscated since 26.1, so there are no Mojang mappings to apply either: Loom takes no `mappings` block, and mixin targets are the real names. |
 
 Re-check these before Phase 1 and update the table.
 
@@ -118,6 +119,30 @@ Alfheim portal, elven trades, Gaia Guardian, Corporea, Garden of Glass. First pu
 
 ---
 
+## Disabled for now (Phase 1, step 2)
+
+Each of these is switched off with a `// PORT-26.3: disabled` comment at its call site; the integration
+code itself is kept intact under `src/disabled/integration/` in the project it came from (the same way
+upstream parked CraftTweaker), so Phase 5 can move it back.
+
+| What | Where it was | Why | Effect until it's back |
+|---|---|---|---|
+| Patchouli (Lexica Botania) | `Xplat` (29 files), both loaders' initialisers, 5 client mixins (`BookEntryMixin`, `ClientAdvancementsAccessor`, `GuiBookEntryListMixin`, `GuiButtonEntryMixin`, `MultiblockVisualizationHandlerMixin`, now in `Xplat/src/disabled/patchouli-mixins`) | No 26.3 build. The 1.21.1 jar stays on the compile classpath for its API only; `PatchouliAPI.get()` returns the API's own stub when the mod is absent. | No Lexica. **The stub's multiblocks never validate, so the Alfheim portal, Mana Enchanter, Terra Plate and Gaia ritual arena can't form until Phase 5.** The Patchouli page components and processors in `client/patchouli` are kept (only the book ever loads them). |
+| Trinkets (Fabric) | `Fabric/.../integration/trinkets` | Ends at 1.21.1; Trinkets Updated replaces it in Phase 5. | Rings, belts, amulets and so on sit in the inventory handler fallback (no equipment slots). |
+| Curios (NeoForge) | `NeoForge/.../integration/curios`, plus the `BotaniaCuriosDataProvider` datagen provider | No 26.3 release. | Same as Trinkets. |
+| JEI, REI, EMI | `Xplat/.../client/integration/{jei,rei,emi}`, `NeoForge/.../client/integration/rei`, the Fabric entrypoints | JEI and REI exist for 26.3 but are optional and wait for Phase 5; EMI has no 26.3 build. | No recipe-viewer pages for Botania's recipes. |
+| Sodium, Embeddium | `Fabric/.../integration/sodium`, `NeoForge/.../client/integration/{sodium,embeddium}` | Their sprite API for 26.3 isn't checked yet. | Animated Botania textures may not animate under Sodium until checked. |
+| Ears | `Xplat/.../client/integration/ears` | Not checked for 26.3. | Nothing player-facing. |
+| Team Reborn Energy (Fabric) | `Fabric/.../integration/tr_energy` | Not checked for 26.3. | The Mana Fluxfield doesn't push energy to other mods' machines. |
+| SpeedRunIGT (Fabric) | `Fabric/.../integration/speedrunigt` | Not checked for 26.3. | Speedrun categories never report as running. |
+| Carpet (dev runtime only) | `Fabric/build.gradle` | Not checked for 26.3. | None in the mod. |
+| `forged-conditions-21.1.0.jar` (dev runtime only) | `Fabric/build.gradle` | A 1.21.1 jar used while generating data load conditions. | Step 4 (datagen) decides what replaces it. |
+
+Kept as they are: `common/integration/corporea`, `InventorySorterIntegration` (NeoForge IMC only) and
+`integration/speedrunigt/BotaniaSpeedrunCategories` (plain data, no dependency).
+
+---
+
 ## Known hotspots (from upstream comments)
 
 - Particle render types: both loaders patch `ParticleEngine` with a hack (`ParticleEngineFabricMixin`, `ParticleEngineNeoForgeMixin`). Likely to break.
@@ -147,3 +172,4 @@ Alfheim portal, elven trades, Gaia Guardian, Corporea, Garden of Glass. First pu
 | 2026-10-14 | Planning | Inspected upstream `1.21.1-porting` (commit `f0367399`). Checked 26.3 toolchain and dependencies. Baseline build not yet run. |
 | 2026-10-14 | Phase 0 | Baseline on the untouched `1.21.1-porting` code (commit `f0367399`), Java 21 (Gradle 9.6.1 provisioned Temurin 21 itself), Windows 11. `./gradlew build`: Xplat, Fabric and NeoForge all build and pass their unit tests, PMD and Spotless checks (28 min 39 s cold). `./gradlew :Fabric:runGameTest`: 207 required tests passed, 1 optional test failed: `paintslingerlenstest.testpainting`, which upstream marks `required = false` with a note that its structure data needs upgrading (a datafixer job). 103 `@GameTest` methods expand to 207 tests because `IdleFlowerTickingTest` generates one test per flower. The NeoForge GameTests weren't run (upstream's CI only runs Fabric's). Added the Botania Bifrost section to the README and this file plus `COMPATIBILITY-AND-REVIEW.md`. Forked as `gabmaybelle/botania-bifrost`, branch `26.3` tracking `upstream/1.21.1-porting`. Next: Phase 1 step 1, the toolchain. |
 | 2026-10-14 | Phase 1, step 1 | Re-checked every toolchain version against its source: all as in the table (Fabric API 0.163.0+26.3 was released the same day). Found no Parchment for 26.x, so the three parchment blocks are commented out and the builds use plain Mojang names; Mixin and MixinExtras raised to the versions the loaders ship. `gradle.properties`, `libs.versions.toml`, `multiloader-common.gradle` (jar names), the three `build.gradle` files, the CI workflow (Java 25) changed; display name Botania Bifrost, sources and issues URLs point at this fork. Not compiled yet: diff shown for review first. |
+| 2026-10-14 | Phase 1, step 2 | Disabled the optional integrations, Patchouli, Trinkets and Curios (table above): dependency lines commented out with `PORT-26.3` notes, integration sources moved to `src/disabled/integration/` in each project, five Patchouli client mixins moved out and dropped from `botania.xplat.mixins.json`, call sites stubbed with comments, Patchouli and Curios made optional in the mod metadata and the Fabric entrypoints for EMI/REI/JEI/SpeedRunIGT removed. Patchouli's 1.21.1 jar stays as a compile-only API (its stub runs when the mod is absent), which is what keeps the multiblock code compiling. Getting Gradle to configure with the 26.3 toolchain took four more fixes, all in the toolchain table: Gradle 9.7.1 and a Java 25 daemon (`gradle-daemon-jvm.properties`), the no-remap Loom plugin id, no `mappings` block, and the access widener's namespace (`official`). With those, `spotlessJavaCheck` passes on all three projects. Not compiled yet: step 3. |

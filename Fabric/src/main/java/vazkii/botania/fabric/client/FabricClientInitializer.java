@@ -56,7 +56,6 @@ import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.client.gui.bag.ColoredContentsPouchScreen;
 import vazkii.botania.client.gui.box.TrinketCaseScreen;
 import vazkii.botania.client.gui.enderhand.HandOfEnderScreen;
-import vazkii.botania.client.integration.ears.EarsIntegration;
 import vazkii.botania.client.model.BotaniaLayerDefinitions;
 import vazkii.botania.client.model.armor.ArmorModels;
 import vazkii.botania.client.render.BlockRenderLayers;
@@ -66,7 +65,6 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.fabric.network.FabricPacketHandler;
 import vazkii.botania.xplat.ClientXplatAbstractions;
-import vazkii.botania.xplat.XplatAbstractions;
 import vazkii.patchouli.api.BookDrawScreenCallback;
 
 import java.io.IOException;
@@ -150,9 +148,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 		registerArmors();
 		registerCapabilities();
 
-		if (XplatAbstractions.INSTANCE.isModLoaded("ears")) {
-			EarsIntegration.register();
-		}
+		// PORT-26.3: disabled. Ears isn't checked for 26.3 yet (Xplat/src/disabled/integration/ears).
 	}
 
 	private static void registerCapabilities() {

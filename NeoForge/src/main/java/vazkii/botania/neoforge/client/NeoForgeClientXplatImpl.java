@@ -9,8 +9,6 @@
 
 package vazkii.botania.neoforge.client;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
@@ -36,10 +34,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.neoforge.item.TinyPotatoRenderEvent;
-import vazkii.botania.neoforge.client.integration.embeddium.EmbeddiumHelper;
-import vazkii.botania.neoforge.client.integration.sodium.SodiumNeoforgeHelper;
 import vazkii.botania.xplat.ClientXplatAbstractions;
-import vazkii.botania.xplat.XplatAbstractions;
 
 public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 	@Override
@@ -94,14 +89,7 @@ public class NeoForgeClientXplatImpl implements ClientXplatAbstractions {
 
 	@Override
 	public void markSpriteActive(TextureAtlasSprite sprite) {
-		if (sodiumLoaded.get()) {
-			SodiumNeoforgeHelper.markSpriteActive(sprite);
-		}
-		if (embeddiumLoaded.get()) {
-			EmbeddiumHelper.markSpriteActive(sprite);
-		}
+		// PORT-26.3: disabled until Sodium's and Embeddium's 26.3 APIs are checked
+		// (src/disabled/integration/sodium and embeddium).
 	}
-
-	private final Supplier<Boolean> sodiumLoaded = Suppliers.memoize(() -> XplatAbstractions.INSTANCE.isModLoaded("sodium"));
-	private final Supplier<Boolean> embeddiumLoaded = Suppliers.memoize(() -> XplatAbstractions.INSTANCE.isModLoaded("embeddium"));
 }

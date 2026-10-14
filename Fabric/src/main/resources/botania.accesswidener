@@ -1,4 +1,5 @@
-accessWidener v2 named
+accessWidener v2 official
+# PORT-26.3: "official" instead of "named": Minecraft is unobfuscated since 26.1, so the names below are the official ones.
 accessible method net/minecraft/client/renderer/block/model/ItemOverrides <init> ()V
 accessible method net/minecraft/world/entity/projectile/Projectile <init> (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V
 accessible class net/minecraft/world/item/crafting/Ingredient$Value

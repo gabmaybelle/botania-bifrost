@@ -86,7 +86,7 @@ public class NeoForgeDatagenInitializer {
 		evt.createBlockAndItemTags(NeoForgeBlockTagProvider::new, NeoForgeItemTagProvider::new);
 		evt.createProvider(NeoForgeEntityTagProvider::new);
 		evt.createDatapackRegistryObjects(addBiomeModifiers());
-		evt.createProvider(BotaniaCuriosDataProvider::new);
+		// PORT-26.3: disabled. The Curios slot data provider comes back with Curios in Phase 5 (src/disabled/integration/curios).
 		evt.createProvider(BotaniaGlobalLootModifierProvider::new);
 		evt.createProvider(BotaniaDataMapsProvider::new);
 	}

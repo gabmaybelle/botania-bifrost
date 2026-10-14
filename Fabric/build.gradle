@@ -65,54 +65,62 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft_version}")
-    // PORT-26.3: no Parchment release for 26.x yet (see parchment_version in gradle.properties).
-    mappings loom.layered() {
-        officialMojangMappings()
-        //parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
-    }
+    // PORT-26.3: Minecraft ships unobfuscated since 26.1, so there are no Mojang mappings to apply and Loom
+    // wants no mappings block at all. Parchment (parameter names) has no 26.x release yet either; when it
+    // does, it goes back as a layer here (see parchment_version in gradle.properties).
+    //mappings loom.layered() {
+    //    officialMojangMappings()
+    //    parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
+    //}
 
-    modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.api)
+    // PORT-26.3: the no-remap Loom plugin has no mod* configurations; mods are ordinary dependencies.
+    implementation(libs.fabric.loader)
+    implementation(libs.fabric.api)
 
     testImplementation(libs.fabric.junit)
 
     compileOnly(libs.jetbrains.annotations)
 
-    modImplementation(libs.patchouli.fabric)
-    modImplementation(libs.trinkets)
-    modImplementation(libs.fiber)
+    // PORT-26.3: Patchouli (API only, see Xplat/build.gradle) and Trinkets have no 26.3 builds; Trinkets Updated
+    // is the planned replacement in Phase 5. The 1.21.1 Patchouli jar is Mojang-mapped, so plain compileOnly.
+    compileOnly(libs.patchouli.xplat)
+    //modImplementation(libs.patchouli.fabric)
+    //modImplementation(libs.trinkets)
+    implementation(libs.fiber)
     include(libs.fiber)
 
-    modCompileOnly(variantOf(libs.emi.fabric) { classifier("api") })
-    modCompileOnly(libs.jei.fabric.api)
-    modCompileOnly(libs.rei.fabric)
+    // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
+    //modCompileOnly(variantOf(libs.emi.fabric) { classifier("api") })
+    //modCompileOnly(libs.jei.fabric.api)
+    //modCompileOnly(libs.rei.fabric)
 
-    modCompileOnly(libs.ears)
-    modCompileOnly(libs.sodium.fabric) { transitive = false }
-    modCompileOnly(libs.teamreborn.energy)
-    modCompileOnly(libs.speedrunigt)
+    //modCompileOnly(libs.ears)
+    //modCompileOnly(libs.sodium.fabric) { transitive = false }
+    //modCompileOnly(libs.teamreborn.energy)
+    //modCompileOnly(libs.speedrunigt)
 
-    if (rootProject.hasProperty("load_override_jei")) {
-        modLocalRuntime(libs.jei.fabric.full)
-    } else if (rootProject.hasProperty("load_override_rei")) {
-        modLocalRuntime(libs.rei.fabric)
-    } else {
-        modLocalRuntime(libs.emi.fabric)
-    }
+    //if (rootProject.hasProperty("load_override_jei")) {
+    //    modLocalRuntime(libs.jei.fabric.full)
+    //} else if (rootProject.hasProperty("load_override_rei")) {
+    //    modLocalRuntime(libs.rei.fabric)
+    //} else {
+    //    modLocalRuntime(libs.emi.fabric)
+    //}
 
     // for testing multiplayer features in singleplayer worlds, and weird things like movable block entities
-    if (rootProject.hasProperty("load_fabric_carpet")) {
-        modLocalRuntime(libs.carpet)
-    }
+    //if (rootProject.hasProperty("load_fabric_carpet")) {
+    //    modLocalRuntime(libs.carpet)
+    //}
 
-    if (rootProject.hasProperty("load_fabric_speedrunigt")) {
-        modLocalRuntime(libs.speedrunigt)
-    }
+    //if (rootProject.hasProperty("load_fabric_speedrunigt")) {
+    //    modLocalRuntime(libs.speedrunigt)
+    //}
 
     if (file("../garden_of_glass/gardenofglass-${gog_version}.jar").exists()) {
-        modLocalRuntime(files("../garden_of_glass/gardenofglass-${gog_version}.jar"))
+        localRuntime(files("../garden_of_glass/gardenofglass-${gog_version}.jar"))
     }
 
     // for xplat data load condition generating
-    modLocalRuntime(files("lib/forged-conditions-21.1.0.jar"))
+    // PORT-26.3: a 1.21.1 jar; datagen is re-done in Phase 1 step 4, which decides what replaces it.
+    //modLocalRuntime(files("lib/forged-conditions-21.1.0.jar"))
 }

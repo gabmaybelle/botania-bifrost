@@ -9,8 +9,6 @@
 
 package vazkii.botania.fabric.client;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -34,9 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.fabric.item.TinyPotatoRenderCallback;
-import vazkii.botania.fabric.integration.sodium.SodiumFabricHelper;
 import vazkii.botania.xplat.ClientXplatAbstractions;
-import vazkii.botania.xplat.XplatAbstractions;
 
 public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	@Override
@@ -97,10 +93,6 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 
 	@Override
 	public void markSpriteActive(TextureAtlasSprite sprite) {
-		if (sodiumLoaded.get()) {
-			SodiumFabricHelper.markSpriteActive(sprite);
-		}
+		// PORT-26.3: disabled until Sodium's 26.3 API is checked (src/disabled/integration/sodium).
 	}
-
-	private final Supplier<Boolean> sodiumLoaded = Suppliers.memoize(() -> XplatAbstractions.INSTANCE.isModLoaded("sodium"));
 }

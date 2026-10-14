@@ -99,7 +99,6 @@ import vazkii.botania.common.config.ConfigDataManagerImpl;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.crafting.StateIngredients;
 import vazkii.botania.common.entity.BotaniaEntities;
-import vazkii.botania.common.entity.GaiaGuardianEntity;
 import vazkii.botania.common.handler.*;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.impl.BotaniaAPIImpl;
@@ -120,14 +119,12 @@ import vazkii.botania.common.world.SkyblockChunkGenerator;
 import vazkii.botania.common.world.SkyblockWorldEvents;
 import vazkii.botania.fabric.block_entity.FabricRedStringContainerBlockEntity;
 import vazkii.botania.fabric.integration.corporea.FabricTransferCorporeaNodeDetector;
-import vazkii.botania.fabric.integration.tr_energy.FluxfieldTRStorage;
 import vazkii.botania.fabric.internal_caps.FabricInternalEntityAttachments;
 import vazkii.botania.fabric.internal_caps.RedStringContainerStorage;
 import vazkii.botania.fabric.loot.LootHandler;
 import vazkii.botania.fabric.network.FabricPacketHandler;
 import vazkii.botania.network.clientbound.ItemLifeTimePacket;
 import vazkii.botania.xplat.XplatAbstractions;
-import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -163,10 +160,8 @@ public class FabricCommonInitializer implements ModInitializer {
 		DefaultCorporeaMatchers.init();
 		PlayerHelper.setFakePlayerClass(FakePlayer.class);
 
-		PatchouliAPI.get().registerMultiblock(botaniaRL("alfheim_portal"), AlfheimPortalBlockEntity.MULTIBLOCK.get());
-		PatchouliAPI.get().registerMultiblock(BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.TERRESTRIAL_AGGLOMERATION_PLATE), TerrestrialAgglomerationPlateBlockEntity.MULTIBLOCK.get());
-		PatchouliAPI.get().registerMultiblock(BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.MANA_ENCHANTER), ManaEnchanterBlockEntity.MULTIBLOCK.get());
-		PatchouliAPI.get().registerMultiblock(botaniaRL("gaia_ritual"), GaiaGuardianEntity.ARENA_MULTIBLOCK.get());
+		// PORT-26.3: disabled. Registering the multiblocks with Patchouli (for the Lexica's visualiser) waits for
+		// a 26.3 Patchouli in Phase 5. The multiblocks themselves still exist on their block entities.
 
 		OrechidManager.registerListener();
 		BotaniaRecipeIngredientsCache.registerListener();
@@ -349,9 +344,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		ItemStorage.SIDED.registerForBlockEntity(RedStringContainerStorage::new,
 				BotaniaBlockEntities.RED_STRINGED_DISPENSER);
 
-		if (XplatAbstractions.INSTANCE.isModLoaded("team_reborn_energy")) {
-			FluxfieldTRStorage.register();
-		}
+		// PORT-26.3: disabled. Team Reborn Energy isn't checked for 26.3 yet (src/disabled/integration/tr_energy).
 	}
 
 	private void serverAboutToStart(MinecraftServer server) {

@@ -106,7 +106,6 @@ import vazkii.botania.common.block.block_entity.red_string.RedStringContainerBlo
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.integration.speedrunigt.BotaniaSpeedrunCategories;
-import vazkii.botania.neoforge.integration.curios.CurioIntegration;
 import vazkii.botania.neoforge.internal_caps.NeoForgeInternalEntityCapabilities;
 import vazkii.botania.neoforge.mixin.AbstractFurnaceBlockEntityNeoForgeAccessor;
 import vazkii.botania.xplat.XplatAbstractions;
@@ -396,10 +395,8 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 	@Nullable
 	@Override
 	public EquipmentHandler tryCreateEquipmentHandler() {
-		if (XplatAbstractions.INSTANCE.isModLoaded("curios")) {
-			CurioIntegration.init();
-			return new CurioIntegration();
-		}
+		// PORT-26.3: disabled. Curios has no 26.3 release yet; it comes back in Phase 5
+		// (src/disabled/integration/curios). Until then accessories use the plain inventory handler.
 		return null;
 	}
 

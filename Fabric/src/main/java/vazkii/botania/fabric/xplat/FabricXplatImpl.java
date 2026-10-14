@@ -9,8 +9,6 @@
 
 package vazkii.botania.fabric.xplat;
 
-import com.redlimerl.speedrunigt.timer.InGameTimer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -114,9 +112,6 @@ import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.proxy.Proxy;
 import vazkii.botania.fabric.block_entity.FabricRedStringContainerBlockEntity;
-import vazkii.botania.fabric.integration.speedrunigt.BotaniaSpeedrunIGTPlugin;
-import vazkii.botania.fabric.integration.tr_energy.FluxfieldTRStorage;
-import vazkii.botania.fabric.integration.trinkets.TrinketsIntegration;
 import vazkii.botania.fabric.internal_caps.FabricInternalEntityAttachments;
 import vazkii.botania.fabric.mixin.AbstractFurnaceBlockEntityFabricAccessor;
 import vazkii.botania.xplat.XplatAbstractions;
@@ -460,10 +455,8 @@ public class FabricXplatImpl implements XplatAbstractions {
 	@Nullable
 	@Override
 	public EquipmentHandler tryCreateEquipmentHandler() {
-		if (isModLoaded("trinkets")) {
-			TrinketsIntegration.init();
-			return new TrinketsIntegration();
-		}
+		// PORT-26.3: disabled. Trinkets has no 26.3 build; Trinkets Updated takes its place in Phase 5
+		// (src/disabled/integration/trinkets). Until then accessories use the plain inventory handler.
 		return null;
 	}
 
@@ -514,9 +507,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public int transferEnergyToNeighbors(Level level, BlockPos pos, int energy) {
-		if (isModLoaded("team_reborn_energy")) {
-			return FluxfieldTRStorage.transferEnergyToNeighbors(level, pos, energy);
-		}
+		// PORT-26.3: disabled. Team Reborn Energy isn't checked for 26.3 yet (src/disabled/integration/tr_energy).
 		return energy;
 	}
 
@@ -636,15 +627,14 @@ public class FabricXplatImpl implements XplatAbstractions {
 		return Proxy.INSTANCE.hasShiftDown();
 	}
 
-	private final boolean speedrunIGTLoaded = isModLoaded("speedrunigt");
-
 	@Override
 	public boolean isRunningCategory(BotaniaSpeedrunCategory category) {
-		return speedrunIGTLoaded && BotaniaSpeedrunIGTPlugin.isRunningBotaniaCategory(category);
+		// PORT-26.3: disabled. SpeedRunIGT isn't checked for 26.3 yet (src/disabled/integration/speedrunigt).
+		return false;
 	}
 
 	@Override
 	public void completeSpeedrunTimer() {
-		InGameTimer.complete();
+		// PORT-26.3: disabled. SpeedRunIGT isn't checked for 26.3 yet (src/disabled/integration/speedrunigt).
 	}
 }
