@@ -9,7 +9,10 @@
 
 package vazkii.botania.common.handler;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.helper.ColorHelper;
@@ -36,5 +39,20 @@ public class CompostingData {
 		});
 
 		registrationMethod.accept(BotaniaBlocks.CELLULAR_BLOCK, chanceHigh);
+	}
+
+	// PORT-26.3: composting is a data component now (DataComponents.COMPOSTABLE) whose "layers" value is a data-driven
+	// provider. Vanilla ships one provider per classic chance tier, so the chances above map onto those keys.
+	public static ResourceKey<ContextIntProvider> compostableLayers(float chance) {
+		if (chance >= 1.0f) {
+			return ContextIntProviders.COMPOSTABLE_ALWAYS_ADD_ONE;
+		} else if (chance >= 0.85f) {
+			return ContextIntProviders.COMPOSTABLE_MEDIUM_HIGH;
+		} else if (chance >= 0.65f) {
+			return ContextIntProviders.COMPOSTABLE_MEDIUM;
+		} else if (chance >= 0.5f) {
+			return ContextIntProviders.COMPOSTABLE_LOW_MEDIUM;
+		}
+		return ContextIntProviders.COMPOSTABLE_LOW;
 	}
 }

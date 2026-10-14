@@ -14,6 +14,7 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -41,10 +42,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -57,6 +58,10 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
@@ -416,8 +421,22 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 	}
 
 	@Override
-	public int getSmeltingBurnTime(ItemStack stack) {
-		return stack.getBurnTime(RecipeType.SMELTING);
+	public int getSmeltingBurnTime(Level level, ItemStack stack) {
+		// PORT-26.3: fuel is the COOKING_FUEL data component. A data-driven burn time needs a loot context to resolve,
+		// built the same way AbstractFurnaceBlockEntity builds its own.
+		CookingFuel fuel = stack.get(DataComponents.COOKING_FUEL);
+		if (fuel == null) {
+			return 0;
+		}
+		if (fuel.burnTime() instanceof ResolvableInt.Constant constant) {
+			return constant.value();
+		}
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return 0;
+		}
+		LootContext context = new LootContext.Builder(new LootParams.Builder(serverLevel).create(LootContextParamSets.EMPTY))
+				.create(Optional.empty());
+		return fuel.burnTime().get(context, 0);
 	}
 
 	@Override

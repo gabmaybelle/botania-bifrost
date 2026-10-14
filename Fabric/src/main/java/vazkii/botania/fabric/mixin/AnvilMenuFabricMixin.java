@@ -27,8 +27,8 @@ public abstract class AnvilMenuFabricMixin extends ItemCombinerMenu {
 	@Final
 	private DataSlot cost;
 
-	public AnvilMenuFabricMixin(MenuType<?> type, int i, Inventory inv, ContainerLevelAccess cla) {
-		super(type, i, inv, cla);
+	public AnvilMenuFabricMixin(MenuType<?> type, int i, Inventory inv, ContainerLevelAccess cla, ItemCombinerMenuSlotDefinition slots) {
+		super(type, i, inv, cla, slots);
 	}
 
 	@Inject(method = "createResult", at = @At("HEAD"), cancellable = true)

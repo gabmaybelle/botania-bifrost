@@ -20,6 +20,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -80,9 +81,9 @@ public class FabricRedStringContainerBlockEntity extends RedStringContainerBlock
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		if (cmp.contains("bindX")) {
-			clientPos = new BlockPos(cmp.getInt("bindX"), cmp.getInt("bindY"), cmp.getInt("bindZ"));
+	protected void loadAdditional(ValueInput cmp) {
+		if (cmp.getInt("bindX").isPresent()) {
+			clientPos = new BlockPos(cmp.getIntOr("bindX", 0), cmp.getIntOr("bindY", 0), cmp.getIntOr("bindZ", 0));
 		} else {
 			clientPos = null;
 		}

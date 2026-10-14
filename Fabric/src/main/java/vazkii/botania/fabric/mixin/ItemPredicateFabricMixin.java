@@ -15,16 +15,15 @@ import com.mojang.datafixers.Products;
 import com.mojang.datafixers.kinds.App;
 import com.mojang.datafixers.kinds.Applicative;
 import com.mojang.datafixers.kinds.K1;
-import com.mojang.datafixers.util.Function4;
+import com.mojang.datafixers.util.Function3;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
-import net.minecraft.advancements.critereon.ItemSubPredicate;
+import net.minecraft.advancements.predicates.DataComponentMatchers;
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.predicates.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -37,7 +36,6 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -56,16 +54,18 @@ public abstract class ItemPredicateFabricMixin {
 
 	@WrapOperation(
 		// lambda expression within the static field initializer for ItemPredicate#CODEC
-		method = "method_57298",
+		// PORT-26.3: Minecraft is unobfuscated, so this is javac's name for that lambda (checked with javap on the 26.3 jar);
+		// the record has three parts now (items, count, component matchers)
+		method = "lambda$static$0",
 		at = @At(
 			value = "INVOKE",
-			target = "Lcom/mojang/datafixers/Products$P4;apply(Lcom/mojang/datafixers/kinds/Applicative;Lcom/mojang/datafixers/util/Function4;)Lcom/mojang/datafixers/kinds/App;"
+			target = "Lcom/mojang/datafixers/Products$P3;apply(Lcom/mojang/datafixers/kinds/Applicative;Lcom/mojang/datafixers/util/Function3;)Lcom/mojang/datafixers/kinds/App;"
 		)
 	)
 	private static <F extends K1> App<F, ItemPredicate> addBotaniaShears(
-			Products.P4<F, Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentPredicate, Map<ItemSubPredicate.Type<?>, ItemSubPredicate>> groupResult,
+			Products.P3<F, Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentMatchers> groupResult,
 			Applicative<F, ?> instance,
-			Function4<Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentPredicate, Map<ItemSubPredicate.Type<?>, ItemSubPredicate>, ItemPredicate> function,
+			Function3<Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentMatchers, ItemPredicate> function,
 			Operation<App<F, ItemPredicate>> original) {
 		if (XplatAbstractions.instance().isDataGen()) {
 			// don't mess with anything during datagen so the correct loot tables are written
@@ -76,17 +76,17 @@ public abstract class ItemPredicateFabricMixin {
 	}
 
 	@Unique
-	private static Function4<Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentPredicate, Map<ItemSubPredicate.Type<?>, ItemSubPredicate>, ItemPredicate> botania_wrapDecodeForShears(
-			Function4<Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentPredicate, Map<ItemSubPredicate.Type<?>, ItemSubPredicate>, ItemPredicate> function) {
-		return (items, count, components, subPredicates) -> {
+	private static Function3<Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentMatchers, ItemPredicate> botania_wrapDecodeForShears(
+			Function3<Optional<HolderSet<Item>>, MinMaxBounds.Ints, DataComponentMatchers, ItemPredicate> function) {
+		return (items, count, components) -> {
 			if (items.isPresent() && !(items.get() instanceof HolderSet.Named<Item>) && items.get().contains(VANILLA_SHEARS_HOLDER.get())) {
 				var newItems = new ReferenceOpenHashSet<Holder<Item>>();
 				items.get().stream().forEach(newItems::add);
 				newItems.add(MANASTEEL_SHEARS_HOLDER.get());
 				newItems.add(ELEMENTIUM_SHEARS_HOLDER.get());
-				return function.apply(Optional.of(HolderSet.direct(List.copyOf(newItems))), count, components, subPredicates);
+				return function.apply(Optional.of(HolderSet.direct(List.copyOf(newItems))), count, components);
 			}
-			return function.apply(items, count, components, subPredicates);
+			return function.apply(items, count, components);
 		};
 	}
 }

@@ -180,7 +180,7 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	private int getBurnTime(ItemStack stack) {
-		return stack.isEmpty() ? 0 : XplatAbstractions.INSTANCE.getSmeltingBurnTime(stack);
+		return stack.isEmpty() ? 0 : XplatAbstractions.INSTANCE.getSmeltingBurnTime(level, stack);
 	}
 
 }

@@ -160,7 +160,8 @@ public interface XplatAbstractions {
 	boolean canFurnaceBurn(AbstractFurnaceBlockEntity furnace, @Nullable RecipeHolder<?> recipeHolder, NonNullList<ItemStack> items, int maxStackSize);
 	// NeoForge patches BucketItem to use a supplier for the fluid, and exposes it, while Fabric needs an accessor
 	Fluid getBucketFluid(BucketItem item);
-	int getSmeltingBurnTime(ItemStack stack);
+	// PORT-26.3: fuel is the COOKING_FUEL data component; its burn time may be a data-driven provider, which needs the level
+	int getSmeltingBurnTime(Level level, ItemStack stack);
 	boolean preventsRemoteMovement(ItemEntity entity);
 	int transferEnergyToNeighbors(Level level, BlockPos pos, int energy);
 	@Nullable

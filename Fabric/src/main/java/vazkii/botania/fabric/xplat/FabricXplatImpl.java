@@ -10,15 +10,13 @@
 package vazkii.botania.fabric.xplat;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeBuilder;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -30,13 +28,15 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
-import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -44,14 +44,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Unit;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -64,12 +63,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
@@ -82,6 +84,10 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import net.minecraft.world.phys.AABB;
 
 import org.apache.commons.lang3.function.TriFunction;
@@ -114,14 +120,15 @@ import vazkii.botania.common.proxy.Proxy;
 import vazkii.botania.fabric.block_entity.FabricRedStringContainerBlockEntity;
 import vazkii.botania.fabric.internal_caps.FabricInternalEntityAttachments;
 import vazkii.botania.fabric.mixin.AbstractFurnaceBlockEntityFabricAccessor;
+import vazkii.botania.fabric.mixin.BucketItemFabricAccessor;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 import static vazkii.botania.integration.speedrunigt.BotaniaSpeedrunCategories.BotaniaSpeedrunCategory;
@@ -414,8 +421,8 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void sendToNear(Level level, BlockPos pos, CustomPacketPayload packet) {
-		var pkt = ServerPlayNetworking.createS2CPacket(packet);
-		for (var player : PlayerLookup.tracking((ServerLevel) level, pos)) {
+		var pkt = ServerPlayNetworking.createClientboundPacket(packet);
+		for (var player : PlayerLookup.tracking((ServerLevel) level, ChunkPos.containing(pos))) {
 			if (player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64) {
 				player.connection.send(pkt);
 			}
@@ -424,7 +431,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void sendToTracking(Entity e, CustomPacketPayload packet) {
-		var pkt = ServerPlayNetworking.createS2CPacket(packet);
+		var pkt = ServerPlayNetworking.createClientboundPacket(packet);
 		PlayerLookup.tracking(e).forEach(p -> p.connection.send(pkt));
 		if (e instanceof ServerPlayer) {
 			((ServerPlayer) e).connection.send(pkt);
@@ -433,23 +440,12 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void registerReloadListener(PackType type, Identifier id, PreparableReloadListener listener) {
-		ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
-			@Override
-			public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager, ProfilerFiller prepProfiler,
-					ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-				return listener.reload(barrier, manager, prepProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
-			}
-
-			@Override
-			public Identifier getFabricId() {
-				return id;
-			}
-		});
+		ResourceLoader.get(type).registerReloadListener(id, listener);
 	}
 
 	@Override
 	public <T extends AbstractContainerMenu, D> MenuType<T> createMenuType(TriFunction<Integer, Inventory, D, T> constructor, StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec) {
-		return new ExtendedScreenHandlerType<>(constructor::apply, streamCodec);
+		return new ExtendedMenuType<>(constructor::apply, streamCodec);
 	}
 
 	@Nullable
@@ -462,7 +458,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public <D> void openMenu(ServerPlayer player, MenuProvider menu, D initialData, StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec) {
-		var menuProvider = new ExtendedScreenHandlerFactory<D>() {
+		var menuProvider = new ExtendedMenuProvider<D>() {
 			@Nullable
 			@Override
 			public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
@@ -489,13 +485,26 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public Fluid getBucketFluid(BucketItem item) {
-		return ((BucketItemAccessor) item).fabric_getFluid();
+		return ((BucketItemFabricAccessor) item).botania_getContent();
 	}
 
 	@Override
-	public int getSmeltingBurnTime(ItemStack stack) {
-		Integer v = FuelRegistry.INSTANCE.get(stack.getItem());
-		return v == null ? 0 : v;
+	public int getSmeltingBurnTime(Level level, ItemStack stack) {
+		// PORT-26.3: fuel is the COOKING_FUEL data component. A data-driven burn time needs a loot context to resolve,
+		// built the same way AbstractFurnaceBlockEntity builds its own.
+		CookingFuel fuel = stack.get(DataComponents.COOKING_FUEL);
+		if (fuel == null) {
+			return 0;
+		}
+		if (fuel.burnTime() instanceof ResolvableInt.Constant constant) {
+			return constant.value();
+		}
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return 0;
+		}
+		LootContext context = new LootContext.Builder(new LootParams.Builder(serverLevel).create(LootContextParamSets.EMPTY))
+				.create(Optional.empty());
+		return fuel.burnTime().get(context, 0);
 	}
 
 	@Override
@@ -531,7 +540,8 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public ItemStack getCraftingRemainingItem(ItemStack inputStack) {
-		return inputStack.getRecipeRemainder();
+		ItemStackTemplate remainder = inputStack.getCraftingRemainder();
+		return remainder == null ? ItemStack.EMPTY : remainder.create();
 	}
 
 	@Override
@@ -585,7 +595,7 @@ public class FabricXplatImpl implements XplatAbstractions {
 				.openableByWindCharge(canOpenByWindCharge)
 				.buttonActivatedByArrows(canButtonBeActivatedByArrows)
 				.pressurePlateActivationRule(pressurePlateSensitivity)
-				.soundGroup(soundType)
+				.soundType(soundType)
 				.doorCloseSound(doorClose)
 				.doorOpenSound(doorOpen)
 				.trapdoorCloseSound(trapdoorClose)
@@ -600,8 +610,8 @@ public class FabricXplatImpl implements XplatAbstractions {
 	@Override
 	public WoodType registerWoodType(String name, BlockSetType setType, SoundType soundType, SoundType hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
 		return WoodTypeBuilder.copyOf(WoodType.OAK)
-				.soundGroup(soundType)
-				.hangingSignSoundGroup(hangingSignSoundType)
+				.soundType(soundType)
+				.hangingSignSoundType(hangingSignSoundType)
 				.fenceGateCloseSound(fenceGateClose)
 				.fenceGateOpenSound(fenceGateOpen)
 				.register(botaniaRL(name), setType);
@@ -611,13 +621,25 @@ public class FabricXplatImpl implements XplatAbstractions {
 	public RecipeOutput createRecipeOutput(RecipeAcceptor recipeAcceptor, Supplier<Advancement.Builder> advancementBuilder) {
 		return new RecipeOutput() {
 			@Override
-			public void accept(Identifier location, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
-				recipeAcceptor.accept(location, recipe, advancement);
+			public void accept(ResourceKey<Recipe<?>> id, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
+				recipeAcceptor.accept(id.identifier(), recipe, advancement);
 			}
 
 			@Override
 			public Advancement.Builder advancement() {
 				return advancementBuilder.get();
+			}
+
+			@Override
+			public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
+				// PORT-26.3: RecipeOutput hands out registry lookups now; the parked recipe datagen is the only caller
+				// and has to supply them when it comes back (Phase 1, step 4).
+				throw new UnsupportedOperationException("Registry lookups are not available here yet");
+			}
+
+			@Override
+			public <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {
+				throw new UnsupportedOperationException("Registry lookups are not available here yet");
 			}
 		};
 	}

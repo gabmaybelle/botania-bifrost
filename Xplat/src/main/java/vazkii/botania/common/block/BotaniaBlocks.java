@@ -10,6 +10,7 @@ package vazkii.botania.common.block;
 
 import net.minecraft.core.*;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.*;
 import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.StandingAndWallBlockItem;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,6 +33,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -54,6 +59,7 @@ import vazkii.botania.common.item.block.DecayableSpecialFlowerBlockItem;
 import vazkii.botania.common.item.block.SpecialFlowerBlockItem;
 import vazkii.botania.common.item.block.TinyPotatoBlockItem;
 import vazkii.botania.common.lib.LibBlockNames;
+import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -2362,8 +2368,16 @@ public final class BotaniaBlocks {
 		return ignored -> value;
 	}
 
+	// PORT-26.3: furnace fuel is a data component (vanilla's data-driven fuel values replaced the loader fuel registries)
+	private static CookingFuel cookingFuel(int burnTime) {
+		return new CookingFuel(new ResolvableInt.Constant(burnTime), ResolvableFloat.fromKey(ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER));
+	}
+
 	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder();
+		Item.Properties woodenWallProps = BotaniaItems.defaultBuilder().component(DataComponents.COOKING_FUEL, cookingFuel(300));
+		Item.Properties blazeMeshProps = BotaniaItems.defaultBuilder().component(DataComponents.COOKING_FUEL,
+				cookingFuel(2400 * (XplatAbstractions.INSTANCE.gogLoaded() ? 5 : 10)));
 		Item.Properties uncommonProps = BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON);
 		Item.Properties rareProps = BotaniaItems.defaultBuilder().rarity(Rarity.RARE);
 		Item.Properties epicProps = BotaniaItems.defaultBuilder().rarity(Rarity.EPIC);
@@ -2634,14 +2648,14 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD));
 		r.accept(new BlockItem(LIVINGWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_STAIRS));
 		r.accept(new BlockItem(LIVINGWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SLAB));
-		r.accept(new BlockItem(LIVINGWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_WALL));
+		r.accept(new BlockItem(LIVINGWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_WALL));
 		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_LIVINGWOOD_LOG));
 		r.accept(new BlockItem(STRIPPED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_LIVINGWOOD));
 		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
 				STRIPPED_LIVINGWOOD_STAIRS));
 		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(
 				STRIPPED_LIVINGWOOD_SLAB));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(
+		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(
 				STRIPPED_LIVINGWOOD_WALL));
 		r.accept(new BlockItem(GLIMMERING_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
 				GLIMMERING_LIVINGWOOD_LOG));
@@ -2673,13 +2687,13 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD));
 		r.accept(new BlockItem(DREAMWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_STAIRS));
 		r.accept(new BlockItem(DREAMWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SLAB));
-		r.accept(new BlockItem(DREAMWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_WALL));
+		r.accept(new BlockItem(DREAMWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_WALL));
 		r.accept(new BlockItem(STRIPPED_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_LOG));
 		r.accept(new BlockItem(STRIPPED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD));
 		r.accept(new BlockItem(STRIPPED_DREAMWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
 				STRIPPED_DREAMWOOD_STAIRS));
 		r.accept(new BlockItem(STRIPPED_DREAMWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_SLAB));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_WALL, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_WALL));
+		r.accept(new BlockItem(STRIPPED_DREAMWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_WALL));
 		r.accept(new BlockItem(GLIMMERING_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
 				GLIMMERING_DREAMWOOD_LOG));
 		r.accept(new BlockItem(GLIMMERING_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(GLIMMERING_DREAMWOOD));
@@ -2813,7 +2827,7 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(AZULEJO_13, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_13));
 		r.accept(new BlockItem(AZULEJO_14, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_14));
 		r.accept(new BlockItem(AZULEJO_15, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_15));
-		r.accept(new BlockItem(BLAZE_MESH, props), BuiltInRegistries.BLOCK.getKey(BLAZE_MESH));
+		r.accept(new BlockItem(BLAZE_MESH, blazeMeshProps), BuiltInRegistries.BLOCK.getKey(BLAZE_MESH));
 		r.accept(new StandingAndWallBlockItem(GAIA_HEAD, GAIA_WALL_HEAD_BLOCK, Direction.DOWN, rareProps), BuiltInRegistries.BLOCK.getKey(
 				GAIA_HEAD));
 		r.accept(new BlockItem(SHIMMERROCK, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK));

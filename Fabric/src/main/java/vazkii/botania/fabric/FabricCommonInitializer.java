@@ -14,6 +14,8 @@ import com.mojang.datafixers.util.Function3;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -24,20 +26,16 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.item.v1.BlockTransformerHelper;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;
-import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
-import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
-import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -50,22 +48,26 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.Compostable;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.stateproviders.CopyPropertiesProvider;
 import net.minecraft.world.level.material.Fluids;
 
 import org.jetbrains.annotations.Nullable;
@@ -141,7 +143,7 @@ public class FabricCommonInitializer implements ModInitializer {
 	private static final MappedRegistry<StateIngredientType<?>> STATE_INGREDIENT_TYPE_REGISTRY = FabricRegistryBuilder
 			.createDefaulted(BotaniaRegistries.STATE_INGREDIENT_TYPE, StateIngredientType.DEFAULT_ID).buildAndRegister();
 	private static final MappedRegistry<ItemSource> ITEM_SOURCE_REGISTRY = FabricRegistryBuilder
-			.createSimple(BotaniaRegistries.ITEM_SOURCE).buildAndRegister();
+			.create(BotaniaRegistries.ITEM_SOURCE).buildAndRegister();
 
 	public FabricCommonInitializer() {
 		// This happens before all mod initializations.
@@ -156,7 +158,11 @@ public class FabricCommonInitializer implements ModInitializer {
 		registryInit();
 
 		PaintableData.init();
-		CompostingData.init(CompostingChanceRegistry.INSTANCE::add);
+		// PORT-26.3: composting is a data component; Fabric adds default components once all items are registered
+		Map<Item, Compostable> compostables = new LinkedHashMap<>();
+		CompostingData.init((item, chance) -> compostables.put(item.asItem(), new Compostable(CompostingData.compostableLayers(chance))));
+		DefaultItemComponentEvents.MODIFY.register(ctx -> compostables.forEach(
+				(item, compostable) -> ctx.modify(item, builder -> builder.set(DataComponents.COMPOSTABLE, compostable))));
 		DefaultCorporeaMatchers.init();
 		PlayerHelper.setFakePlayerClass(FakePlayer.class);
 
@@ -192,7 +198,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaBlocks.registerItemBlocks(boundForItem);
 		BotaniaBlockFlammability.register();
 		BotaniaBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
-		BotaniaBlockEntities.registerAdditionalBlocks(BlockEntityType::addSupportedBlock);
+		BotaniaBlockEntities.registerAdditionalBlocks((type, block) -> ((FabricBlockEntityType) type).addValidBlock(block));
 		BotaniaItems.registerItems(boundForItem);
 		BotaniaBlocks.addDispenserBehaviours();
 		BotaniaBlocks.addAxeStripping(this::registerAxeStripping);
@@ -201,16 +207,14 @@ public class FabricCommonInitializer implements ModInitializer {
 				BotaniaBlocks.VIVID_GRASS_BLOCK, BotaniaBlocks.SCORCHED_GRASS_BLOCK,
 				BotaniaBlocks.INFUSED_GRASS_BLOCK, BotaniaBlocks.MUTATED_GRASS_BLOCK
 		)) {
-			TillableBlockRegistry.register(b, HoeItem::onlyIfAirAbove,
-					Blocks.FARMLAND.defaultBlockState());
-			FlattenableBlockRegistry.register(b, Blocks.DIRT_PATH.defaultBlockState());
+			// PORT-26.3: hoe and shovel results are data-driven block transformers; Fabric's helper appends to them
+			BlockPredicate airAbove = BlockPredicate.allOf(BlockPredicate.matchesBlocks(b), BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR));
+			BlockTransformerHelper.registerTilling(airAbove, Blocks.FARMLAND.defaultBlockState());
+			BlockTransformerHelper.registerFlattening(airAbove, Blocks.DIRT_PATH.defaultBlockState());
 		}
 		EnchantmentEvents.ALLOW_ENCHANTING.register((enchantment, target, enchantingContext) -> target.is(BotaniaItems.ELEMENTIUM_AXE) && enchantment.is(Enchantments.LOOTING) ? TriState.TRUE : TriState.DEFAULT);
 
-		int blazeTime = 2400;
-		FuelRegistry.INSTANCE.add(BotaniaBlocks.BLAZE_MESH.asItem(), blazeTime * (XplatAbstractions.INSTANCE.gogLoaded() ? 5 : 10));
-		int wallTime = 300;
-		FuelRegistry.INSTANCE.add(BotaniaTags.Items.WOODEN_WALLS, wallTime);
+		// PORT-26.3: furnace fuel is a data component, set in BotaniaBlocks#registerItemBlocks (blaze mesh, wooden walls)
 
 		// GUI and Recipe
 		BotaniaItems.registerMenuTypes(bind(BuiltInRegistries.MENU));
@@ -232,7 +236,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaBrews.submitRegistrations(bind(BREW_REGISTRY));
 
 		// Worldgen
-		BotaniaFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
+		BotaniaFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE_TYPE));
 		SkyblockChunkGenerator.submitRegistration(bind(BuiltInRegistries.CHUNK_GENERATOR));
 		BiomeModifications.addFeature(
 				ctx -> ctx.hasTag(BotaniaTags.Biomes.MYSTICAL_FLOWER_SPAWNLIST)
@@ -256,13 +260,13 @@ public class FabricCommonInitializer implements ModInitializer {
 		Registry.register(
 				BuiltInRegistries.CREATIVE_MODE_TAB,
 				BotaniaRegistries.BOTANIA_TAB_KEY,
-				FabricItemGroup.builder()
+				FabricCreativeModeTab.builder()
 						.title(Component.translatable("itemGroup.botania").withStyle((style -> style.withColor(ChatFormatting.WHITE))))
 						.icon(() -> new ItemStack(BotaniaItems.LEXICA_BOTANIA))
 						.backgroundTexture(botaniaRL("textures/gui/tab_botania.png"))
 						.build()
 		);
-		ItemGroupEvents.modifyEntriesEvent(BotaniaRegistries.BOTANIA_TAB_KEY)
+		CreativeModeTabEvents.modifyOutputEvent(BotaniaRegistries.BOTANIA_TAB_KEY)
 				.register(entries -> {
 					for (Item item : this.itemsToAddToCreativeTab) {
 						if (item instanceof CustomCreativeTabContents cc) {
@@ -277,13 +281,10 @@ public class FabricCommonInitializer implements ModInitializer {
 	}
 
 	private void registerAxeStripping(Block input, Block output) {
-		// not sure why Fabric restricts it to blocks with the axis property, but we have to support non-log blocks
-		if (input.getStateDefinition().getProperties().contains(BlockStateProperties.AXIS)
-				&& output.getStateDefinition().getProperties().contains(BlockStateProperties.AXIS)) {
-			StrippableBlockRegistry.register(input, output);
-		} else {
-			AxeStrippingData.addCustomStrippable(input, output);
-		}
+		// PORT-26.3: stripping is a data-driven block transformer. Fabric's helper takes any block, so the old axis-only
+		// restriction (and the AxeStrippingData fallback for the rest) is not needed here; the properties provider
+		// keeps the log axis like vanilla's own stripping entries do.
+		BlockTransformerHelper.registerStripping(input, new CopyPropertiesProvider(output));
 	}
 
 	private void registerEvents() {
@@ -298,8 +299,8 @@ public class FabricCommonInitializer implements ModInitializer {
 		EntityTrackingEvents.START_TRACKING.register(ItemLifeTimePacket::onItemTrack);
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin()) {
-				LootHandler.injectLoot(key.identifier(), tableBuilder::withPool);
-				LootHandler.injectGogLoot(key.identifier(), tableBuilder::withPool);
+				LootHandler.injectLoot(key.identifier(), registries, tableBuilder::withPool);
+				LootHandler.injectGogLoot(key.identifier(), registries, tableBuilder::withPool);
 			}
 		});
 		ManaNetworkCallback.EVENT.register(ManaNetworkHandler.instance::onNetworkEvent);
@@ -308,9 +309,9 @@ public class FabricCommonInitializer implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPING.register(this::serverStopping);
 		ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> FlugelTiaraItem.playerLoggedOut(handler.player)));
 		ServerPlayerEvents.AFTER_RESPAWN.register(ResoluteIvyItem::onPlayerRespawn);
-		ServerTickEvents.END_WORLD_TICK.register(CommonTickHandler::onTick);
-		ServerTickEvents.END_WORLD_TICK.register(GrassSeedsItem::onTickEnd);
-		ServerTickEvents.END_WORLD_TICK.register(TerraTruncatorItem::onTickEnd);
+		ServerTickEvents.END_LEVEL_TICK.register(CommonTickHandler::onTick);
+		ServerTickEvents.END_LEVEL_TICK.register(GrassSeedsItem::onTickEnd);
+		ServerTickEvents.END_LEVEL_TICK.register(TerraTruncatorItem::onTickEnd);
 		UseBlockCallback.EVENT.register(RedStringInterceptorBlock::onInteract);
 		UseBlockCallback.EVENT.register(RingOfLokiItem::onPlayerInteract);
 	}

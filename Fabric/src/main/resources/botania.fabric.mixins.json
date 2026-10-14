@@ -8,6 +8,7 @@
     "AbstractMinecartFabricMixin",
     "AnvilMenuFabricMixin",
     "BeaconBlockEntityFabricMixin",
+    "BucketItemFabricAccessor",
     "CombatTrackerMixin",
     "EnchantmentMenuFabricMixin",
     "EnderManFabricMixin",
