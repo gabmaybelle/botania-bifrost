@@ -13,27 +13,24 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class BotaniaSpecialRecipeBuilder {
-	private final Function<CraftingBookCategory, Recipe<?>> factory;
-	private final CraftingBookCategory category;
+	private final Supplier<Recipe<?>> factory;
 
-	public BotaniaSpecialRecipeBuilder(Function<CraftingBookCategory, Recipe<?>> factory, CraftingBookCategory category) {
+	public BotaniaSpecialRecipeBuilder(Supplier<Recipe<?>> factory) {
 		this.factory = factory;
-		this.category = category;
 	}
 
-	public static BotaniaSpecialRecipeBuilder special(Function<CraftingBookCategory, Recipe<?>> factory, CraftingBookCategory category) {
-		return new BotaniaSpecialRecipeBuilder(factory, category);
+	public static BotaniaSpecialRecipeBuilder special(Supplier<Recipe<?>> factory) {
+		return new BotaniaSpecialRecipeBuilder(factory);
 	}
 
 	public void save(RecipeOutput recipeOutput) {
-		Recipe<?> recipe = this.factory.apply(category);
+		Recipe<?> recipe = this.factory.get();
 		RecipeSerializer<?> serializer = recipe.getSerializer();
 		Identifier serializerKey = BuiltInRegistries.RECIPE_SERIALIZER.getKey(serializer);
 		Identifier recipeId = Identifier.fromNamespaceAndPath(serializerKey.getNamespace(),

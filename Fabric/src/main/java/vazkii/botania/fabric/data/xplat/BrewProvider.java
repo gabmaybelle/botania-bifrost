@@ -9,14 +9,15 @@
  */
 package vazkii.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
@@ -25,20 +26,15 @@ import vazkii.botania.api.brew.Brew;
 import vazkii.botania.common.brew.BotaniaBrews;
 import vazkii.botania.common.crafting.BotanicalBreweryRecipe;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.data.recipes.BotaniaRecipeProvider;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class BrewProvider extends FabricRecipeProvider {
-	public BrewProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(output, registriesFuture);
-	}
-
-	@Override
-	public String getName() {
-		return "Botania Brew recipes";
+public class BrewProvider extends BotaniaRecipeProvider {
+	public BrewProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		super(recipes, advancements);
 	}
 
 	@Override
@@ -77,7 +73,7 @@ public class BrewProvider extends FabricRecipeProvider {
 				Items.NETHER_WART, Blocks.SOUL_SAND, Items.PAPER, Items.APPLE, Items.BONE);
 		make(recipeOutput, BotaniaBrews.FEATHER_FEET,
 				Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.FEATHER),
-				Ingredient.of(Items.LEATHER), Ingredient.of(ItemTags.WOOL));
+				Ingredient.of(Items.LEATHER), tag(ItemTags.WOOL));
 		make(recipeOutput, BotaniaBrews.VANITYS_EMPTINESS,
 				Items.NETHER_WART, Items.GUNPOWDER, Items.ROTTEN_FLESH, Items.BONE, Items.STRING, Items.ENDER_PEARL);
 		make(recipeOutput, BotaniaBrews.CRIMSON_SHADE,
@@ -98,7 +94,7 @@ public class BrewProvider extends FabricRecipeProvider {
 				null);
 	}
 
-	private static Identifier idFor(String s) {
-		return botaniaRL("brew/" + s);
+	private static ResourceKey<Recipe<?>> idFor(String s) {
+		return ResourceKey.create(Registries.RECIPE, botaniaRL("brew/" + s));
 	}
 }

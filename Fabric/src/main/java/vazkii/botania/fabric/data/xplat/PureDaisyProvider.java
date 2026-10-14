@@ -9,12 +9,13 @@
  */
 package vazkii.botania.fabric.data.xplat;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.commands.CacheableFunction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,13 +30,11 @@ import vazkii.botania.common.crafting.StateIngredients;
 import vazkii.botania.data.recipes.BotaniaRecipeProvider;
 import vazkii.botania.data.util.BotaniaRecipeHelper;
 
-import java.util.concurrent.CompletableFuture;
-
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class PureDaisyProvider extends BotaniaRecipeProvider {
-	public PureDaisyProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+	public PureDaisyProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		super(recipes, advancements);
 	}
 
 	@Override
@@ -60,11 +59,6 @@ public class PureDaisyProvider extends BotaniaRecipeProvider {
 		normal(consumer, StateIngredients.of(Blocks.DRIPSTONE_BLOCK), Blocks.CALCITE.defaultBlockState());
 	}
 
-	@Override
-	public String getName() {
-		return "Botania Pure Daisy recipes";
-	}
-
 	private void normal(RecipeOutput consumer, StateIngredient input, BlockState output) {
 		withFunction(consumer, input, output, null);
 	}
@@ -79,7 +73,7 @@ public class PureDaisyProvider extends BotaniaRecipeProvider {
 				PureDaisyRecipe.DEFAULT_TIME, true, null, null), null);
 	}
 
-	private static Identifier id(Block block) {
+	private static ResourceKey<Recipe<?>> id(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PURE_DAISY_TYPE, block);
 	}
 }

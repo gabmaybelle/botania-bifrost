@@ -9,14 +9,17 @@
  */
 package vazkii.botania.fabric.data.xplat;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
@@ -29,15 +32,14 @@ import vazkii.botania.data.recipes.BotaniaRecipeProvider;
 import vazkii.botania.data.util.BotaniaRecipeHelper;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class StonecuttingProvider extends BotaniaRecipeProvider {
-	public StonecuttingProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+	public StonecuttingProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		super(recipes, advancements);
 	}
 
 	@Override
@@ -99,53 +101,53 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 
 		List<Item> allAzulejos = IntStream.range(0, 16).mapToObj(i -> "azulejo_" + i)
 				.map(BotaniaAPI::botaniaRL)
-				.map(BuiltInRegistries.ITEM::get)
+				.map(BuiltInRegistries.ITEM::getValue)
 				.collect(Collectors.toList());
 		anyToAnyStonecutting(recipeOutput, allAzulejos);
 	}
 
 	private void registerForQuartz(String variant, RecipeOutput consumer) {
-		Block base = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BLOCK_SUFFIX));
-		Block slab = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.SLAB_SUFFIX));
-		Block stairs = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.STAIRS_SUFFIX));
-		Block chiseled = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.CHISELED_PREFIX + variant + LibBlockNames.BLOCK_SUFFIX));
-		Block pillar = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.PILLAR_SUFFIX));
-		Block bricks = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BRICKS_SUFFIX));
+		Block base = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BLOCK_SUFFIX));
+		Block slab = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.SLAB_SUFFIX));
+		Block stairs = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.STAIRS_SUFFIX));
+		Block chiseled = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.CHISELED_PREFIX + variant + LibBlockNames.BLOCK_SUFFIX));
+		Block pillar = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.PILLAR_SUFFIX));
+		Block bricks = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BRICKS_SUFFIX));
 		stonecutting(consumer, base, slab, 2);
 		stonecutting(consumer, base, stairs);
 		stonecutting(consumer, base, chiseled);
 		stonecutting(consumer, base, pillar);
 		stonecutting(consumer, base, bricks);
 
-		Block smooth = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.BLOCK_SUFFIX));
-		Block smoothSlab = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.SLAB_SUFFIX));
-		Block smoothStairs = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.STAIRS_SUFFIX));
+		Block smooth = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.BLOCK_SUFFIX));
+		Block smoothSlab = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.SLAB_SUFFIX));
+		Block smoothStairs = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.SMOOTH_PREFIX + variant + LibBlockNames.STAIRS_SUFFIX));
 		stonecutting(consumer, smooth, smoothSlab, 2);
 		stonecutting(consumer, smooth, smoothStairs);
 	}
 
 	private void registerForPavement(String color, RecipeOutput consumer) {
-		Block base = BuiltInRegistries.BLOCK.get(botaniaRL(color + LibBlockNames.PAVEMENT_SUFFIX));
-		Block slab = BuiltInRegistries.BLOCK.get(botaniaRL(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX));
-		Block stair = BuiltInRegistries.BLOCK.get(botaniaRL(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX));
+		Block base = BuiltInRegistries.BLOCK.getValue(botaniaRL(color + LibBlockNames.PAVEMENT_SUFFIX));
+		Block slab = BuiltInRegistries.BLOCK.getValue(botaniaRL(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX));
+		Block stair = BuiltInRegistries.BLOCK.getValue(botaniaRL(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX));
 		stonecutting(consumer, base, slab, 2);
 		stonecutting(consumer, base, stair);
 	}
 
 	private void registerForMetamorphic(String variant, RecipeOutput consumer) {
-		Block base = BuiltInRegistries.BLOCK.get(botaniaRL(variant));
-		Block slab = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.SLAB_SUFFIX));
-		Block stair = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.STAIRS_SUFFIX));
-		Block wall = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.WALL_SUFFIX));
-		Block brick = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BRICKS_SUFFIX));
-		Block brickSlab = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX));
-		Block brickStair = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX));
-		Block brickWall = BuiltInRegistries.BLOCK.get(botaniaRL(variant + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX));
-		Block chiseledBrick = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.CHISELED_PREFIX + variant + LibBlockNames.BRICKS_SUFFIX));
-		Block cobble = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant));
-		Block cobbleSlab = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant + LibBlockNames.SLAB_SUFFIX));
-		Block cobbleStair = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant + LibBlockNames.STAIRS_SUFFIX));
-		Block cobbleWall = BuiltInRegistries.BLOCK.get(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant + LibBlockNames.WALL_SUFFIX));
+		Block base = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant));
+		Block slab = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.SLAB_SUFFIX));
+		Block stair = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.STAIRS_SUFFIX));
+		Block wall = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.WALL_SUFFIX));
+		Block brick = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BRICKS_SUFFIX));
+		Block brickSlab = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX));
+		Block brickStair = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX));
+		Block brickWall = BuiltInRegistries.BLOCK.getValue(botaniaRL(variant + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX));
+		Block chiseledBrick = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.CHISELED_PREFIX + variant + LibBlockNames.BRICKS_SUFFIX));
+		Block cobble = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant));
+		Block cobbleSlab = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant + LibBlockNames.SLAB_SUFFIX));
+		Block cobbleStair = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant + LibBlockNames.STAIRS_SUFFIX));
+		Block cobbleWall = BuiltInRegistries.BLOCK.getValue(botaniaRL(LibBlockNames.COBBLED_PREFIX + variant + LibBlockNames.WALL_SUFFIX));
 
 		stonecutting(consumer, base, slab, 2);
 		stonecutting(consumer, base, stair);
@@ -166,25 +168,20 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 		stonecutting(consumer, cobble, cobbleWall);
 	}
 
-	@Override
-	public String getName() {
-		return "Botania stonecutting recipes";
-	}
-
-	protected Identifier idFor(ItemLike input, ItemLike output) {
+	protected ResourceKey<Recipe<?>> idFor(ItemLike input, ItemLike output) {
 		Identifier inputId = BuiltInRegistries.ITEM.getKey(input.asItem());
 		Identifier outputId = BuiltInRegistries.ITEM.getKey(output.asItem());
 		return BotaniaRecipeHelper.deriveRecipeId(RecipeType.STONECUTTING, inputId.getPath() + "_to_" + outputId.getPath());
 	}
 
-	protected void stonecutting(RecipeOutput recipeOutput, Identifier id, Ingredient input, ItemLike output) {
+	protected void stonecutting(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id, Ingredient input, ItemLike output) {
 		stonecutting(recipeOutput, id, input, output, 1);
 	}
 
-	protected void stonecutting(RecipeOutput recipeOutput, Identifier id, Ingredient input, ItemLike output, int count) {
+	protected void stonecutting(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id, Ingredient input, ItemLike output, int count) {
 		ItemStack outputStack = new ItemStack(output);
 		outputStack.setCount(count);
-		recipeOutput.accept(id, new StonecutterRecipe("", input, outputStack), null);
+		recipeOutput.accept(id, new StonecutterRecipe(new Recipe.CommonInfo(true), input, ItemStackTemplate.fromNonEmptyStack(outputStack)), null);
 	}
 
 	protected void stonecutting(RecipeOutput recipeOutput, ItemLike input, ItemLike output) {
@@ -194,14 +191,14 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 	protected void stonecutting(RecipeOutput recipeOutput, ItemLike input, ItemLike output, int count) {
 		ItemStack outputStack = new ItemStack(output);
 		outputStack.setCount(count);
-		recipeOutput.accept(idFor(input, output), new StonecutterRecipe("", Ingredient.of(input), outputStack), null);
+		recipeOutput.accept(idFor(input, output), new StonecutterRecipe(new Recipe.CommonInfo(true), Ingredient.of(input), ItemStackTemplate.fromNonEmptyStack(outputStack)), null);
 	}
 
 	protected void anyToAnyStonecutting(RecipeOutput recipeOutput, List<? extends ItemLike> inputs) {
 		for (ItemLike output : inputs) {
 			Ingredient input = Ingredient.of(inputs.stream()
 					.filter(thisInput -> output != thisInput).toArray(ItemLike[]::new));
-			Identifier id = BotaniaRecipeHelper.deriveRecipeId(RecipeType.STONECUTTING, output.asItem());
+			ResourceKey<Recipe<?>> id = BotaniaRecipeHelper.deriveRecipeId(RecipeType.STONECUTTING, output.asItem());
 			stonecutting(recipeOutput, id, input, output);
 		}
 	}

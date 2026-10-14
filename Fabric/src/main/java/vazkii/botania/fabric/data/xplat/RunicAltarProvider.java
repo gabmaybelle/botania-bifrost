@@ -9,16 +9,16 @@
  */
 package vazkii.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
@@ -28,22 +28,16 @@ import vazkii.botania.common.crafting.RunicAltarRecipe;
 import vazkii.botania.common.crafting.recipe.HeadRecipe;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.lib.ConventionalBotaniaTags;
+import vazkii.botania.data.recipes.BotaniaRecipeProvider;
 import vazkii.botania.data.util.BotaniaRecipeHelper;
 
-import java.util.concurrent.CompletableFuture;
-
-public class RunicAltarProvider extends FabricRecipeProvider {
+public class RunicAltarProvider extends BotaniaRecipeProvider {
 
 	private static final Ingredient[] NO_CATALYSTS = {};
 	private static final Ingredient DEFAULT_REAGENT = Ingredient.of(BotaniaBlocks.LIVINGROCK);
 
-	public RunicAltarProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(output, registriesFuture);
-	}
-
-	@Override
-	public String getName() {
-		return "Botania runic altar recipes";
+	public RunicAltarProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		super(recipes, advancements);
 	}
 
 	@Override
@@ -52,20 +46,20 @@ public class RunicAltarProvider extends FabricRecipeProvider {
 		final int costTier2 = 8000;
 		final int costTier3 = 12000;
 
-		Ingredient manaSteel = Ingredient.of(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS);
-		Ingredient manaPowder = Ingredient.of(ConventionalBotaniaTags.Items.MANA_DUSTS);
+		Ingredient manaSteel = tag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS);
+		Ingredient manaPowder = tag(ConventionalBotaniaTags.Items.MANA_DUSTS);
 
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_WATER, 2, costTier1,
 				manaPowder, manaSteel, Ingredient.of(Items.BONE_MEAL), Ingredient.of(Blocks.SUGAR_CANE),
-				Ingredient.of(ConventionalItemTags.FISHING_ROD_TOOLS));
+				tag(ConventionalItemTags.FISHING_ROD_TOOLS));
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_FIRE, 2, costTier1,
-				manaPowder, manaSteel, Ingredient.of(ConventionalItemTags.NETHER_BRICKS),
+				manaPowder, manaSteel, tag(ConventionalItemTags.NETHER_BRICKS),
 				Ingredient.of(Items.GUNPOWDER), Ingredient.of(Items.COAL, Items.CHARCOAL));
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_EARTH, 2, costTier1,
 				manaPowder, manaSteel, Ingredient.of(Blocks.STONE), Ingredient.of(Blocks.MUD),
 				Ingredient.of(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM));
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_AIR, 2, costTier1,
-				manaPowder, manaSteel, Ingredient.of(ItemTags.WOOL_CARPETS), Ingredient.of(Items.FEATHER),
+				manaPowder, manaSteel, tag(ItemTags.WOOL_CARPETS), Ingredient.of(Items.FEATHER),
 				Ingredient.of(Items.STRING));
 
 		Ingredient fire = Ingredient.of(BotaniaItems.RUNE_OF_FIRE);
@@ -73,9 +67,9 @@ public class RunicAltarProvider extends FabricRecipeProvider {
 		Ingredient earth = Ingredient.of(BotaniaItems.RUNE_OF_EARTH);
 		Ingredient air = Ingredient.of(BotaniaItems.RUNE_OF_AIR);
 
-		Ingredient sapling = Ingredient.of(ItemTags.SAPLINGS);
-		Ingredient leaves = Ingredient.of(ItemTags.LEAVES);
-		Ingredient sand = Ingredient.of(ItemTags.SAND);
+		Ingredient sapling = tag(ItemTags.SAPLINGS);
+		Ingredient leaves = tag(ItemTags.LEAVES);
+		Ingredient sand = tag(ItemTags.SAND);
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_SPRING, costTier2,
 				new Ingredient[] { sapling, sapling, sapling, Ingredient.of(Items.WHEAT) }, water, fire);
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_SUMMER, costTier2,
@@ -85,7 +79,7 @@ public class RunicAltarProvider extends FabricRecipeProvider {
 				new Ingredient[] { leaves, leaves, leaves, Ingredient.of(Items.SPIDER_EYE) }, fire, air);
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_WINTER, costTier2,
 				new Ingredient[] { Ingredient.of(Blocks.SNOW_BLOCK), Ingredient.of(Blocks.SNOW_BLOCK),
-						Ingredient.of(ItemTags.WOOL), Ingredient.of(Blocks.CAKE) },
+						tag(ItemTags.WOOL), Ingredient.of(Blocks.CAKE) },
 				water, earth);
 
 		Ingredient spring = Ingredient.of(BotaniaItems.RUNE_OF_SPRING);
@@ -95,10 +89,10 @@ public class RunicAltarProvider extends FabricRecipeProvider {
 
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_MANA, 1, costTier2,
 				manaSteel, manaSteel, manaSteel, manaSteel, manaSteel,
-				Ingredient.of(ConventionalBotaniaTags.Items.MANA_PEARL_GEMS));
+				tag(ConventionalBotaniaTags.Items.MANA_PEARL_GEMS));
 
-		Ingredient manaDiamond = Ingredient.of(ConventionalBotaniaTags.Items.MANA_DIAMOND_GEMS);
-		Ingredient manaQuartz = Ingredient.of(ConventionalBotaniaTags.Items.MANA_QUARTZ_GEMS);
+		Ingredient manaDiamond = tag(ConventionalBotaniaTags.Items.MANA_DIAMOND_GEMS);
+		Ingredient manaQuartz = tag(ConventionalBotaniaTags.Items.MANA_QUARTZ_GEMS);
 
 		Ingredient[] tier3Ingredients = { manaDiamond, manaDiamond, manaQuartz };
 		defaultReagent(consumer, BotaniaItems.RUNE_OF_LUST, costTier3, tier3Ingredients, summer, air);
@@ -111,13 +105,13 @@ public class RunicAltarProvider extends FabricRecipeProvider {
 
 		consumer.accept(idFor(Items.PLAYER_HEAD),
 				new HeadRecipe(new ItemStack(Items.PLAYER_HEAD), DEFAULT_REAGENT, 22500,
-						Ingredient.of(Items.SKELETON_SKULL), Ingredient.of(ConventionalBotaniaTags.Items.PIXIE_DUSTS),
-						Ingredient.of(ConventionalItemTags.PRISMARINE_GEMS),
+						Ingredient.of(Items.SKELETON_SKULL), tag(ConventionalBotaniaTags.Items.PIXIE_DUSTS),
+						tag(ConventionalItemTags.PRISMARINE_GEMS),
 						Ingredient.of(Items.NAME_TAG, Items.WRITTEN_BOOK), Ingredient.of(Items.GOLDEN_APPLE)),
 				null);
 	}
 
-	private static Identifier idFor(ItemLike item) {
+	private static ResourceKey<Recipe<?>> idFor(ItemLike item) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, item);
 	}
 

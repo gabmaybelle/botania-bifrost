@@ -9,11 +9,11 @@
  */
 package vazkii.botania.fabric.data.xplat;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 import vazkii.botania.common.block.mana.ManaPoolBlock;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
@@ -23,16 +23,9 @@ import vazkii.botania.common.lib.ConventionalBotaniaTags;
 import vazkii.botania.data.recipes.BotaniaRecipeProvider;
 import vazkii.botania.data.util.BotaniaRecipeHelper;
 
-import java.util.concurrent.CompletableFuture;
-
 public class TerrestrialAgglomerationProvider extends BotaniaRecipeProvider {
-	public TerrestrialAgglomerationProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
-	}
-
-	@Override
-	public String getName() {
-		return "Botania Terra Plate recipes";
+	public TerrestrialAgglomerationProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		super(recipes, advancements);
 	}
 
 	@Override
@@ -42,9 +35,9 @@ public class TerrestrialAgglomerationProvider extends BotaniaRecipeProvider {
 				new TerrestrialAgglomerationRecipe(
 						ManaPoolBlock.MAX_MANA / 2,
 						new ItemStack(BotaniaItems.TERRASTEEL_INGOT),
-						Ingredient.of(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS),
-						Ingredient.of(ConventionalBotaniaTags.Items.MANA_PEARL_GEMS),
-						Ingredient.of(ConventionalBotaniaTags.Items.MANA_DIAMOND_GEMS)
+						tag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS),
+						tag(ConventionalBotaniaTags.Items.MANA_PEARL_GEMS),
+						tag(ConventionalBotaniaTags.Items.MANA_DIAMOND_GEMS)
 				),
 				null);
 	}

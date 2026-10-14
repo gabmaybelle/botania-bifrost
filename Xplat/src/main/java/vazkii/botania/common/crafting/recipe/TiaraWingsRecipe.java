@@ -26,15 +26,18 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.bauble.FlugelTiaraItem;
 
+import java.util.Optional;
+
 public class TiaraWingsRecipe extends CustomRecipe {
 	public static final RecipeSerializer<TiaraWingsRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
 
-	private final Ingredient material;
+	// PORT-26.3: ingredients can't be empty any more, so the material-less variant has no material at all
+	private final Optional<Ingredient> material;
 	private final int variant;
 
-	public TiaraWingsRecipe(Ingredient material, int variant) {
+	public TiaraWingsRecipe(Optional<Ingredient> material, int variant) {
 		// PORT-26.3: custom recipes have no category of their own any more (CustomRecipe answers "misc").
-		if (material.test(BotaniaItems.FLUGEL_TIARA.getDefaultInstance())) {
+		if (material.isPresent() && material.get().test(BotaniaItems.FLUGEL_TIARA.getDefaultInstance())) {
 			throw new IllegalArgumentException("Material cannot be a Flügel Tiara");
 		}
 		this.material = material;
@@ -56,7 +59,7 @@ public class TiaraWingsRecipe extends CustomRecipe {
 			}
 			if (!foundTiara && matchesTiara(stack)) {
 				foundTiara = true;
-			} else if (!foundMaterial && material.test(stack)) {
+			} else if (!foundMaterial && material.get().test(stack)) {
 				foundMaterial = true;
 			} else {
 				return false;
@@ -81,7 +84,7 @@ public class TiaraWingsRecipe extends CustomRecipe {
 	public NonNullList<Ingredient> getIngredients() {
 		return material.isEmpty()
 				? RecipeUtils.nonNullList(Ingredient.of(BotaniaItems.FLUGEL_TIARA))
-				: RecipeUtils.nonNullList(Ingredient.of(BotaniaItems.FLUGEL_TIARA), material);
+				: RecipeUtils.nonNullList(Ingredient.of(BotaniaItems.FLUGEL_TIARA), material.get());
 	}
 
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
@@ -95,7 +98,7 @@ public class TiaraWingsRecipe extends CustomRecipe {
 		return "botania:flugel_tiara_wings";
 	}
 
-	public Ingredient material() {
+	public Optional<Ingredient> material() {
 		return material;
 	}
 
@@ -110,11 +113,11 @@ public class TiaraWingsRecipe extends CustomRecipe {
 
 	private static class Serializer {
 		static final MapCodec<TiaraWingsRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				Ingredient.CODEC.fieldOf("material").forGetter(TiaraWingsRecipe::material),
+				Ingredient.CODEC.optionalFieldOf("material").forGetter(TiaraWingsRecipe::material),
 				ExtraCodecs.intRange(0, FlugelTiaraItem.WING_TYPES).fieldOf("variant").forGetter(TiaraWingsRecipe::variant)
 		).apply(instance, TiaraWingsRecipe::new));
 		static final StreamCodec<RegistryFriendlyByteBuf, TiaraWingsRecipe> STREAM_CODEC = StreamCodec.composite(
-				Ingredient.CONTENTS_STREAM_CODEC, TiaraWingsRecipe::material,
+				Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, TiaraWingsRecipe::material,
 				ByteBufCodecs.VAR_INT, TiaraWingsRecipe::variant,
 				TiaraWingsRecipe::new
 		);

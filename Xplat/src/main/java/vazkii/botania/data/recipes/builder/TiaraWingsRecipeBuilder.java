@@ -29,21 +29,22 @@ import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class TiaraWingsRecipeBuilder {
 
 	private final RecipeCategory category;
-	private final Ingredient material;
+	private final Optional<Ingredient> material;
 	private final int variant;
 	private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
-	public TiaraWingsRecipeBuilder(RecipeCategory category, Ingredient material, int variant) {
+	public TiaraWingsRecipeBuilder(RecipeCategory category, Optional<Ingredient> material, int variant) {
 		this.category = category;
 		this.material = material;
 		this.variant = variant;
 	}
 
-	public static TiaraWingsRecipeBuilder with(Ingredient material, int variant) {
+	public static TiaraWingsRecipeBuilder with(Optional<Ingredient> material, int variant) {
 		return new TiaraWingsRecipeBuilder(RecipeCategory.TOOLS, material, variant);
 	}
 

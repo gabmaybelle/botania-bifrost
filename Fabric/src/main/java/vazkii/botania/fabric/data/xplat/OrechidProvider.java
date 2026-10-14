@@ -9,12 +9,12 @@
  */
 package vazkii.botania.fabric.data.xplat;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,31 +29,28 @@ import vazkii.botania.common.block.block_entity.flower.functional.OrechidIgnemBl
 import vazkii.botania.common.crafting.*;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.data.util.BotaniaRecipeHelper;
-import vazkii.botania.fabric.data.FabricDatagenInitializer;
 
-import java.util.concurrent.CompletableFuture;
+public class OrechidProvider extends ConditionalRecipeProvider {
 
-public class OrechidProvider extends FabricRecipeProvider {
-
-	public OrechidProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+	public OrechidProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements, ConditionHook conditions) {
+		super(recipes, advancements, conditions);
 	}
 
 	// TODO: We had an enormous amount of ores defined for mod compat.
 	//       The old data needs to be completely revised.
 	@Override
 	public void buildRecipes(RecipeOutput consumer) {
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.COAL_ORE, 5129);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.IRON_ORE, 1568);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.REDSTONE_ORE, 71);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.COPPER_ORE, 2724,
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.COAL_ORE, 5129);
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.IRON_ORE, 1568);
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.REDSTONE_ORE, 71);
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.COPPER_ORE, 2724,
 				BotaniaTags.Biomes.ORECHID_STONE_COPPER_BONUS, 2500);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.GOLD_ORE, 106,
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.GOLD_ORE, 106,
 				BotaniaTags.Biomes.ORECHID_STONE_GOLD_BONUS, 1790);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.EMERALD_ORE, 1,
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.EMERALD_ORE, 1,
 				BotaniaTags.Biomes.ORECHID_STONE_EMERALD_BONUS, 111);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.LAPIS_ORE, 281);
-		stone(withConditions(consumer, FabricDatagenInitializer.GOG_NOT_LOADED_CONDITION), Blocks.DIAMOND_ORE, 10);
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.LAPIS_ORE, 281);
+		stone(withConditions(consumer, GOG_NOT_LOADED), Blocks.DIAMOND_ORE, 10);
 
 		deepslate(consumer, Blocks.DEEPSLATE_COAL_ORE, 57);
 		deepslate(consumer, Blocks.DEEPSLATE_IRON_ORE, 2513);
@@ -78,15 +75,15 @@ public class OrechidProvider extends FabricRecipeProvider {
 		biomeStone(consumer, BotaniaBlocks.ROSY_TALC, BotaniaTags.Biomes.MARIMORPHOSIS_ROSY_TALC_BONUS);
 	}
 
-	protected Identifier orechidId(Block block) {
+	protected ResourceKey<Recipe<?>> orechidId(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.ORECHID_TYPE, block);
 	}
 
-	protected Identifier ignemId(Block block) {
+	protected ResourceKey<Recipe<?>> ignemId(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.ORECHID_IGNEM_TYPE, block);
 	}
 
-	protected Identifier marimorphosisId(Block block) {
+	protected ResourceKey<Recipe<?>> marimorphosisId(Block block) {
 		return BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.MARIMORPHOSIS_TYPE, block);
 	}
 
@@ -125,11 +122,6 @@ public class OrechidProvider extends FabricRecipeProvider {
 
 	protected static StateIngredient forTag(TagKey<Block> tag) {
 		return StateIngredients.of(tag);
-	}
-
-	@Override
-	public String getName() {
-		return "Botania Orechid and Marimorphosis recipes";
 	}
 
 }

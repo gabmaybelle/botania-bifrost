@@ -49,6 +49,10 @@ public class WrapperRecipeBuilder<T extends Recipe<?>> {
 		save(recipeOutput, ResourceKey.create(Registries.RECIPE, id));
 	}
 
+	public void save(RecipeOutput recipeOutput, String id) {
+		save(recipeOutput, Identifier.parse(id));
+	}
+
 	public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
 		CapturingRecipeOutput capturingRecipeOutput = new CapturingRecipeOutput(recipeOutput);
 		var output = capturingRecipeOutput.captureSave(out -> recipeBuilder.save(out, id));
