@@ -8,11 +8,9 @@
  */
 package vazkii.botania.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ARGB;
@@ -21,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 import vazkii.botania.client.integration.shared.LocaleHelper;
 import vazkii.botania.network.clientbound.UpdateItemsRemainingPacket;
@@ -38,8 +37,8 @@ public final class ItemsRemainingRenderHandler {
 	private static Component customString;
 	private static int ticks, count;
 
-	public static void render(GuiGraphics gui, float partialTick) {
-		PoseStack ms = gui.pose();
+	public static void render(GuiGraphicsExtractor gui, float partialTick) {
+		Matrix3x2fStack ms = gui.pose();
 		if (ticks > 0 && !stack.isEmpty()) {
 			int pos = MAX_TICKS - ticks;
 			Minecraft mc = Minecraft.getInstance();
@@ -51,16 +50,16 @@ public final class ItemsRemainingRenderHandler {
 
 			// RenderSystem.setShaderColor(1F, 1F, 1F, alpha);
 			int xp = x + (int) (16F * (1F - alpha));
-			ms.pushPose();
-			ms.translate(xp, y, 0F);
-			ms.scale(alpha, 1F, 1F);
-			gui.renderItem(stack, 0, 0);
-			ms.popPose();
+			ms.pushMatrix();
+			ms.translate(xp, y);
+			ms.scale(alpha, 1F);
+			gui.item(stack, 0, 0);
+			ms.popMatrix();
 
 			Component text = customString != null ? customString : getRemainingCount(stack, count);
 
 			int color = ARGB.color(ARGB.as8BitChannel(alpha), 0xFFFFFF);
-			gui.drawString(mc.font, text, x + 20, y + 6, color);
+			gui.text(mc.font, text, x + 20, y + 6, color);
 		}
 	}
 

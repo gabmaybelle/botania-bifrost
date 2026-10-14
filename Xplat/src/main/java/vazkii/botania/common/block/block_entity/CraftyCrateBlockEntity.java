@@ -11,7 +11,7 @@ package vazkii.botania.common.block.block_entity;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -291,7 +291,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			int width = 52;
 			int height = 52;
 			int xc = window.getGuiScaledWidth() / 2 + 12;
@@ -313,7 +313,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 					gui.fill(xp, yp, xp + 16, yp + 16, enabled ? 0x22FFFFFF : 0x22FF0000);
 
 					ItemStack item = crate.getItemHandler().getItem(index);
-					gui.renderItem(item, xp, yp);
+					gui.item(item, xp, yp);
 				}
 			}
 		}

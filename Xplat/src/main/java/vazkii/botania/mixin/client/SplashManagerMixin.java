@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
@@ -69,8 +70,8 @@ public class SplashManagerMixin {
 		if (calendar.get(Calendar.MONTH) + 1 == TinyPotatoBlockEntity.BIRTHDAY.getMonth().getValue()
 				&& calendar.get(Calendar.DAY_OF_MONTH) == TinyPotatoBlockEntity.BIRTHDAY.getDayOfMonth()) {
 			int age = calendar.get(Calendar.YEAR) - TinyPotatoBlockEntity.BIRTHDAY.getYear();
-			cir.setReturnValue(new SplashRenderer("Happy %s birthday, Tiny Potato!"
-					.formatted(LocaleHelper.formatAsEnglishOrdinal(age))));
+			cir.setReturnValue(new SplashRenderer(Component.literal("Happy %s birthday, Tiny Potato!"
+					.formatted(LocaleHelper.formatAsEnglishOrdinal(age)))));
 			return;
 		}
 

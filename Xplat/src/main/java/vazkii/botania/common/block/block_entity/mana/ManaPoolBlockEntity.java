@@ -9,12 +9,11 @@
 package vazkii.botania.common.block.block_entity.mana;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import it.unimi.dsi.fastutil.ints.*;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -41,7 +40,6 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-import org.lwjgl.opengl.GL11;
 
 import vazkii.botania.api.BotaniaAPIClient;
 import vazkii.botania.api.block.WandHUD;
@@ -498,7 +496,7 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			ItemStack poolStack = new ItemStack(pool.getBlockState().getBlock());
 			String name = poolStack.getHoverName().getString();
 
@@ -511,21 +509,16 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 
 			BotaniaAPIClient.instance().drawSimpleManaHUD(gui, window, font, 0x0095FF, pool.getCurrentMana(), pool.getMaxMana(), name);
 
-			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
 			int arrowU = pool.isOutputtingPower() ? 22 : 0;
 			int arrowV = 38;
 			RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, centerX - 11, centerY + 30, arrowU, arrowV, 22, 15);
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
 			ItemStack tablet = new ItemStack(BotaniaItems.MANA_TABLET);
 			ManaTabletItem.setStackCreative(tablet);
 
-			gui.renderItem(tablet, centerX - 31, centerY + 30);
-			gui.renderItem(poolStack, centerX + 15, centerY + 30);
+			gui.item(tablet, centerX - 31, centerY + 30);
+			gui.item(poolStack, centerX + 15, centerY + 30);
 
-			RenderSystem.disableBlend();
 		}
 	}
 

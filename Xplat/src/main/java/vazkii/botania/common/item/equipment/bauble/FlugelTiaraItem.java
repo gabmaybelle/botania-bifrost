@@ -8,11 +8,10 @@
  */
 package vazkii.botania.common.item.equipment.bauble;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -35,7 +34,6 @@ import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.core.handler.MiscellaneousModels;
@@ -240,7 +238,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 					newTime--;
 				}
 				final int maxCd = 40;
-				boolean isOnCooldown = player.getCooldowns().isOnCooldown(this);
+				boolean isOnCooldown = player.getCooldowns().isOnCooldown(stack);
 				if (!wasSprting && isSprinting && !isOnCooldown && !StoneOfTemperanceItem.hasTemperanceActive(player)) {
 					player.setDeltaMovement(player.getDeltaMovement().add(look.x, 0, look.z));
 					player.level().playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.DASH, SoundSource.PLAYERS, 1F, 1F);
@@ -492,7 +490,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			return 0;
 		}
 
-		public static void renderHUD(GuiGraphics gui, float partialTicks, Player player, ItemStack stack) {
+		public static void renderHUD(GuiGraphicsExtractor gui, float partialTicks, Player player, ItemStack stack) {
 			int u = Math.max(1, getVariant(stack)) * 9 - 9;
 			int v = 0;
 
@@ -511,24 +509,18 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				float trans = 1F;
 				if (i == segs - 1) {
 					trans = (float) last / (float) segTime;
-					RenderSystem.enableBlend();
-					RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				}
-
-				RenderSystem.setShaderColor(1F, 1F, 1F, trans);
-				RenderHelper.drawTexturedModalRect(gui, textureHud, xo + 8 * i, y, u, v, 9, 9);
+				RenderHelper.drawTexturedModalRect(gui, textureHud, xo + 8 * i, y, u, v, 9, 9, ARGB.colorFromFloat(trans, 1F, 1F, 1F));
 			}
 
 			if (player.getAbilities().flying) {
-				int width = (int) (player.getCooldowns().getCooldownPercent(stack.getItem(), partialTicks) * 80);
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+				int width = (int) (player.getCooldowns().getCooldownPercent(stack, partialTicks) * 80);
 				if (width > 0) {
 					gui.fill(xo, y - 2, xo + 80, y - 1, 0x88000000);
 				}
 				gui.fill(xo, y - 2, xo + width, y - 1, 0xFFFFFFFF);
 			}
 
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		}
 	}
 

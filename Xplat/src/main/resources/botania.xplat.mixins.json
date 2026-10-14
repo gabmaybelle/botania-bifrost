@@ -83,6 +83,7 @@
   "client": [
     "client.AbstractClientPlayerMixin",
     "client.AbstractContainerScreenAccessor",
+    "client.AbstractRecipeBookScreenAccessor",
     "client.BlockRenderDispatcherMixin",
     "client.GuiGraphicsExtractorAccessor",
     "client.ItemStackRenderStateAccessor",
@@ -91,7 +92,6 @@
     "client.ItemInHandRendererMixin",
     "client.LevelRendererAccessor",
     "client.LevelRendererMixin",
-    "client.MinecraftAccessor",
     "client.MinecraftMixin",
     "client.MusicManagerMixin",
     "client.RecipeBookComponentAccessor",

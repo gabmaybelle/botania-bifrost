@@ -14,7 +14,7 @@ import com.mojang.blaze3d.platform.Window;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -580,7 +580,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			if (enchanter.manaRequired > 0 && !enchanter.itemToEnchant.isEmpty()) {
 				int x = window.getGuiScaledWidth() / 2 + 8;
 				int y = window.getGuiScaledHeight() / 2 - 12;

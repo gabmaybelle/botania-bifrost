@@ -8,11 +8,11 @@
  */
 package vazkii.botania.client.patchouli.component;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+
+import org.joml.Matrix3x2fStack;
 
 import vazkii.patchouli.api.IComponentRenderContext;
 import vazkii.patchouli.api.ICustomComponent;
@@ -44,31 +44,25 @@ public class TerraPlateComponent implements ICustomComponent {
 	}
 
 	@Override
-	public void render(GuiGraphics gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
-		PoseStack ms = gui.pose();
-		ms.pushPose();
-		ms.translate(0, 0, -10);
+	public void render(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
+		Matrix3x2fStack ms = gui.pose();
+		ms.pushMatrix();
 		context.renderItemStack(gui, x + 13, y + 1, mouseX, mouseY, cornerBlock);
 
-		ms.translate(0F, 0F, 5F);
 		context.renderItemStack(gui, x + 20, y + 4, mouseX, mouseY, middleBlock);
 		context.renderItemStack(gui, x + 7, y + 4, mouseX, mouseY, middleBlock);
 
-		ms.translate(0F, 0F, 5F);
 		context.renderItemStack(gui, x + 13, y + 8, mouseX, mouseY, cornerBlock);
 		context.renderItemStack(gui, x + 27, y + 8, mouseX, mouseY, centerBlock);
 		context.renderItemStack(gui, x, y + 8, mouseX, mouseY, cornerBlock);
 
-		ms.translate(0F, 0F, 5F);
 		context.renderItemStack(gui, x + 7, y + 12, mouseX, mouseY, middleBlock);
 		context.renderItemStack(gui, x + 20, y + 12, mouseX, mouseY, middleBlock);
 
-		ms.translate(0F, 0F, 5F);
 		context.renderItemStack(gui, x + 14, y + 15, mouseX, mouseY, cornerBlock);
 
-		ms.translate(0F, 0F, 5F);
 		context.renderItemStack(gui, x + 13, y, mouseX, mouseY, plateBlock);
-		ms.popPose();
+		ms.popMatrix();
 	}
 
 	@Override

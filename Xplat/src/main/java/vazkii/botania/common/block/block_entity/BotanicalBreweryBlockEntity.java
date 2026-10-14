@@ -11,7 +11,7 @@ package vazkii.botania.common.block.block_entity;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -299,7 +299,7 @@ public class BotanicalBreweryBlockEntity extends SimpleInventoryBlockEntity impl
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			int manaToGet = brewery.getManaCost();
 			if (manaToGet > 0) {
 				if (brewery.recipe == null) {

@@ -6,17 +6,16 @@
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
-
 package vazkii.botania.mixin.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(Minecraft.class)
-public interface MinecraftAccessor {
-	@Accessor("itemColors")
-	ItemColors botania_getItemColors();
+@Mixin(AbstractRecipeBookScreen.class)
+public interface AbstractRecipeBookScreenAccessor {
+	@Accessor("recipeBookComponent")
+	RecipeBookComponent<?> botania_getRecipeBookComponent();
 }

@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -218,7 +218,7 @@ public class RannuncarpusBlockEntity extends FunctionalFlowerBlockEntity impleme
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			ItemStack filterStack = new ItemStack(flower.getUnderlyingBlock().getBlock());
 			int color = flower.getColor();
 			String mode = I18n.get("botaniamisc.rannuncarpus." + flower.getFilterType().getSerializedName());
@@ -228,7 +228,7 @@ public class RannuncarpusBlockEntity extends FunctionalFlowerBlockEntity impleme
 			int minWidth = Math.max(RenderHelper.itemWithNameWidth(filterStack, font), modeWidth) + 4;
 
 			super.renderHUD(gui, window, font, minWidth / 2, minWidth / 2, filterStack.isEmpty() ? 40 : 60);
-			gui.drawString(font, mode, modeTextStart, centerY + 30, color);
+			gui.text(font, mode, modeTextStart, centerY + 30, color);
 			RenderHelper.renderItemWithNameCentered(gui, window, font, filterStack, centerY + 40, color);
 		}
 	}

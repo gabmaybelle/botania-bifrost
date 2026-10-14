@@ -11,10 +11,11 @@ package vazkii.botania.client.core.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
-import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,6 +23,7 @@ import vazkii.botania.client.core.RecipeBookAccess;
 import vazkii.botania.client.core.proxy.ClientProxy;
 import vazkii.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
 import vazkii.botania.mixin.client.AbstractContainerScreenAccessor;
+import vazkii.botania.mixin.client.AbstractRecipeBookScreenAccessor;
 import vazkii.botania.mixin.client.RecipeBookComponentAccessor;
 import vazkii.botania.mixin.client.RecipeBookPageAccessor;
 import vazkii.botania.network.serverbound.IndexKeybindRequestPacket;
@@ -37,11 +39,11 @@ public class CorporeaInputHandler {
 	public static final List<Supplier<ItemStack>> hoveredStackGetters = new ArrayList<>();
 	public static Predicate<Screen> supportedGuiFilter = gui -> gui instanceof AbstractContainerScreen;
 
-	public static boolean buttonPressed(int keyCode, int scanCode) {
+	public static boolean buttonPressed(KeyEvent event) {
 		Minecraft mc = Minecraft.getInstance();
 
-		if (mc.level == null || !supportedGuiFilter.test(mc.screen)
-				|| !ClientProxy.CORPOREA_REQUEST.matches(keyCode, scanCode)
+		if (mc.level == null || !supportedGuiFilter.test(mc.gui.screen())
+				|| !ClientProxy.CORPOREA_REQUEST.matches(event)
 				|| CorporeaIndexBlockEntity.getNearbyValidIndexes(mc.player).isEmpty()) {
 			return false;
 		}
@@ -51,12 +53,12 @@ public class CorporeaInputHandler {
 			int count = 1;
 			int max = stack.getMaxStackSize();
 
-			if (Screen.hasShiftDown()) {
+			if (event.hasShiftDown()) {
 				count = max;
-				if (Screen.hasControlDown()) {
+				if (event.hasControlDown()) {
 					count /= 4;
 				}
-			} else if (Screen.hasControlDown()) {
+			} else if (event.hasControlDown()) {
 				count = max / 2;
 			}
 
@@ -70,19 +72,21 @@ public class CorporeaInputHandler {
 	}
 
 	private static ItemStack getStackUnderMouse() {
-		Screen screen = Minecraft.getInstance().screen;
+		Screen screen = Minecraft.getInstance().gui.screen();
 		if (screen instanceof AbstractContainerScreen) {
 			Slot slotUnderMouse = ((AbstractContainerScreenAccessor) screen).botania_getHoveredSlot();
 			if (slotUnderMouse != null && slotUnderMouse.hasItem()) {
 				return slotUnderMouse.getItem().copy();
 			}
 
-			if (screen instanceof RecipeUpdateListener recipeScreen && recipeScreen.getRecipeBookComponent().isVisible()) {
-				RecipeBookComponent recipeBook = recipeScreen.getRecipeBookComponent();
+			// PORT-26.3: the recipe book lives on AbstractRecipeBookScreen now
+			if (screen instanceof AbstractRecipeBookScreen<?> recipeScreen
+					&& ((AbstractRecipeBookScreenAccessor) recipeScreen).botania_getRecipeBookComponent().isVisible()) {
+				RecipeBookComponent<?> recipeBook = ((AbstractRecipeBookScreenAccessor) recipeScreen).botania_getRecipeBookComponent();
 				RecipeBookPage page = ((RecipeBookComponentAccessor) recipeBook).botania_getRecipeBookPage();
 				RecipeButton widget = ((RecipeBookPageAccessor) page).botania_getHoveredButton();
 				if (widget != null) {
-					return widget.getRecipe().value().getResultItem(Minecraft.getInstance().level.registryAccess());
+					return widget.getDisplayStack();
 				}
 				ItemStack stack = ((RecipeBookAccess) recipeBook).botania_getHoveredGhostRecipeStack();
 				if (stack != null) {

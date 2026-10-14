@@ -27,7 +27,7 @@ public final class DebugHandler {
 	public static void onDrawDebugText(List<String> left) {
 		Minecraft mc = Minecraft.getInstance();
 		Level world = mc.level;
-		if (mc.gui.getDebugOverlay().showDebugScreen() && BotaniaConfig.client().debugInfo()) {
+		if (mc.gui.hud.getDebugOverlay().showDebugScreen() && BotaniaConfig.client().debugInfo()) {
 			left.add("");
 			String version = XplatAbstractions.INSTANCE.getBotaniaVersion();
 

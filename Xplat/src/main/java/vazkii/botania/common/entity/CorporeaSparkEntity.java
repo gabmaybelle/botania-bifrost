@@ -13,7 +13,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -330,7 +330,7 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 
 	public record WandHud(CorporeaSparkEntity entity) implements WandHUD {
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			ItemStack sparkStack = new ItemStack(entity.getSparkItem());
 			DyeColor networkColor = entity.getNetwork();
 			Component networkColorName = Component.translatable("color.minecraft." + networkColor.getName())
@@ -349,7 +349,7 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 			RenderHelper.renderHUDBox(gui, centerX - width / 2, centerY + 8, centerX + width / 2, centerY + 38);
 
 			RenderHelper.renderItemWithNameCentered(gui, window, font, sparkStack, centerY + 10, textColor);
-			gui.drawString(font, networkColorName, centerX - networkColorTextStart, centerY + 28, textColor);
+			gui.text(font, networkColorName, centerX - networkColorTextStart, centerY + 28, textColor);
 		}
 	}
 

@@ -11,7 +11,7 @@ package vazkii.botania.common.block.block_entity.mana;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -545,7 +545,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			String spreaderName = new ItemStack(spreader.getBlockState().getBlock()).getHoverName().getString();
 
 			ItemStack lensStack = spreader.getItemHandler().getItem(0);

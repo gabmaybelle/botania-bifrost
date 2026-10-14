@@ -14,7 +14,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,7 +34,7 @@ public record ItemFrameHud(ItemFrame itemFrame) implements MonocleHud {
 	public static final int TEXT_ROW_HEIGHT = 12;
 
 	@Override
-	public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+	public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 		if (!itemFrame.getItem().isEmpty()) {
 			ItemStack frameItem = itemFrame.getItem();
 			List<ItemStack> contentItems = FilterHelper.getFilterStacks(frameItem);
@@ -65,11 +65,11 @@ public record ItemFrameHud(ItemFrame itemFrame) implements MonocleHud {
 					(contentItems.size() - 1) / MAX_CONTENTS_COLUMNS + 1) * 18;
 			RenderHelper.renderHUDBox(gui, x - 4, y - 4,
 					x + Math.max(textWidth, contentsWidth) + 24, y + textYOffset + contentsHeight + 20);
-			gui.renderItem(frameItem, x, y);
+			gui.item(frameItem, x, y);
 
 			int textRow = 0;
 			for (var line : lines) {
-				gui.drawString(mc.font, line, x + 20, y + TEXT_ROW_HEIGHT * textRow + 4, 0xFFFFFF);
+				gui.text(mc.font, line, x + 20, y + TEXT_ROW_HEIGHT * textRow + 4, 0xFFFFFF);
 				textRow++;
 			}
 
@@ -83,15 +83,15 @@ public record ItemFrameHud(ItemFrame itemFrame) implements MonocleHud {
 					}
 				}
 
-				gui.renderItem(contentItem, x + 18 * column, y + 18 * row + textYOffset);
-				gui.renderItemDecorations(mc.font, contentItem, x + 18 * column, y + 18 * row + textYOffset);
+				gui.item(contentItem, x + 18 * column, y + 18 * row + textYOffset);
+				gui.itemDecorations(mc.font, contentItem, x + 18 * column, y + 18 * row + textYOffset);
 			}
 
 			if (row > MAX_CONTENTS_ROWS) {
 				MutableComponent remainingItemsHint = Component.translatable(
 						"botaniamisc.monocle.frame.additional_stacks",
 						contentItems.size() - MAX_CONTENTS_COLUMNS * MAX_CONTENTS_ROWS);
-				gui.drawString(mc.font, remainingItemsHint, x + 24, y + 18 * row + 6 + textYOffset, 0xFFFFFF);
+				gui.text(mc.font, remainingItemsHint, x + 24, y + 18 * row + 6 + textYOffset, 0xFFFFFF);
 			}
 		}
 	}

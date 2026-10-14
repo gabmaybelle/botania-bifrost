@@ -47,7 +47,7 @@ public final class ClientTickHandler {
 	 * (Use only if no unfrozen partial tick is available already.)
 	 */
 	public static float getPartialPlayerTick() {
-		return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+		return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public final class ClientTickHandler {
 	 * return reasonably precise values.
 	 */
 	public static float getUiAnimationTicks() {
-		return (uiAnimationTicks & 0x3FFFFF) + Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+		return (uiAnimationTicks & 0x3FFFFF) + Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public final class ClientTickHandler {
 	 */
 	public static float getEntityPartialTick() {
 		Minecraft minecraft = Minecraft.getInstance();
-		return minecraft.getTimer().getGameTimeDeltaPartialTick(false);
+		return minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 	}
 
 	public static float getTicksWithLexicaOpen() {

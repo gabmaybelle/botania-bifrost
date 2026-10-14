@@ -12,7 +12,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -75,7 +75,7 @@ public class SpreaderTurntableBlockEntity extends BlockEntity implements Wandabl
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			Component speed = Component
 					.literal(StringUtils.repeat(
 							turntable.getBlockState().getValue(BotaniaStateProperties.BACKWARDS) ? '<' : '>',
@@ -87,7 +87,7 @@ public class SpreaderTurntableBlockEntity extends BlockEntity implements Wandabl
 			int y = window.getGuiScaledHeight() / 2 + 8;
 
 			RenderHelper.renderHUDBox(gui, x - 2, y, x + strWidth + 2, y + 12);
-			gui.drawString(font, speed, x, y + 2, 0xFFFFFF);
+			gui.text(font, speed, x, y + 2, 0xFFFFFF);
 		}
 	}
 

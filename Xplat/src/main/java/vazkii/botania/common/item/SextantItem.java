@@ -8,16 +8,10 @@
  */
 package vazkii.botania.common.item;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,6 +38,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.component.BotaniaDataComponents;
@@ -350,8 +345,8 @@ public class SextantItem extends Item {
 	}
 
 	public static class Hud {
-		public static void render(GuiGraphics gui, Player player, ItemStack stack) {
-			PoseStack ms = gui.pose();
+		public static void render(GuiGraphicsExtractor gui, Player player, ItemStack stack) {
+			Matrix3x2fStack ms = gui.pose();
 			ItemStack onUse = player.getUseItem();
 			int time = player.getUseItemRemainingTicks();
 
@@ -367,20 +362,17 @@ public class SextantItem extends Item {
 					s = ChatFormatting.RED + s;
 				}
 
-				gui.drawString(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
+				gui.text(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
 
 				if (inRange) {
 					radius += 4;
-					RenderSystem.lineWidth(3F);
-					Tesselator.getInstance().begin(VertexFormat.Mode.LINE_STRIP, DefaultVertexFormat.POSITION);
-					RenderSystem.setShaderColor(0F, 1F, 1F, 1F);
+					// PORT-26.3: GUI drawing has no line strips; the circle is drawn as a ring of small squares
 					for (int i = 0; i < 361; i++) {
 						float radian = (float) (i * Math.PI / 180);
-						float xp = x + net.minecraft.util.Mth.cos(radian) * (float) radius;
-						float yp = y + net.minecraft.util.Mth.sin(radian) * (float) radius;
-						Tesselator.getInstance().begin(VertexFormat.Mode.LINE_STRIP, DefaultVertexFormat.POSITION).addVertex(ms.last().pose(), xp, yp, 0);
+						int xp = Math.round(x + net.minecraft.util.Mth.cos(radian) * (float) radius);
+						int yp = Math.round(y + net.minecraft.util.Mth.sin(radian) * (float) radius);
+						gui.fill(xp - 1, yp - 1, xp + 1, yp + 1, 0xFF00FFFF);
 					}
-					//todo Tesselator.getInstance().end();
 				}
 			}
 		}

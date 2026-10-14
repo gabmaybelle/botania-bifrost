@@ -12,7 +12,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -157,14 +157,14 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			String mode = I18n.get("botaniamisc.retainer." + (retainer.shouldRetainMissing() ? "retain_missing" : "retain_all"));
 			int strWidth = font.width(mode);
 			int x = (window.getGuiScaledWidth() - strWidth) / 2;
 			int y = window.getGuiScaledHeight() / 2 + 8;
 
 			RenderHelper.renderHUDBox(gui, x - 2, y, x + strWidth + 2, y + 12);
-			gui.drawString(font, mode, x, y + 2, ChatFormatting.WHITE.getColor());
+			gui.text(font, mode, x, y + 2, ChatFormatting.WHITE.getColor());
 		}
 	}
 

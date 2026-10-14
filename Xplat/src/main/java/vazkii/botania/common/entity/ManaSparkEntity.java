@@ -12,7 +12,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -513,7 +513,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 	public record WandHud(ManaSparkEntity entity) implements WandHUD {
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			ItemStack sparkStack = new ItemStack(entity.getSparkItem());
 			ItemStack augmentStack = entity.getUpgrade();
 			DyeColor networkColor = entity.getNetwork();
@@ -536,7 +536,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 			RenderHelper.renderItemWithNameCentered(gui, window, font, sparkStack, centerY + 10, textColor);
 			RenderHelper.renderItemWithNameCentered(gui, window, font, augmentStack, centerY + 28, textColor);
-			gui.drawString(font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), textColor);
+			gui.text(font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), textColor);
 		}
 	}
 }

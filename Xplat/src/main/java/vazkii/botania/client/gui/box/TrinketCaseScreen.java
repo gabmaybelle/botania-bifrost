@@ -8,11 +8,10 @@
  */
 package vazkii.botania.client.gui.box;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,23 +29,17 @@ public class TrinketCaseScreen extends AbstractContainerScreen<TrinketCaseMenu> 
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
-		this.mouseX = mouseX;
-		this.mouseY = mouseY;
-		this.renderTooltip(guiGraphics, mouseX, mouseY);
-	}
-
-	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+	protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
 		// No-op, there's no space for gui titles
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-		InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics,
+	public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+		super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+		this.mouseX = mouseX;
+		this.mouseY = mouseY;
+		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+		InventoryScreen.extractEntityInInventoryFollowsMouse(guiGraphics,
 				leftPos + 8, topPos + 8, leftPos + 57, topPos + 78,
 				30, 0.0625F, this.mouseX, this.mouseY, minecraft.player);
 	}

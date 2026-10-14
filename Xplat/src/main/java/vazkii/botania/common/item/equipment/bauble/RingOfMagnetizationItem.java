@@ -55,7 +55,7 @@ public class RingOfMagnetizationItem extends BaubleItem {
 		}
 
 		if (living instanceof Player player) {
-			boolean isOnCooldown = player.getCooldowns().isOnCooldown(this);
+			boolean isOnCooldown = player.getCooldowns().isOnCooldown(stack);
 			if (BotaniaAPI.instance().hasSolegnoliaAround(living)) {
 				if (!isOnCooldown) {
 					player.getCooldowns().addCooldown(stack, 2);

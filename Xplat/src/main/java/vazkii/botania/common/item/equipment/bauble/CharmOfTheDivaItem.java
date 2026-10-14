@@ -55,7 +55,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 	private static Predicate<Mob> getCharmTargetPredicate(Player player, Mob mobToCharm) {
 		return mob -> mob != mobToCharm && mob.isAlive() && mob.canBeSeenAsEnemy() && !mob.isPassengerOfSameVehicle(mobToCharm)
 				&& (!(mob instanceof TamableAnimal tamable) || !tamable.isOwnedBy(player))
-				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt((ServerLevel) player.level(), player)
+				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt(player, (ServerLevel) player.level())
 						|| mob.getTarget() instanceof TamableAnimal targetTamable && targetTamable.isOwnedBy(player)));
 	}
 
@@ -96,7 +96,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 
 			if (server != null && !amulet.isEmpty()) {
 				// schedule for immediate execution after everything else in this tick
-				server.tell(new TickTask(0, () -> charmMobs(amulet, player, target)));
+				server.schedule(new TickTask(0, () -> charmMobs(amulet, player, target)));
 			}
 		}
 	}

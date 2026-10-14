@@ -246,6 +246,11 @@ public final class RenderHelper {
 		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256);
 	}
 
+	/** The same with an ARGB tint; replaces the shader colour the old code set around a blit. */
+	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height, int color) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256, color);
+	}
+
 	public static void renderStar(PoseStack ms, SubmitNodeCollector collector, int color, float xScale, float yScale, float zScale, long seed, float partialTicks) {
 		float ticks = ClientTickHandler.getEntityTicksInGame() + partialTicks;
 		float semiPeriodTicks = 200;

@@ -9,10 +9,9 @@
 package vazkii.botania.common.block.block_entity.corporea;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 import vazkii.botania.api.block.PhantomInkableBlock;
 import vazkii.botania.api.block.Wandable;
@@ -221,8 +221,8 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	}
 
 	public static class Hud {
-		public static void render(CorporeaCrystalCubeBlockEntity cube, GuiGraphics gui, Window window, Font font, float partialTick) {
-			PoseStack ps = gui.pose();
+		public static void render(CorporeaCrystalCubeBlockEntity cube, GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
+			Matrix3x2fStack ps = gui.pose();
 
 			ItemStack target = cube.getRequestTarget();
 			if (!target.isEmpty()) {
@@ -238,20 +238,20 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 				int centerX = window.getGuiScaledWidth() / 2;
 				int centerY = window.getGuiScaledHeight() / 2;
-				ps.pushPose();
-				ps.translate(centerX, centerY, 0);
+				ps.pushMatrix();
+				ps.translate(centerX, centerY);
 
 				RenderHelper.renderHUDBox(gui, 8, -11, strlen + 32, locked ? 21 : 11);
 
-				gui.drawString(font, nameStr, 30, -9, 0x6666FF);
-				gui.drawString(font, countStr, 30, 1, 0xFFFFFF);
+				gui.text(font, nameStr, 30, -9, 0x6666FF);
+				gui.text(font, countStr, 30, 1, 0xFFFFFF);
 				if (locked) {
-					gui.drawString(font, lockedStr, 30, 11, 0xFFAA00);
+					gui.text(font, lockedStr, 30, 11, 0xFFAA00);
 				}
 
-				gui.renderItem(target, 10, -9);
+				gui.item(target, 10, -9);
 
-				ps.popPose();
+				ps.popMatrix();
 			}
 		}
 	}

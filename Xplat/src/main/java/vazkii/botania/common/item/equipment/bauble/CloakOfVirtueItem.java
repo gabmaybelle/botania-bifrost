@@ -55,13 +55,13 @@ public class CloakOfVirtueItem extends BaubleItem {
 
 			if (!stack.isEmpty() && !isInEffect(stack)) {
 				CloakOfVirtueItem cloak = (CloakOfVirtueItem) stack.getItem();
-				boolean isOnCooldown = player.getCooldowns().isOnCooldown(this);
+				boolean isOnCooldown = player.getCooldowns().isOnCooldown(stack);
 
 				// Used to prevent StackOverflows with mobs that deal damage when damaged
 				setInEffect(stack, true);
 				MutableFloat mutAmount = new MutableFloat(amount);
 				if (!isOnCooldown && cloak.effectOnDamage(src, mutAmount, player, stack)) {
-					player.getCooldowns().addCooldown(cloak, cloak.getCooldownTime(stack));
+					player.getCooldowns().addCooldown(stack, cloak.getCooldownTime(stack));
 				}
 				setInEffect(stack, false);
 				return mutAmount.getValue();

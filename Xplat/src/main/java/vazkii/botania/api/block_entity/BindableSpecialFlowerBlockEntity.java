@@ -11,7 +11,7 @@ package vazkii.botania.api.block_entity;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -306,7 +306,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 			this.flower = flower;
 		}
 
-		public void renderHUD(GuiGraphics gui, Window window, Font font, int minLeft, int minRight, int minDown) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, int minLeft, int minRight, int minDown) {
 			String name = I18n.get(flower.getBlockState().getBlock().getDescriptionId());
 			int color = flower.getColor();
 
@@ -326,7 +326,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			renderHUD(gui, window, font, 0, 0, 0);
 		}
 	}

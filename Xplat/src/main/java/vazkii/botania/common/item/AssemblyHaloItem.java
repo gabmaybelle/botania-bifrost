@@ -16,7 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -452,7 +452,7 @@ public class AssemblyHaloItem extends Item {
 			bufferSource.endBatch();
 		}
 
-		public static void renderHUD(GuiGraphics gui, Player player, ItemStack stack, Window window, Font font) {
+		public static void renderHUD(GuiGraphicsExtractor gui, Player player, ItemStack stack, Window window, Font font) {
 			int slot = getSegmentLookedAt(stack, player);
 
 			if (slot == 0) {
@@ -463,9 +463,9 @@ public class AssemblyHaloItem extends Item {
 
 				gui.fill(x - 6, y - 6, x + l + 6, y + 37, 0x22000000);
 				gui.fill(x - 4, y - 4, x + l + 4, y + 35, 0x22000000);
-				gui.renderItem(craftingTable, window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
+				gui.item(craftingTable, window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
 
-				gui.drawString(font, name, x, y, 0xFFFFFF);
+				gui.text(font, name, x, y, 0xFFFFFF);
 			} else {
 				RecipeHolder<? extends Recipe<CraftingInput>> recipe = getSavedRecipe(player.level(), stack, slot);
 				Component label;
@@ -483,7 +483,7 @@ public class AssemblyHaloItem extends Item {
 			}
 		}
 
-		private static void renderRecipe(GuiGraphics gui, Window window, Font font, Component label, @Nullable Recipe<CraftingInput> recipe, Player player, boolean isSavedRecipe) {
+		private static void renderRecipe(GuiGraphicsExtractor gui, Window window, Font font, Component label, @Nullable Recipe<CraftingInput> recipe, Player player, boolean isSavedRecipe) {
 			ItemStack recipeResult;
 			if (recipe != null && !(recipeResult = recipe.getResultItem(player.level().registryAccess())).isEmpty()) {
 				int x = window.getGuiScaledWidth() / 2 - 45;
@@ -504,23 +504,23 @@ public class AssemblyHaloItem extends Item {
 						int ypos = y + i / wrap * 18;
 						gui.fill(xpos, ypos, xpos + 16, ypos + 16, 0x22000000);
 
-						gui.renderItem(stack, xpos, ypos);
+						gui.item(stack, xpos, ypos);
 					}
 				}
 
-				gui.renderItem(recipeResult, x + 72, y + 18);
-				gui.renderItemDecorations(font, recipeResult, x + 72, y + 18);
+				gui.item(recipeResult, x + 72, y + 18);
+				gui.itemDecorations(font, recipeResult, x + 72, y + 18);
 
 			}
 
 			int yoff = 110;
 			if (isSavedRecipe && recipe != null && !canCraftHeuristic(player, recipe)) {
 				String warning = ChatFormatting.RED + I18n.get("botaniamisc.cantCraft");
-				gui.drawCenteredString(font, warning, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
+				gui.centeredText(font, warning, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
 				yoff += 12;
 			}
 
-			gui.drawCenteredString(font, label, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
+			gui.centeredText(font, label, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
 		}
 	}
 

@@ -8,19 +8,15 @@
  */
 package vazkii.botania.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 import vazkii.botania.api.mana.ManaBarTooltip;
 import vazkii.botania.client.core.handler.ClientTickHandler;
@@ -49,7 +45,7 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 	}
 
 	@Override
-	public int getHeight() {
+	public int getHeight(Font font) {
 		return 0;
 	}
 
@@ -65,30 +61,24 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 	}
 
 	@Override
-	public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffers) {
+	public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
 		int level = pickLevel;
 		if (level < 0) {
 			return;
 		}
-
 		boolean ss = level >= TerraShattererItem.LEVELS.length - 1;
 		String rank = I18n.get("botania.rank" + pickLevel).replace("&", "\u00a7");
-
-		font.drawInBatch(rank, mouseX, mouseY - 16, 0xFFFFFF, true, matrix, buffers, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+		graphics.text(font, rank, mouseX, mouseY - 16, 0xFFFFFF, true);
 		if (!ss) {
 			rank = I18n.get("botania.rank" + (level + 1)).replace("&", "\u00a7");
-			font.drawInBatch(rank, mouseX + totalWidth - font.width(rank), mouseY - 16, 0xFFFFFF, true,
-					matrix, buffers, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+			graphics.text(font, rank, mouseX + totalWidth - font.width(rank), mouseY - 16, 0xFFFFFF, true);
 		}
 	}
 
 	@Override
-	public void renderImage(Font font, int x, int y, GuiGraphics gui) {
-		PoseStack ps = gui.pose();
+	public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor gui) {
 		int height = 3;
 		int offsetFromBox = 4;
-
-		ps.pushPose();
 
 		float time = ClientTickHandler.getUiAnimationTicks();
 		if (pickLevel >= 0) {
@@ -112,8 +102,6 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 					ARGB.opaque(Mth.hsvToRgb(0.528f, Mth.sin(time * 0.2f) * 0.3f + 0.7f, 1)));
 			gui.fill(mouseX + manaBarWidth, mouseY - height - offsetFromBox, mouseX + totalWidth, mouseY - offsetFromBox, 0xFF555555);
 		}
-		ps.popPose();
-
 		// Reset these after we're done each frame so it's obvious if things ever glitch out.
 		mouseX = mouseY = 0;
 		totalWidth = 50;

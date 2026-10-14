@@ -16,7 +16,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.*;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -568,7 +568,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Window window, Font font, float partialTick) {
+		public void renderHUD(GuiGraphicsExtractor gui, Window window, Font font, float partialTick) {
 			String lootType;
 			String structureName = "";
 			if (flower.attuneDisplayOverride != null) {
@@ -596,7 +596,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			int centerY = window.getGuiScaledHeight() / 2;
 
 			super.renderHUD(gui, window, font, halfMinWidth, halfMinWidth, 40);
-			gui.drawString(font, lootTypeMessage, lootTypeTextStart, centerY + 30, flower.getColor());
+			gui.text(font, lootTypeMessage, lootTypeTextStart, centerY + 30, flower.getColor());
 		}
 	}
 }
