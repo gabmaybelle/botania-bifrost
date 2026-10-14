@@ -14,7 +14,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -62,11 +61,12 @@ public abstract class PlayerFabricMixin extends LivingEntity {
 	/**
 	 * Performs many reactions when being hit
 	 */
-	@ModifyArgs(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	// PORT-26.3: hurt became hurtServer(ServerLevel, DamageSource, float)
+	@ModifyArgs(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private void onHurt(Args args) {
 		Player self = (Player) (Object) this;
-		DamageSource src = args.get(0);
-		float amount = args.get(1);
+		DamageSource src = args.get(1);
+		float amount = args.get(2);
 		Container worn = EquipmentHandler.getAllWorn(self);
 		for (int i = 0; i < worn.getContainerSize(); i++) {
 			ItemStack stack = worn.getItem(i);
@@ -78,18 +78,7 @@ public abstract class PlayerFabricMixin extends LivingEntity {
 		// Should really make a separate inject for this, but putting it here works too
 		PixieHandler.onDamageTaken(self, src);
 
-		args.set(1, amount);
-	}
-
-	/**
-	 * Tells the magnet ring about item drops
-	 */
-	@Inject(at = @At("HEAD"), method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;")
-	public void onDrop(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
-		Level world = this.level();
-		if (!stack.isEmpty() && !world.isClientSide()) {
-			RingOfMagnetizationItem.onTossItem((Player) (Object) this);
-		}
+		args.set(2, amount);
 	}
 
 	@Inject(at = @At("RETURN"), method = "tick")
@@ -102,9 +91,10 @@ public abstract class PlayerFabricMixin extends LivingEntity {
 		}
 	}
 
-	@ModifyArg(index = 0, method = "causeFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z"))
-	private float cushionFall(float originalDist) {
-		return SojournersSashItem.onPlayerFall((Player) (Object) this, originalDist);
+	// PORT-26.3: the fall distance is a double now
+	@ModifyArg(index = 0, method = "causeFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;causeFallDamage(DFLnet/minecraft/world/damagesource/DamageSource;)Z"))
+	private double cushionFall(double originalDist) {
+		return SojournersSashItem.onPlayerFall((Player) (Object) this, (float) originalDist);
 	}
 
 	// Multiply the damage on crit. Targets the first float LOAD after the sprint check for the crit.

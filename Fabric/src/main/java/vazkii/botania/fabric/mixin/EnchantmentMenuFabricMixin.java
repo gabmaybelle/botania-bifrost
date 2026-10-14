@@ -25,7 +25,8 @@ import vazkii.botania.common.block.PylonBlock;
 @Mixin(EnchantmentMenu.class)
 public class EnchantmentMenuFabricMixin {
 	@ModifyVariable(
-		method = "method_17411(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V",
+		// PORT-26.3: Minecraft is unobfuscated, so this is javac's name for the slotsChanged lambda (checked with javap on the 26.3 jar)
+		method = "lambda$slotsChanged$0(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V",
 		at = @At(value = "STORE", ordinal = 0),
 		ordinal = 0
 	)

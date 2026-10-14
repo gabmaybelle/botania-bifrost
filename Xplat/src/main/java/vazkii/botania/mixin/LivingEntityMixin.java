@@ -15,6 +15,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -24,10 +25,13 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import vazkii.botania.api.internal.GaiaFightParticipant;
 import vazkii.botania.api.item.BlockChangedListenerBauble;
 import vazkii.botania.common.handler.EquipmentHandler;
+import vazkii.botania.common.item.EquestrianVirusItem;
+import vazkii.botania.common.item.equipment.bauble.CrimsonPendantItem;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
@@ -55,6 +59,20 @@ public class LivingEntityMixin {
 		return original.call(target) && (!(botania_self() instanceof Mob mob)
 				|| !GaiaFightParticipant.HOLDER.existsFor(mob)
 				|| mob.isWithinHome(target.blockPosition()));
+	}
+
+	/**
+	 * Cancels some invulnerabilities conferred by items
+	 */
+	// PORT-26.3: moved here from EntityMixin; isInvulnerableTo lives on LivingEntity and takes the level now
+	@Inject(at = @At("HEAD"), method = "isInvulnerableTo", cancellable = true)
+	private void checkInvulnerabilities(ServerLevel level, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+		LivingEntity self = botania_self();
+		if (EquestrianVirusItem.onLivingHurt(self, source)) {
+			cir.setReturnValue(true);
+		} else if (CrimsonPendantItem.onDamage(self, source)) {
+			cir.setReturnValue(true);
+		}
 	}
 
 	@Unique

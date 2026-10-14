@@ -40,7 +40,8 @@ public abstract class ExperienceOrbMixin extends Entity {
 		super(entityType, level);
 	}
 
-	@Inject(method = "scanForEntities", at = @At("HEAD"))
+	// PORT-26.3: the periodic scan is scanForMerges now (the player to follow is picked in tick)
+	@Inject(method = "scanForMerges", at = @At("HEAD"))
 	private void scanForFlower(CallbackInfo ci) {
 		if (this.botania_followingFlower == null
 				|| MathHelper.distSqr(this.botania_followingFlower, this.blockPosition()) > 64.0) {

@@ -9,11 +9,13 @@
 package vazkii.botania.fabric.mixin;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,11 +26,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import vazkii.botania.common.block.block_entity.flower.functional.LooniumBlockEntity;
 import vazkii.botania.common.brew.effect.SoulCrossMobEffect;
 import vazkii.botania.common.item.AssemblyHaloItem;
 import vazkii.botania.common.item.equipment.bauble.CharmOfTheDivaItem;
+import vazkii.botania.common.item.equipment.bauble.RingOfMagnetizationItem;
 import vazkii.botania.common.item.equipment.bauble.SojournersSashItem;
 import vazkii.botania.common.item.rod.ShadedMesaRodItem;
 
@@ -77,6 +81,17 @@ public abstract class LivingEntityFabricMixin extends Entity {
 			} else if (stack.getItem() instanceof ShadedMesaRodItem rod) {
 				rod.onEntitySwing(stack, self, hand);
 			}
+		}
+	}
+
+	/**
+	 * Tells the magnet ring about item drops
+	 */
+	// PORT-26.3: moved here from PlayerFabricMixin; drop lives on LivingEntity now and takes a Prediction
+	@Inject(at = @At("HEAD"), method = "drop(Lnet/minecraft/world/item/ItemStack;ZLnet/minecraft/util/Prediction;)Lnet/minecraft/world/entity/item/ItemEntity;")
+	private void onDrop(ItemStack stack, boolean thrownFromHand, Prediction prediction, CallbackInfoReturnable<ItemEntity> cir) {
+		if ((Object) this instanceof Player player && !stack.isEmpty() && !level().isClientSide()) {
+			RingOfMagnetizationItem.onTossItem(player);
 		}
 	}
 

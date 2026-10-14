@@ -73,7 +73,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.PlayerTeam;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -217,7 +217,7 @@ public class GaiaGuardianEntity extends Mob {
 	 *
 	 * @see vazkii.botania.mixin.EntityMixin
 	 */
-	public static final Team GAIA_FIGHT_TEAM = new BotaniaMonsterTeam(GAIA_FIGHT_TEAM_NAME);
+	public static final PlayerTeam GAIA_FIGHT_TEAM = new BotaniaMonsterTeam(GAIA_FIGHT_TEAM_NAME);
 
 	private boolean spawnTraps = false;
 	private boolean spawnPixies = false;

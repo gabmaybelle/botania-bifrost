@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.Music;
 
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,14 +40,14 @@ public class MinecraftMixin {
 			ordinal = 0
 		),
 		slice = @Slice(
+			// PORT-26.3: the screen and the boss overlay hang off the gui now
 			from = @At(
-				value = "FIELD",
-				target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;",
-				opcode = Opcodes.GETFIELD
+				value = "INVOKE",
+				target = "Lnet/minecraft/client/gui/Gui;screen()Lnet/minecraft/client/gui/screens/Screen;"
 			),
 			to = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/gui/Gui;getBossOverlay()Lnet/minecraft/client/gui/components/BossHealthOverlay;"
+				target = "Lnet/minecraft/client/gui/Hud;getBossOverlay()Lnet/minecraft/client/gui/components/BossHealthOverlay;"
 			)
 		),
 		cancellable = true

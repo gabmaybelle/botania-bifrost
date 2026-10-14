@@ -8,44 +8,39 @@
  */
 package vazkii.botania.fabric.mixin;
 
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.phys.Vec3;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import vazkii.botania.common.item.equipment.bauble.BenevolentGoddessCharmItem;
 
-@Mixin(Explosion.class)
+import java.util.ArrayList;
+import java.util.List;
+
+// PORT-26.3: Explosion is an interface now; the server-side class works out the blocks to blow in one method
+@Mixin(ServerExplosion.class)
 public abstract class ExplosionFabricMixin {
 	@Shadow
 	@Final
-	private Level level;
+	private ServerLevel level;
 
 	@Shadow
 	@Final
-	private double x;
+	private Vec3 center;
 
-	@Shadow
-	@Final
-	private double y;
-
-	@Shadow
-	@Final
-	private double z;
-
-	@Shadow
-	public abstract void clearToBlow();
-
-	@Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;"))
-	private void onAffectWorld(CallbackInfo ci) {
-		if (BenevolentGoddessCharmItem.shouldProtectExplosion(level, new Vec3(x, y, z))) {
-			clearToBlow();
+	@ModifyReturnValue(method = "calculateExplodedPositions", at = @At("RETURN"))
+	private List<BlockPos> protectBlocks(List<BlockPos> original) {
+		if (BenevolentGoddessCharmItem.shouldProtectExplosion(level, center)) {
+			return new ArrayList<>();
 		}
+		return original;
 	}
 }

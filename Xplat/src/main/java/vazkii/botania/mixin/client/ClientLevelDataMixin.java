@@ -40,7 +40,8 @@ public abstract class ClientLevelDataMixin implements SkyblockWorldInfo {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "getClearColorScale", cancellable = true)
+	// PORT-26.3: the clear colour scale became the void darkness onset range; 1 is what flat worlds use
+	@Inject(at = @At("HEAD"), method = "voidDarknessOnsetRange", cancellable = true)
 	private void gogFog(CallbackInfoReturnable<Float> cir) {
 		if (gardenOfGlass) {
 			cir.setReturnValue(1.0F);

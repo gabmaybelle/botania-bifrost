@@ -11,7 +11,6 @@ package vazkii.botania.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -55,16 +54,12 @@ public abstract class ItemEntityMixin_NoDespawn extends Entity {
 	/**
 	 * As an item entity is spawned and its item is set, also set unlimited lifetime, if appropriate.
 	 */
-	@WrapOperation(
-		method = "onSyncedDataUpdated",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;getItem()Lnet/minecraft/world/item/ItemStack;")
-	)
-	private ItemStack setNeverDespawnIfAppropriate(ItemEntity instance, Operation<ItemStack> original) {
-		ItemStack item = original.call(instance);
+	// PORT-26.3: ItemEntity no longer reacts to synced data; the item is set through setItem on spawn
+	@Inject(method = "setItem", at = @At("TAIL"))
+	private void setNeverDespawnIfAppropriate(ItemStack item, CallbackInfo ci) {
 		if (age == 0 && BotaniaItems.isNoDespawn(item.getItem())) {
-			instance.setUnlimitedLifetime();
+			((ItemEntity) (Object) this).setUnlimitedLifetime();
 		}
-		return item;
 	}
 
 	/**

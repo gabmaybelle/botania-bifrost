@@ -8,11 +8,11 @@
  */
 package vazkii.botania.mixin;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,12 +33,10 @@ public abstract class BeeMixin extends Animal {
 	 * 
 	 * @see PollinateGoalMixin
 	 */
-	@Inject(
-		method = "isFlowerValid", cancellable = true,
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Bee;level()Lnet/minecraft/world/level/Level;", ordinal = 1)
-	)
-	private void isSpecialFlower(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-		if (level().isLoaded(pos) && level().getBlockState(pos).is(BotaniaTags.Blocks.SPECIAL_FLOWERS)) {
+	// PORT-26.3: the flower check is the static Bee#attractsBees(BlockState), used by the pollinate goal
+	@Inject(method = "attractsBees", cancellable = true, at = @At("HEAD"))
+	private static void isSpecialFlower(BlockState state, CallbackInfoReturnable<Boolean> cir) {
+		if (state.is(BotaniaTags.Blocks.SPECIAL_FLOWERS)) {
 			cir.setReturnValue(true);
 		}
 	}

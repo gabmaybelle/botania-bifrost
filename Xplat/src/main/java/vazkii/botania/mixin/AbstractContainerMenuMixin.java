@@ -42,12 +42,13 @@ public class AbstractContainerMenuMixin {
 		slice = @Slice(
 			from = @At(
 				value = "FIELD",
-				target = "Lnet/minecraft/world/inventory/ClickType;SWAP:Lnet/minecraft/world/inventory/ClickType;",
+				// PORT-26.3: ClickType became ContainerInput
+				target = "Lnet/minecraft/world/inventory/ContainerInput;SWAP:Lnet/minecraft/world/inventory/ContainerInput;",
 				opcode = Opcodes.GETSTATIC
 			),
 			to = @At(
 				value = "FIELD",
-				target = "Lnet/minecraft/world/inventory/ClickType;CLONE:Lnet/minecraft/world/inventory/ClickType;",
+				target = "Lnet/minecraft/world/inventory/ContainerInput;CLONE:Lnet/minecraft/world/inventory/ContainerInput;",
 				opcode = Opcodes.GETSTATIC
 			)
 		),

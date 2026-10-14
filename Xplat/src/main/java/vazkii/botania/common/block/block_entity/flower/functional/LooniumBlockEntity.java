@@ -54,7 +54,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.PlayerTeam;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -112,7 +112,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	 * 
 	 * @see vazkii.botania.mixin.EntityMixin
 	 */
-	public static final Team LOONIUM_TEAM = new BotaniaMonsterTeam(LOONIUM_TEAM_NAME);
+	public static final PlayerTeam LOONIUM_TEAM = new BotaniaMonsterTeam(LOONIUM_TEAM_NAME);
 
 	@Nullable
 	private ResourceKey<LootTable> lootTableOverride;

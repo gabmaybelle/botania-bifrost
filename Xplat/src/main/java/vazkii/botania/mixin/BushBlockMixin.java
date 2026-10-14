@@ -10,7 +10,7 @@ package vazkii.botania.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import vazkii.botania.common.block.BotaniaGrassBlock;
 
-@Mixin(BushBlock.class)
+// PORT-26.3: mayPlaceOn moved up to VegetationBlock, the base of every plant block
+@Mixin(VegetationBlock.class)
 public class BushBlockMixin {
 	@Inject(at = @At("HEAD"), method = "mayPlaceOn", cancellable = true)
 	private void canPlant(BlockState state, BlockGetter level, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
