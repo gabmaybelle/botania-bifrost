@@ -10,6 +10,7 @@ package vazkii.botania.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.core.Registry;
@@ -18,7 +19,6 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -46,7 +46,7 @@ public class FloatingFlowerModelProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		List<Tuple<String, JsonElement>> flowerJsons = new ArrayList<>();
+		List<Pair<String, JsonElement>> flowerJsons = new ArrayList<>();
 		for (Block b : BuiltInRegistries.BLOCK) {
 			Identifier id = BuiltInRegistries.BLOCK.getKey(b);
 			if (BotaniaAPI.MODID.equals(id.getNamespace()) && b instanceof FloatingFlowerBaseBlock) {
@@ -60,14 +60,16 @@ public class FloatingFlowerModelProvider implements DataProvider {
 
 				JsonObject obj = new JsonObject();
 				obj.addProperty("parent", "minecraft:block/block");
+				// PORT-26.3: NeoForge reads the loader from "loader", Fabric's model deserializer from "fabric:type"
 				obj.addProperty("loader", ClientXplatAbstractions.FLOATING_FLOWER_MODEL_LOADER_ID.toString());
+				obj.addProperty("fabric:type", ClientXplatAbstractions.FLOATING_FLOWER_MODEL_LOADER_ID.toString());
 				JsonObject flower = new JsonObject();
 				flower.addProperty("parent", ResourcesLib.PREFIX_MOD + "block/" + nonFloat);
 				obj.add("flower", flower);
-				flowerJsons.add(new Tuple<>(name, obj));
+				flowerJsons.add(new Pair<>(name, obj));
 			}
 		}
-		List<Tuple<Identifier, JsonElement>> islandJsons = new ArrayList<>();
+		List<Pair<Identifier, JsonElement>> islandJsons = new ArrayList<>();
 		Registry<IslandType> islandTypeRegistry = BotaniaAPI.INSTANCE.getIslandTypeRegistry();
 		islandTypeRegistry.stream().forEach(islandType -> {
 			Identifier id = islandTypeRegistry.getKey(islandType);
@@ -82,12 +84,12 @@ public class FloatingFlowerModelProvider implements DataProvider {
 						top = botaniaRL("block/island_top");
 						side = botaniaRL("block/island_side");
 					} else {
-						top = TextureMapping.getBlockTexture(seedsBlock, "_top");
-						side = TextureMapping.getBlockTexture(seedsBlock, "_side");
+						top = TextureMapping.getBlockTexture(seedsBlock, "_top").sprite();
+						side = TextureMapping.getBlockTexture(seedsBlock, "_side").sprite();
 					}
 				} else if (item == Items.SNOWBALL) {
-					top = TextureMapping.getBlockTexture(Blocks.SNOW);
-					side = TextureMapping.getBlockTexture(Blocks.GRASS_BLOCK, "_snow");
+					top = TextureMapping.getBlockTexture(Blocks.SNOW).sprite();
+					side = TextureMapping.getBlockTexture(Blocks.GRASS_BLOCK, "_snow").sprite();
 				} else {
 					throw new IllegalStateException("Don't know how to generate island model " + name);
 				}
@@ -98,19 +100,19 @@ public class FloatingFlowerModelProvider implements DataProvider {
 				textures.addProperty("top", top.toString());
 				textures.addProperty("side", side.toString());
 				obj.add("textures", textures);
-				islandJsons.add(new Tuple<>(name, obj));
+				islandJsons.add(new Pair<>(name, obj));
 			}
 		});
 		List<CompletableFuture<?>> output = new ArrayList<>();
 		PackOutput.PathProvider blocks = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/block");
 		PackOutput.PathProvider items = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/item");
-		for (Tuple<String, JsonElement> pair : flowerJsons) {
-			output.add(DataProvider.saveStable(cache, pair.getB(), blocks.json(botaniaRL(pair.getA()))));
-			output.add(DataProvider.saveStable(cache, pair.getB(), items.json(botaniaRL(pair.getA()))));
+		for (Pair<String, JsonElement> pair : flowerJsons) {
+			output.add(DataProvider.saveStable(cache, pair.getSecond(), blocks.json(botaniaRL(pair.getFirst()))));
+			output.add(DataProvider.saveStable(cache, pair.getSecond(), items.json(botaniaRL(pair.getFirst()))));
 		}
 		PackOutput.PathProvider islands = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
-		for (Tuple<Identifier, JsonElement> pair : islandJsons) {
-			output.add(DataProvider.saveStable(cache, pair.getB(), islands.json(pair.getA())));
+		for (Pair<Identifier, JsonElement> pair : islandJsons) {
+			output.add(DataProvider.saveStable(cache, pair.getSecond(), islands.json(pair.getFirst())));
 		}
 
 		return CompletableFuture.allOf(output.toArray(CompletableFuture[]::new));

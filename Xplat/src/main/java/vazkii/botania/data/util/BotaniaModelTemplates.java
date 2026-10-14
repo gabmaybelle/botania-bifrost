@@ -18,7 +18,7 @@ import vazkii.botania.mixin.TextureSlotAccessor;
 
 import java.util.Optional;
 
-import static net.minecraft.data.models.model.TextureMapping.getBlockTexture;
+import static net.minecraft.client.data.models.model.TextureMapping.getBlockTexture;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class BotaniaModelTemplates {

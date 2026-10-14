@@ -8,16 +8,22 @@
  */
 package vazkii.botania.data;
 
-import com.google.gson.JsonElement;
+import com.mojang.math.Quadrant;
 
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.*;
+import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelDispatcher;
+import net.minecraft.client.renderer.block.dispatch.Variant;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.blockstates.*;
-import net.minecraft.data.models.model.*;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.*;
@@ -48,16 +54,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static net.minecraft.data.models.model.ModelLocationUtils.getModelLocation;
+import static net.minecraft.client.data.models.model.ModelLocationUtils.getModelLocation;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class BlockstateProvider implements DataProvider {
 	protected final PackOutput packOutput;
 
-	protected final List<BlockStateGenerator> blockStateGenerators = new ArrayList<>();
+	protected final List<BlockModelDefinitionGenerator> blockStateGenerators = new ArrayList<>();
 
-	protected final Map<Identifier, Supplier<JsonElement>> models = new HashMap<>();
-	protected final BiConsumer<Identifier, Supplier<JsonElement>> modelOutput = models::put;
+	protected final Map<Identifier, ModelInstance> models = new HashMap<>();
+	protected final BiConsumer<Identifier, ModelInstance> modelOutput = models::put;
 
 	public BlockstateProvider(PackOutput packOutput) {
 		this.packOutput = packOutput;
@@ -84,13 +90,13 @@ public class BlockstateProvider implements DataProvider {
 		PackOutput.PathProvider modelPathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 		List<CompletableFuture<?>> outputList = new ArrayList<>();
 
-		for (BlockStateGenerator state : blockStateGenerators) {
-			Identifier id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		for (BlockModelDefinitionGenerator state : blockStateGenerators) {
+			Identifier id = BuiltInRegistries.BLOCK.getKey(state.block());
 			Path path = blockstatePathProvider.json(id);
-			outputList.add(DataProvider.saveStable(output, state.get(), path));
+			outputList.add(DataProvider.saveStable(output, BlockStateModelDispatcher.CODEC, state.create(), path));
 		}
 
-		for (Map.Entry<Identifier, Supplier<JsonElement>> e : models.entrySet()) {
+		for (Map.Entry<Identifier, ModelInstance> e : models.entrySet()) {
 			Identifier modelId = e.getKey();
 			Path path = modelPathProvider.json(modelId);
 			outputList.add(DataProvider.saveStable(output, e.getValue().get(), path));
@@ -122,17 +128,17 @@ public class BlockstateProvider implements DataProvider {
 				this.modelOutput);
 		var alfPortalActivatedModel = ModelTemplates.CUBE_ALL.create(
 				getModelLocation(BotaniaBlocks.ELVEN_GATEWAY_CORE, "_activated"),
-				TextureMapping.cube(getModelLocation(BotaniaBlocks.ELVEN_GATEWAY_CORE, "_activated")),
+				TextureMapping.cube(tex(getModelLocation(BotaniaBlocks.ELVEN_GATEWAY_CORE, "_activated"))),
 				this.modelOutput);
 		this.blockStateGenerators.add(
-				MultiVariantGenerator.multiVariant(BotaniaBlocks.ELVEN_GATEWAY_CORE).with(
-						PropertyDispatch.property(BotaniaStateProperties.ALFPORTAL_STATE)
+				MultiVariantGenerator.dispatch(BotaniaBlocks.ELVEN_GATEWAY_CORE).with(
+						PropertyDispatch.initial(BotaniaStateProperties.ALFPORTAL_STATE)
 								.select(AlfheimPortalState.OFF,
-										Variant.variant().with(VariantProperties.MODEL, alfPortalModel))
+										mv(alfPortalModel))
 								.select(AlfheimPortalState.ON_X,
-										Variant.variant().with(VariantProperties.MODEL, alfPortalActivatedModel))
+										mv(plainModel(alfPortalActivatedModel)))
 								.select(AlfheimPortalState.ON_Z,
-										Variant.variant().with(VariantProperties.MODEL, alfPortalActivatedModel))
+										mv(plainModel(alfPortalActivatedModel)))
 				));
 		remainingBlocks.remove(BotaniaBlocks.ELVEN_GATEWAY_CORE);
 
@@ -147,26 +153,26 @@ public class BlockstateProvider implements DataProvider {
 				BotaniaBlocks.CACOPHONIUM_BLOCK,
 				ModelTemplates.CUBE_TOP.create(
 						BotaniaBlocks.CACOPHONIUM_BLOCK, (new TextureMapping())
-								.put(TextureSlot.SIDE, getBlockTexture(Blocks.NOTE_BLOCK))
-								.put(TextureSlot.TOP, getBlockTexture(BotaniaBlocks.CACOPHONIUM_BLOCK, "_top")),
+								.put(TextureSlot.SIDE, tex(getBlockTexture(Blocks.NOTE_BLOCK)))
+								.put(TextureSlot.TOP, tex(getBlockTexture(BotaniaBlocks.CACOPHONIUM_BLOCK, "_top"))),
 						this.modelOutput));
 		remainingBlocks.remove(BotaniaBlocks.CACOPHONIUM_BLOCK);
 
 		var crateTemplate = new ModelTemplate(Optional.of(botaniaRL("block/shapes/crate")), Optional.empty(),
 				TextureSlot.BOTTOM, TextureSlot.SIDE);
 		var craftCrateBottomTex = getBlockTexture(BotaniaBlocks.CRAFTY_CRATE, "_bottom");
-		var crateDispatch = PropertyDispatch.property(BotaniaStateProperties.CRATE_PATTERN);
+		var crateDispatch = PropertyDispatch.initial(BotaniaStateProperties.CRATE_PATTERN);
 		for (var pattern : CraftyCratePattern.values()) {
 			String suffix = pattern == CraftyCratePattern.NONE
 					? ""
 					: "_" + pattern.getSerializedName().substring("crafty_".length());
 			var model = crateTemplate.create(getModelLocation(BotaniaBlocks.CRAFTY_CRATE, suffix),
-					new TextureMapping().put(TextureSlot.BOTTOM, craftCrateBottomTex)
-							.put(TextureSlot.SIDE, getBlockTexture(BotaniaBlocks.CRAFTY_CRATE, suffix)),
+					new TextureMapping().put(TextureSlot.BOTTOM, tex(craftCrateBottomTex))
+							.put(TextureSlot.SIDE, tex(getBlockTexture(BotaniaBlocks.CRAFTY_CRATE, suffix))),
 					this.modelOutput);
-			crateDispatch = crateDispatch.select(pattern, Variant.variant().with(VariantProperties.MODEL, model));
+			crateDispatch = crateDispatch.select(pattern, mv(model));
 		}
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(BotaniaBlocks.CRAFTY_CRATE).with(crateDispatch));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(BotaniaBlocks.CRAFTY_CRATE).with(crateDispatch));
 		remainingBlocks.remove(BotaniaBlocks.CRAFTY_CRATE);
 
 		Identifier corpSlabSide = botaniaRL("block/corporea_slab_side");
@@ -174,52 +180,52 @@ public class BlockstateProvider implements DataProvider {
 		var corpSlabBottomModel = ModelTemplates.SLAB_BOTTOM.create(
 				BotaniaBlocks.CORPOREA_SLAB,
 				new TextureMapping()
-						.put(TextureSlot.BOTTOM, corpBlock)
-						.put(TextureSlot.TOP, corpBlock)
-						.put(TextureSlot.SIDE, corpBlock),
+						.put(TextureSlot.BOTTOM, tex(corpBlock))
+						.put(TextureSlot.TOP, tex(corpBlock))
+						.put(TextureSlot.SIDE, tex(corpBlock)),
 				this.modelOutput);
 		var corpSlabTopModel = ModelTemplates.SLAB_TOP.create(
 				getModelLocation(BotaniaBlocks.CORPOREA_SLAB, "_top"),
 				new TextureMapping()
-						.put(TextureSlot.BOTTOM, corpBlock)
-						.put(TextureSlot.TOP, corpBlock)
-						.put(TextureSlot.SIDE, corpBlock),
+						.put(TextureSlot.BOTTOM, tex(corpBlock))
+						.put(TextureSlot.TOP, tex(corpBlock))
+						.put(TextureSlot.SIDE, tex(corpBlock)),
 				this.modelOutput);
 		var corpSlabDoubleModel = ModelTemplates.CUBE_BOTTOM_TOP.create(
 				botaniaRL("block/corporea_double_slab"),
 				new TextureMapping()
-						.put(TextureSlot.SIDE, corpSlabSide)
-						.put(TextureSlot.BOTTOM, corpBlock)
-						.put(TextureSlot.TOP, corpBlock),
+						.put(TextureSlot.SIDE, tex(corpSlabSide))
+						.put(TextureSlot.BOTTOM, tex(corpBlock))
+						.put(TextureSlot.TOP, tex(corpBlock)),
 				this.modelOutput);
 		blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createSlab(BotaniaBlocks.CORPOREA_SLAB,
-				corpSlabBottomModel, corpSlabTopModel, corpSlabDoubleModel));
+				mv(corpSlabBottomModel), mv(corpSlabTopModel), mv(corpSlabDoubleModel)));
 		remainingBlocks.remove(BotaniaBlocks.CORPOREA_SLAB);
 
 		stairsBlock(remainingBlocks, BotaniaBlocks.CORPOREA_STAIRS, corpBlock, corpBlock, corpBlock);
 
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(
-				BotaniaBlocks.ALFGLASS, IntStream.rangeClosed(0, 3)
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(
+				BotaniaBlocks.ALFGLASS, mv(IntStream.rangeClosed(0, 3)
 						.mapToObj(i -> {
 							var model = ModelTemplates.CUBE_ALL.create(
 									getModelLocation(BotaniaBlocks.ALFGLASS, "_" + i),
-									TextureMapping.cube(getBlockTexture(BotaniaBlocks.ALFGLASS, "_" + i)),
+									TextureMapping.cube(tex(getBlockTexture(BotaniaBlocks.ALFGLASS, "_" + i))),
 									this.modelOutput);
-							return Variant.variant().with(VariantProperties.MODEL, model);
+							return plainModel(model);
 						})
-						.toArray(Variant[]::new)));
+						.toList())));
 		remainingBlocks.remove(BotaniaBlocks.ALFGLASS);
 
 		var pumpkinModel = ModelTemplates.CUBE_ORIENTABLE.create(
 				BotaniaBlocks.FEL_PUMPKIN, new TextureMapping()
-						.put(TextureSlot.SIDE, getBlockTexture(Blocks.PUMPKIN, "_side"))
-						.put(TextureSlot.FRONT, getBlockTexture(BotaniaBlocks.FEL_PUMPKIN))
-						.put(TextureSlot.TOP, getBlockTexture(Blocks.PUMPKIN, "_top")),
+						.put(TextureSlot.SIDE, tex(getBlockTexture(Blocks.PUMPKIN, "_side")))
+						.put(TextureSlot.FRONT, tex(getBlockTexture(BotaniaBlocks.FEL_PUMPKIN)))
+						.put(TextureSlot.TOP, tex(getBlockTexture(Blocks.PUMPKIN, "_top"))),
 				this.modelOutput
 		);
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(
-				BotaniaBlocks.FEL_PUMPKIN, Variant.variant().with(VariantProperties.MODEL, pumpkinModel))
-				.with(BlockModelGeneratorsAccessor.botania_createHorizontalFacingDispatch()));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(
+				BotaniaBlocks.FEL_PUMPKIN, mv(pumpkinModel))
+				.with(BlockModelGeneratorsAccessor.botania_getRotationHorizontalFacing()));
 		remainingBlocks.remove(BotaniaBlocks.FEL_PUMPKIN);
 
 		ModelTemplate eightByEightTemplate = new ModelTemplate(Optional.of(botaniaRL("block/shapes/eightbyeight")),
@@ -229,19 +235,19 @@ public class BlockstateProvider implements DataProvider {
 				BotaniaBlocks.EYE_OF_THE_ANCIENTS, eightByEightTemplate.create(
 						BotaniaBlocks.EYE_OF_THE_ANCIENTS,
 						new TextureMapping()
-								.put(TextureSlot.BOTTOM, getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_bottom"))
-								.put(TextureSlot.TOP, getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_top"))
-								.put(TextureSlot.NORTH, getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_north"))
-								.put(TextureSlot.SOUTH, getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_south"))
-								.put(TextureSlot.WEST, getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_west"))
-								.put(TextureSlot.EAST, getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_east")),
+								.put(TextureSlot.BOTTOM, tex(getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_bottom")))
+								.put(TextureSlot.TOP, tex(getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_top")))
+								.put(TextureSlot.NORTH, tex(getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_north")))
+								.put(TextureSlot.SOUTH, tex(getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_south")))
+								.put(TextureSlot.WEST, tex(getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_west")))
+								.put(TextureSlot.EAST, tex(getBlockTexture(BotaniaBlocks.EYE_OF_THE_ANCIENTS, "_east"))),
 						this.modelOutput));
 		remainingBlocks.remove(BotaniaBlocks.EYE_OF_THE_ANCIENTS);
 
 		var plateFile = getModelLocation(BotaniaBlocks.INCENSE_PLATE);
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(
-				BotaniaBlocks.INCENSE_PLATE, Variant.variant().with(VariantProperties.MODEL, plateFile))
-				.with(BlockModelGeneratorsAccessor.botania_createHorizontalFacingDispatch()));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(
+				BotaniaBlocks.INCENSE_PLATE, mv(plateFile))
+				.with(BlockModelGeneratorsAccessor.botania_getRotationHorizontalFacing()));
 		remainingBlocks.remove(BotaniaBlocks.INCENSE_PLATE);
 
 		var fourHighBottomTopTemplate = new ModelTemplate(Optional.of(botaniaRL("block/shapes/four_high_bottom_top")),
@@ -251,9 +257,9 @@ public class BlockstateProvider implements DataProvider {
 				BotaniaBlocks.LUMINIZER_LAUNCHER, fourHighBottomTopTemplate.create(
 						BotaniaBlocks.LUMINIZER_LAUNCHER,
 						new TextureMapping()
-								.put(TextureSlot.BOTTOM, getBlockTexture(BotaniaBlocks.LUMINIZER_LAUNCHER, "_end"))
-								.put(TextureSlot.TOP, getBlockTexture(BotaniaBlocks.LUMINIZER_LAUNCHER, "_end"))
-								.put(TextureSlot.SIDE, getBlockTexture(BotaniaBlocks.LUMINIZER_LAUNCHER, "_side")),
+								.put(TextureSlot.BOTTOM, tex(getBlockTexture(BotaniaBlocks.LUMINIZER_LAUNCHER, "_end")))
+								.put(TextureSlot.TOP, tex(getBlockTexture(BotaniaBlocks.LUMINIZER_LAUNCHER, "_end")))
+								.put(TextureSlot.SIDE, tex(getBlockTexture(BotaniaBlocks.LUMINIZER_LAUNCHER, "_side"))),
 						this.modelOutput
 				));
 		remainingBlocks.remove(BotaniaBlocks.LUMINIZER_LAUNCHER);
@@ -262,8 +268,8 @@ public class BlockstateProvider implements DataProvider {
 				BotaniaBlocks.OPEN_CRATE,
 				crateTemplate.create(
 						BotaniaBlocks.OPEN_CRATE, new TextureMapping()
-								.put(TextureSlot.SIDE, getBlockTexture(BotaniaBlocks.OPEN_CRATE))
-								.put(TextureSlot.BOTTOM, getBlockTexture(BotaniaBlocks.OPEN_CRATE, "_bottom")),
+								.put(TextureSlot.SIDE, tex(getBlockTexture(BotaniaBlocks.OPEN_CRATE)))
+								.put(TextureSlot.BOTTOM, tex(getBlockTexture(BotaniaBlocks.OPEN_CRATE, "_bottom"))),
 						this.modelOutput
 				));
 		remainingBlocks.remove(BotaniaBlocks.OPEN_CRATE);
@@ -453,8 +459,8 @@ public class BlockstateProvider implements DataProvider {
 		Identifier polishedLivingrockSlabDoubleModel = ModelTemplates.CUBE_COLUMN.create(
 				getModelLocation(BotaniaBlocks.POLISHED_LIVINGROCK_SLAB, "_double"),
 				new TextureMapping()
-						.put(TextureSlot.SIDE, polishedLivingrockSlabSideTexture)
-						.put(TextureSlot.END, polishedLivingrockTexture),
+						.put(TextureSlot.SIDE, tex(polishedLivingrockSlabSideTexture))
+						.put(TextureSlot.END, tex(polishedLivingrockTexture)),
 				this.modelOutput
 		);
 		slabBlock(remainingBlocks, BotaniaBlocks.POLISHED_LIVINGROCK_SLAB,
@@ -485,7 +491,7 @@ public class BlockstateProvider implements DataProvider {
 		particleOnly(remainingBlocks, BotaniaBlocks.MANA_FLAME, Identifier.withDefaultNamespace("block/fire_0"));
 		particleOnly(remainingBlocks, BotaniaBlocks.MANA_PYLON, getBlockTexture(BotaniaBlocks.MANASTEEL_BLOCK));
 		particleOnly(remainingBlocks, BotaniaBlocks.NATURA_PYLON, getBlockTexture(BotaniaBlocks.TERRASTEEL_BLOCK));
-		particleOnly(remainingBlocks, BotaniaBlocks.TERU_TERU_BOZU, getBlockTexture(Blocks.WHITE_WOOL));
+		particleOnly(remainingBlocks, BotaniaBlocks.TERU_TERU_BOZU, getBlockTexture(Blocks.WOOL.pick(DyeColor.WHITE)));
 		particleOnly(remainingBlocks, BotaniaBlocks.TOGGLE_LUMINIZER, getBlockTexture(BotaniaBlocks.TOGGLE_LUMINIZER));
 
 		// Block groups
@@ -499,14 +505,14 @@ public class BlockstateProvider implements DataProvider {
 		takeAll(remainingBlocks, block -> block instanceof FlowerMotifBlock).forEach(block -> {
 			String name = BuiltInRegistries.BLOCK.getKey(block).getPath().replace("_motif", "");
 			singleVariantBlockState(block, crossTemplate.create(block, new TextureMapping()
-					.put(TextureSlot.CROSS, botaniaRL("block/" + name)),
+					.put(TextureSlot.CROSS, tex(botaniaRL("block/" + name))),
 					this.modelOutput));
 		});
 
 		takeAll(remainingBlocks,
 				BotaniaBlocks.CORPOREA_FUNNEL, BotaniaBlocks.CORPOREA_INTERCEPTOR, BotaniaBlocks.CORPOREA_RETAINER)
 				.forEach(block -> singleVariantBlockState(block, ModelTemplates.CUBE_COLUMN.create(block,
-						TextureMapping.column(getBlockTexture(block, "_side"), getBlockTexture(block, "_end")),
+						TextureMapping.column(tex(getBlockTexture(block, "_side")), tex(getBlockTexture(block, "_end"))),
 						this.modelOutput)));
 
 		var drumModelTemplate = new ModelTemplate(Optional.of(botaniaRL("block/shapes/drum")), Optional.empty(),
@@ -515,8 +521,8 @@ public class BlockstateProvider implements DataProvider {
 				BotaniaBlocks.DRUM_OF_THE_GATHERING, BotaniaBlocks.DRUM_OF_THE_CANOPY, BotaniaBlocks.DRUM_OF_THE_WILD)
 				.forEach(block -> singleVariantBlockState(block, drumModelTemplate.create(block,
 						new TextureMapping()
-								.put(TextureSlot.TOP, botaniaRL("block/drum_top"))
-								.put(TextureSlot.SIDE, getBlockTexture(block)),
+								.put(TextureSlot.TOP, tex(botaniaRL("block/drum_top")))
+								.put(TextureSlot.SIDE, tex(getBlockTexture(block))),
 						this.modelOutput)));
 
 		var outsideSlot = TextureSlotAccessor.botania_create("outside");
@@ -562,34 +568,34 @@ public class BlockstateProvider implements DataProvider {
 					singleVariantBlockState(block, ModelLocationUtils.getModelLocation(baseBlock));
 				} else {
 					singleVariantBlockState(block, coveredSpreaderTemplate.create(block, new TextureMapping()
-							.put(TextureSlot.INSIDE, inside)
-							.put(outsideSlot, outside)
+							.put(TextureSlot.INSIDE, tex(inside))
+							.put(outsideSlot, tex(outside))
 							.put(TextureSlot.WOOL,
-									TextureMapping.getBlockTexture(ColorHelper.WOOL_MAP.apply(coverColor))),
+									tex(TextureMapping.getBlockTexture(ColorHelper.WOOL_MAP.apply(coverColor)))),
 							this.modelOutput));
 				}
 			} else {
 				singleVariantBlockState(block, spreaderTemplate.create(block, new TextureMapping()
-						.put(TextureSlot.SIDE, getBlockTexture(block, "_side"))
-						.put(TextureSlot.BACK, getBlockTexture(block, "_back"))
-						.put(TextureSlot.INSIDE, inside)
-						.put(outsideSlot, outside), this.modelOutput));
+						.put(TextureSlot.SIDE, tex(getBlockTexture(block, "_side")))
+						.put(TextureSlot.BACK, tex(getBlockTexture(block, "_back")))
+						.put(TextureSlot.INSIDE, tex(inside))
+						.put(outsideSlot, tex(outside)), this.modelOutput));
 				spreaderCoreTemplate.create(block, new TextureMapping()
-						.put(coreSlot, getBlockTexture(block, "_core")), this.modelOutput);
+						.put(coreSlot, tex(getBlockTexture(block, "_core"))), this.modelOutput);
 				Block sb = block == BotaniaBlocks.PULSE_MANA_SPREADER ? BotaniaBlocks.MANA_SPREADER : block;
 				spreaderScaffoldingTemplate.create(block, new TextureMapping()
-						.put(TextureSlot.TOP, getBlockTexture(sb, "_scaffolding_top"))
-						.put(TextureSlot.SIDE, getBlockTexture(sb, "_scaffolding_side"))
-						.put(TextureSlot.BOTTOM, getBlockTexture(sb, "_scaffolding_bottom")), this.modelOutput);
+						.put(TextureSlot.TOP, tex(getBlockTexture(sb, "_scaffolding_top")))
+						.put(TextureSlot.SIDE, tex(getBlockTexture(sb, "_scaffolding_side")))
+						.put(TextureSlot.BOTTOM, tex(getBlockTexture(sb, "_scaffolding_bottom"))), this.modelOutput);
 			}
 		});
 		ColorHelper.supportedColors().forEach(color -> {
 			Block wool = ColorHelper.WOOL_MAP.apply(color);
 			spreaderPaddingTemplate.create(botaniaRL("block/" + color.getName() + "_spreader_padding"),
 					new TextureMapping()
-							.put(TextureSlot.FRONT, getBlockTexture(wool))
-							.put(TextureSlot.BACK, getBlockTexture(wool))
-							.put(TextureSlot.SIDE, getBlockTexture(wool)),
+							.put(TextureSlot.FRONT, tex(getBlockTexture(wool)))
+							.put(TextureSlot.BACK, tex(getBlockTexture(wool)))
+							.put(TextureSlot.SIDE, tex(getBlockTexture(wool))),
 					this.modelOutput);
 		});
 
@@ -616,10 +622,10 @@ public class BlockstateProvider implements DataProvider {
 					ModelTemplate template = new ModelTemplate(Optional.of(blockModelTemplateKey), Optional.empty(),
 							manaPoolSlots);
 					TextureMapping mapping = new TextureMapping()
-							.put(TextureSlot.SIDE, side)
-							.put(TextureSlot.TOP, top)
-							.put(TextureSlot.BOTTOM, bottom)
-							.put(TextureSlot.INSIDE, inside);
+							.put(TextureSlot.SIDE, tex(side))
+							.put(TextureSlot.TOP, tex(top))
+							.put(TextureSlot.BOTTOM, tex(bottom))
+							.put(TextureSlot.INSIDE, tex(inside));
 
 					singleVariantBlockState(block, template.create(block, mapping, this.modelOutput));
 
@@ -630,37 +636,37 @@ public class BlockstateProvider implements DataProvider {
 								Optional.of("_full"), manaPoolFullSlots
 						);
 						fullTemplate.create(
-								block, mapping.put(TextureSlot.CONTENT, botaniaRL("block/mana_water")),
+								block, mapping.put(TextureSlot.CONTENT, tex(botaniaRL("block/mana_water"))),
 								this.modelOutput
 						);
 					}
 				});
 
 		takeAll(remainingBlocks, BotaniaBlocks.MANA_PUMP, BotaniaBlocks.TINY_POTATO)
-				.forEach(block -> this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block,
-						Variant.variant().with(VariantProperties.MODEL, getModelLocation(block)))
-						.with(BlockModelGeneratorsAccessor.botania_createHorizontalFacingDispatch()))
+				.forEach(block -> this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block,
+						mv(getModelLocation(block)))
+						.with(BlockModelGeneratorsAccessor.botania_getRotationHorizontalFacing()))
 				);
 
 		takeAll(remainingBlocks, BotaniaBlocks.ENDER_OVERSEER, BotaniaBlocks.MANA_DETECTOR).forEach(block -> {
 			var offModel = ModelTemplates.CUBE_ALL.create(block, TextureMapping.cube(block), this.modelOutput);
 			var onModel = ModelTemplates.CUBE_ALL.create(getModelLocation(block, "_powered"),
-					TextureMapping.cube(getBlockTexture(block, "_powered")), this.modelOutput);
-			this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block).with(
-					PropertyDispatch.property(BlockStateProperties.POWERED)
-							.select(false, Variant.variant().with(VariantProperties.MODEL, offModel))
-							.select(true, Variant.variant().with(VariantProperties.MODEL, onModel))
+					TextureMapping.cube(tex(getBlockTexture(block, "_powered"))), this.modelOutput);
+			this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block).with(
+					PropertyDispatch.initial(BlockStateProperties.POWERED)
+							.select(false, mv(offModel))
+							.select(true, mv(plainModel(onModel)))
 			));
 		});
 
 		takeAll(remainingBlocks, block -> block instanceof BotaniaGrassBlock).forEach(block -> {
 			var model = ModelTemplates.CUBE_BOTTOM_TOP.create(block, new TextureMapping()
-					.put(TextureSlot.SIDE, getBlockTexture(block, "_side"))
-					.put(TextureSlot.BOTTOM, getBlockTexture(Blocks.DIRT))
-					.put(TextureSlot.TOP, getBlockTexture(block, "_top")),
+					.put(TextureSlot.SIDE, tex(getBlockTexture(block, "_side")))
+					.put(TextureSlot.BOTTOM, tex(getBlockTexture(Blocks.DIRT)))
+					.put(TextureSlot.TOP, tex(getBlockTexture(block, "_top"))),
 					this.modelOutput
 			);
-			this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block, BlockModelGeneratorsAccessor.botania_createRotatedVariants(model)));
+			this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block, BlockModelGeneratorsAccessor.botania_createRotatedVariants(plainModel(model))));
 		});
 
 		takeAll(remainingBlocks, block -> block instanceof RedStringBlock).forEach(this::redStringBlock);
@@ -668,12 +674,12 @@ public class BlockstateProvider implements DataProvider {
 		takeAll(remainingBlocks, block -> block instanceof TallMysticalFlowerBlock).forEach(block -> {
 			var bottom = ModelTemplates.CROSS.create(block, TextureMapping.cross(block), this.modelOutput);
 			var top = ModelTemplates.CROSS.create(getModelLocation(block, "_top"),
-					TextureMapping.cross(getBlockTexture(block, "_top")), this.modelOutput);
+					TextureMapping.cross(tex(getBlockTexture(block, "_top"))), this.modelOutput);
 			this.blockStateGenerators.add(
-					MultiVariantGenerator.multiVariant(block)
-							.with(PropertyDispatch.property(TallFlowerBlock.HALF)
-									.select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottom))
-									.select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, top))
+					MultiVariantGenerator.dispatch(block)
+							.with(PropertyDispatch.initial(TallFlowerBlock.HALF)
+									.select(DoubleBlockHalf.LOWER, mv(bottom))
+									.select(DoubleBlockHalf.UPPER, mv(plainModel(top)))
 							)
 			);
 		});
@@ -827,34 +833,34 @@ public class BlockstateProvider implements DataProvider {
 
 		for (String variant : LibBlockNames.QUARTZ_VARIANTS) {
 			Identifier quartzId = botaniaRL(variant);
-			Block quartz = BuiltInRegistries.BLOCK.get(quartzId.withSuffix(LibBlockNames.BLOCK_SUFFIX));
+			Block quartz = BuiltInRegistries.BLOCK.getValue(quartzId.withSuffix(LibBlockNames.BLOCK_SUFFIX));
 			singleVariantBlockState(quartz, ModelTemplates.CUBE_TOP.create(quartz,
 					TextureMapping.cubeTop(quartz),
 					this.modelOutput));
 
 			Identifier pillarId = quartzId.withSuffix(LibBlockNames.PILLAR_SUFFIX);
-			Block pillar = BuiltInRegistries.BLOCK.get(pillarId);
+			Block pillar = BuiltInRegistries.BLOCK.getValue(pillarId);
 			var pillarModel = ModelTemplates.CUBE_COLUMN.create(pillar,
-					TextureMapping.column(getBlockTexture(pillar), getBlockTexture(pillar, "_top")),
+					TextureMapping.column(tex(getBlockTexture(pillar)), tex(getBlockTexture(pillar, "_top"))),
 					this.modelOutput);
-			this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createAxisAlignedPillarBlock(pillar, pillarModel));
+			this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createAxisAlignedPillarBlock(pillar, mv(pillarModel)));
 
 			Identifier bricksId = quartzId.withSuffix(LibBlockNames.BRICKS_SUFFIX);
-			Block bricks = BuiltInRegistries.BLOCK.get(bricksId);
+			Block bricks = BuiltInRegistries.BLOCK.getValue(bricksId);
 			singleVariantBlockState(bricks, ModelTemplates.CUBE_ALL.create(bricks, TextureMapping.cube(bricks), this.modelOutput));
 
 			Identifier chiseledId = quartzId.withPrefix(LibBlockNames.CHISELED_PREFIX).withSuffix(LibBlockNames.BLOCK_SUFFIX);
-			Block chiseled = BuiltInRegistries.BLOCK.get(chiseledId);
+			Block chiseled = BuiltInRegistries.BLOCK.getValue(chiseledId);
 			singleVariantBlockState(chiseled,
 					ModelTemplates.CUBE_COLUMN.create(chiseled, new TextureMapping()
-							.put(TextureSlot.SIDE, getBlockTexture(chiseled))
-							.put(TextureSlot.END, getBlockTexture(chiseled, "_top")), this.modelOutput));
+							.put(TextureSlot.SIDE, tex(getBlockTexture(chiseled)))
+							.put(TextureSlot.END, tex(getBlockTexture(chiseled, "_top"))), this.modelOutput));
 
 			Identifier smoothId = quartzId.withPrefix(LibBlockNames.SMOOTH_PREFIX);
-			Block smooth = BuiltInRegistries.BLOCK.get(smoothId.withSuffix(LibBlockNames.BLOCK_SUFFIX));
+			Block smooth = BuiltInRegistries.BLOCK.getValue(smoothId.withSuffix(LibBlockNames.BLOCK_SUFFIX));
 			singleVariantBlockState(smooth, ModelTemplates.CUBE_ALL.create(smooth,
 					// it's a weird vanilla thing – regular block made of "top" and "side", smooth made of "bottom"
-					TextureMapping.cube(getBlockTexture(quartz, "_bottom")),
+					TextureMapping.cube(tex(getBlockTexture(quartz, "_bottom"))),
 					this.modelOutput));
 
 			remainingBlocks.remove(quartz);
@@ -875,9 +881,9 @@ public class BlockstateProvider implements DataProvider {
 		takeAll(remainingBlocks, block -> block instanceof PetalApothecaryBlock)
 				.forEach(block -> singleVariantBlockState(block,
 						apothecaryTemplate.create(block, new TextureMapping()
-								.put(TextureSlot.SIDE, getBlockTexture(block, "_side"))
-								.put(TextureSlot.TOP, getBlockTexture(block, "_top"))
-								.put(TextureSlot.BOTTOM, getBlockTexture(block, "_bottom")), this.modelOutput))
+								.put(TextureSlot.SIDE, tex(getBlockTexture(block, "_side")))
+								.put(TextureSlot.TOP, tex(getBlockTexture(block, "_top")))
+								.put(TextureSlot.BOTTOM, tex(getBlockTexture(block, "_bottom"))), this.modelOutput))
 				);
 
 		takeAll(remainingBlocks,
@@ -889,8 +895,8 @@ public class BlockstateProvider implements DataProvider {
 		takeAll(remainingBlocks, block -> block instanceof IronBarsBlock).forEach(block -> {
 			String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
 			var mapping = new TextureMapping()
-					.put(TextureSlot.EDGE, getBlockTexture(block))
-					.put(TextureSlot.PANE, botaniaRL("block/" + name.substring(0, name.length() - "_pane".length())));
+					.put(TextureSlot.EDGE, tex(getBlockTexture(block)))
+					.put(TextureSlot.PANE, tex(botaniaRL("block/" + name.substring(0, name.length() - "_pane".length()))));
 			Identifier postModel = ModelTemplates.STAINED_GLASS_PANE_POST.create(block, mapping, this.modelOutput);
 			Identifier sideModel = ModelTemplates.STAINED_GLASS_PANE_SIDE.create(block, mapping, this.modelOutput);
 			Identifier sideAltModel = ModelTemplates.STAINED_GLASS_PANE_SIDE_ALT.create(block, mapping, this.modelOutput);
@@ -899,27 +905,27 @@ public class BlockstateProvider implements DataProvider {
 
 			// [VanillaCopy] BlockModelGenerator glass panes
 			this.blockStateGenerators.add(MultiPartGenerator.multiPart(block)
-					.with(Variant.variant().with(VariantProperties.MODEL, postModel))
-					.with(Condition.condition().term(BlockStateProperties.NORTH, true),
-							Variant.variant().with(VariantProperties.MODEL, sideModel))
-					.with(Condition.condition().term(BlockStateProperties.EAST, true),
-							Variant.variant().with(VariantProperties.MODEL, sideModel)
-									.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-					.with(Condition.condition().term(BlockStateProperties.SOUTH, true),
-							Variant.variant().with(VariantProperties.MODEL, sideAltModel))
-					.with(Condition.condition().term(BlockStateProperties.WEST, true),
-							Variant.variant().with(VariantProperties.MODEL, sideAltModel)
-									.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-					.with(Condition.condition().term(BlockStateProperties.NORTH, false),
-							Variant.variant().with(VariantProperties.MODEL, noSideModel))
-					.with(Condition.condition().term(BlockStateProperties.EAST, false),
-							Variant.variant().with(VariantProperties.MODEL, noSideAltModel))
-					.with(Condition.condition().term(BlockStateProperties.SOUTH, false),
-							Variant.variant().with(VariantProperties.MODEL, noSideAltModel)
-									.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-					.with(Condition.condition().term(BlockStateProperties.WEST, false),
-							Variant.variant().with(VariantProperties.MODEL, noSideModel)
-									.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)));
+					.with(mv(postModel))
+					.with(condition().term(BlockStateProperties.NORTH, true),
+							mv(plainModel(sideModel)))
+					.with(condition().term(BlockStateProperties.EAST, true),
+							mv(plainModel(sideModel)
+									.withYRot(Quadrant.R90)))
+					.with(condition().term(BlockStateProperties.SOUTH, true),
+							mv(plainModel(sideAltModel)))
+					.with(condition().term(BlockStateProperties.WEST, true),
+							mv(plainModel(sideAltModel)
+									.withYRot(Quadrant.R90)))
+					.with(condition().term(BlockStateProperties.NORTH, false),
+							mv(plainModel(noSideModel)))
+					.with(condition().term(BlockStateProperties.EAST, false),
+							mv(plainModel(noSideAltModel)))
+					.with(condition().term(BlockStateProperties.SOUTH, false),
+							mv(plainModel(noSideAltModel)
+									.withYRot(Quadrant.R90)))
+					.with(condition().term(BlockStateProperties.WEST, false),
+							mv(plainModel(noSideModel)
+									.withYRot(Quadrant.R270))));
 		});
 
 		takeAll(remainingBlocks, block -> block instanceof StairBlock).forEach(block -> {
@@ -953,7 +959,7 @@ public class BlockstateProvider implements DataProvider {
 			String baseName = tentativeBaseName.endsWith("brick") || tentativeBaseName.endsWith("plank")
 					? tentativeBaseName + "s"
 					: quartz ? tentativeBaseName + LibBlockNames.BLOCK_SUFFIX : tentativeBaseName;
-			Block base = BuiltInRegistries.BLOCK.get(botaniaRL(baseName));
+			Block base = BuiltInRegistries.BLOCK.getValue(botaniaRL(baseName));
 			boolean smooth = name.contains("smooth");
 			if (quartz) {
 				if (smooth) {
@@ -988,11 +994,11 @@ public class BlockstateProvider implements DataProvider {
 	}
 
 	public static Identifier getBlockTexture(Block block, String textureSuffix) {
-		return TextureMapping.getBlockTexture(block, textureSuffix);
+		return TextureMapping.getBlockTexture(block, textureSuffix).sprite();
 	}
 
 	public static Identifier getBlockTexture(Block block) {
-		return TextureMapping.getBlockTexture(block);
+		return TextureMapping.getBlockTexture(block).sprite();
 	}
 
 	private <T extends Block> void handleStandardBlockModel(Set<Block> remainingBlocks, Class<T> blockClass,
@@ -1001,7 +1007,7 @@ public class BlockstateProvider implements DataProvider {
 			String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
 			String tentativeBaseName = name.substring(0, name.length() - suffix.length());
 			String baseName = tentativeBaseName.endsWith("brick") || tentativeBaseName.endsWith("plank") ? tentativeBaseName + "s" : tentativeBaseName;
-			Block base = BuiltInRegistries.BLOCK.get(botaniaRL(baseName));
+			Block base = BuiltInRegistries.BLOCK.getValue(botaniaRL(baseName));
 			if (base == Blocks.AIR) {
 				BotaniaAPI.LOGGER.error("Invalid base block name {} for {}", baseName, name);
 			}
@@ -1011,7 +1017,7 @@ public class BlockstateProvider implements DataProvider {
 	}
 
 	protected void particleOnly(Set<Block> blocks, Block block, Identifier particle) {
-		singleVariantBlockState(block, ModelTemplates.PARTICLE_ONLY.create(block, TextureMapping.particle(particle), this.modelOutput));
+		singleVariantBlockState(block, ModelTemplates.PARTICLE_ONLY.create(block, TextureMapping.particle(tex(particle)), this.modelOutput));
 		blocks.remove(block);
 	}
 
@@ -1034,7 +1040,7 @@ public class BlockstateProvider implements DataProvider {
 				(model, suffix) -> new ModelTemplate(
 						Optional.of(botaniaRL("block/shapes/" + model)), suffix,
 						TextureSlot.SIDE, TextureSlot.NORTH);
-		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, texture).put(TextureSlot.NORTH, mirroredTexture);
+		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, tex(texture)).put(TextureSlot.NORTH, tex(mirroredTexture));
 
 		var checkeredStairsModel = checkeredTemplate.apply("stairs_checkered",
 				Optional.empty()).create(BotaniaBlocks.ROSY_TALC_BRICK_STAIRS, checkeredMapping, this.modelOutput);
@@ -1072,9 +1078,9 @@ public class BlockstateProvider implements DataProvider {
 		for (int i = 0; i < length; i++) {
 			String suffix = i == 0 ? "" : "_" + i;
 			var mapping = new TextureMapping()
-					.put(TextureSlot.SIDE, sideTextures[i])
-					.put(TextureSlot.BOTTOM, bottomTextures[i])
-					.put(TextureSlot.TOP, topTextures[i]);
+					.put(TextureSlot.SIDE, tex(sideTextures[i]))
+					.put(TextureSlot.BOTTOM, tex(bottomTextures[i]))
+					.put(TextureSlot.TOP, tex(topTextures[i]));
 			Identifier modelIdInner = getModelLocation(block, "_inner" + suffix);
 			Identifier modelIdStraight = getModelLocation(block, suffix);
 			Identifier modelIdOuter = getModelLocation(block, "_outer" + suffix);
@@ -1121,7 +1127,7 @@ public class BlockstateProvider implements DataProvider {
 		if (length != straightModels.length || length != outerModels.length || length != weights.length) {
 			throw new IllegalArgumentException("Arrays must have equal length");
 		}
-		var propertyDispatch = PropertyDispatch.properties(
+		var propertyDispatch = PropertyDispatch.initial(
 				BlockStateProperties.HORIZONTAL_FACING,
 				BlockStateProperties.HALF,
 				BlockStateProperties.STAIRS_SHAPE
@@ -1140,19 +1146,19 @@ public class BlockstateProvider implements DataProvider {
 					boolean isRight = stairsShape == StairsShape.INNER_RIGHT || stairsShape == StairsShape.OUTER_RIGHT;
 					int rotationOffset = isLeft && half == Half.BOTTOM ? -1 : isRight && half == Half.TOP ? 1 : 0;
 
-					VariantProperties.Rotation[] rotations = VariantProperties.Rotation.values();
-					VariantProperties.Rotation yRot = switch (direction) {
+					Quadrant[] rotations = Quadrant.values();
+					Quadrant yRot = switch (direction) {
 						case EAST -> rotations[(4 + rotationOffset) % 4];
 						case WEST -> rotations[(2 + rotationOffset) % 4];
 						case SOUTH -> rotations[(1 + rotationOffset) % 4];
 						case NORTH -> rotations[(3 + rotationOffset) % 4];
 						default -> throw new IllegalStateException();
 					};
-					VariantProperties.Rotation xRot = switch (half) {
-						case BOTTOM -> VariantProperties.Rotation.R0;
-						case TOP -> VariantProperties.Rotation.R180;
+					Quadrant xRot = switch (half) {
+						case BOTTOM -> Quadrant.R0;
+						case TOP -> Quadrant.R180;
 					};
-					boolean rotatedModel = yRot == VariantProperties.Rotation.R90 || yRot == VariantProperties.Rotation.R270;
+					boolean rotatedModel = yRot == Quadrant.R90 || yRot == Quadrant.R270;
 					Identifier[] models = switch (stairsShape) {
 						case STRAIGHT -> rotatedModel ? straightModelsRot90 : straightModels;
 						case OUTER_RIGHT, OUTER_LEFT -> rotatedModel ? outerModelsRot90 : outerModels;
@@ -1160,13 +1166,13 @@ public class BlockstateProvider implements DataProvider {
 					};
 					var indices = IntStream.range(0, length).boxed();
 					propertyDispatch.select(direction, half, stairsShape,
-							indices.map(i -> maybeUVLock(uvlock, maybeWeight(weights[i], maybeYRot(yRot,
-									maybeXRot(xRot, Variant.variant().with(VariantProperties.MODEL, models[i]))
-							)))).toList());
+							mv(indices.map(i -> maybeWeight(weights[i], maybeUVLock(uvlock, maybeYRot(yRot,
+									maybeXRot(xRot, plainModel(models[i]))
+							)))).toList()));
 				}
 			}
 		}
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block).with(propertyDispatch));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block).with(propertyDispatch));
 		blocks.remove(block);
 	}
 
@@ -1184,7 +1190,7 @@ public class BlockstateProvider implements DataProvider {
 		BiFunction<String, Optional<String>, ModelTemplate> checkeredTemplate =
 				(model, suffix) -> new ModelTemplate(
 						Optional.of(botaniaRL("block/shapes/" + model)), suffix, TextureSlot.SIDE, TextureSlot.NORTH);
-		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, texture).put(TextureSlot.NORTH, mirroredTexture);
+		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, tex(texture)).put(TextureSlot.NORTH, tex(mirroredTexture));
 
 		var slabModel = checkeredTemplate.apply("slab_checkered",
 				Optional.empty()).create(BotaniaBlocks.ROSY_TALC_BRICK_SLAB, checkeredMapping, this.modelOutput);
@@ -1212,9 +1218,9 @@ public class BlockstateProvider implements DataProvider {
 		for (int i = 0; i < length; i++) {
 			String suffix = i == 0 ? "" : "_" + i;
 			var mapping = new TextureMapping()
-					.put(TextureSlot.SIDE, sideTextures[i])
-					.put(TextureSlot.BOTTOM, bottomTextures[i])
-					.put(TextureSlot.TOP, topTextures[i]);
+					.put(TextureSlot.SIDE, tex(sideTextures[i]))
+					.put(TextureSlot.BOTTOM, tex(bottomTextures[i]))
+					.put(TextureSlot.TOP, tex(topTextures[i]));
 			Identifier modelIdBottom = getModelLocation(block, suffix);
 			Identifier modelIdTop = getModelLocation(block, "_top" + suffix);
 			bottomModels[i] = ModelTemplates.SLAB_BOTTOM.create(modelIdBottom, mapping, this.modelOutput);
@@ -1241,14 +1247,14 @@ public class BlockstateProvider implements DataProvider {
 		var indicesBottom = IntStream.range(0, length).boxed();
 		var indicesTop = IntStream.range(0, length).boxed();
 		var indicesDouble = IntStream.range(0, length).boxed();
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block).with(
-				PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
-						.select(SlabType.BOTTOM, indicesBottom.map(i -> maybeWeight(weights[i],
-								Variant.variant().with(VariantProperties.MODEL, bottomModels[i]))).toList())
-						.select(SlabType.TOP, indicesTop.map(i -> maybeWeight(weights[i],
-								Variant.variant().with(VariantProperties.MODEL, topModels[i]))).toList())
-						.select(SlabType.DOUBLE, indicesDouble.map(i -> maybeWeight(weights[i],
-								Variant.variant().with(VariantProperties.MODEL, doubleModels[i]))).toList())
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block).with(
+				PropertyDispatch.initial(BlockStateProperties.SLAB_TYPE)
+						.select(SlabType.BOTTOM, mv(indicesBottom.map(i -> maybeWeight(weights[i],
+								plainModel(bottomModels[i]))).toList()))
+						.select(SlabType.TOP, mv(indicesTop.map(i -> maybeWeight(weights[i],
+								plainModel(topModels[i]))).toList()))
+						.select(SlabType.DOUBLE, mv(indicesDouble.map(i -> maybeWeight(weights[i],
+								plainModel(doubleModels[i]))).toList()))
 		));
 		blocks.remove(block);
 	}
@@ -1270,7 +1276,7 @@ public class BlockstateProvider implements DataProvider {
 		BiFunction<String, Optional<String>, ModelTemplate> checkeredTemplate =
 				(model, suffix) -> new ModelTemplate(
 						Optional.of(botaniaRL("block/shapes/" + model)), suffix, TextureSlot.SIDE, TextureSlot.NORTH);
-		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, texture).put(TextureSlot.NORTH, mirroredTexture);
+		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, tex(texture)).put(TextureSlot.NORTH, tex(mirroredTexture));
 
 		var checkeredWallPostModel = checkeredTemplate.apply("wall_post_checkered",
 				Optional.of("_post")).create(BotaniaBlocks.ROSY_TALC_BRICK_WALL, checkeredMapping, this.modelOutput);
@@ -1314,9 +1320,9 @@ public class BlockstateProvider implements DataProvider {
 		for (int i = 0; i < length; i++) {
 			String suffix = i == 0 ? "" : "_" + i;
 			var mapping = new TextureMapping()
-					.put(TextureSlot.WALL, sideTextures[i])
-					.put(TextureSlot.BOTTOM, bottomTextures[i])
-					.put(TextureSlot.TOP, topTextures[i]);
+					.put(TextureSlot.WALL, tex(sideTextures[i]))
+					.put(TextureSlot.BOTTOM, tex(bottomTextures[i]))
+					.put(TextureSlot.TOP, tex(topTextures[i]));
 			Identifier modelIdPost = getModelLocation(block, "_post" + suffix);
 			Identifier modelIdLow = getModelLocation(block, "_side" + suffix);
 			Identifier modelIdTall = getModelLocation(block, "_side_tall" + suffix);
@@ -1365,9 +1371,9 @@ public class BlockstateProvider implements DataProvider {
 		}
 		var multiPartGenerator = MultiPartGenerator.multiPart(block);
 		var indicesPost = IntStream.range(0, length).boxed();
-		multiPartGenerator.with(Condition.condition().term(BlockStateProperties.UP, true),
-				indicesPost.map(i -> maybeWeight(weights[i],
-						Variant.variant().with(VariantProperties.MODEL, postModels[i]))).toArray(Variant[]::new));
+		multiPartGenerator.with(condition().term(BlockStateProperties.UP, true),
+				mv(indicesPost.map(i -> maybeWeight(weights[i],
+						plainModel(postModels[i]))).toList()));
 		var wallSides = List.of(BlockStateProperties.EAST_WALL, BlockStateProperties.WEST_WALL,
 				BlockStateProperties.SOUTH_WALL, BlockStateProperties.NORTH_WALL);
 
@@ -1375,45 +1381,43 @@ public class BlockstateProvider implements DataProvider {
 		// have a consistent "checkered" texture for some walls. Normal walls just provide the same model twice
 		// which makes no impact in the generated blockstate.
 		for (EnumProperty<WallSide> wallSide : wallSides) {
-			VariantProperties.Rotation yRot =
-					wallSide == BlockStateProperties.EAST_WALL ? VariantProperties.Rotation.R90
-							: wallSide == BlockStateProperties.WEST_WALL ? VariantProperties.Rotation.R270
-							: wallSide == BlockStateProperties.SOUTH_WALL ? VariantProperties.Rotation.R180
-							: VariantProperties.Rotation.R0;
-			boolean rotatedModel = yRot == VariantProperties.Rotation.R90 || yRot == VariantProperties.Rotation.R270;
+			Quadrant yRot =
+					wallSide == BlockStateProperties.EAST_WALL ? Quadrant.R90
+							: wallSide == BlockStateProperties.WEST_WALL ? Quadrant.R270
+							: wallSide == BlockStateProperties.SOUTH_WALL ? Quadrant.R180
+							: Quadrant.R0;
+			boolean rotatedModel = yRot == Quadrant.R90 || yRot == Quadrant.R270;
 			var indicesLow = IntStream.range(0, length).boxed();
 			var indicesTall = IntStream.range(0, length).boxed();
 			multiPartGenerator
-					.with(Condition.condition().term(wallSide, WallSide.LOW), indicesLow.map(
-							i -> maybeUVLock(uvlock, maybeWeight(weights[i], maybeYRot(yRot,
-									Variant.variant().with(VariantProperties.MODEL,
-											rotatedModel ? lowModelsRot90[i] : lowModels[i]))))
-					).toArray(Variant[]::new))
-					.with(Condition.condition().term(wallSide, WallSide.TALL), indicesTall.map(
-							i -> maybeUVLock(uvlock, maybeWeight(weights[i], maybeYRot(yRot,
-									Variant.variant().with(VariantProperties.MODEL,
-											rotatedModel ? tallModelsRot90[i] : tallModels[i]))))
-					).toArray(Variant[]::new));
+					.with(condition().term(wallSide, WallSide.LOW), mv(indicesLow.map(
+							i -> maybeWeight(weights[i], maybeUVLock(uvlock, maybeYRot(yRot,
+									plainModel(rotatedModel ? lowModelsRot90[i] : lowModels[i]))))
+					).toList()))
+					.with(condition().term(wallSide, WallSide.TALL), mv(indicesTall.map(
+							i -> maybeWeight(weights[i], maybeUVLock(uvlock, maybeYRot(yRot,
+									plainModel(rotatedModel ? tallModelsRot90[i] : tallModels[i]))))
+					).toList()));
 		}
 		this.blockStateGenerators.add(multiPartGenerator);
 		blocks.remove(block);
 	}
 
 	protected void fenceBlock(Set<Block> blocks, Block block, Identifier tex) {
-		var mapping = TextureMapping.defaultTexture(tex);
+		var mapping = TextureMapping.defaultTexture(tex(tex));
 		var postModel = ModelTemplates.FENCE_POST.create(block, mapping, this.modelOutput);
 		var sideModel = ModelTemplates.FENCE_SIDE.create(block, mapping, this.modelOutput);
-		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createFence(block, postModel, sideModel));
+		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createFence(block, mv(postModel), mv(sideModel)));
 		blocks.remove(block);
 	}
 
 	protected void fenceGateBlock(Set<Block> blocks, Block block, Identifier tex) {
-		var mapping = TextureMapping.defaultTexture(tex);
+		var mapping = TextureMapping.defaultTexture(tex(tex));
 		var openModel = ModelTemplates.FENCE_GATE_OPEN.create(block, mapping, this.modelOutput);
 		var closedModel = ModelTemplates.FENCE_GATE_CLOSED.create(block, mapping, this.modelOutput);
 		var openWallModel = ModelTemplates.FENCE_GATE_WALL_OPEN.create(block, mapping, this.modelOutput);
 		var closedWallModel = ModelTemplates.FENCE_GATE_WALL_CLOSED.create(block, mapping, this.modelOutput);
-		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createFenceGate(block, openModel, closedModel, openWallModel, closedWallModel, false));
+		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createFenceGate(block, mv(openModel), mv(closedModel), mv(openWallModel), mv(closedWallModel), false));
 		blocks.remove(block);
 	}
 
@@ -1428,10 +1432,10 @@ public class BlockstateProvider implements DataProvider {
 		Identifier topRightModel = BotaniaModelTemplates.DOOR_TOP_RIGHT.create(doorBlock, texturemapping, this.modelOutput);
 		Identifier topRightOpenModel = BotaniaModelTemplates.DOOR_TOP_RIGHT_OPEN.create(doorBlock, texturemapping, this.modelOutput);
 		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createDoor(doorBlock,
-				bottomLeftModel, bottomLeftOpenModel,
-				bottomRightModel, bottomRightOpenModel,
-				topLeftModel, topLeftOpenModel,
-				topRightModel, topRightOpenModel));
+				mv(bottomLeftModel), mv(bottomLeftOpenModel),
+				mv(bottomRightModel), mv(bottomRightOpenModel),
+				mv(topLeftModel), mv(topLeftOpenModel),
+				mv(topRightModel), mv(topRightOpenModel)));
 		blocks.remove(doorBlock);
 	}
 
@@ -1440,7 +1444,7 @@ public class BlockstateProvider implements DataProvider {
 		Identifier topModel = BotaniaModelTemplates.TRAPDOOR_TOP.create(trapdoorBlock, texturemapping, this.modelOutput);
 		Identifier bottomModel = BotaniaModelTemplates.TRAPDOOR_BOTTOM.create(trapdoorBlock, texturemapping, this.modelOutput);
 		Identifier openModel = BotaniaModelTemplates.TRAPDOOR_OPEN.create(trapdoorBlock, texturemapping, this.modelOutput);
-		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createOrientableTrapdoor(trapdoorBlock, topModel, bottomModel, openModel));
+		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createOrientableTrapdoor(trapdoorBlock, mv(topModel), mv(bottomModel), mv(openModel)));
 		blocks.remove(trapdoorBlock);
 	}
 
@@ -1463,19 +1467,19 @@ public class BlockstateProvider implements DataProvider {
 	}
 
 	protected void buttonBlock(Set<Block> blocks, Block buttonBlock, Identifier blockTexture) {
-		TextureMapping texturemapping = TextureMapping.defaultTexture(blockTexture);
+		TextureMapping texturemapping = TextureMapping.defaultTexture(tex(blockTexture));
 		Identifier unpoweredModel = ModelTemplates.BUTTON.create(buttonBlock, texturemapping, this.modelOutput);
 		Identifier poweredModel = ModelTemplates.BUTTON_PRESSED.create(buttonBlock, texturemapping, this.modelOutput);
-		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createButton(buttonBlock, unpoweredModel, poweredModel));
+		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createButton(buttonBlock, mv(unpoweredModel), mv(poweredModel)));
 		ModelTemplates.BUTTON_INVENTORY.create(buttonBlock, texturemapping, this.modelOutput);
 		blocks.remove(buttonBlock);
 	}
 
 	protected void pressurePlateBlock(Set<Block> blocks, Block pressurePlateBlock, Identifier blockTexture) {
-		TextureMapping texturemapping = TextureMapping.defaultTexture(blockTexture);
+		TextureMapping texturemapping = TextureMapping.defaultTexture(tex(blockTexture));
 		Identifier unpoweredModel = ModelTemplates.PRESSURE_PLATE_UP.create(pressurePlateBlock, texturemapping, this.modelOutput);
 		Identifier poweredModel = ModelTemplates.PRESSURE_PLATE_DOWN.create(pressurePlateBlock, texturemapping, this.modelOutput);
-		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createPreasurePlate(pressurePlateBlock, unpoweredModel, poweredModel));
+		this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createPreasurePlate(pressurePlateBlock, mv(unpoweredModel), mv(poweredModel)));
 		blocks.remove(pressurePlateBlock);
 	}
 
@@ -1493,7 +1497,7 @@ public class BlockstateProvider implements DataProvider {
 		BiFunction<String, Optional<String>, ModelTemplate> checkeredTemplate =
 				(model, suffix) -> new ModelTemplate(
 						Optional.of(botaniaRL("block/shapes/" + model)), suffix, TextureSlot.SIDE, TextureSlot.NORTH);
-		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, texture).put(TextureSlot.NORTH, mirroredTexture);
+		TextureMapping checkeredMapping = new TextureMapping().put(TextureSlot.SIDE, tex(texture)).put(TextureSlot.NORTH, tex(mirroredTexture));
 
 		var blockModel = checkeredTemplate.apply("cube_checkered",
 				Optional.empty()).create(block, checkeredMapping, this.modelOutput);
@@ -1516,7 +1520,7 @@ public class BlockstateProvider implements DataProvider {
 		for (int i = 0; i < length; i++) {
 			String suffix = i == 0 ? "" : "_" + i;
 			Identifier modelId = getModelLocation(block, suffix);
-			models[i] = ModelTemplates.CUBE_ALL.create(modelId, TextureMapping.cube(textures[i]), this.modelOutput);
+			models[i] = ModelTemplates.CUBE_ALL.create(modelId, TextureMapping.cube(tex(textures[i])), this.modelOutput);
 		}
 		cubeAllWithModels(blocks, block, models, weights);
 	}
@@ -1527,13 +1531,13 @@ public class BlockstateProvider implements DataProvider {
 			throw new IllegalArgumentException("Arrays must have equal length");
 		}
 		var indices = IntStream.range(0, length).boxed();
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block, indices.map(i -> maybeWeight(weights[i],
-				Variant.variant().with(VariantProperties.MODEL, models[i]))).toArray(Variant[]::new)));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block, mv(indices.map(i -> maybeWeight(weights[i],
+				plainModel(models[i]))).toList())));
 		blocks.remove(block);
 	}
 
 	protected void singleVariantBlockState(Block block, Identifier model) {
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, model)));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block, mv(model)));
 	}
 
 	protected void rotatedMirrored(Set<Block> blocks, Block block, Identifier texture) {
@@ -1557,8 +1561,8 @@ public class BlockstateProvider implements DataProvider {
 			String suffix = i == 0 ? "" : "_" + i;
 			Identifier modelId = getModelLocation(block, suffix);
 			Identifier mirriredModelId = getModelLocation(block, "_mirrored" + suffix);
-			models[i] = ModelTemplates.CUBE_ALL.create(modelId, TextureMapping.cube(textures[i]), this.modelOutput);
-			mirroredModels[i] = ModelTemplates.CUBE_MIRRORED_ALL.create(mirriredModelId, TextureMapping.cube(textures[i]), this.modelOutput);
+			models[i] = ModelTemplates.CUBE_ALL.create(modelId, TextureMapping.cube(tex(textures[i])), this.modelOutput);
+			mirroredModels[i] = ModelTemplates.CUBE_MIRRORED_ALL.create(mirriredModelId, TextureMapping.cube(tex(textures[i])), this.modelOutput);
 		}
 		rotatedMirroredWithModels(blocks, block, models, mirroredModels, weights);
 	}
@@ -1570,16 +1574,14 @@ public class BlockstateProvider implements DataProvider {
 			throw new IllegalArgumentException("Arrays must have equal length");
 		}
 		var indices = IntStream.range(0, length).boxed();
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block, indices.flatMap(i -> Stream.of(
-				maybeWeight(weights[i], Variant.variant().with(VariantProperties.MODEL, models[i])),
-				maybeWeight(weights[i], Variant.variant().with(VariantProperties.MODEL, mirroredModels[i])),
-				maybeWeight(weights[i], Variant.variant()
-						.with(VariantProperties.MODEL, models[i])
-						.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180)),
-				maybeWeight(weights[i], Variant.variant()
-						.with(VariantProperties.MODEL, mirroredModels[i])
-						.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-		)).toArray(Variant[]::new)));
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block, mv(indices.flatMap(i -> Stream.of(
+				maybeWeight(weights[i], plainModel(models[i])),
+				maybeWeight(weights[i], plainModel(mirroredModels[i])),
+				maybeWeight(weights[i], plainModel(models[i])
+						.withYRot(Quadrant.R180)),
+				maybeWeight(weights[i], plainModel(mirroredModels[i])
+						.withYRot(Quadrant.R180))
+		)).toList())));
 		blocks.remove(block);
 	}
 
@@ -1606,8 +1608,8 @@ public class BlockstateProvider implements DataProvider {
 			String suffix = i == 0 ? "" : "_" + i;
 			Identifier modelIdTop = getModelLocation(block, suffix);
 			Identifier modelIdHorizontal = getModelLocation(block, "_horizontal" + suffix);
-			topModels[i] = ModelTemplates.CUBE_COLUMN.create(modelIdTop, TextureMapping.column(sideTextures[i], topTextures[i]), this.modelOutput);
-			horizontalModels[i] = ModelTemplates.CUBE_COLUMN_HORIZONTAL.create(modelIdHorizontal, TextureMapping.column(sideTextures[i], topTextures[i]), this.modelOutput);
+			topModels[i] = ModelTemplates.CUBE_COLUMN.create(modelIdTop, TextureMapping.column(tex(sideTextures[i]), tex(topTextures[i])), this.modelOutput);
+			horizontalModels[i] = ModelTemplates.CUBE_COLUMN_HORIZONTAL.create(modelIdHorizontal, TextureMapping.column(tex(sideTextures[i]), tex(topTextures[i])), this.modelOutput);
 		}
 		pillarWithModels(blocks, block, topModels, horizontalModels, weights);
 	}
@@ -1621,17 +1623,14 @@ public class BlockstateProvider implements DataProvider {
 		var indicesX = IntStream.range(0, length).boxed();
 		var indicesY = IntStream.range(0, length).boxed();
 		var indicesZ = IntStream.range(0, length).boxed();
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block).with(
-				PropertyDispatch.property(BlockStateProperties.AXIS)
-						.select(Direction.Axis.Y, indicesX.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, topModels[i]))).toList())
-						.select(Direction.Axis.Z, indicesY.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, horizontalModels[i])
-								.with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))).toList())
-						.select(Direction.Axis.X, indicesZ.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, horizontalModels[i])
-								.with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-								.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))).toList())
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block).with(
+				PropertyDispatch.initial(BlockStateProperties.AXIS)
+						.select(Direction.Axis.Y, mv(indicesX.map(i -> maybeWeight(weights[i], plainModel(topModels[i]))).toList()))
+						.select(Direction.Axis.Z, mv(indicesY.map(i -> maybeWeight(weights[i], plainModel(horizontalModels[i])
+								.withXRot(Quadrant.R90))).toList()))
+						.select(Direction.Axis.X, mv(indicesZ.map(i -> maybeWeight(weights[i], plainModel(horizontalModels[i])
+								.withXRot(Quadrant.R90)
+								.withYRot(Quadrant.R90))).toList()))
 		));
 		blocks.remove(block);
 	}
@@ -1662,25 +1661,25 @@ public class BlockstateProvider implements DataProvider {
 			Identifier modelIdHorizontalX = getModelLocation(block, "_horizontal_x" + suffix);
 			Identifier modelIdHorizontalZ = getModelLocation(block, "_horizontal_z" + suffix);
 			topModels[i] = ModelTemplates.CUBE_COLUMN.create(modelIdTop,
-					TextureMapping.column(sideTextures[i], topTextures[i]), this.modelOutput);
+					TextureMapping.column(tex(sideTextures[i]), tex(topTextures[i])), this.modelOutput);
 			horizontalXModels[i] = horizontalXTemplate.create(modelIdHorizontalX,
-					TextureMapping.column(sideTextures[i], topTextures[i]), this.modelOutput);
+					TextureMapping.column(tex(sideTextures[i]), tex(topTextures[i])), this.modelOutput);
 			horizontalZModels[i] = horizontalZTemplate.create(modelIdHorizontalZ,
-					TextureMapping.column(sideTextures[i], topTextures[i]), this.modelOutput);
+					TextureMapping.column(tex(sideTextures[i]), tex(topTextures[i])), this.modelOutput);
 		}
 		pillarAltWithModels(blocks, block, topModels, horizontalXModels, horizontalZModels);
 	}
 
 	protected void pillarAltWithModels(Set<Block> blocks, Block block, Identifier[] yModels,
 			Identifier[] xModels, Identifier[] zModels) {
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block).with(
-				PropertyDispatch.property(BlockStateProperties.AXIS)
-						.select(Direction.Axis.Y, Stream.of(yModels)
-								.map(rl -> Variant.variant().with(VariantProperties.MODEL, rl)).toList())
-						.select(Direction.Axis.X, Stream.of(xModels)
-								.map(rl -> Variant.variant().with(VariantProperties.MODEL, rl)).toList())
-						.select(Direction.Axis.Z, Stream.of(zModels)
-								.map(rl -> Variant.variant().with(VariantProperties.MODEL, rl)).toList())
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block).with(
+				PropertyDispatch.initial(BlockStateProperties.AXIS)
+						.select(Direction.Axis.Y, mv(Stream.of(yModels)
+								.map(rl -> plainModel(rl)).toList()))
+						.select(Direction.Axis.X, mv(Stream.of(xModels)
+								.map(rl -> plainModel(rl)).toList()))
+						.select(Direction.Axis.Z, mv(Stream.of(zModels)
+								.map(rl -> plainModel(rl)).toList()))
 		));
 		blocks.remove(block);
 	}
@@ -1716,9 +1715,9 @@ public class BlockstateProvider implements DataProvider {
 				TextureSlot.TOP, TextureSlot.BOTTOM, TextureSlot.SIDE);
 		for (int i = 0; i < length; i++) {
 			TextureMapping mapping = new TextureMapping()
-					.put(TextureSlot.SIDE, sideTextures[i])
-					.put(TextureSlot.TOP, topTextures[i])
-					.put(TextureSlot.BOTTOM, bottomTextures[i]);
+					.put(TextureSlot.SIDE, tex(sideTextures[i]))
+					.put(TextureSlot.TOP, tex(topTextures[i]))
+					.put(TextureSlot.BOTTOM, tex(bottomTextures[i]));
 			String suffix = i == 0 ? "" : "_" + i;
 			Identifier modelIdTop = getModelLocation(block, suffix);
 			Identifier modelIdHorizontal = getModelLocation(block, "_horizontal" + suffix);
@@ -1740,49 +1739,78 @@ public class BlockstateProvider implements DataProvider {
 		var indicesSouth = IntStream.range(0, length).boxed();
 		var indicesEast = IntStream.range(0, length).boxed();
 		var indicesWest = IntStream.range(0, length).boxed();
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block).with(
-				PropertyDispatch.property(BlockStateProperties.FACING)
-						.select(Direction.UP, indicesUp.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, topModels[i]))).toList())
-						.select(Direction.DOWN, indicesDown.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, topModels[i])
-								.with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))).toList())
-						.select(Direction.NORTH, indicesNorth.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, horizontalModels[i]))).toList())
-						.select(Direction.SOUTH, indicesSouth.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, horizontalModels[i])
-								.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))).toList())
-						.select(Direction.EAST, indicesEast.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, horizontalModels[i])
-								.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))).toList())
-						.select(Direction.WEST, indicesWest.map(i -> maybeWeight(weights[i], Variant.variant()
-								.with(VariantProperties.MODEL, horizontalModels[i])
-								.with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))).toList())
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block).with(
+				PropertyDispatch.initial(BlockStateProperties.FACING)
+						.select(Direction.UP, mv(indicesUp.map(i -> maybeWeight(weights[i], plainModel(topModels[i]))).toList()))
+						.select(Direction.DOWN, mv(indicesDown.map(i -> maybeWeight(weights[i], plainModel(topModels[i])
+								.withXRot(Quadrant.R180))).toList()))
+						.select(Direction.NORTH, mv(indicesNorth.map(i -> maybeWeight(weights[i], plainModel(horizontalModels[i]))).toList()))
+						.select(Direction.SOUTH, mv(indicesSouth.map(i -> maybeWeight(weights[i], plainModel(horizontalModels[i])
+								.withYRot(Quadrant.R180))).toList()))
+						.select(Direction.EAST, mv(indicesEast.map(i -> maybeWeight(weights[i], plainModel(horizontalModels[i])
+								.withYRot(Quadrant.R90))).toList()))
+						.select(Direction.WEST, mv(indicesWest.map(i -> maybeWeight(weights[i], plainModel(horizontalModels[i])
+								.withYRot(Quadrant.R270))).toList()))
 		));
 		blocks.remove(block);
 	}
 
-	protected <T> Variant withMaybe(VariantProperty<T> property, T value, boolean shouldAdd, Variant variant) {
-		if (shouldAdd) {
-			variant.with(property, value);
-		}
-		return variant;
-	}
-
+	// PORT-26.3: variants are immutable records and a weight belongs to the multi-variant, not the variant
 	protected Variant maybeUVLock(Boolean uvlock, Variant variant) {
-		return withMaybe(VariantProperties.UV_LOCK, uvlock, uvlock, variant);
+		return uvlock ? variant.withUvLock(true) : variant;
 	}
 
-	protected Variant maybeWeight(int weight, Variant variant) {
-		return withMaybe(VariantProperties.WEIGHT, weight, weight != 1, variant);
+	protected Weighted<Variant> maybeWeight(int weight, Variant variant) {
+		return new Weighted<>(variant, weight);
 	}
 
-	protected Variant maybeXRot(VariantProperties.Rotation rotation, Variant variant) {
-		return withMaybe(VariantProperties.X_ROT, rotation, rotation != VariantProperties.Rotation.R0, variant);
+	protected Variant maybeXRot(Quadrant rotation, Variant variant) {
+		return rotation != Quadrant.R0 ? variant.withXRot(rotation) : variant;
 	}
 
-	protected Variant maybeYRot(VariantProperties.Rotation rotation, Variant variant) {
-		return withMaybe(VariantProperties.Y_ROT, rotation, rotation != VariantProperties.Rotation.R0, variant);
+	protected Variant maybeYRot(Quadrant rotation, Variant variant) {
+		return rotation != Quadrant.R0 ? variant.withYRot(rotation) : variant;
+	}
+
+	protected static Material tex(Identifier texture) {
+		return new Material(texture);
+	}
+
+	protected static Material tex(Material texture) {
+		return texture;
+	}
+
+	protected static Variant plainModel(Identifier model) {
+		return new Variant(model);
+	}
+
+	protected static MultiVariant mv(Identifier model) {
+		return new MultiVariant(WeightedList.of(new Variant(model)));
+	}
+
+	protected static MultiVariant mv(Variant variant) {
+		return new MultiVariant(WeightedList.of(variant));
+	}
+
+	protected static MultiVariant mv(Variant... variants) {
+		return new MultiVariant(WeightedList.of(variants));
+	}
+
+	/** A multi-variant from plain or weighted variants. */
+	protected static MultiVariant mv(List<?> variants) {
+		WeightedList.Builder<Variant> builder = WeightedList.builder();
+		for (Object variant : variants) {
+			if (variant instanceof Weighted<?> weighted) {
+				builder.add((Variant) weighted.value(), weighted.weight());
+			} else {
+				builder.add((Variant) variant);
+			}
+		}
+		return new MultiVariant(builder.build());
+	}
+
+	protected static ConditionBuilder condition() {
+		return new ConditionBuilder();
 	}
 
 	@SafeVarargs
@@ -1822,10 +1850,10 @@ public class BlockstateProvider implements DataProvider {
 		Identifier selfName = getBlockTexture(block);
 		Identifier front = botaniaRL("block/red_stringed_sender");
 		var model = ModelTemplates.CUBE_ORIENTABLE.create(block, new TextureMapping()
-				.put(TextureSlot.TOP, selfName)
-				.put(TextureSlot.FRONT, front)
-				.put(TextureSlot.SIDE, selfName), this.modelOutput);
-		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, model))
-				.with(BlockModelGeneratorsAccessor.botania_createFacingDispatch()));
+				.put(TextureSlot.TOP, tex(selfName))
+				.put(TextureSlot.FRONT, tex(front))
+				.put(TextureSlot.SIDE, tex(selfName)), this.modelOutput);
+		this.blockStateGenerators.add(MultiVariantGenerator.dispatch(block, mv(model))
+				.with(BlockModelGeneratorsAccessor.botania_getRotationFacing()));
 	}
 }

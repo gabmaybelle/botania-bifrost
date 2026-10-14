@@ -76,12 +76,13 @@
     "ShapedRecipePatternAccessor",
     "ShapelessRecipeAccessor",
     "SpawnPlacementsMixin",
-    "TextureSlotAccessor",
     "ThrowableProjectileMixin",
     "VibrationSystemListenerMixin",
     "WitherEntityAccessor"
   ],
   "client": [
+    "BlockModelGeneratorsAccessor",
+    "TextureSlotAccessor",
     "client.AbstractClientPlayerMixin",
     "client.AbstractContainerScreenAccessor",
     "client.AbstractRecipeBookScreenAccessor",

@@ -11,16 +11,17 @@ package vazkii.botania.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FlowerPotBlock;
 
@@ -43,7 +44,7 @@ public class PottedPlantModelProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		List<Tuple<String, JsonElement>> jsons = new ArrayList<>();
+		List<Pair<String, JsonElement>> jsons = new ArrayList<>();
 		for (Block b : BuiltInRegistries.BLOCK) {
 			Identifier blockId = BuiltInRegistries.BLOCK.getKey(b);
 			if (BotaniaAPI.MODID.equals(blockId.getNamespace()) && b instanceof FlowerPotBlock) {
@@ -55,20 +56,20 @@ public class PottedPlantModelProvider implements DataProvider {
 				JsonObject textures = new JsonObject();
 				textures.addProperty("plant", ResourcesLib.PREFIX_MOD + "block/" + nonPotted);
 				obj.add("textures", textures);
-				jsons.add(new Tuple<>(name, obj));
+				jsons.add(new Pair<>(name, obj));
 			}
 		}
 		List<CompletableFuture<?>> output = new ArrayList<>();
 		PackOutput.PathProvider blocks = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/block");
-		for (Tuple<String, JsonElement> pair : jsons) {
-			output.add(DataProvider.saveStable(cache, pair.getB(), blocks.json(botaniaRL(pair.getA()))));
+		for (Pair<String, JsonElement> pair : jsons) {
+			output.add(DataProvider.saveStable(cache, pair.getSecond(), blocks.json(botaniaRL(pair.getFirst()))));
 		}
 
 		return CompletableFuture.allOf(output.toArray(CompletableFuture[]::new));
 	}
 
 	static MultiVariantGenerator createSimpleBlock(Block block, Identifier resourceLocation) {
-		return MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, resourceLocation));
+		return MultiVariantGenerator.dispatch(block, new MultiVariant(WeightedList.of(new Variant(resourceLocation))));
 	}
 
 	@Override
