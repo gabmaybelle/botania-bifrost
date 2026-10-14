@@ -126,7 +126,7 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 		var wandable = Wandable.LOOKUP.find(world, pos, state, tile, side);
 		if (player.isSecondaryUseActive() && (wandable == null || getBindMode(stack))
 				&& (!(state.getBlock() instanceof GameMasterBlock) || player.canUseGameMasterBlocks())) {
-			Vec3 relativePos = ctx.getClickLocation().subtract(pos.getBottomCenter());
+			Vec3 relativePos = ctx.getClickLocation().subtract(Vec3.atBottomCenterOf(pos));
 			BlockState newState = WrenchingHelper.manipulateBlockState(world, pos, state, side, relativePos);
 			if (newState != null) {
 				if (newState != state) {

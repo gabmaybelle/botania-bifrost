@@ -182,7 +182,8 @@ public class BotaniaLootTables {
 	 * Gets the resource key of the loot table to inject into the specified entity type's default loot table.
 	 */
 	public static ResourceKey<LootTable> getInjectedLootTable(EntityType<?> entityType) {
-		return getInjectedLootTable(entityType.getDefaultLootTable());
+		// PORT-26.3: entities may have no loot table at all now
+		return getInjectedLootTable(entityType.getDefaultLootTable().orElseThrow(() -> new IllegalArgumentException(entityType + " has no loot table")));
 	}
 
 	/**

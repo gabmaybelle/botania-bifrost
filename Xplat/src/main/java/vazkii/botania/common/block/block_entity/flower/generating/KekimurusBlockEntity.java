@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import vazkii.botania.api.block_entity.RadiusDescriptor;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
+import vazkii.botania.common.helper.MathHelper;
 
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class KekimurusBlockEntity extends GeneratingFlowerBlockEntity {
 		}
 
 		BlockPos effectivePos = getEffectivePos();
-		Optional<BlockPos> cakePos = BlockPos.findClosestMatch(effectivePos, RANGE, RANGE,
+		Optional<BlockPos> cakePos = MathHelper.findClosestMatch(effectivePos, RANGE, RANGE,
 				pos -> getLevel().getBlockState(pos).getBlock() instanceof CakeBlock);
 		if (cakePos.isPresent()) {
 			BlockPos pos = cakePos.get();

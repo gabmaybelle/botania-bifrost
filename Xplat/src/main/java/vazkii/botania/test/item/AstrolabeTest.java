@@ -16,6 +16,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
@@ -190,7 +191,7 @@ public class AstrolabeTest {
 
 	private void checkRemainingCandles(final Player player, final int expectedRemaining, final int candlesSlot) {
 		final ItemStack remainingCandles = player.getInventory().getItem(candlesSlot);
-		TestingUtil.assertThat(expectedRemaining == 0 || remainingCandles.is(Items.YELLOW_CANDLE),
+		TestingUtil.assertThat(expectedRemaining == 0 || remainingCandles.is(Items.DYED_CANDLE.pick(DyeColor.YELLOW)),
 				() -> "Unexpected item in candles slot: " + remainingCandles);
 		TestingUtil.assertEquals(expectedRemaining, remainingCandles.getCount(),
 				() -> String.format("Incorrect number of remaining candles in inventory, expected %d, found %d",
@@ -305,10 +306,10 @@ public class AstrolabeTest {
 
 		for (BlockPos pos : BlockPos.betweenClosed(1, 2, 2, 3, 4, 2)) {
 			helper.assertBlockState(pos, state -> state.is(block),
-					() -> String.format("Expected %s but found %s", block, helper.getBlockState(pos).getBlock()));
+					state -> Component.literal(String.format("Expected %s but found %s", block, state.getBlock())));
 			helper.assertBlockProperty(pos, property, prop -> prop.equals(value),
-					String.format("Expected %s to be %s, but found %s", property.getName(), value,
-							helper.getBlockState(pos).getValue(property)));
+					Component.literal(String.format("Expected %s to be %s, but found %s", property.getName(), value,
+							helper.getBlockState(pos).getValue(property))));
 		}
 
 		helper.succeed();

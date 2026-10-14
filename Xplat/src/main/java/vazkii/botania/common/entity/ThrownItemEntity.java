@@ -30,7 +30,7 @@ public class ThrownItemEntity extends ItemEntity {
 		super(world, x, y, z, item.getItem());
 		setPickUpDelay(((ItemEntityAccessor) item).botania_getPickupDelay());
 		setDeltaMovement(item.getDeltaMovement());
-		setInvulnerable(true);
+		setPermanentlyInvulnerable(true);
 	}
 
 	@Override
@@ -69,4 +69,5 @@ public class ThrownItemEntity extends ItemEntity {
 			discard();
 		}
 	}
+
 }

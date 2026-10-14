@@ -9,11 +9,10 @@
 package vazkii.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.LevelData;
-import net.minecraft.world.level.storage.ServerLevelData;
 
 public class TeruTeruBozuBlockEntity extends BlockEntity {
 	private boolean wasRaining = false;
@@ -25,7 +24,7 @@ public class TeruTeruBozuBlockEntity extends BlockEntity {
 	public static void serverTick(Level level, BlockPos worldPosition, BlockState state, TeruTeruBozuBlockEntity self) {
 		boolean isRaining = level.isRaining();
 		if (isRaining && level.getRandom().nextInt(9600) == 0) {
-			level.getLevelData().setRaining(false);
+			setRaining(level, false);
 			resetRainTime(level);
 		}
 
@@ -35,11 +34,17 @@ public class TeruTeruBozuBlockEntity extends BlockEntity {
 		self.wasRaining = isRaining;
 	}
 
+	// PORT-26.3: the weather is saved data on the server level now (Level#getLevelData has no weather)
+	public static void setRaining(Level level, boolean raining) {
+		if (level instanceof ServerLevel serverLevel) {
+			serverLevel.getWeatherData().setRaining(raining);
+		}
+	}
+
 	public static void resetRainTime(Level w) {
-		int time = w.getRandom().nextInt(w.getLevelData().isRaining() ? 12000 : 168000) + 12000;
-		LevelData info = w.getLevelData();
-		if (info instanceof ServerLevelData serverInfo) {
-			serverInfo.setRainTime(time);
+		int time = w.getRandom().nextInt(w.isRaining() ? 12000 : 168000) + 12000;
+		if (w instanceof ServerLevel serverLevel) {
+			serverLevel.getWeatherData().setRainTime(time);
 		}
 	}
 }

@@ -112,7 +112,7 @@ public class ShadedMesaRodItem extends Item {
 		Integer targetID = stack.get(BotaniaDataComponents.TARGET_ENTITY);
 		float length = stack.getOrDefault(BotaniaDataComponents.TARGET_DIST, 0f);
 
-		if (!player.getCooldowns().isOnCooldown(this)) {
+		if (!player.getCooldowns().isOnCooldown(stack)) {
 			Entity target = null;
 			if (targetID != null && player.level().getEntity(targetID) != null) {
 				Entity taritem = player.level().getEntity(targetID);

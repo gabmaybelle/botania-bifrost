@@ -101,7 +101,7 @@ public class FelPumpkinBlock extends BotaniaBlock {
 
 	private static void spawnBlazeInWorld(Level level, BlockPattern.BlockPatternMatch patternMatch, Entity blaze, BlockPos pos) {
 		CarvedPumpkinBlock.clearPatternBlocks(level, patternMatch);
-		blaze.moveTo((double) pos.getX() + 0.5, (double) pos.getY() + 0.05, (double) pos.getZ() + 0.5, 0.0F, 0.0F);
+		blaze.snapTo((double) pos.getX() + 0.5, (double) pos.getY() + 0.05, (double) pos.getZ() + 0.5, 0.0F, 0.0F);
 		level.addFreshEntity(blaze);
 
 		for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, blaze.getBoundingBox().inflate(5.0))) {

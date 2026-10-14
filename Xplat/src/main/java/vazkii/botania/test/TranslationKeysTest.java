@@ -90,7 +90,7 @@ public class TranslationKeysTest {
 				.forEach(id -> {
 					Item item = BuiltInRegistries.ITEM.getValue(id);
 
-					validateComponent(id, "description for item", item.getDescription(), missing);
+					validateComponent(id, "description for item", Component.translatable(item.getDescriptionId()), missing);
 					validateComponent(id, "name for item", item.getName(item.getDefaultInstance()), missing);
 					try {
 						List<Component> tooltipLines = new ArrayList<>();
@@ -98,6 +98,11 @@ public class TranslationKeysTest {
 								item.getDefaultInstance(),
 								// TODO: pretend we are pressing all the modifiers (this is platform-specific)
 								new Item.TooltipContext() {
+									@Override
+									public boolean isPeaceful() {
+										return false;
+									}
+
 									@Override
 									public HolderLookup.Provider registries() {
 										return helper.getLevel().registryAccess();
@@ -148,11 +153,11 @@ public class TranslationKeysTest {
 	public void everyBlockTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Block>> additionalTags = findAdditionalTagKeys(ADDITIONAL_BLOCK_TAG_SOURCES);
-		BuiltInRegistries.BLOCK.getTagNames()
-				.filter(tag -> (tag.identifier().getNamespace().equals(BotaniaAPI.MODID)
+		BuiltInRegistries.BLOCK.listTagIds()
+				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BLOCK_TAGS.contains(tag))
 				.forEach(tag -> {
-					Identifier tagId = tag.identifier();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.block.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -172,11 +177,11 @@ public class TranslationKeysTest {
 	public void everyEntityTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<EntityType<?>>> additionalTags = findAdditionalTagKeys(ADDITIONAL_ENTITY_TAG_SOURCES);
-		BuiltInRegistries.ENTITY_TYPE.getTagNames()
-				.filter(tag -> (tag.identifier().getNamespace().equals(BotaniaAPI.MODID)
+		BuiltInRegistries.ENTITY_TYPE.listTagIds()
+				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_ENTITY_TAGS.contains(tag))
 				.forEach(tag -> {
-					Identifier tagId = tag.identifier();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.entity_type.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -196,11 +201,11 @@ public class TranslationKeysTest {
 	public void everyFluidTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Fluid>> additionalTags = findAdditionalTagKeys(ADDITIONAL_FLUID_TAG_SOURCES);
-		BuiltInRegistries.FLUID.getTagNames()
-				.filter(tag -> (tag.identifier().getNamespace().equals(BotaniaAPI.MODID)
+		BuiltInRegistries.FLUID.listTagIds()
+				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_FLUID_TAGS.contains(tag))
 				.forEach(tag -> {
-					Identifier tagId = tag.identifier();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.fluid.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -220,11 +225,11 @@ public class TranslationKeysTest {
 	public void everyItemTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Item>> additionalTags = findAdditionalTagKeys(ADDITIONAL_ITEM_TAG_SOURCES);
-		BuiltInRegistries.ITEM.getTagNames()
-				.filter(tag -> (tag.identifier().getNamespace().equals(BotaniaAPI.MODID)
+		BuiltInRegistries.ITEM.listTagIds()
+				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_ITEM_TAGS.contains(tag))
 				.forEach(tag -> {
-					Identifier tagId = tag.identifier();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.item.%s.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));
@@ -245,11 +250,11 @@ public class TranslationKeysTest {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Item>> additionalTags = findAdditionalTagKeys(ADDITIONAL_BIOME_TAG_SOURCES);
 		Registry<Biome> biomeRegistry = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
-		biomeRegistry.getTagNames()
-				.filter(tag -> (tag.identifier().getNamespace().equals(BotaniaAPI.MODID)
+		biomeRegistry.listTagIds()
+				.filter(tag -> (tag.location().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BIOME_TAGS.contains(tag))
 				.forEach(tag -> {
-					Identifier tagId = tag.identifier();
+					Identifier tagId = tag.location();
 					String translationKey = "tag.worldgen.%s.biome.%s".formatted(
 							tagId.getNamespace(),
 							tagId.getPath().replace('/', '.'));

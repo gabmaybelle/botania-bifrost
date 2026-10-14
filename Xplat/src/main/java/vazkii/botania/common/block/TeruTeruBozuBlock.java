@@ -81,7 +81,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 
 	private boolean removeRain(Level world) {
 		if (world.isRaining()) {
-			world.getLevelData().setRaining(false);
+			TeruTeruBozuBlockEntity.setRaining(world, false);
 			TeruTeruBozuBlockEntity.resetRainTime(world);
 			return true;
 		}
@@ -91,7 +91,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	private boolean startRain(Level world) {
 		if (!world.isRaining()) {
 			if (world.getRandom().nextInt(10) == 0) {
-				world.getLevelData().setRaining(true);
+				TeruTeruBozuBlockEntity.setRaining(world, true);
 				TeruTeruBozuBlockEntity.resetRainTime(world);
 			}
 			return true;

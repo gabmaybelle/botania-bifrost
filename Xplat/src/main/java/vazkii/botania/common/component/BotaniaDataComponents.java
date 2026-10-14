@@ -321,7 +321,7 @@ public class BotaniaDataComponents {
 			builder -> builder.persistent(ExtraCodecs.POSITIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 	public static final DataComponentType<List<ItemStack>> LAST_FOODS = make("last_foods",
 			builder -> builder.persistent(ExtraCodecs.nonEmptyList(ItemStack.CODEC.sizeLimitedListOf(GourmaryllisBlockEntity.getMaxStreak())))
-					.cacheEncoding().networkSynchronized(ItemStack.LIST_STREAM_CODEC));
+					.cacheEncoding().networkSynchronized(ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list())));
 	public static final DataComponentType<List<Identifier>> LAST_FLOWERS = make("last_flowers",
 			builder -> builder.persistent(ExtraCodecs.nonEmptyList(Identifier.CODEC.sizeLimitedListOf(RafflowsiaBlockEntity.getMaxStreak())))
 					.cacheEncoding().networkSynchronized(Identifier.STREAM_CODEC.apply(ByteBufCodecs.list(RafflowsiaBlockEntity.getMaxStreak()))));

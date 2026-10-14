@@ -54,7 +54,7 @@ public class LivingEntityMixin {
 	private boolean isValidTargetWhileInGaiaFight(LivingEntity target, Operation<Boolean> original) {
 		return original.call(target) && (!(botania_self() instanceof Mob mob)
 				|| !GaiaFightParticipant.HOLDER.existsFor(mob)
-				|| mob.isWithinRestriction(target.blockPosition()));
+				|| mob.isWithinHome(target.blockPosition()));
 	}
 
 	@Unique

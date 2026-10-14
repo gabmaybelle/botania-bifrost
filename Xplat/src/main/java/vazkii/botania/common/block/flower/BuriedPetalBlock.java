@@ -8,14 +8,9 @@
  */
 package vazkii.botania.common.block.flower;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -35,11 +30,6 @@ import vazkii.botania.common.item.material.MysticalPetalItem;
 import java.util.function.Function;
 
 public class BuriedPetalBlock extends BushBlock implements TallFlowerGrower, Colored {
-	public static final MapCodec<BuriedPetalBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			StringRepresentable.fromEnum(DyeColor::values).fieldOf("color").forGetter(BuriedPetalBlock::getColor),
-			BuiltInRegistries.BLOCK.byNameCodec().fieldOf("tallFLower").forGetter(BuriedPetalBlock::getTallFlower),
-			propertiesCodec()
-	).apply(instance, (dyeColor, block, props) -> new BuriedPetalBlock(dyeColor, b -> block, props)));
 
 	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 1.6, 16);
 

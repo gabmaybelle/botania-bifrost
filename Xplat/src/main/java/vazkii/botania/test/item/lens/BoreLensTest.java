@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.test.BotaniaAfterBatch;
+import vazkii.botania.test.BotaniaBeforeBatch;
 import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.DelegatingConfigAccess;
 import vazkii.botania.test.TestingUtil;
@@ -46,42 +48,42 @@ public class BoreLensTest {
 		BotaniaConfig.setCommon(((DelegatingConfigAccess) BotaniaConfig.common()).getInner());
 	}
 
-	@BeforeBatch(batch = WOOD_LEVEL_BATCH)
+	@BotaniaBeforeBatch(batch = WOOD_LEVEL_BATCH)
 	public void beforeWoodBatch(ServerLevel level) {
 		mockMiningLevel(0);
 	}
 
-	@BeforeBatch(batch = STONE_LEVEL_BATCH)
+	@BotaniaBeforeBatch(batch = STONE_LEVEL_BATCH)
 	public void beforeStoneBatch(ServerLevel level) {
 		mockMiningLevel(1);
 	}
 
-	@BeforeBatch(batch = IRON_LEVEL_BATCH)
+	@BotaniaBeforeBatch(batch = IRON_LEVEL_BATCH)
 	public void beforeIronBatch(ServerLevel level) {
 		mockMiningLevel(2);
 	}
 
-	@BeforeBatch(batch = DIAMOND_LEVEL_BATCH)
+	@BotaniaBeforeBatch(batch = DIAMOND_LEVEL_BATCH)
 	public void beforeDiamondBatch(ServerLevel level) {
 		mockMiningLevel(3);
 	}
 
-	@AfterBatch(batch = WOOD_LEVEL_BATCH)
+	@BotaniaAfterBatch(batch = WOOD_LEVEL_BATCH)
 	public void afterWoodBatch(ServerLevel level) {
 		restoreConfig();
 	}
 
-	@AfterBatch(batch = STONE_LEVEL_BATCH)
+	@BotaniaAfterBatch(batch = STONE_LEVEL_BATCH)
 	public void afterStoneBatch(ServerLevel level) {
 		restoreConfig();
 	}
 
-	@AfterBatch(batch = IRON_LEVEL_BATCH)
+	@BotaniaAfterBatch(batch = IRON_LEVEL_BATCH)
 	public void afterIronBatch(ServerLevel level) {
 		restoreConfig();
 	}
 
-	@AfterBatch(batch = DIAMOND_LEVEL_BATCH)
+	@BotaniaAfterBatch(batch = DIAMOND_LEVEL_BATCH)
 	public void afterDiamondBatch(ServerLevel level) {
 		restoreConfig();
 	}

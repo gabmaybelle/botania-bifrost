@@ -19,11 +19,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.FlowerBlock;
 
+import vazkii.botania.common.block.BlockWithTooltip;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 
 import java.util.function.Consumer;
 
-public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabContents {
+public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabContents, BlockWithTooltip {
 	private final boolean hidden;
 
 	public FlowerMotifBlock(Holder<MobEffect> effect, int effectDuration, Properties properties, boolean hidden) {

@@ -11,6 +11,7 @@ package vazkii.botania.common.loot;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -21,13 +22,13 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import vazkii.botania.api.item.Relic;
 
-import java.util.List;
+import java.util.Optional;
 
 public class BindUuid extends LootItemConditionalFunction {
 	public static final MapCodec<BindUuid> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).apply(instance, BindUuid::new));
 
-	public BindUuid(List<LootItemCondition> predicates) {
-		super(predicates);
+	public BindUuid(Optional<Holder<LootItemCondition>> predicate) {
+		super(predicate);
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class BindUuid extends LootItemConditionalFunction {
 	}
 
 	@Override
-	public MapCodec<? extends LootItemFunction> codec() {
+	public MapCodec<? extends LootItemConditionalFunction> codec() {
 		return CODEC;
 	}
 
@@ -60,7 +61,7 @@ public class BindUuid extends LootItemConditionalFunction {
 
 		@Override
 		public LootItemFunction build() {
-			return new BindUuid(getConditions());
+			return new BindUuid(getCondition());
 		}
 	}
 }

@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.animal.cow.CowSoundVariants;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -44,15 +45,15 @@ public class CacophoniumTest {
 		player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BotaniaItems.CACOPHONIUM));
 
 		//Use the cacophonium on the cow.
-		player.interactOn(cow, InteractionHand.MAIN_HAND);
-		TestingUtil.assertEquals(CacophoniumItem.getSound(player.getMainHandItem()), SoundEvents.COW_AMBIENT);
+		player.interactOn(cow, InteractionHand.MAIN_HAND, cow.position());
+		TestingUtil.assertEquals(CacophoniumItem.getSound(player.getMainHandItem()), SoundEvents.COW_SOUNDS.get(CowSoundVariants.SoundSet.CLASSIC).ambientSound().value());
 
 		//Use the cacophonium on the note block.
 		TestingUtil.useItemOn(helper, player, InteractionHand.MAIN_HAND, noteBlockPos);
 		helper.assertBlockPresent(BotaniaBlocks.CACOPHONIUM_BLOCK, noteBlockPos);
 
 		CacophoniumBlockEntity cacophoniumBlock = TestingUtil.assertBlockEntity(helper, noteBlockPos, BotaniaBlockEntities.CACOPHONIUM_BLOCK);
-		TestingUtil.assertEqualsAt(helper, noteBlockPos, CacophoniumItem.getSound(cacophoniumBlock.stack), SoundEvents.COW_AMBIENT);
+		TestingUtil.assertEqualsAt(helper, noteBlockPos, CacophoniumItem.getSound(cacophoniumBlock.stack), SoundEvents.COW_SOUNDS.get(CowSoundVariants.SoundSet.CLASSIC).ambientSound().value());
 
 		//Moo.
 		helper.setBlock(noteBlockPos.south(), Blocks.REDSTONE_BLOCK);

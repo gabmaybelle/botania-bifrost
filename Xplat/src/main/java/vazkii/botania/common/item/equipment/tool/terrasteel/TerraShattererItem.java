@@ -144,7 +144,7 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 
 			if (level == 0) {
 				setEnabled(stack, false);
-			} else if (entity instanceof Player player && !player.swinging) {
+			} else if (entity instanceof Player player && !player.isSwinging()) {
 				var manaItem = ManaItem.LOOKUP.find(stack);
 				manaItem.addMana(-level);
 			}

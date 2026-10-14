@@ -26,6 +26,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PatchouliUtils {
+	/** PORT-26.3: the multiblock preview calls into the 1.21.1 Patchouli API; off until Patchouli is back (Phase 5). */
+	public static boolean MULTIBLOCK_PREVIEW_AVAILABLE = false;
+
 	private static boolean crafttweakerInfoNote = false;
 	private static boolean inVisualizer;
 

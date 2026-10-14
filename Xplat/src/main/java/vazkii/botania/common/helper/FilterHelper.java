@@ -101,12 +101,12 @@ public class FilterHelper {
 	public static List<ItemStack> getFilterStacks(ItemStack filterStack) {
 		BundleContents bundleContents = filterStack.get(DataComponents.BUNDLE_CONTENTS);
 		if (bundleContents != null && !bundleContents.isEmpty()) {
-			return bundleContents.itemCopyStream().toList();
+			return bundleContents.itemCopies().toList();
 		}
 
 		ItemContainerContents containerContents = filterStack.get(DataComponents.CONTAINER);
 		if (containerContents != null) {
-			List<ItemStack> items = containerContents.nonEmptyStream().toList();
+			List<ItemStack> items = containerContents.nonEmptyItemCopyStream().toList();
 			if (!items.isEmpty()) {
 				return items;
 			}

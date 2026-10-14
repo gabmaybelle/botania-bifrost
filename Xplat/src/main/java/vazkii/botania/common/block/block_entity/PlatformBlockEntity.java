@@ -91,7 +91,7 @@ public class PlatformBlockEntity extends BlockEntity implements Wandable, Phanto
 		if (level != null) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
 			if (!level.isClientSide()) {
-				level.blockUpdated(worldPosition, getBlockState().getBlock());
+				level.updateNeighborsAt(worldPosition, getBlockState().getBlock(), null);
 				setChanged();
 			}
 		}

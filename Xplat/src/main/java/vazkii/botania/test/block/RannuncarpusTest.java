@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CandleBlock;
@@ -114,7 +115,7 @@ public class RannuncarpusTest {
 			helper.killAllEntities();
 		}).thenExecute(() -> {
 			// phase 2: ensure various other properties are kept when adding
-			helper.spawnItem(Blocks.MAGENTA_CANDLE.asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
+			helper.spawnItem(Blocks.DYED_CANDLE.pick(DyeColor.MAGENTA).asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
 			helper.spawnItem(Blocks.SEA_PICKLE.asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
 		}).thenWaitUntil(() -> {
 			helper.assertBlockProperty(MAGENTA_CANDLE_POS, CandleBlock.CANDLES, 2);

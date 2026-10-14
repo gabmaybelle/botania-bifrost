@@ -8,6 +8,8 @@
  */
 package vazkii.botania.common.world;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -24,8 +26,9 @@ public class BotaniaFeatures {
 	public static final ResourceKey<PlacedFeature> SHIMMERING_MUSHROOMS_PLACED_FEATURE =
 			ResourceKey.create(Registries.PLACED_FEATURE, botaniaRL("shimmering_mushrooms"));
 
-	public static void registerFeatures(BiConsumer<Feature<?>, Identifier> r) {
-		r.accept(new MysticalFlowerFeature(MysticalFlowerConfig.CODEC), botaniaRL("mystical_flower"));
+	// PORT-26.3: feature types are registered by their codec (BuiltInRegistries.FEATURE_TYPE)
+	public static void registerFeatures(BiConsumer<MapCodec<? extends Feature>, Identifier> r) {
+		r.accept(MysticalFlowerFeature.CODEC, botaniaRL("mystical_flower"));
 	}
 
 }

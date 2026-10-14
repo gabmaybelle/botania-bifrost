@@ -33,7 +33,7 @@ public class WorldSeedItem extends Item {
 	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		BlockPos coords = world.getSharedSpawnPos();
+		BlockPos coords = world.getRespawnData().globalPos().pos();
 		boolean inRange = coords.distToCenterSqr(player.getX(), player.getY(), player.getZ()) <= 24 * 24;
 		if (world.dimension() == Level.OVERWORLD && !inRange) {
 			if (!world.isClientSide()) {

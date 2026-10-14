@@ -14,6 +14,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -105,6 +106,6 @@ public class FloralFertilizerItem extends Item {
 	}
 
 	private static boolean canPlaceFlower(BlockState belowState, Level world) {
-		return belowState.is(BlockTags.DIRT) && !world.dimensionType().ultraWarm();
+		return belowState.is(BlockTags.DIRT) && !world.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES);
 	}
 }

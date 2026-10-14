@@ -24,6 +24,7 @@ import vazkii.botania.api.block_entity.RadiusDescriptor;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.component.BotaniaDataComponents;
+import vazkii.botania.common.helper.MathHelper;
 import vazkii.botania.common.lib.BotaniaTags;
 
 import java.util.Collections;
@@ -95,7 +96,7 @@ public class RafflowsiaBlockEntity extends GeneratingFlowerBlockEntity {
 			return;
 		}
 
-		Optional<BlockPos> flowerPos = BlockPos.findClosestMatch(getEffectivePos(), RANGE, RANGE,
+		Optional<BlockPos> flowerPos = MathHelper.findClosestMatch(getEffectivePos(), RANGE, RANGE,
 				pos -> {
 					BlockState state = getLevel().getBlockState(pos);
 					return !state.is(BotaniaBlocks.RAFFLOWSIA) && state.is(BotaniaTags.Blocks.SPECIAL_FLOWERS);

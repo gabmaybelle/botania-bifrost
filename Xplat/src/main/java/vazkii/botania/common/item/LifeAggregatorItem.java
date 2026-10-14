@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -24,21 +25,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueInput;
 
 import vazkii.botania.api.block.LifeAggregatorCarryable;
 import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.advancements.UseItemSuccessTrigger;
 import vazkii.botania.common.component.BotaniaDataComponents;
-import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.helper.PlayerHelper;
 
 import java.util.function.Consumer;
@@ -106,9 +107,9 @@ public class LifeAggregatorItem extends Item {
 			if (!level.isClientSide()) {
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				if (blockEntity != null && mover.has(DataComponents.BLOCK_ENTITY_DATA)) {
-					blockEntity.loadWithComponents(
-							mover.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag(),
-							level.registryAccess());
+					// PORT-26.3: the block entity data component carries its type now
+					blockEntity.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(),
+							mover.get(DataComponents.BLOCK_ENTITY_DATA).copyTagWithoutId()));
 				}
 
 				LifeAggregatorCarryable carryable = LifeAggregatorCarryable.LOOKUP.find(level, pos);
@@ -119,7 +120,7 @@ public class LifeAggregatorItem extends Item {
 				// must empty stack last, as otherwise components become inaccessible
 				Player player = context.getPlayer();
 				if (mover.consumeAndReturn(1, player).isEmpty() && player != null) {
-					player.onEquippedItemBroken(this, context.getHand().asEquipmentSlot());
+					player.onEquippedItemBroken(mover, context.getHand().asEquipmentSlot());
 				}
 			} else {
 				RandomSource random = level.getRandom();
@@ -155,9 +156,12 @@ public class LifeAggregatorItem extends Item {
 			if (entityType != null) {
 				stack.set(BotaniaDataComponents.MOB_TYPE, BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
 			}
-			DataComponentHelper.setOptional(stack, DataComponents.BLOCK_STATE, carryable.gatherBlockStateData());
-			DataComponentHelper.setOptional(stack, DataComponents.BLOCK_ENTITY_DATA,
-					carryable.gatherBlockEntityData(level.registryAccess()));
+			stack.set(DataComponents.BLOCK_STATE, carryable.gatherBlockStateData());
+			BlockEntity carriedEntity = level.getBlockEntity(pos);
+			if (carriedEntity != null) {
+				stack.set(DataComponents.BLOCK_ENTITY_DATA,
+						TypedEntityData.of(carriedEntity.getType(), carryable.gatherBlockEntityData(level.registryAccess()).copyTag()));
+			}
 			level.destroyBlock(pos, false, player);
 			if (player != null) {
 				player.getCooldowns().addCooldown(context.getItemInHand(), 20);
@@ -165,7 +169,7 @@ public class LifeAggregatorItem extends Item {
 					UseItemSuccessTrigger.INSTANCE.trigger(serverPlayer, stack, serverPlayer.level(),
 							pos.getX(), pos.getY(), pos.getZ());
 				}
-				player.onEquippedItemBroken(this, context.getHand().asEquipmentSlot());
+				player.onEquippedItemBroken(stack, context.getHand().asEquipmentSlot());
 			}
 		} else {
 			RandomSource random = level.getRandom();

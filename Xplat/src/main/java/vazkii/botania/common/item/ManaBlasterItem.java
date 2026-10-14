@@ -9,7 +9,6 @@
 package vazkii.botania.common.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -145,7 +144,7 @@ public class ManaBlasterItem extends Item {
 
 	private void appendHoverTextImpl(ItemStack stack, Consumer<Component> tooltip) {
 		boolean clip = hasClip(stack);
-		if (clip && !Screen.hasShiftDown()) {
+		if (clip && !Proxy.INSTANCE.hasShiftDown()) {
 			tooltip.accept(TooltipHandler.getShiftInfoTooltip());
 			return;
 		}
@@ -155,7 +154,7 @@ public class ManaBlasterItem extends Item {
 			//todo idk
 			List<Component> lensTip = lens.getTooltipLines(Item.TooltipContext.of(Proxy.INSTANCE.getClientPlayer().level()), Proxy.INSTANCE.getClientPlayer(), TooltipFlag.Default.NORMAL);
 			if (lensTip.size() > 1) {
-				tooltip.addAll(lensTip.subList(1, lensTip.size()));
+				lensTip.subList(1, lensTip.size()).forEach(tooltip);
 			}
 		}
 

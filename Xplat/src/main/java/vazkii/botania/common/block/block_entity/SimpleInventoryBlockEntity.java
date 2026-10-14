@@ -48,7 +48,7 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 	protected SimpleInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, boolean synchronize) {
 		super(type, pos, state);
 		this.synchronize = synchronize;
-		itemHandler.addListener(i -> setChanged());
+		// PORT-26.3: SimpleContainer has no listeners; see onItemHandlerChanged
 	}
 
 	private static void copyToInv(NonNullList<ItemStack> src, Container dest) {

@@ -31,6 +31,7 @@ import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -470,7 +471,7 @@ public class BotaniaBlockEntities {
 
 	private static <T extends BlockEntity> BlockEntityType<T> type(Identifier id, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
 		// TODO: should probably set up that datafixer type instead of passing null to build()
-		var ret = BlockEntityType.Builder.of(factory, blocks).build(null);
+		var ret = new BlockEntityType<>(factory, Set.of(blocks));
 		var old = ALL.put(id, ret);
 		if (old != null) {
 			throw new IllegalArgumentException("Duplicate id " + id);

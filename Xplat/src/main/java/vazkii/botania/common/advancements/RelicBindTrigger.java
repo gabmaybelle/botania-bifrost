@@ -15,6 +15,7 @@ import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +49,7 @@ public class RelicBindTrigger extends SimpleCriterionTrigger<RelicBindTrigger.In
 
 		public static Criterion<Instance> bound(ItemLike relicItem) {
 			return INSTANCE.createCriterion(new Instance(Optional.empty(),
-					Optional.of(ItemPredicate.Builder.item().of(relicItem).build())));
+					Optional.of(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, relicItem).build())));
 		}
 
 		boolean test(ItemStack stack) {

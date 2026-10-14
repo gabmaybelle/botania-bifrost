@@ -32,7 +32,6 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -41,15 +40,14 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 import vazkii.botania.client.fx.WispParticleData;
+import vazkii.botania.client.patchouli.PatchouliUtils;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 import vazkii.botania.common.proxy.Proxy;
-import vazkii.patchouli.api.IMultiblock;
 import vazkii.patchouli.api.IStateMatcher;
 import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.common.multiblock.SparseMultiblock;
 
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -118,15 +116,15 @@ public class SextantItem extends Item {
 		if (centerPos == null || centerPos.dimension() != level.dimension()) {
 			return;
 		}
-		IMultiblock mb = PatchouliAPI.get().getCurrentMultiblock();
-		if (!(mb instanceof SparseMultiblock smb) || !mb.getID().equals(MULTIBLOCK_ID)) {
+		// PORT-26.3: disabled (Patchouli 1.21.1 API): the sextant preview does not follow the player until Patchouli is back
+		if (!PatchouliUtils.MULTIBLOCK_PREVIEW_AVAILABLE) {
 			return;
 		}
 		BlockPos anchor = Proxy.INSTANCE.getMultiblockAnchor();
 		if (anchor == null) {
 			return;
 		}
-		Vec3i sizeVec = mb.getSize();
+		Vec3i sizeVec = Vec3i.ZERO; // PORT-26.3: disabled (Patchouli 1.21.1 API): was the multiblock's size
 		int size = Math.max(sizeVec.getX(), Math.max(sizeVec.getY(), sizeVec.getZ()));
 		BlockPos center = centerPos.pos();
 		BlockPos playerPos = entity.blockPosition();
@@ -138,7 +136,7 @@ public class SextantItem extends Item {
 
 		// we are reasonably far from the current anchor position, but still close enough to the actual center
 		BlockPos newOffset = playerPos.subtract(center);
-		smb.setOffset(newOffset.getX(), newOffset.getY(), newOffset.getZ());
+		// PORT-26.3: disabled (Patchouli 1.21.1 API) smb.setOffset(newOffset.getX(), newOffset.getY(), newOffset.getZ());
 		Proxy.INSTANCE.setMultiblockAnchor(playerPos);
 	}
 
@@ -216,10 +214,9 @@ public class SextantItem extends Item {
 			if (centerPos != null && centerPos.dimension() == world.dimension()) {
 				Map<BlockPos, IStateMatcher> map = new HashMap<>();
 				getMode(stack).getCreator().create(matcher, radius + 0.5, map);
-				IMultiblock sparse = PatchouliAPI.get().makeSparseMultiblock(map).setId(MULTIBLOCK_ID)
-						.setSymmetrical(true);
-				Proxy.INSTANCE.showMultiblock(sparse, Component.literal("r = " + getRadiusString(radius)),
-						centerPos.pos(), Rotation.NONE);
+				// PORT-26.3: disabled (Patchouli 1.21.1 API): the sparse multiblock preview
+				// IMultiblock sparse = PatchouliAPI.get().makeSparseMultiblock(map).setId(MULTIBLOCK_ID).setSymmetrical(true);
+				// Proxy.INSTANCE.showMultiblock(sparse, Component.literal("r = " + getRadiusString(radius)), centerPos.pos(), Rotation.NONE);
 			}
 		}
 		return true;

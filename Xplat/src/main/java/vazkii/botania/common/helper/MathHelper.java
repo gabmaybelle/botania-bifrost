@@ -14,6 +14,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
+import java.util.function.Predicate;
+
 public final class MathHelper {
 
 	public static double angleBetween(Vec3 a, Vec3 b) {
@@ -84,5 +87,20 @@ public final class MathHelper {
 		return BlockPos.betweenClosed(
 				pos.getX() - rangeH, pos.getY() - rangeDown, pos.getZ() - rangeH,
 				pos.getX() + rangeH, pos.getY() + rangeUp, pos.getZ() + rangeH);
+	}
+
+	/** [VanillaCopy] the old BlockPos#findClosestMatch: the nearest position in a box around the centre. */
+	public static Optional<BlockPos> findClosestMatch(BlockPos center, int horizontalRange, int verticalRange, Predicate<BlockPos> predicate) {
+		BlockPos best = null;
+		double bestDist = Double.MAX_VALUE;
+		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-horizontalRange, -verticalRange, -horizontalRange),
+				center.offset(horizontalRange, verticalRange, horizontalRange))) {
+			double dist = pos.distSqr(center);
+			if (dist < bestDist && predicate.test(pos)) {
+				best = pos.immutable();
+				bestDist = dist;
+			}
+		}
+		return Optional.ofNullable(best);
 	}
 }

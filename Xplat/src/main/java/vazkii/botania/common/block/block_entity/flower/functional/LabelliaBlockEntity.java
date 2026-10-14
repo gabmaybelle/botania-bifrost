@@ -11,6 +11,7 @@ package vazkii.botania.common.block.block_entity.flower.functional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -90,7 +91,7 @@ public class LabelliaBlockEntity extends FunctionalFlowerBlockEntity {
 			for (ItemEntity itemEntity : nameableItems) {
 				itemEntity.getItem().set(DataComponents.CUSTOM_NAME, name);
 				EntityHelper.syncItem(itemEntity);
-				((ServerLevel) level).sendParticles(ParticleTypes.INSTANT_EFFECT,
+				((ServerLevel) level).sendParticles(SpellParticleOption.create(ParticleTypes.INSTANT_EFFECT, -1, 1F),
 						itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(),
 						3, 0, 0, 0, 0);
 

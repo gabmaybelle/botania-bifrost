@@ -23,7 +23,7 @@ public class StarfieldCreatorBlockEntity extends BlockEntity {
 
 	public static void clientTick(Level level, BlockPos pos, BlockState state, StarfieldCreatorBlockEntity self) {
 		level.updateSkyBrightness(); // this isn't called often on clients, but we need so that isDay is accurate.
-		if (level.isDay()) {
+		if (level.isBrightOutside()) {
 			return;
 		}
 

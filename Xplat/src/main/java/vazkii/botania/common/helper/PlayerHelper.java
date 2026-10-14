@@ -32,6 +32,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
+import vazkii.botania.mixin.LivingEntityAccessor;
+import vazkii.botania.mixin.SwingStateAccessor;
+
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -176,7 +179,7 @@ public final class PlayerHelper {
 			player.currentImpulseImpactPos = player.position().subtract(0, graceY, 0);
 		}
 
-		player.currentExplosionCause = cause;
+		// PORT-26.3: the explosion cause is no longer tracked on the player (it only fed the wind burst advancement)
 		player.setIgnoreFallDamageFromCurrentImpulse(true, player.currentImpulseImpactPos);
 	}
 
@@ -226,4 +229,13 @@ public final class PlayerHelper {
 	}
 
 	private PlayerHelper() {}
+
+	/**
+	 * PORT-26.3: the old checks on {@code attackAnim} (the swing progress, now private) are "is this the first tick of
+	 * a
+	 * swing"; the swing state is read through an accessor.
+	 */
+	public static boolean isOnFirstSwingTick(LivingEntity entity) {
+		return entity.isSwinging() && ((SwingStateAccessor) ((LivingEntityAccessor) entity).botania_getSwingState()).botania_getTicks() == 1;
+	}
 }

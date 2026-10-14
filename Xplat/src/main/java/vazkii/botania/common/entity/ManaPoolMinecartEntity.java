@@ -62,7 +62,7 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 			ItemStack stack,
 			@Nullable Player player) {
 		ManaPoolMinecartEntity minecartEntity = new ManaPoolMinecartEntity(level, x, y, z);
-		EntityType.createDefaultStackConfig(level, stack, player).accept(minecartEntity);
+		EntityType.createDefaultStackConfig(level, stack, player).apply(minecartEntity);
 		return minecartEntity;
 	}
 

@@ -16,6 +16,7 @@ import net.minecraft.advancements.predicates.LocationPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,7 +55,7 @@ public class UseItemSuccessTrigger extends SimpleCriterionTrigger<UseItemSuccess
 
 		public static Criterion<Instance> used(ItemLike... items) {
 			return INSTANCE.createCriterion(new Instance(Optional.empty(),
-					Optional.of(ItemPredicate.Builder.item().of(items).build()), Optional.empty()));
+					Optional.of(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, items).build()), Optional.empty()));
 		}
 
 		boolean test(ItemStack stack, ServerLevel world, double x, double y, double z) {

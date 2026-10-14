@@ -87,7 +87,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	@Override
 	public int getUpdateInterval() {
 		boolean rain = getLevel().getBiome(getEffectivePos()).value()
-				.getPrecipitationAt(getEffectivePos()) == Biome.Precipitation.RAIN
+				.getPrecipitationAt(getEffectivePos(), getLevel().getSeaLevel()) == Biome.Precipitation.RAIN
 				&& (getLevel().isRaining() || getLevel().isThundering());
 		return rain ? 2 : 3;
 	}

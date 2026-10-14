@@ -64,7 +64,7 @@ public abstract class LegallyDistinctThrowableProjectile extends Projectile {
 			this.hitTargetOrDeflectSelf(hitresult);
 		}
 
-		this.checkInsideBlocks();
+		this.applyEffectsFromBlocks();
 		Vec3 vec3 = this.getDeltaMovement();
 		double x = this.getX() + vec3.x;
 		double y = this.getY() + vec3.y;

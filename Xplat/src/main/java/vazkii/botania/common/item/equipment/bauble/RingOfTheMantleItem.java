@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.helper.EntityHelper;
+import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.lib.BotaniaTags;
 
@@ -44,7 +45,8 @@ public class RingOfTheMantleItem extends BaubleItem {
 			onEquipped(stack, player);
 		}
 
-		if (player.attackAnim == 0.25F) {
+		// PORT-26.3: the swing progress is private; the first tick of a swing is the same moment
+		if (PlayerHelper.isOnFirstSwingTick(player)) {
 			ManaItemHandler.instance().requestManaExact(stack, player, MANA_COST, true);
 		}
 	}

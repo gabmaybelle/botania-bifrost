@@ -85,7 +85,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 				break;
 			}
 
-			shearable.shear((ServerLevel) world, SoundSource.BLOCKS, new ItemStack(Items.SHEARS));
+			shearable.shear((ServerLevel) level, SoundSource.BLOCKS, new ItemStack(Items.SHEARS));
 			++sheared;
 		}
 	}

@@ -28,6 +28,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.*;
 import net.minecraft.util.Prediction;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -49,6 +50,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -70,6 +76,7 @@ import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.network.clientbound.HaloCraftEffectPacket;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -285,7 +292,7 @@ public class AssemblyHaloItem extends Item {
 		} else {
 			RecipeHolder<? extends Recipe<CraftingInput>> recipeHolder = getSavedRecipe(world, stack, segment);
 			if (recipeHolder != null) {
-				return recipeHolder.value().getResultItem(world.registryAccess());
+				return resultOf(recipeHolder.value(), world);
 			} else {
 				return ItemStack.EMPTY;
 			}
@@ -471,7 +478,7 @@ public class AssemblyHaloItem extends Item {
 					label = Component.translatable("botaniamisc.unsetRecipe");
 					recipe = getLastRecipe(player.level(), stack);
 				} else {
-					label = recipe.value().getResultItem(player.level().registryAccess()).getHoverName();
+					label = resultOf(recipe.value(), player.level()).getHoverName();
 					setRecipe = true;
 				}
 
@@ -481,7 +488,7 @@ public class AssemblyHaloItem extends Item {
 
 		private static void renderRecipe(GuiGraphicsExtractor gui, Window window, Font font, Component label, @Nullable Recipe<CraftingInput> recipe, Player player, boolean isSavedRecipe) {
 			ItemStack recipeResult;
-			if (recipe != null && !(recipeResult = recipe.getResultItem(player.level().registryAccess())).isEmpty()) {
+			if (recipe != null && !(recipeResult = resultOf(recipe, player.level())).isEmpty()) {
 				int x = window.getGuiScaledWidth() / 2 - 45;
 				int y = window.getGuiScaledHeight() / 2 - 90;
 
@@ -491,11 +498,25 @@ public class AssemblyHaloItem extends Item {
 				gui.fill(x + 66, y + 14, x + 92, y + 40, 0x22000000);
 				gui.fill(x - 2, y - 2, x + 56, y + 56, 0x22000000);
 
-				int wrap = recipe instanceof ShapedRecipe shaped ? shaped.getWidth() : 3;
-				for (int i = 0; i < recipe.getIngredients().size(); i++) {
-					Ingredient ingr = recipe.getIngredients().get(i);
-					if (ingr != Ingredient.EMPTY) {
-						ItemStack stack = ingr.getItems()[ClientTickHandler.getPlayerTicksInGame() / 20 % ingr.getItems().length];
+				// PORT-26.3: the grid comes from the recipe's display (shaped ones know their width)
+				RecipeDisplay display = recipe.display().isEmpty() ? null : recipe.display().getFirst();
+				List<SlotDisplay> slots;
+				int wrap;
+				if (display instanceof ShapedCraftingRecipeDisplay shaped) {
+					slots = shaped.ingredients();
+					wrap = shaped.width();
+				} else if (display instanceof ShapelessCraftingRecipeDisplay shapeless) {
+					slots = shapeless.ingredients();
+					wrap = 3;
+				} else {
+					slots = List.of();
+					wrap = 3;
+				}
+				ContextMap displayContext = SlotDisplayContext.fromLevel(player.level());
+				for (int i = 0; i < slots.size(); i++) {
+					List<ItemStack> options = slots.get(i).resolveForStacks(displayContext);
+					if (!options.isEmpty()) {
+						ItemStack stack = options.get(ClientTickHandler.getPlayerTicksInGame() / 20 % options.size());
 						int xpos = x + i % wrap * 18;
 						int ypos = y + i / wrap * 18;
 						gui.fill(xpos, ypos, xpos + 16, ypos + 16, 0x22000000);
@@ -529,5 +550,11 @@ public class AssemblyHaloItem extends Item {
 		}
 		menu.getResultSlot().set(ItemStack.EMPTY);
 		menu.getInputGridSlots().forEach(slot -> slot.set(ItemStack.EMPTY));
+	}
+
+	/** PORT-26.3: a vanilla recipe only shows its result through its display. */
+	private static ItemStack resultOf(Recipe<?> recipe, Level level) {
+		List<RecipeDisplay> displays = recipe.display();
+		return displays.isEmpty() ? ItemStack.EMPTY : displays.getFirst().result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
 	}
 }

@@ -36,7 +36,6 @@ import vazkii.botania.common.advancements.UseItemSuccessTrigger;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.DataComponentHelper;
-import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.function.Consumer;
 
@@ -53,7 +52,8 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	}
 
 	public static boolean isOpen() {
-		return BuiltInRegistries.ITEM.getKey(BotaniaItems.LEXICA_BOTANIA).equals(PatchouliAPI.get().getOpenBookGui());
+		// PORT-26.3: disabled (Patchouli 1.21.1 API): the book is never open until Patchouli is back
+		return false;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 
 		if (playerIn instanceof ServerPlayer player) {
 			UseItemSuccessTrigger.INSTANCE.trigger(player, stack, player.level(), player.getX(), player.getY(), player.getZ());
-			PatchouliAPI.get().openBookGUI(player, BuiltInRegistries.ITEM.getKey(this));
+			// PORT-26.3: disabled (Patchouli 1.21.1 API) PatchouliAPI.get().openBookGUI(player, BuiltInRegistries.ITEM.getKey(this));
 			playerIn.playSound(BotaniaSounds.LEXICON_OPEN, 1F, (float) (0.7 + Math.random() * 0.4));
 		}
 
@@ -86,7 +86,8 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 
 	public static Component getEdition() {
 		try {
-			return PatchouliAPI.get().getSubtitle(BuiltInRegistries.ITEM.getKey(BotaniaItems.LEXICA_BOTANIA));
+			// PORT-26.3: disabled (Patchouli 1.21.1 API) return PatchouliAPI.get().getSubtitle(...);
+			return Component.literal("");
 		} catch (IllegalArgumentException e) {
 			return Component.literal(""); // TODO Adjust Patchouli because first search tree creation is too early to get the edition
 		}

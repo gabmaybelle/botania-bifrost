@@ -48,7 +48,7 @@ public class LifeAggregatorTest {
 				new BlockHitResult(Vec3.ZERO, Direction.DOWN, helper.absolutePos(spawnerPos), false)));
 		TestingUtil.assertThat(result.consumesAction(), () -> "Should have succeeded");
 		TestingUtil.assertThat(LifeAggregatorItem.hasData(stack),
-				found -> Component.literal("Spawner mover should recognize saved data. Full NBT: " + stack.getComponents()));
+				() -> "Spawner mover should recognize saved data. Full NBT: " + stack.getComponents());
 		helper.assertBlockState(spawnerPos, BlockState::isAir, found -> Component.literal("Spawner should be gone"));
 
 		result = stack.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,

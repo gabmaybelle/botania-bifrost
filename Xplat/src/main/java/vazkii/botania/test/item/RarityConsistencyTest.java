@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.brew.BrewContainer;
@@ -69,12 +70,12 @@ public class RarityConsistencyTest {
 			for (ItemStack resultItem : resultItems) {
 				craftableItems.add(resultItem.getItem());
 
-				if (!resultItem.getItemHolder().unwrapKey().orElseThrow().identifier().getNamespace()
+				if (!resultItem.typeHolder().unwrapKey().orElseThrow().identifier().getNamespace()
 						.equals(BotaniaAPI.MODID)) {
 					// only check recipes that make Botania items
 					continue;
 				}
-				for (Ingredient ingredient : recipe.getIngredients()) {
+				for (Ingredient ingredient : recipe.placementInfo().ingredients()) {
 					ItemStack[] items = RecipeUtils.stacksOf(ingredient);
 					Rarity ingredientRarity = Stream.of(items)
 							.map(this::getRarity)
@@ -150,7 +151,9 @@ public class RarityConsistencyTest {
 				return pureDaisyRecipe.getOutput().getDisplayedStacks();
 			}
 			default -> {
-				ItemStack singleResultItem = recipe.getResultItem(helper.getLevel().registryAccess());
+				// PORT-26.3: vanilla recipes only expose their result through their display
+				ItemStack singleResultItem = recipe.display().isEmpty() ? ItemStack.EMPTY
+						: recipe.display().getFirst().result().resolveForFirstStack(SlotDisplayContext.fromLevel(helper.getLevel()));
 				if (singleResultItem.isEmpty()) {
 					return List.of();
 				}

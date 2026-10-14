@@ -22,4 +22,7 @@ public interface LivingEntityAccessor {
 
 	@Invoker("playHurtSound")
 	void botania_playHurtSound(DamageSource damageSource);
+
+	@Accessor("swingState")
+	LivingEntity.SwingState botania_getSwingState();
 }

@@ -255,8 +255,8 @@ public class GrassSeedsItem extends Item {
 				// full-height liquid, don't spread
 				return false;
 			}
-			int lightLevel = LightEngine.getLightBlockInto(world, state, pos, aboveState, abovePos, Direction.UP, aboveState.getLightBlock(world, abovePos));
-			return lightLevel < world.getMaxLightLevel();
+			int lightLevel = LightEngine.getLightDampeningInto(state, aboveState, Direction.UP, aboveState.getLightDampening());
+			return lightLevel < LightEngine.MAX_LEVEL;
 		}
 
 		// [VanillaCopy] net.minecraft.world.level.block.SpreadingSnowyBlock#canPropagate

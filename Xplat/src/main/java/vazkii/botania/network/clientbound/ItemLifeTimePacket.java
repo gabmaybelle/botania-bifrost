@@ -43,7 +43,7 @@ public record ItemLifeTimePacket(int entityId, short timeCounter) implements Cus
 			if (lifeTime != 0) {
 				// only send packet if necessary
 				// (Fabric calls this before actually sending the entity packet, so do this later during the same tick)
-				player.server.tell(new TickTask(0, () -> XplatAbstractions.INSTANCE.sendToPlayer(player,
+				player.level().getServer().schedule(new TickTask(0, () -> XplatAbstractions.INSTANCE.sendToPlayer(player,
 						new ItemLifeTimePacket(item.getId(), lifeTime))));
 			}
 		}

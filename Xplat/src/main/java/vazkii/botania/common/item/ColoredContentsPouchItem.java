@@ -142,7 +142,7 @@ public abstract class ColoredContentsPouchItem extends Item {
 	public void onDestroyed(ItemEntity entity) {
 		SimpleContainer container = getInventory(entity.getItem());
 		List<ItemStack> nonEmptyStacks = container.getItems().stream().filter(s -> !s.isEmpty()).toList();
-		ItemUtils.onContainerDestroyed(entity, nonEmptyStacks);
+		ItemUtils.onContainerDestroyed(entity, nonEmptyStacks.stream());
 		container.clearContent();
 	}
 
@@ -235,7 +235,7 @@ public abstract class ColoredContentsPouchItem extends Item {
 	}
 
 	protected boolean canPickupItems(ItemStack pouch, Player player) {
-		return player.getInventory().getSelected() != pouch;
+		return player.getInventory().getSelectedItem() != pouch;
 	}
 
 	public IntList findCandidateSlots(Level level, ItemStack pouch, ItemStack pickupStack) {

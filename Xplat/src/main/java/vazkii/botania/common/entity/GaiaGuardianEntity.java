@@ -367,7 +367,7 @@ public class GaiaGuardianEntity extends Mob {
 						this::isGaiaFightParticipant)
 						.forEach(mob -> {
 							GaiaFightParticipant.HOLDER.removeFrom(mob);
-							((Mob) mob).clearRestriction();
+							((Mob) mob).clearHome();
 						});
 			}
 		}
@@ -871,7 +871,7 @@ public class GaiaGuardianEntity extends Mob {
 			Vec3 motion = diff.scale(1.0 / ARENA_RANGE);
 
 			player.setDeltaMovement(motion.x, Math.min(motion.y, 0) + 0.2, motion.z);
-			player.hurtMarked = true;
+			player.needsSync = true;
 		}
 	}
 
@@ -1203,7 +1203,7 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	private void teleportToBeacon() {
-		Vec3 dest = source.getBottomCenter();
+		Vec3 dest = Vec3.atBottomCenterOf(source);
 
 		doTeleport(dest.x, dest.y + 1, dest.z, getX(), getY(), getZ());
 	}

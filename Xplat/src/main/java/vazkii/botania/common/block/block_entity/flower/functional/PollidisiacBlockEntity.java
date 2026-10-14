@@ -16,7 +16,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.animal.Animal;
@@ -121,7 +121,7 @@ public class PollidisiacBlockEntity extends FunctionalFlowerBlockEntity implemen
 			if (!animal.isBaby() && isBrownMooshroomWithoutEffect(animal)) {
 				for (ItemEntity item : items) {
 					ItemStack stack = item.getItem();
-					if (!stack.is(ItemTags.SMALL_FLOWERS)) {
+					if (!stack.is(BlockItemTags.SMALL_FLOWERS.item())) {
 						continue;
 					}
 					var effectHolder = SuspiciousEffectHolder.tryGet(stack.getItem());

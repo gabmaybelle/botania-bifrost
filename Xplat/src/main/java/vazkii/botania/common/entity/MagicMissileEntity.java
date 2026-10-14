@@ -11,6 +11,7 @@ package vazkii.botania.common.entity;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -186,7 +187,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 		double range = 12;
 		AABB bounds = new AABB(getX() - range, getY() - range, getZ() - range, getX() + range, getY() + range, getZ() + range);
 		DamageSource source = this.getDamageSource();
-		Predicate<Entity> vulnerableTo = e -> !e.isInvulnerableTo(source);
+		Predicate<Entity> vulnerableTo = e -> !(e instanceof LivingEntity living && level() instanceof ServerLevel serverLevel && living.isInvulnerableTo(serverLevel, source));
 		List<? extends LivingEntity> entities;
 		if (isEvil()) {
 			entities = level().getEntitiesOfClass(Player.class, bounds,

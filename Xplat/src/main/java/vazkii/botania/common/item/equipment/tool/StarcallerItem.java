@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.entity.FallingStarEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
+import vazkii.botania.common.helper.PlayerHelper;
 
 // PORT-26.3: SwordItem is gone; the sword properties come from Item.Properties#sword in BotaniaItems.
 public class StarcallerItem extends Item {
@@ -55,7 +56,7 @@ public class StarcallerItem extends Item {
 		float check = haste == null ? 0.16666667F : haste.getAmplifier() == 1 ? 0.5F : 0.4F;
 
 		long timeSinceLast = world.getGameTime() - stack.getOrDefault(BotaniaDataComponents.LAST_TRIGGER_TIME, world.getGameTime());
-		if (timeSinceLast > INTERVAL && player.getMainHandItem() == stack && player.attackAnim == check && !world.isClientSide()) {
+		if (timeSinceLast > INTERVAL && player.getMainHandItem() == stack && PlayerHelper.isOnFirstSwingTick(player) && !world.isClientSide()) {
 			stack.set(BotaniaDataComponents.LAST_TRIGGER_TIME, world.getGameTime());
 			summonFallingStar(stack, world, player);
 		}

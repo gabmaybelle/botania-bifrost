@@ -79,7 +79,8 @@ public class SpectatorScanTest {
 		// set up test entities
 		var itemEntity = helper.spawnItem(Items.IRON_INGOT, POSITION_ITEM);
 		var villager = helper.spawn(EntityTypes.VILLAGER, POSITION_VILLAGER);
-		villager.setVillagerData(new VillagerData(VillagerType.PLAINS, VillagerProfession.TOOLSMITH, 2));
+		villager.setVillagerData(new VillagerData(helper.getLevel().registryAccess().lookupOrThrow(Registries.VILLAGER_TYPE).getOrThrow(VillagerType.PLAINS),
+				helper.getLevel().registryAccess().lookupOrThrow(Registries.VILLAGER_PROFESSION).getOrThrow(VillagerProfession.TOOLSMITH), 2));
 
 		// set inventory content
 		var regularChestCart = helper.spawn(EntityTypes.CHEST_MINECART, POSITION_CART_NORMAL);
@@ -110,7 +111,7 @@ public class SpectatorScanTest {
 
 		// set up player
 		var player = helper.makeMockPlayer(GameType.CREATIVE);
-		player.moveTo(helper.absoluteVec(new Vec3(24, 24, 24)));
+		player.snapTo(helper.absoluteVec(new Vec3(24, 24, 24)));
 		additionalSetup.accept(helper, player);
 		var spectatorStack = new ItemStack(BotaniaItems.THE_SPECTATOR);
 

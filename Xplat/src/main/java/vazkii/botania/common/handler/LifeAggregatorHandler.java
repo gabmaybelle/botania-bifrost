@@ -77,7 +77,7 @@ public class LifeAggregatorHandler {
 		@Override
 		public @Nullable EntityType<?> getEntityType(@Nullable Level level, RandomSource random, BlockPos pos) {
 			return LifeAggregatorHandler.getEntityType(
-					this.blockEntity.getTrialSpawner().getConfig().spawnPotentialsDefinition());
+					this.blockEntity.getTrialSpawner().activeConfig().spawnPotentialsDefinition());
 		}
 	}
 }

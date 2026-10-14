@@ -15,6 +15,7 @@ import net.minecraft.world.item.component.SuspiciousStewEffects;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(MushroomCow.class)
 public interface MushroomCowAccessor {
@@ -24,4 +25,7 @@ public interface MushroomCowAccessor {
 
 	@Accessor("stewEffects")
 	void botania_setStewEffects(@Nullable SuspiciousStewEffects stewEffects);
+
+	@Invoker("setVariant")
+	void botania_setVariant(MushroomCow.Variant variant);
 }

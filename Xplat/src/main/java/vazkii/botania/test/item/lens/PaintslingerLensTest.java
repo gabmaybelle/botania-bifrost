@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -39,11 +40,11 @@ public class PaintslingerLensTest {
 
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(buttonPos))
-				.thenWaitUntil(() -> helper.assertBlockPresent(Blocks.BLUE_CANDLE, bindPos))
+				.thenWaitUntil(() -> helper.assertBlockPresent(Blocks.DYED_CANDLE.pick(DyeColor.BLUE), bindPos))
 				.thenExecute(() -> {
 					// check candle colors and properties
 					for (BlockPos pos : BlockPos.betweenClosed(1, 2, 1, 3, 4, 3)) {
-						helper.assertBlockPresent(Blocks.BLUE_CANDLE, pos);
+						helper.assertBlockPresent(Blocks.DYED_CANDLE.pick(DyeColor.BLUE), pos);
 						boolean expectedLit = pos.getY() == 4;
 						boolean expectedWaterlogged = pos.getY() == 2;
 						int expectedCandles = pos.getZ() + 1;

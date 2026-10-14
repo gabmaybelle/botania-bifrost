@@ -88,7 +88,7 @@ public class DrumBlockTest {
 	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingBrownMooshroomSuspiciousStew(GameTestHelper helper) {
 		var cow = setup(helper, EntityTypes.MOOSHROOM, Items.BOWL);
-		cow.setVariant(MushroomCow.Variant.BROWN);
+		((MushroomCowAccessor) cow).botania_setVariant(MushroomCow.Variant.BROWN);
 		var cowAccessor = (MushroomCowAccessor) cow;
 		cowAccessor.botania_setStewEffects(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.BLINDNESS, 15))));
 		helper.startSequence()
@@ -132,7 +132,7 @@ public class DrumBlockTest {
 		var cow = setup(helper, EntityTypes.COW, Items.BUCKET);
 		helper.startSequence()
 				// mobs play 20 ticks of dying animation when killed, so the cow is still there when the drum goes off
-				.thenExecute(cow::kill)
+				.thenExecute(() -> cow.kill(helper.getLevel()))
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
 				.thenExecuteAfter(20, () -> helper.assertItemEntityPresent(Items.BUCKET, POSITION_MOB, 1.0))
 				.thenSucceed();
@@ -155,7 +155,7 @@ public class DrumBlockTest {
 		sheep.setColor(DyeColor.LIME);
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(POSITION_BUTTON))
-				.thenWaitUntil(() -> helper.assertItemEntityPresent(Items.LIME_WOOL, POSITION_MOB, 1.0))
+				.thenWaitUntil(() -> helper.assertItemEntityPresent(Items.WOOL.pick(DyeColor.LIME), POSITION_MOB, 1.0))
 				.thenExecute(() -> helper.assertTrue(sheep.isAlive() && sheep.isSheared(), "Sheep should be sheared"))
 				.thenSucceed();
 	}

@@ -24,6 +24,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -650,11 +652,14 @@ public final class BotaniaItems {
 	// Misc
 	public static final Item BISCUIT_OF_TOTALITY = make(LibItemNames.BISCUIT_OF_TOTALITY,
 			new Item(defaultBuilder()
+					// PORT-26.3: food effects are consume effects now
 					.food(new FoodProperties.Builder()
 							.nutrition(0)
 							.saturationModifier(0.1F)
-							.effect(new MobEffectInstance(MobEffects.SATURATION, 20, 0), 1)
-							.build())));
+							.build(),
+							Consumables.defaultFood()
+									.onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SATURATION, 20, 0), 1))
+									.build())));
 	public static final Item MANA_IN_A_BOTTLE = make(LibItemNames.MANA_IN_A_BOTTLE,
 			new BottledManaItem(unstackable()
 					// Mark as food just to fool foxes into using it

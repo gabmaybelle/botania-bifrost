@@ -9,8 +9,10 @@
 package vazkii.botania.common.block.block_entity.red_string;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 
@@ -29,7 +31,8 @@ public class RedStringComparatorBlockEntity extends RedStringBlockEntity {
 		int origVal = self.comparatorValue;
 
 		if (bindState.hasAnalogOutputSignal()) {
-			self.comparatorValue = bindState.getAnalogOutputSignal(level, Objects.requireNonNull(self.getBinding()));
+			self.comparatorValue = // PORT-26.3: the comparator reads from its own facing; vanilla asks for the side it sits on
+					bindState.getAnalogOutputSignal(level, Objects.requireNonNull(self.getBinding()), state.hasProperty(BlockStateProperties.FACING) ? state.getValue(BlockStateProperties.FACING) : Direction.NORTH);
 		} else {
 			self.comparatorValue = 0;
 		}

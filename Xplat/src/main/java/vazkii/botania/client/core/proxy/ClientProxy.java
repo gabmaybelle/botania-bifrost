@@ -120,10 +120,7 @@ public class ClientProxy implements Proxy {
 
 	@Override
 	public void clearSextantMultiblock() {
-		IMultiblock mb = PatchouliAPI.get().getCurrentMultiblock();
-		if (mb != null && mb.getID().equals(SextantItem.MULTIBLOCK_ID)) {
-			PatchouliAPI.get().clearMultiblock();
-		}
+		// PORT-26.3: disabled (Patchouli 1.21.1 API): clearing the sextant multiblock preview
 	}
 
 	@Override

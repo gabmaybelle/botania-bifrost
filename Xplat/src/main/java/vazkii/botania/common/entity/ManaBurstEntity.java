@@ -136,7 +136,7 @@ public class ManaBurstEntity extends ThrowableProjectile implements ManaBurst {
 
 		setBurstSourcePosition(GlobalPos.of(level.dimension(), pos));
 		// spawn slightly lower than the exact center to ensure hitting pools at default horizontal spreader alignment
-		moveTo(pos.getX() + 0.5, pos.getY() + (0.5 - 1.0 / 1024), pos.getZ() + 0.5, 0, 0);
+		snapTo(pos.getX() + 0.5, pos.getY() + (0.5 - 1.0 / 1024), pos.getZ() + 0.5, 0, 0);
 		/* NB: this looks backwards but it's right. spreaders take rotX/rotY to respectively mean
 		* "rotation *parallel* to the X and Y axes", while vanilla's methods take XRot/YRot
 		* to respectively mean "rotation *around* the X and Y axes".

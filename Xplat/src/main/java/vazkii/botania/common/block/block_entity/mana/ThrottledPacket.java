@@ -72,7 +72,7 @@ public interface ThrottledPacket<T extends BlockEntity & ThrottledPacket<T>> ext
 			if (player.isAlive()
 					&& EntityHelper.isLookingTowards(player, posCenter)
 					// is player close enough to potentially interact? (with some leeway)
-					&& player.canInteractWithBlock(pos, 2)
+					&& player.isWithinBlockInteractionRange(pos, 2)
 					// could player have the wand hud up?
 					&& PlayerHelper.hasHeldItemClass(player, WandOfTheForestItem.class)) {
 				return true;

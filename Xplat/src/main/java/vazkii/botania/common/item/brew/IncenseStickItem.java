@@ -58,7 +58,7 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 
 		list.accept(Component.translatable("botaniamisc.brewOf",
 				Component.translatable(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
-		PotionContents.addPotionTooltip(brew.getPotionEffects(stack), list::add, TIME_MULTIPLIER, context.tickRate());
+		PotionContents.addPotionTooltip(brew.getPotionEffects(stack), list, TIME_MULTIPLIER, context.tickRate());
 	}
 
 	@Override

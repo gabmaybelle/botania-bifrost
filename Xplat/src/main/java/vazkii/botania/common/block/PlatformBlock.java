@@ -38,7 +38,7 @@ import vazkii.botania.common.lib.BotaniaTags;
 
 import java.util.function.Consumer;
 
-public abstract class PlatformBlock extends BotaniaBlock implements ManaCollisionGhost, EntityBlock {
+public abstract class PlatformBlock extends BotaniaBlock implements ManaCollisionGhost, EntityBlock, BlockWithTooltip {
 
 	protected PlatformBlock(Properties builder) {
 		super(builder);

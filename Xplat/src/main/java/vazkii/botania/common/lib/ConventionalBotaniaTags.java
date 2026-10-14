@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class ConventionalBotaniaTags {
 
 	public static <T> TagKey<T> createSuffixedTag(TagKey<T> baseTag, String suffix) {
-		return TagKey.create(baseTag.registry(), baseTag.identifier().withSuffix("/" + suffix));
+		return TagKey.create(baseTag.registry(), baseTag.location().withSuffix("/" + suffix));
 	}
 
 	private static <T> TagKey<T> conventionalTag(ResourceKey<Registry<T>> registry, String path) {

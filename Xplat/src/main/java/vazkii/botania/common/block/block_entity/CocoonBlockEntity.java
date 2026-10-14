@@ -142,7 +142,7 @@ public class CocoonBlockEntity extends BlockEntity {
 
 	@Nullable
 	private Mob random(TagKey<EntityType<?>> tag) {
-		EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getTag(tag)
+		EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(tag)
 				.flatMap(t -> t.getRandomElement(level.getRandom()))
 				.map(Holder::value)
 				.orElse(null);

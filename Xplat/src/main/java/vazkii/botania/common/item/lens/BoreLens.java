@@ -101,7 +101,7 @@ public class BoreLens extends Lens {
 					dropPosition = Vec3.atCenterOf(collidePos);
 				}
 
-				if (level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+				if (level instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.BLOCK_DROPS)) {
 					for (ItemStack stack_ : items) {
 						ItemEntity itemEntity = new ItemEntity(level, dropPosition.x, dropPosition.y, dropPosition.z, stack_);
 						itemEntity.setDefaultPickUpDelay();

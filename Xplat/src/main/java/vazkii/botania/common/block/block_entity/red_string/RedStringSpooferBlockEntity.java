@@ -40,7 +40,8 @@ public class RedStringSpooferBlockEntity extends RedStringBlockEntity {
 		if (block instanceof FlowerPotBlock flowerPot) {
 			block = flowerPot.getPotted();
 		}
-		return block instanceof FlowerBlock || block instanceof MushroomBlock || block instanceof FungusBlock || block instanceof DoublePlantBlock;
+		// PORT-26.3: FungusBlock is gone (fungi are mushroom blocks now)
+		return block instanceof FlowerBlock || block instanceof MushroomBlock || block instanceof DoublePlantBlock;
 	}
 
 }

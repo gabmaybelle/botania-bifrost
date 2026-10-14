@@ -11,6 +11,7 @@ package vazkii.botania.common.item.brew;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -73,7 +74,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 			for (MobEffectInstance effect : getBrew(stack).getPotionEffects(stack)) {
 				MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), effect.getDuration(), effect.getAmplifier(), true, true);
 				if (effect.getEffect().value().isInstantaneous()) {
-					effect.getEffect().value().applyInstantenousEffect(living, living, living, newEffect.getAmplifier(), 1F);
+					effect.getEffect().value().applyInstantaneousEffect((ServerLevel) world, living, living, living, newEffect.getAmplifier(), 1F);
 				} else {
 					living.addEffect(newEffect);
 				}
@@ -122,7 +123,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 
 	@Override
 	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
-		PotionContents.addPotionTooltip(getBrew(stack).getPotionEffects(stack), list::add, 1, context.tickRate());
+		PotionContents.addPotionTooltip(getBrew(stack).getPotionEffects(stack), list, 1, context.tickRate());
 	}
 
 	@Override

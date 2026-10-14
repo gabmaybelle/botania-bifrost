@@ -51,6 +51,7 @@
     "LiquidBlockAccessor",
     "LivingEntityAccessor",
     "LivingEntityMixin",
+    "SwingStateAccessor",
     "LootTableMixin",
     "MobAccessor",
     "MobMixin",

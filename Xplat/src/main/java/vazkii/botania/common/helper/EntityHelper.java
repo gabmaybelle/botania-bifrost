@@ -97,7 +97,8 @@ public class EntityHelper {
 		ChunkPos entityChunk = ChunkPos.containing(entity.blockPosition());
 		ChunkPos sourceChunk = ChunkPos.containing(sourcePos);
 		if (entity.level() instanceof ServerLevel serverLevel && entityChunk.getChessboardDistance(sourceChunk) > 2) {
-			serverLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, entityChunk, 0, entity.getId());
+			// PORT-26.3: the post-teleport ticket type is gone; the portal one has the same job
+			serverLevel.getChunkSource().addTicketWithRadius(TicketType.PORTAL, entityChunk, 0);
 		}
 	}
 

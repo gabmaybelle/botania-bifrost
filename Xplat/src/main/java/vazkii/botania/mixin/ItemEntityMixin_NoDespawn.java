@@ -117,7 +117,7 @@ public abstract class ItemEntityMixin_NoDespawn extends Entity {
 		Item item = stack.getItem();
 		if (BotaniaItems.isNoDespawn(item)) {
 			BotaniaAPI.LOGGER.warn("ItemEntity for {} has despawned at {}! Item stack data for reference: {}",
-					item, position(), stack.save(level().registryAccess()));
+					item, position(), stack.getComponents());
 		}
 	}
 }

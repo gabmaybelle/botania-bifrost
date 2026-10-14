@@ -33,6 +33,7 @@ import vazkii.botania.common.world.SkyblockChunkGenerator;
 import vazkii.botania.common.world.SkyblockSavedData;
 import vazkii.botania.common.world.SkyblockWorldEvents;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class SkyblockCommand {
@@ -45,7 +46,7 @@ public class SkyblockCommand {
 		// This isn't what we consider the "primary" name. It's just here to be a reminder for old /botania-skyblock-spread users.
 		// However some Mojang code seems to assume that aliases are made alphabetically...
 		LiteralArgumentBuilder<CommandSourceStack> commandBuilder = Commands.literal("botania-skyblock")
-				.requires(s -> s.hasPermission(2))
+				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("help")
 						.executes(SkyblockCommand::printHelp))
 				.then(Commands.literal("island")
@@ -104,7 +105,7 @@ public class SkyblockCommand {
 		BlockPos blockPos = pos.getCenter();
 
 		player.teleportTo(world, blockPos.getX() + 0.5, blockPos.getY(),
-				blockPos.getZ() + 0.5, player.getYRot(), player.getXRot());
+				blockPos.getZ() + 0.5, Set.of(), player.getYRot(), player.getXRot(), false);
 		ctx.getSource().sendSuccess(() -> feedback, true);
 		return Command.SINGLE_SUCCESS;
 	}

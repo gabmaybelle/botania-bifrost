@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -70,7 +71,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectWater(Level level, LivingEntity living) {
-		if (!level.isClientSide() && !level.dimensionType().ultraWarm()) {
+		if (!level.isClientSide() && !level.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES)) {
 			BlockPos playerPos = living.blockPosition();
 			BlockState state = level.getBlockState(playerPos);
 			BlockState replacedState;
@@ -122,7 +123,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectMegaJump(Level level, LivingEntity living) {
-		if (!level.dimensionType().ultraWarm()) {
+		if (!level.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES)) {
 			if (!level.isClientSide()) {
 				living.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 300, 5));
 			}

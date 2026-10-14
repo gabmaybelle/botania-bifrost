@@ -76,7 +76,7 @@ public class BaubleBoxItem extends Item {
 		var stream = IntStream.range(0, container.getContainerSize())
 				.mapToObj(container::getItem)
 				.filter(s -> !s.isEmpty());
-		ItemUtils.onContainerDestroyed(entity, stream::iterator);
+		ItemUtils.onContainerDestroyed(entity, stream);
 		container.clearContent();
 	}
 

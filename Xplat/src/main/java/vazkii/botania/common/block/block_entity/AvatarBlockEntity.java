@@ -111,7 +111,7 @@ public class AvatarBlockEntity extends SimpleInventoryBlockEntity implements Ava
 
 	@Override
 	public SlotAccess getHeldItemSlot() {
-		return SlotAccess.forContainer(getItemHandler(), 0);
+		return SlotAccess.of(() -> getItemHandler().getItem(0), stack -> getItemHandler().setItem(0, stack));
 	}
 
 	@Override

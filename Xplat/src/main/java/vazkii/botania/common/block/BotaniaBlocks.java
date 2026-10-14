@@ -2753,9 +2753,9 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(OPEN_CRATE, props), BuiltInRegistries.BLOCK.getKey(OPEN_CRATE));
 		r.accept(new BlockItem(CRAFTY_CRATE, props), BuiltInRegistries.BLOCK.getKey(CRAFTY_CRATE));
 		r.accept(new BlockItem(EYE_OF_THE_ANCIENTS, props), BuiltInRegistries.BLOCK.getKey(EYE_OF_THE_ANCIENTS));
-		r.accept(new BlockItem(ABSTRUSE_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(ABSTRUSE_PLATFORM));
-		r.accept(new BlockItem(SPECTRAL_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(SPECTRAL_PLATFORM));
-		r.accept(new BlockItem(INFRANGIBLE_PLATFORM, epicProps), BuiltInRegistries.BLOCK.getKey(INFRANGIBLE_PLATFORM));
+		r.accept(new TooltipBlockItem(ABSTRUSE_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(ABSTRUSE_PLATFORM));
+		r.accept(new TooltipBlockItem(SPECTRAL_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(SPECTRAL_PLATFORM));
+		r.accept(new TooltipBlockItem(INFRANGIBLE_PLATFORM, epicProps), BuiltInRegistries.BLOCK.getKey(INFRANGIBLE_PLATFORM));
 		r.accept(new TinyPotatoBlockItem(TINY_POTATO, props), BuiltInRegistries.BLOCK.getKey(TINY_POTATO));
 		r.accept(new BlockItem(ENDER_OVERSEER, props), BuiltInRegistries.BLOCK.getKey(ENDER_OVERSEER));
 		r.accept(new BlockItem(RED_STRINGED_CONTAINER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_CONTAINER));
@@ -2814,7 +2814,7 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(AZULEJO_14, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_14));
 		r.accept(new BlockItem(AZULEJO_15, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_15));
 		r.accept(new BlockItem(BLAZE_MESH, props), BuiltInRegistries.BLOCK.getKey(BLAZE_MESH));
-		r.accept(new StandingAndWallBlockItem(GAIA_HEAD, GAIA_WALL_HEAD_BLOCK, rareProps, Direction.DOWN), BuiltInRegistries.BLOCK.getKey(
+		r.accept(new StandingAndWallBlockItem(GAIA_HEAD, GAIA_WALL_HEAD_BLOCK, Direction.DOWN, rareProps), BuiltInRegistries.BLOCK.getKey(
 				GAIA_HEAD));
 		r.accept(new BlockItem(SHIMMERROCK, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK));
 		r.accept(new BlockItem(SHIMMERROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_STAIRS));
@@ -2838,8 +2838,8 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(SCORCHED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SCORCHED_GRASS_BLOCK));
 		r.accept(new BlockItem(INFUSED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(INFUSED_GRASS_BLOCK));
 		r.accept(new BlockItem(MUTATED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MUTATED_GRASS_BLOCK));
-		r.accept(new BlockItem(DAYBLOOM_MOTIF, props), BuiltInRegistries.BLOCK.getKey(DAYBLOOM_MOTIF));
-		r.accept(new BlockItem(NIGHTSHADE_MOTIF, props), BuiltInRegistries.BLOCK.getKey(NIGHTSHADE_MOTIF));
+		r.accept(new TooltipBlockItem(DAYBLOOM_MOTIF, props), BuiltInRegistries.BLOCK.getKey(DAYBLOOM_MOTIF));
+		r.accept(new TooltipBlockItem(NIGHTSHADE_MOTIF, props), BuiltInRegistries.BLOCK.getKey(NIGHTSHADE_MOTIF));
 		r.accept(new BlockItem(HYDROANGEAS_MOTIF, props), BuiltInRegistries.BLOCK.getKey(HYDROANGEAS_MOTIF));
 
 		r.accept(new BlockItem(SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_BLOCK));
@@ -3130,11 +3130,11 @@ public final class BotaniaBlocks {
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
 			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties, String coloredBlockInfix) {
 		Identifier baseId = BuiltInRegistries.BLOCK.getKey(baseBlock);
-		r.accept(new BlockItem(baseBlock, properties), baseId);
+		r.accept(new TooltipBlockItem(baseBlock, properties), baseId);
 		ColorHelper.supportedColors().forEach(color -> {
 			Identifier coloredId = baseId.withPrefix(color.getSerializedName() + coloredBlockInfix);
 			Block coloredBlock = ALL.get(coloredId.getPath());
-			r.accept(new BlockItem(coloredBlock, properties), coloredId);
+			r.accept(new TooltipBlockItem(coloredBlock, properties), coloredId);
 		});
 	}
 

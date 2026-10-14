@@ -15,7 +15,9 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -62,7 +64,7 @@ public class EnderEssenceCloudEntity extends Entity {
 				: BotaniaEntities.DILUTED_ENDER_ESSENCE_CLOUD;
 		EnderEssenceCloudEntity cloud = type.create(entity.level(), EntitySpawnReason.EVENT);
 		if (cloud != null) {
-			cloud.moveTo(entity.position(), entity.getYRot(), 0);
+			cloud.snapTo(entity.position(), entity.getYRot(), 0);
 			cloud.setFromEnderman(true);
 			entity.level().addFreshEntity(cloud);
 		}
@@ -85,7 +87,7 @@ public class EnderEssenceCloudEntity extends Entity {
 	public void tick() {
 		super.tick();
 		if (!level().isClientSide()) {
-			if (tickCount > (isFromEnderman() ? MAX_AGE_ENDERMAN : MAX_AGE) || isInWaterRainOrBubble()) {
+			if (tickCount > (isFromEnderman() ? MAX_AGE_ENDERMAN : MAX_AGE) || isInWaterOrRain()) {
 				discard();
 			}
 		} else {
@@ -159,5 +161,10 @@ public class EnderEssenceCloudEntity extends Entity {
 	public void recreateFromPacket(ClientboundAddEntityPacket packet) {
 		super.recreateFromPacket(packet);
 		setFromEnderman((packet.getData() & 1) != 0);
+	}
+
+	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
 	}
 }

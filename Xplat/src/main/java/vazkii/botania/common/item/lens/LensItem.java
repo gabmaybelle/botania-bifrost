@@ -76,7 +76,7 @@ public class LensItem extends Item implements ControlLensItem, CompositableLensI
 			return super.getName(stack);
 		}
 		String shortKeyA = stack.getItem().getDescriptionId() + ".short";
-		String shortKeyB = compositeLens.getDescriptionId() + ".short";
+		String shortKeyB = compositeLens.getItem().getDescriptionId() + ".short";
 		return Component.translatable("item.botania.composite_lens", Component.translatable(shortKeyA), Component.translatable(shortKeyB));
 	}
 

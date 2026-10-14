@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -38,7 +39,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
@@ -69,6 +69,7 @@ import vazkii.botania.api.configdata.MobSpawnData;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.helper.BotaniaMonsterTeam;
 import vazkii.botania.common.helper.MathHelper;
+import vazkii.botania.common.helper.NbtHelper;
 import vazkii.botania.common.internal_caps.LooniumDrop;
 import vazkii.botania.common.internal_caps.SlowDespawn;
 import vazkii.botania.common.lib.BotaniaTags;
@@ -298,7 +299,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 							: mob.getEquipmentSlotForItem(equipmentStack);
 					if (equippedSlots.contains(slot)) {
 						slot = equippedSlots.contains(EquipmentSlot.MAINHAND)
-								&& !(equipmentStack.getItem() instanceof TieredItem)
+								&& !equipmentStack.has(DataComponents.TOOL)
 										? EquipmentSlot.OFFHAND
 										: EquipmentSlot.MAINHAND;
 					}
@@ -525,7 +526,10 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		if (configOverride != null) {
 			cmp.putString(TAG_CONFIG_OVERRIDE, configOverride.toString());
 		}
-		writeStructureInfoNbt(cmp);
+		// PORT-26.3: the structure info keys go in flat, as before, through the pass-through codec
+		CompoundTag structureInfo = new CompoundTag();
+		writeStructureInfoNbt(structureInfo);
+		cmp.store(NbtHelper.COMPOUND_PASSTHROUGH_CODEC, structureInfo);
 	}
 
 	@Override

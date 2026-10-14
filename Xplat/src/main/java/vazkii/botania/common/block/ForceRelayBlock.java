@@ -51,7 +51,7 @@ public class ForceRelayBlock extends BotaniaBlock {
 	public final Map<UUID, GlobalPos> activeBindingAttempts = new HashMap<>();
 
 	public ForceRelayBlock(Properties builder) {
-		super(builder.pushReaction(PushReaction.PUSH_ONLY));
+		super(builder.pushReaction(PushReaction.PUSH));
 	}
 
 	@Override

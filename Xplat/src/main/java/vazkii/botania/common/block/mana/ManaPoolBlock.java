@@ -46,6 +46,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.internal.Colored;
 import vazkii.botania.api.internal.OptionallyColored;
 import vazkii.botania.api.state.BotaniaStateProperties;
+import vazkii.botania.common.block.BlockWithTooltip;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.BotaniaWaterloggedBlock;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
@@ -56,7 +57,7 @@ import vazkii.botania.common.lib.BotaniaTags;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBlock, OptionallyColored {
+public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBlock, OptionallyColored, BlockWithTooltip {
 	public static final int MAX_MANA = 1000000;
 	public static final int MAX_MANA_DILUTED = 10000;
 
@@ -119,24 +120,19 @@ public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	@Override
 	public MutableComponent getName() {
 		if (creative) {
-			return Component.translatable(Util.makeDescriptionId("block",
+			MutableComponent undyed = Component.translatable(Util.makeDescriptionId("block",
 					BuiltInRegistries.BLOCK.getKey(getUndyedBlock(this))));
-		}
-		return super.getName();
-	}
-
-	@Override
-	public MutableComponent getName() {
-		if (creative && color != null) {
-			return Component.translatable("botaniamisc.template.parenthesis_suffix",
-					super.getName(), Component.translatable("color.minecraft." + color.getSerializedName()));
+			if (color != null) {
+				return Component.translatable("botaniamisc.template.parenthesis_suffix",
+						undyed, Component.translatable("color.minecraft." + color.getSerializedName()));
+			}
+			return undyed;
 		}
 		return super.getName();
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, context, display, tooltip, flag);
 		if (creative) {
 			for (int i = 0; i < 2; i++) {
 				tooltip.accept(Component.translatable("botaniamisc.creativePool" + i).withStyle(ChatFormatting.GRAY));

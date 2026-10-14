@@ -81,7 +81,7 @@ public class PlentifulMantleRodItem extends Item {
 				WispParticleData data = WispParticleData.wisp(0.25F,
 						rand.nextFloat(), rand.nextFloat(), rand.nextFloat(),
 						8, false);
-				level.addParticle(data, true,
+				level.addParticle(data, true, false,
 						pos.getX() + level.getRandom().nextFloat(),
 						pos.getY() + level.getRandom().nextFloat(),
 						pos.getZ() + level.getRandom().nextFloat(),

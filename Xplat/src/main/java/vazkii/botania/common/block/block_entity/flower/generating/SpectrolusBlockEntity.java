@@ -119,8 +119,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 			if (expected.asItem() == stack.getItem()) {
 				addManaAndCycle(WOOL_GEN);
 
-				Vec3 offset = getLevel().getBlockState(getEffectivePos()).getOffset(getLevel(),
-						getEffectivePos()).add(0.5, 0.6, 0.5);
+				Vec3 offset = getLevel().getBlockState(getEffectivePos()).getOffset(getEffectivePos()).add(0.5, 0.6, 0.5);
 
 				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack)),
 						getEffectivePos().getX() + offset.x,
