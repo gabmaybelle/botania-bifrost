@@ -14,3 +14,5 @@ extendable method net/minecraft/world/entity/vehicle/VehicleEntity getDropItem (
 extendable class net/minecraft/world/item/crafting/Ingredient
 accessible class net/minecraft/data/HashCache$ProviderCache
 accessible class net/minecraft/data/HashCache$ProviderCacheBuilder
+# PORT-26.3: CreativeModeTab.Output became protected; CustomCreativeTabContents names it in a signature
+accessible class net/minecraft/world/item/CreativeModeTab$Output

@@ -117,9 +117,9 @@ public final class BoundBlockRenderer {
 		VoxelShape shape = level.getBlockState(pos).getShape(level, pos);
 
 		if (!shape.isEmpty()) {
-			double renderPosX = camera.getPosition().x();
-			double renderPosY = camera.getPosition().y();
-			double renderPosZ = camera.getPosition().z();
+			double renderPosX = camera.position().x();
+			double renderPosY = camera.position().y();
+			double renderPosZ = camera.position().z();
 
 			ms.pushPose();
 			ms.translate(pos.getX() - renderPosX, pos.getY() - renderPosY, pos.getZ() - renderPosZ);

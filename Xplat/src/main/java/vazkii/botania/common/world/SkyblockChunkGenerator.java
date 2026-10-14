@@ -12,6 +12,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.*;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerChunkCache;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
@@ -52,19 +54,10 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 		return CODEC;
 	}
 
+	// PORT-26.3: noise, surface and carvers are one terrain step now
 	@Override
-	public void buildSurface(ChunkAccess chunkAccess, WorldGenerationContext context,
-			RandomState randomState, StructureManager structureManager,
-			BiomeManager biomeManager, Registry<Biome> biomes, Blender blender) {}
-
-	@Override
-	public void applyCarvers(WorldGenRegion worldGenRegion, long seed, RandomState randomState,
-			BiomeManager biomeManager, StructureManager structureManager,
-			ChunkAccess chunkAccess, GenerationStep.Carving carving) {}
-
-	@Override
-	public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender,
-			RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+	public CompletableFuture<ChunkAccess> buildTerrain(ChunkAccess chunk, Blender blender, RandomState randomState,
+			StructureManager structureManager, BiomeManager biomeManager, WorldGenRegion region, Set<Holder<Biome>> biomes) {
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -82,7 +75,7 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 	public int getBaseHeightInEquivalentNoiseWorld(int x, int z, Heightmap.Types heightmap, WorldGenLevel level) {
 		RandomState randomState = RandomState.create(
 				generatorSettings().value(),
-				level.registryAccess().registryOrThrow(Registries.NOISE).asLookup(),
+				level.registryAccess().lookupOrThrow(Registries.NOISE),
 				level.getSeed());
 		return super.getBaseHeight(x, z, heightmap, level, randomState);
 	}

@@ -14,12 +14,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,7 +30,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -317,9 +320,11 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 	private void dropAndKill() {
 		ItemStack upgrade = getUpgrade();
-		spawnAtLocation(new ItemStack(getSparkItem()), 0F);
-		if (!upgrade.isEmpty()) {
-			spawnAtLocation(upgrade, 0F);
+		if (level() instanceof ServerLevel serverLevel) {
+			spawnAtLocation(serverLevel, new ItemStack(getSparkItem()), 0F);
+			if (!upgrade.isEmpty()) {
+				spawnAtLocation(serverLevel, upgrade, 0F);
+			}
 		}
 		discard();
 	}
@@ -331,7 +336,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	@Override
-	public InteractionResult interact(Player player, InteractionHand hand) {
+	public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitLocation) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (isAlive() && !stack.isEmpty()) {
 			ItemStack upgrade = getUpgrade();
@@ -339,7 +344,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 				if (!level().isClientSide()) {
 					if (player.isShiftKeyDown() || !PlayerHelper.isTruePlayer(player)) {
 						if (!upgrade.isEmpty()) {
-							spawnAtLocation(upgrade, 0F);
+							spawnAtLocation((ServerLevel) level(), upgrade, 0F);
 							setUpgrade(ItemStack.EMPTY);
 
 							// Recalculate transfers, recessive and dominant will register the proper transfers
@@ -366,8 +371,8 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 					setInvisible(true);
 				}
 				return InteractionResult.SUCCESS;
-			} else if (stack.getItem() instanceof DyeItem dye) {
-				DyeColor color = dye.getDyeColor();
+			} else if (stack.has(DataComponents.DYE)) {
+				DyeColor color = stack.get(DataComponents.DYE);
 				if (color != getNetwork()) {
 					if (!level().isClientSide()) {
 						setNetwork(color);
@@ -382,19 +387,17 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compoundTag) {
+	protected void readAdditionalSaveData(ValueInput compoundTag) {
 		super.readAdditionalSaveData(compoundTag);
-		if (compoundTag.contains(TAG_UPGRADE, Tag.TAG_COMPOUND)) {
-			setUpgrade(ItemStack.parseOptional(registryAccess(), compoundTag.getCompound(TAG_UPGRADE)));
-		}
+		compoundTag.read(TAG_UPGRADE, ItemStack.CODEC).ifPresent(this::setUpgrade);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compoundTag) {
+	protected void addAdditionalSaveData(ValueOutput compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
 		ItemStack upgrade = getUpgrade();
 		if (!upgrade.isEmpty()) {
-			compoundTag.put(TAG_UPGRADE, upgrade.save(registryAccess()));
+			compoundTag.store(TAG_UPGRADE, ItemStack.CODEC, upgrade);
 		}
 	}
 

@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Creeper;
@@ -54,7 +55,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 	private static Predicate<Mob> getCharmTargetPredicate(Player player, Mob mobToCharm) {
 		return mob -> mob != mobToCharm && mob.isAlive() && mob.canBeSeenAsEnemy() && !mob.isPassengerOfSameVehicle(mobToCharm)
 				&& (!(mob instanceof TamableAnimal tamable) || !tamable.isOwnedBy(player))
-				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt(player)
+				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt((ServerLevel) player.level(), player)
 						|| mob.getTarget() instanceof TamableAnimal targetTamable && targetTamable.isOwnedBy(player)));
 	}
 
@@ -88,7 +89,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 	public static void onEntityDamaged(Player player, LivingEntity entity) {
 		if (entity instanceof Mob target
 				&& !target.level().isClientSide()
-				&& !target.getType().is(BotaniaTags.Entities.NOT_CHARMABLE)
+				&& !target.typeHolder().is(BotaniaTags.Entities.NOT_CHARMABLE)
 				&& Math.random() < 0.6) {
 			MinecraftServer server = player.level().getServer();
 			ItemStack amulet = EquipmentHandler.findOrEmpty(BotaniaItems.CHARM_OF_THE_DIVA, player);

@@ -20,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -36,7 +35,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.*;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
@@ -61,9 +62,12 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -98,6 +102,7 @@ import vazkii.patchouli.api.IMultiblock;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.*;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -202,7 +207,7 @@ public class GaiaGuardianEntity extends Mob {
 	private static final WeakHashMap<GaiaGuardianEntity, GaiaFightData> SERVER_GAIA_FIGHTS = new WeakHashMap<>();
 	private static final WeakHashMap<GaiaGuardianEntity, GaiaFightData> CLIENT_GAIA_FIGHTS = new WeakHashMap<>();
 	private static final Supplier<MobSpawnData> FALLBACK_MOB_SPAWN_DATA = Suppliers.memoize(
-			() -> MobSpawnData.entityWeight(BotaniaEntities.PIXIE, 1).build());
+			() -> MobSpawnData.entityWeight(BotaniaEntities.PIXIE, 1).build().value());
 	private static final Identifier ATTRIBUTE_MODIFIER_ID = botaniaRL("gaia_fight_modifier");
 
 	// this should never collide with the /team command, since space is not allowed in scoreboard team names
@@ -223,7 +228,7 @@ public class GaiaGuardianEntity extends Mob {
 	private boolean hardMode = false;
 	private BlockPos source = Bound.UNBOUND_POS;
 	private final List<UUID> playersWhoAttacked = new ArrayList<>();
-	private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(BotaniaEntities.GAIA_GUARDIAN.getDescription(), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.PROGRESS).setCreateWorldFog(true);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(UUID.randomUUID(), BotaniaEntities.GAIA_GUARDIAN.getDescription(), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.PROGRESS).setCreateWorldFog(true);
 	private UUID bossInfoUUID = bossInfo.getId();
 	@Nullable
 	public Player trueKiller = null;
@@ -304,7 +309,7 @@ public class GaiaGuardianEntity extends Mob {
 		if (world.isClientSide()) {
 			return true;
 		}
-		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world);
+		GaiaGuardianEntity e = BotaniaEntities.GAIA_GUARDIAN.create(world, EntitySpawnReason.EVENT);
 		if (e == null) {
 			return false;
 		}
@@ -333,7 +338,7 @@ public class GaiaGuardianEntity extends Mob {
 		}
 
 		e.playSound(BotaniaSounds.GAIA_SUMMON, 1F, 1F);
-		e.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(e.blockPosition()), EntitySpawnReason.EVENT, null);
+		e.finalizeSpawn((ServerLevelAccessor) world, ((ServerLevel) world).getCurrentDifficultyAt(e.blockPosition()), EntitySpawnReason.EVENT, null);
 		world.addFreshEntity(e);
 
 		e.updateGaiaFight();
@@ -353,7 +358,7 @@ public class GaiaGuardianEntity extends Mob {
 			if (!level().isClientSide()) {
 				level().getEntities(this, MathHelper.inflateBoxAround(source, ARENA_MOB_RANGE),
 						this::isGaiaFightParticipant)
-						.forEach(mob -> ((Mob) mob).restrictTo(source, ARENA_RANGE));
+						.forEach(mob -> ((Mob) mob).setHomeTo(source, ARENA_RANGE));
 			}
 		} else {
 			getGaiaFightMap(level()).remove(this);
@@ -397,7 +402,7 @@ public class GaiaGuardianEntity extends Mob {
 
 	private static List<BlockPos> checkArena(Level world, BlockPos beaconPos) {
 		List<BlockPos> trippedPositions = new ArrayList<>();
-		Optional<BeaconBlockEntity> beacon = world.getBlockEntity(beaconPos, BlockEntityType.BEACON);
+		Optional<BeaconBlockEntity> beacon = world.getBlockEntity(beaconPos, BlockEntityTypes.BEACON);
 		if (beacon.isEmpty()) {
 			trippedPositions.add(beaconPos);
 		} else if (((BeaconBlockEntityAccessor) beacon.get()).botania_getLevels() <= 0) {
@@ -493,7 +498,7 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
+	public void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putInt(TAG_INVUL_TIME, getInvulTime());
 		cmp.putBoolean(TAG_AGGRO, aggro);
@@ -508,7 +513,7 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
+	public void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
 		setInvulTime(cmp.getIntOr(TAG_INVUL_TIME, 0));
 		aggro = cmp.getBooleanOr(TAG_AGGRO, false);
@@ -520,7 +525,7 @@ public class GaiaGuardianEntity extends Mob {
 		setSource(new BlockPos(x, y, z));
 
 		setHardMode(cmp.getBooleanOr(TAG_HARD_MODE, false));
-		setInitialPlayerCount(cmp.contains(TAG_PLAYER_COUNT) ? cmp.getInt(TAG_PLAYER_COUNT) : 1);
+		setInitialPlayerCount(cmp.getIntOr(TAG_PLAYER_COUNT, 1));
 
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
@@ -547,12 +552,12 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public void kill() {
+	public void kill(ServerLevel level) {
 		this.setHealth(0.0F);
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float amount) {
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 		Entity e = source.getEntity();
 		if (e instanceof Player player && isTruePlayer(e) && getInvulTime() == 0) {
 
@@ -560,15 +565,15 @@ public class GaiaGuardianEntity extends Mob {
 				playersWhoAttacked.add(player.getUUID());
 			}
 
-			return super.hurt(source, Math.min(DAMAGE_CAP, amount));
+			return super.hurtServer(level, source, Math.min(DAMAGE_CAP, amount));
 		}
 
 		return false;
 	}
 
 	@Override
-	protected void actuallyHurt(DamageSource source, float amount) {
-		super.actuallyHurt(source, Math.min(DAMAGE_CAP, amount));
+	protected void actuallyHurt(ServerLevel level, DamageSource source, float amount) {
+		super.actuallyHurt(level, source, Math.min(DAMAGE_CAP, amount));
 
 		Entity attacker = source.getDirectEntity();
 		if (attacker != null) {
@@ -582,7 +587,7 @@ public class GaiaGuardianEntity extends Mob {
 				spawnPixies = true;
 			}
 		}
-		invulnerableTime = Math.max(invulnerableTime, 20);
+		setInvulnerableTime(Math.max(getInvulnerableTime(), 20));
 	}
 
 	@Override
@@ -874,8 +879,8 @@ public class GaiaGuardianEntity extends Mob {
 		int initialPlayerCount = getInitialPlayerCount();
 		ServerLevel serverLevel = (ServerLevel) level();
 		float range = 6F;
-		WeightedRandomList<MobSpawnData> spawnedMobs = getConfigData(GaiaFightConfiguration::spawnedMobs)
-				.orElseGet(WeightedRandomList::create);
+		WeightedList<MobSpawnData> spawnedMobs = getConfigData(GaiaFightConfiguration::spawnedMobs)
+				.orElseGet(WeightedList::of);
 		for (int pl = 0; pl < initialPlayerCount; pl++) {
 			int numSpawnAttempts = getConfigDataIntSample(GaiaFightConfiguration::mobSpawnsPerPlayer).orElse(1);
 			for (int i = 0; i < numSpawnAttempts; i++) {
@@ -883,19 +888,20 @@ public class GaiaGuardianEntity extends Mob {
 				int numToSpawn = pickedMobType.count.sample(random);
 				for (int j = 0; j < numToSpawn; j++) {
 					if (pickedMobType.type != BotaniaEntities.PIXIE) {
-						Entity entity = pickedMobType.type.create(serverLevel);
+						Entity entity = pickedMobType.type.create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
 						if (!(entity instanceof Mob mob)) {
 							continue;
 						}
 
 						if (pickedMobType.nbt != null) {
-							mob.readAdditionalSaveData(pickedMobType.nbt);
+							// PORT-26.3: readAdditionalSaveData is protected now; load() reads the same keys (position is set right after)
+							mob.load(TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
 						}
 						if (pickedMobType.spawnAsBaby != null) {
 							mob.setBaby(pickedMobType.spawnAsBaby);
 						}
 
-						mob.absMoveTo(getX() + 0.5 + Math.random() * range - range / 2,
+						mob.absSnapTo(getX() + 0.5 + Math.random() * range - range / 2,
 								getY() - 1,
 								getZ() + 0.5 + Math.random() * range - range / 2,
 								random.nextFloat() * 360, 0);
@@ -909,10 +915,10 @@ public class GaiaGuardianEntity extends Mob {
 						// in case the mob spawned with a vehicle or passenger(s), ensure those don't drop unexpected loot
 						mob.getRootVehicle().getPassengersAndSelf().forEach(e -> {
 							if (e instanceof Mob otherMob) {
-								mob.restrictTo(source, ARENA_RANGE);
+								mob.setHomeTo(source, ARENA_RANGE);
 								GaiaFightParticipant.HOLDER.setFor(mob,
 										new GaiaFightParticipant(getUUID(), getSource()));
-								Optional<MobSpawnData> spawnData = spawnedMobs.unwrap().stream()
+								Optional<MobSpawnData> spawnData = spawnedMobs.unwrap().stream().map(Weighted::value)
 										.filter(mobSpawnData -> mobSpawnData.type.tryCast(otherMob) != null)
 										.findFirst();
 								if (spawnData.isPresent() && !spawnData.get().allowEquipmentDrops) {
@@ -1088,7 +1094,7 @@ public class GaiaGuardianEntity extends Mob {
 								int y = (int) players.get(random.nextInt(players.size())).getY();
 								int z = source.getZ() - 10 + random.nextInt(20);
 
-								GaiaTrapEntity gaiaTrap = BotaniaEntities.GAIA_TRAP.create(level());
+								GaiaTrapEntity gaiaTrap = BotaniaEntities.GAIA_TRAP.create(level(), EntitySpawnReason.MOB_SUMMONED);
 								if (gaiaTrap != null) {
 									gaiaTrap.setPos(x + 0.5, y, z + 0.5);
 									gaiaTrap.summoner = this;
@@ -1108,7 +1114,7 @@ public class GaiaGuardianEntity extends Mob {
 								pixie.setProps(players.get(random.nextInt(players.size())), this, 8);
 								pixie.setPos(getRandomX(1), getY() + 2, getRandomZ(1));
 								pixie.finalizeSpawn((ServerLevelAccessor) level(),
-										level().getCurrentDifficultyAt(pixie.blockPosition()),
+										((ServerLevel) level()).getCurrentDifficultyAt(pixie.blockPosition()),
 										EntitySpawnReason.MOB_SUMMONED, null);
 								level().addFreshEntity(pixie);
 							}
@@ -1136,7 +1142,7 @@ public class GaiaGuardianEntity extends Mob {
 	}
 
 	@Override
-	public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
+	public boolean canTeleport(Level oldLevel, Level newLevel) {
 		return false;
 	}
 

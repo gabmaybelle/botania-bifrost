@@ -41,7 +41,7 @@ public class ManaPoolMinecartBehavior extends DefaultDispenseItemBehavior {
 		RailShape railShape = XplatAbstractions.INSTANCE.getRailDirection(blockState, level, blockPos, null);
 		double yOffset;
 		if (blockState.is(BlockTags.RAILS)) {
-			if (railShape.isAscending()) {
+			if (railShape.isSlope()) {
 				yOffset = 0.6;
 			} else {
 				yOffset = 0.1;
@@ -53,7 +53,7 @@ public class ManaPoolMinecartBehavior extends DefaultDispenseItemBehavior {
 
 			BlockState blockStateBelow = level.getBlockState(blockPos.below());
 			RailShape railShapeBelow = XplatAbstractions.INSTANCE.getRailDirection(blockStateBelow, level, blockPos, null);
-			if (direction != Direction.DOWN && railShapeBelow.isAscending()) {
+			if (direction != Direction.DOWN && railShapeBelow.isSlope()) {
 				yOffset = -0.4;
 			} else {
 				yOffset = -0.9;

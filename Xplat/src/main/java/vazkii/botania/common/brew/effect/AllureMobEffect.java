@@ -8,6 +8,7 @@
  */
 package vazkii.botania.common.brew.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,7 +27,7 @@ public class AllureMobEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity living, int amplifier) {
+	public boolean applyEffectTick(ServerLevel level, LivingEntity living, int amplifier) {
 		if (living instanceof Player player) {
 			FishingHook hook = player.fishing;
 			if (hook != null) {

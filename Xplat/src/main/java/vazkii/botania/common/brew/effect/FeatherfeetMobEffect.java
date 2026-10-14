@@ -8,6 +8,7 @@
  */
 package vazkii.botania.common.brew.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +25,7 @@ public class FeatherfeetMobEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity living, int amplified) {
+	public boolean applyEffectTick(ServerLevel level, LivingEntity living, int amplified) {
 		if (living.fallDistance > 2.5F) {
 			living.fallDistance = 2.5F;
 		}

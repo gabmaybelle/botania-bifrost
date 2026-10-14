@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.block.BotaniaBlocks;
@@ -446,14 +447,14 @@ public class BotaniaBlockEntities {
 	);
 
 	static {
-		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_SIGN, BlockEntityType.SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_WALL_SIGN, BlockEntityType.SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_SIGN, BlockEntityType.SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_WALL_SIGN, BlockEntityType.SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_HANGING_SIGN, BlockEntityType.HANGING_SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_WALL_HANGING_SIGN, BlockEntityType.HANGING_SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_HANGING_SIGN, BlockEntityType.HANGING_SIGN);
-		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_WALL_HANGING_SIGN, BlockEntityType.HANGING_SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_SIGN, BlockEntityTypes.SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_WALL_SIGN, BlockEntityTypes.SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_SIGN, BlockEntityTypes.SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_WALL_SIGN, BlockEntityTypes.SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_HANGING_SIGN, BlockEntityTypes.HANGING_SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.LIVINGWOOD_WALL_HANGING_SIGN, BlockEntityTypes.HANGING_SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_HANGING_SIGN, BlockEntityTypes.HANGING_SIGN);
+		ADD_TO_EXISTING.put(BotaniaBlocks.DREAMWOOD_WALL_HANGING_SIGN, BlockEntityTypes.HANGING_SIGN);
 	}
 
 	private static <T extends BlockEntity> BlockEntityType<T> type(String id, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {

@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import vazkii.botania.api.item.CosmeticAttachable;
 import vazkii.botania.api.item.CosmeticBauble;
@@ -27,7 +29,7 @@ import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.proxy.Proxy;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ManaseerMonocleItem extends BaubleItem implements CosmeticBauble {
 
@@ -37,9 +39,9 @@ public class ManaseerMonocleItem extends BaubleItem implements CosmeticBauble {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		tooltip.add(Component.translatable("botaniamisc.cosmeticBauble").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		tooltip.accept(Component.translatable("botaniamisc.cosmeticBauble").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+		super.appendHoverText(stack, context, display, tooltip, flags);
 	}
 
 	public static class Renderer implements AccessoryRenderer {

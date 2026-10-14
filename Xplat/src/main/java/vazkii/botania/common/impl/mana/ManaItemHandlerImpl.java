@@ -28,6 +28,7 @@ import vazkii.botania.api.mana.*;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.*;
+import java.util.List;
 
 public class ManaItemHandlerImpl implements ManaItemHandler {
 	@Override
@@ -38,7 +39,7 @@ public class ManaItemHandlerImpl implements ManaItemHandler {
 
 		List<ItemStack> toReturn = new ArrayList<>();
 
-		for (ItemStack stackInSlot : Iterables.concat(player.getInventory().items, player.getInventory().offhand)) {
+		for (ItemStack stackInSlot : Iterables.concat(player.getInventory().getNonEquipmentItems(), List.of(player.getOffhandItem()))) {
 			if (!stackInSlot.isEmpty() && ManaItem.LOOKUP.find(stackInSlot) != null) {
 				toReturn.add(stackInSlot);
 			}

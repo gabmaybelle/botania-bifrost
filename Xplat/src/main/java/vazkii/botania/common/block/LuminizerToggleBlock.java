@@ -15,6 +15,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +34,7 @@ public class LuminizerToggleBlock extends LuminizerPoweredBlock {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
-			boolean movedByPiston) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation neighborPos, boolean movedByPiston) {
 		if (!level.isClientSide()) {
 			if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
 				level.setBlock(pos, state.setValue(POWERED, false), Block.UPDATE_CLIENTS);

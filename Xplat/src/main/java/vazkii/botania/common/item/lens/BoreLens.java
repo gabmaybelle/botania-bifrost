@@ -61,7 +61,7 @@ public class BoreLens extends Lens {
 				|| state.is(Blocks.MOVING_PISTON) || state.is(Blocks.PISTON_HEAD))) {
 			return false;
 		}
-		if (!entity.mayInteract(level, collidePos) || entity.getOwner() instanceof ServerPlayer player
+		if (!EntityHelper.mayInteract(entity, collidePos) || entity.getOwner() instanceof ServerPlayer player
 				&& player.blockActionRestricted(level, collidePos, player.gameMode.getGameModeForPlayer())) {
 			return true;
 		}

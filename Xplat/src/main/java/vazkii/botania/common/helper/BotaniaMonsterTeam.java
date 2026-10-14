@@ -9,13 +9,14 @@
 
 package vazkii.botania.common.helper;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.TeamColor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class BotaniaMonsterTeam extends PlayerTeam {
 	public BotaniaMonsterTeam(String name) {
@@ -43,8 +44,8 @@ public class BotaniaMonsterTeam extends PlayerTeam {
 	}
 
 	@Override
-	public ChatFormatting getColor() {
-		return ChatFormatting.RESET;
+	public Optional<TeamColor> getColor() {
+		return Optional.empty();
 	}
 
 	@Override

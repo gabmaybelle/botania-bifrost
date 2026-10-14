@@ -17,6 +17,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -91,8 +93,8 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		if (bindPos != null) {
 			cmp.putInt(TAG_BIND_X, bindPos.getX());
 			cmp.putInt(TAG_BIND_Y, bindPos.getY());
@@ -101,13 +103,13 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		if (cmp.contains(TAG_BIND_X)) {
+	public void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
+		if (cmp.getInt(TAG_BIND_X).isPresent()) {
 			bindPos = new BlockPos(
 					cmp.getIntOr(TAG_BIND_X, 0),
-					cmp.getInt(TAG_BIND_Y),
-					cmp.getInt(TAG_BIND_Z)
+					cmp.getIntOr(TAG_BIND_Y, 0),
+					cmp.getIntOr(TAG_BIND_Z, 0)
 			);
 		} else {
 			bindPos = null;

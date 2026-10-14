@@ -9,6 +9,7 @@
 package vazkii.botania.mixin;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,11 +20,11 @@ import vazkii.botania.common.item.material.SelfReturningItem;
 
 @Mixin(Item.class)
 public class ItemMixin {
-	@Inject(at = @At("HEAD"), method = "getCraftingRemainingItem", cancellable = true)
-	private void returnSelf(CallbackInfoReturnable<Item> cir) {
+	@Inject(at = @At("HEAD"), method = "getCraftingRemainder", cancellable = true)
+	private void returnSelf(CallbackInfoReturnable<ItemStackTemplate> cir) {
 		Item self = (Item) (Object) this;
 		if (self instanceof SelfReturningItem) {
-			cir.setReturnValue(self);
+			cir.setReturnValue(new ItemStackTemplate(self));
 		}
 	}
 }

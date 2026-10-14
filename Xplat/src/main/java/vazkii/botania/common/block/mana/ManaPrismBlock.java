@@ -10,8 +10,8 @@ package vazkii.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,17 +26,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.block.RedstoneSensitiveBlock;
 import vazkii.botania.api.mana.BasicLensItem;
 import vazkii.botania.api.mana.ManaCollisionGhost;
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.common.block.BotaniaWaterloggedBlock;
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import vazkii.botania.common.block.block_entity.mana.ManaPrismBlockEntity;
 import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
@@ -96,7 +98,7 @@ public class ManaPrismBlock extends BotaniaWaterloggedBlock implements EntityBlo
 			ItemStack toInsert = heldItem.split(1);
 
 			if (!lens.isEmpty()) {
-				player.getInventory().placeItemBackInInventory(lens);
+				player.getInventory().placeItemBackInInventory(lens, Prediction.SERVER_ONLY);
 			}
 
 			prism.getItemHandler().setItem(0, toInsert);
@@ -105,7 +107,7 @@ public class ManaPrismBlock extends BotaniaWaterloggedBlock implements EntityBlo
 			return InteractionResult.SUCCESS;
 		}
 		if (!lens.isEmpty() && (mainHandEmpty || lensIsSame)) {
-			player.getInventory().placeItemBackInInventory(lens);
+			player.getInventory().placeItemBackInInventory(lens, Prediction.SERVER_ONLY);
 			prism.getItemHandler().setItem(0, ItemStack.EMPTY);
 
 			world.playSound(player, pos, BotaniaSounds.PRISM_REMOVE_LENS, SoundSource.BLOCKS, 1F, 1F);
@@ -121,18 +123,8 @@ public class ManaPrismBlock extends BotaniaWaterloggedBlock implements EntityBlo
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation fromPos, boolean isMoving) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, world, pos);
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
 	}
 
 	@Override

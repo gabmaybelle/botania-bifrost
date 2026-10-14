@@ -12,6 +12,7 @@ package vazkii.botania.test.item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,7 +39,7 @@ public class LifeAggregatorTest {
 		var stack = new ItemStack(BotaniaItems.LIFE_AGGREGATOR);
 
 		helper.setBlock(spawnerPos, Blocks.SPAWNER);
-		SpawnerBlockEntity be = helper.getBlockEntity(spawnerPos);
+		SpawnerBlockEntity be = helper.getBlockEntity(spawnerPos, SpawnerBlockEntity.class);
 		be.setEntityId(EntityTypes.PIG, RandomSource.create());
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
@@ -47,8 +48,8 @@ public class LifeAggregatorTest {
 				new BlockHitResult(Vec3.ZERO, Direction.DOWN, helper.absolutePos(spawnerPos), false)));
 		TestingUtil.assertThat(result.consumesAction(), () -> "Should have succeeded");
 		TestingUtil.assertThat(LifeAggregatorItem.hasData(stack),
-				() -> "Spawner mover should recognize saved data. Full NBT: " + stack.getComponents());
-		helper.assertBlockState(spawnerPos, BlockState::isAir, () -> "Spawner should be gone");
+				found -> Component.literal("Spawner mover should recognize saved data. Full NBT: " + stack.getComponents()));
+		helper.assertBlockState(spawnerPos, BlockState::isAir, found -> Component.literal("Spawner should be gone"));
 
 		result = stack.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
 				new BlockHitResult(Vec3.ZERO, Direction.UP, helper.absolutePos(spawnerPos.below()), false)));

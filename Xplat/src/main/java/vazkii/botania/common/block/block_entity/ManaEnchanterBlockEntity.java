@@ -31,6 +31,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +46,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -233,12 +236,12 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		if (manaRequired == -1) {
 			manaRequired = 0;
 			for (EnchantmentInstance data : enchants) {
-				manaRequired += (int) (5000F * ((15 - Math.min(15, data.enchantment.value().getWeight()))
+				manaRequired += (int) (5000F * ((15 - Math.min(15, data.enchantment().value().getWeight()))
 						* 1.05F)
-						* ((3F + data.level * data.level)
+						* ((3F + data.level() * data.level())
 								* 0.25F)
 						* (0.9F + enchants.size() * 0.05F)
-						* (data.enchantment.is(EnchantmentTags.DOUBLE_TRADE_PRICE) ? 1.25F : 1F));
+						* (data.enchantment().is(EnchantmentTags.DOUBLE_TRADE_PRICE) ? 1.25F : 1F));
 			}
 		} else if (mana >= manaRequired) {
 			manaRequired = 0;
@@ -296,8 +299,8 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 			case DO_ENCHANT -> { // Enchant
 				if (self.stageTicks >= 100) {
 					for (EnchantmentInstance data : self.enchants) {
-						if (EnchantmentHelper.getItemEnchantmentLevel(data.enchantment, self.itemToEnchant) == 0) {
-							self.itemToEnchant.enchant(data.enchantment, data.level);
+						if (EnchantmentHelper.getItemEnchantmentLevel(data.enchantment(), self.itemToEnchant) == 0) {
+							self.itemToEnchant.enchant(data.enchantment(), data.level());
 						}
 					}
 
@@ -395,8 +398,16 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
 	}
 
+	// PORT-26.3: the block used to drop the item in onRemove
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null && !itemToEnchant.isEmpty()) {
+			Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), itemToEnchant);
+		}
+	}
+
+	@Override
+	protected void saveAdditional(ValueOutput cmp) {
 		cmp.putInt(TAG_MANA, mana);
 		cmp.putInt(TAG_MANA_REQUIRED, manaRequired);
 		cmp.putInt(TAG_STAGE, stage.ordinal());
@@ -404,12 +415,12 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		cmp.putInt(TAG_STAGE_3_END_TICKS, stage3EndTicks);
 
 		if (!itemToEnchant.isEmpty()) {
-			cmp.put(TAG_ITEM, itemToEnchant.save(registries));
+			cmp.store(TAG_ITEM, ItemStack.CODEC, itemToEnchant);
 		}
 
 		if (!enchants.isEmpty()) {
 			String enchStr = enchants.stream()
-					.map(e -> e.enchantment.unwrapKey().map(ResourceKey::identifier).orElseThrow() + "=" + e.level)
+					.map(e -> e.enchantment().unwrapKey().map(ResourceKey::identifier).orElseThrow() + "=" + e.level())
 					.collect(Collectors.joining(","));
 
 			cmp.putString(TAG_ENCHANTS, enchStr);
@@ -417,15 +428,14 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		mana = cmp.getIntOr(TAG_MANA, 0);
 		manaRequired = cmp.getIntOr(TAG_MANA_REQUIRED, 0);
 		stage = State.values()[cmp.getIntOr(TAG_STAGE, 0)];
 		stageTicks = cmp.getIntOr(TAG_STAGE_TICKS, 0);
 		stage3EndTicks = cmp.getIntOr(TAG_STAGE_3_END_TICKS, 0);
 
-		CompoundTag itemCmp = cmp.getCompoundOrEmpty(TAG_ITEM);
-		itemToEnchant = itemCmp.isEmpty() ? ItemStack.EMPTY : ItemStack.parseOptional(registries, itemCmp);
+		itemToEnchant = cmp.read(TAG_ITEM, ItemStack.CODEC).orElse(ItemStack.EMPTY);
 
 		enchants.clear();
 		String enchStr = cmp.getStringOr(TAG_ENCHANTS, "");
@@ -436,7 +446,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 				Identifier enchantmentId = Identifier.parse(entryTokens[0]);
 				ResourceKey<Enchantment> enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchantmentId);
 				int lvl = Integer.parseInt(entryTokens[1]);
-				registries.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentKey)
+				cmp.lookup().lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentKey)
 						.ifPresent(ench -> enchants.add(new EnchantmentInstance(ench, lvl)));
 			}
 		}
@@ -446,7 +456,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		// TODO: adjust implementation to simplify updates
-		saveAdditional(tag, registries);
+		tag.merge(saveCustomOnly(registries));
 		return tag;
 	}
 
@@ -458,7 +468,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 
 	private boolean hasEnchantAlready(Holder<Enchantment> enchant) {
 		for (EnchantmentInstance data : enchants) {
-			if (data.enchantment == enchant) {
+			if (data.enchantment() == enchant) {
 				return true;
 			}
 		}
@@ -472,7 +482,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 		}
 
 		for (EnchantmentInstance data : enchants) {
-			Holder<Enchantment> otherEnch = data.enchantment;
+			Holder<Enchantment> otherEnch = data.enchantment();
 			if (!Enchantment.areCompatible(ench, otherEnch)) {
 				return false;
 			}

@@ -22,6 +22,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +35,7 @@ import vazkii.botania.common.annotations.SoftImplement;
 import vazkii.botania.common.block.block_entity.mana.ThrottledPacket;
 import vazkii.botania.common.block.block_entity.red_string.RedStringSpooferBlockEntity;
 import vazkii.botania.common.block.flower.FloatingSpecialFlowerBlock;
+import vazkii.botania.common.helper.NbtHelper;
 import vazkii.botania.common.lib.BotaniaTags;
 
 /**
@@ -135,24 +138,22 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		if (getBlockState().getBlock() instanceof FloatingSpecialFlowerBlock) {
 			setFloating(true);
 		}
 
 		IslandType oldType = floatingData.getIslandType();
-		if (cmp.contains(TAG_FLOATING_DATA)) {
-			floatingData.readNBT(cmp.getCompoundOrEmpty(TAG_FLOATING_DATA), registries);
-		}
+		cmp.read(TAG_FLOATING_DATA, CompoundTag.CODEC).ifPresent(floatingTag -> floatingData.readNBT(floatingTag, cmp.lookup()));
 		if (isFloating() && oldType != floatingData.getIslandType() && level != null && level.isClientSide()) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput cmp) {
 		if (isFloating()) {
-			cmp.put(TAG_FLOATING_DATA, floatingData.writeNBT(registries));
+			NbtHelper.putTag(cmp, TAG_FLOATING_DATA, floatingData.writeNBT(level.registryAccess()));
 		}
 	}
 
@@ -248,7 +249,7 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity
 		if (!level.isClientSide()) {
 			return;
 		}
-		Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(level, getEffectivePos());
+		Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(getEffectivePos());
 		level.addAlwaysVisibleParticle(options,
 				getEffectivePos().getX() + offset.x + xOffset,
 				getEffectivePos().getY() + offset.y + yOffset,

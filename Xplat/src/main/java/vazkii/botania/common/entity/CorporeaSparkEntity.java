@@ -14,9 +14,9 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -28,11 +28,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -113,7 +116,9 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 	}
 
 	private void dropAndKill() {
-		spawnAtLocation(new ItemStack(getSparkItem()), 0F);
+		if (level() instanceof ServerLevel serverLevel) {
+			spawnAtLocation(serverLevel, new ItemStack(getSparkItem()), 0F);
+		}
 		discard();
 	}
 
@@ -215,7 +220,7 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 
 	@Override
 	public void onItemExtracted(ItemStack stack) {
-		((ServerLevel) level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), getX(), getY(), getZ(), 10, 0.125, 0.125, 0.125, 0.05);
+		((ServerLevel) level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack)), getX(), getY(), getZ(), 10, 0.125, 0.125, 0.125, 0.05);
 	}
 
 	@Override
@@ -224,7 +229,7 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 		for (ItemStack stack : stacks) {
 			if (!shownItems.contains(stack.getItem())) {
 				shownItems.add(stack.getItem());
-				((ServerLevel) level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), getX(), getY(), getZ(), 10, 0.125, 0.125, 0.125, 0.05);
+				((ServerLevel) level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack)), getX(), getY(), getZ(), 10, 0.125, 0.125, 0.125, 0.05);
 			}
 		}
 	}
@@ -254,7 +259,7 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 	}
 
 	@Override
-	public InteractionResult interact(Player player, InteractionHand hand) {
+	public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitLocation) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (isAlive() && !stack.isEmpty()) {
 			if (stack.getItem() instanceof WandOfTheForestItem) {
@@ -269,8 +274,8 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 					}
 				}
 				return InteractionResult.SUCCESS;
-			} else if (stack.getItem() instanceof DyeItem dye) {
-				DyeColor color = dye.getDyeColor();
+			} else if (stack.has(DataComponents.DYE)) {
+				DyeColor color = stack.get(DataComponents.DYE);
 				if (color != getNetwork()) {
 					if (!level().isClientSide()) {
 						setNetwork(color);
@@ -310,14 +315,14 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
+	protected void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
 		setMaster(cmp.getBooleanOr(TAG_MASTER, false));
 		setCreative(cmp.getBooleanOr(TAG_CREATIVE, false));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag cmp) {
+	protected void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putBoolean(TAG_MASTER, isMaster());
 		cmp.putBoolean(TAG_CREATIVE, isCreative());

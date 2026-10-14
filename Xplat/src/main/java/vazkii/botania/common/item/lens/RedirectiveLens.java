@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.mana.ManaReceiver;
 import vazkii.botania.api.mana.ManaSpreader;
+import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.helper.MathHelper;
 
 import java.util.Optional;
@@ -91,7 +92,7 @@ public class RedirectiveLens extends Lens {
 
 		var entity = burst.entity();
 		var hitPos = result.getBlockPos();
-		if (!entity.mayInteract(entity.level(), hitPos)) {
+		if (!EntityHelper.mayInteract(entity, hitPos)) {
 			return;
 		}
 		var receiver = ManaReceiver.LOOKUP.find(entity.level(), hitPos, result.getDirection());

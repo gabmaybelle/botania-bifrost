@@ -10,6 +10,7 @@ package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -150,8 +151,8 @@ public class ForceRelayTest {
 					helper.assertBlockPresent(BotaniaBlocks.FORCE_RELAY, initialRelay1.east());
 					helper.assertBlockPresent(BotaniaBlocks.FORCE_RELAY, initialRelay2.east());
 					helper.assertBlockState(initialBoundSlime, BlockState::isAir,
-							() -> "Second slime block structure should have moved, " +
-									"leaving behind an air block at the originally bound location");
+							found -> Component.literal("Second slime block structure should have moved, " +
+									"leaving behind an air block at the originally bound location"));
 					helper.assertBlockPresent(Blocks.POLISHED_ANDESITE, initialAndesite.east());
 					TestingUtil.assertEquals(data.mapping.get(helper.absolutePos(initialRelay1.east())),
 							helper.absolutePos(initialBoundSlime.east()),

@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -34,6 +33,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -186,7 +187,7 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 				ItemSource.HOLDER.setFor(outputItem, ItemSources.MANA_INFUSION);
 				if (item.getOwner() instanceof Player player) {
 					player.triggerRecipeCrafted(recipe, List.of(output));
-					output.onCraftedBy(level, player, output.getCount());
+					output.onCraftedBy(player, output.getCount());
 				} else {
 					output.onCraftedBySystem(level);
 				}
@@ -444,7 +445,7 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput cmp) {
 		cmp.putInt(TAG_MANA, getCurrentMana());
 
 		cmp.putInt(TAG_MANA_CAP, manaCap);
@@ -456,16 +457,12 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		lastSynchronizedMana = mana = cmp.getIntOr(TAG_MANA, 0);
 
-		if (cmp.contains(TAG_MANA_CAP, Tag.TAG_ANY_NUMERIC)) {
-			manaCap = cmp.getIntOr(TAG_MANA_CAP, 0);
-		} else {
-			manaCap = -1;
-		}
-		canAccept = !cmp.contains(TAG_CAN_ACCEPT, Tag.TAG_ANY_NUMERIC) || cmp.getBoolean(TAG_CAN_ACCEPT);
-		canSpare = !cmp.contains(TAG_CAN_SPARE, Tag.TAG_ANY_NUMERIC) || cmp.getBoolean(TAG_CAN_SPARE);
+		manaCap = cmp.getIntOr(TAG_MANA_CAP, -1);
+		canAccept = cmp.getBooleanOr(TAG_CAN_ACCEPT, true);
+		canSpare = cmp.getBooleanOr(TAG_CAN_SPARE, true);
 		inputKey = cmp.getStringOr(TAG_INPUT_KEY, "");
 		outputKey = cmp.getStringOr(TAG_OUTPUT_KEY, "");
 	}

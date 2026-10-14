@@ -12,8 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.IncensePlateBlockEntity;
+import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.xplat.XplatAbstractions;
 
 public class IncensePlateBlock extends BotaniaWaterloggedBlock implements EntityBlock {
@@ -88,7 +89,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 				world.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
 				stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
 			} else {
-				player.getInventory().placeItemBackInInventory(plateStack);
+				player.getInventory().placeItemBackInInventory(plateStack, Prediction.SERVER_ONLY);
 				plate.getItemHandler().setItem(0, ItemStack.EMPTY);
 				world.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
 			}
@@ -119,7 +120,7 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof IncensePlateBlockEntity plate ? plate.comparatorOutput : 0;
 	}
 
@@ -141,17 +142,8 @@ public class IncensePlateBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock()) && !state.getValue(BlockStateProperties.LIT)
-				&& world.getBlockEntity(pos) instanceof IncensePlateBlockEntity plate) {
-			Containers.dropContents(world, pos, plate.getItemHandler());
-		}
-		super.onRemove(state, world, pos, newState, isMoving);
-	}
-
-	@Override
 	public void onProjectileHit(Level level, BlockState blockState, BlockHitResult hit, Projectile projectile) {
-		if (!level.isClientSide() && projectile.mayInteract(level, hit.getBlockPos()) && projectile.isOnFire()
+		if (!level.isClientSide() && EntityHelper.mayInteract(projectile, hit.getBlockPos()) && projectile.isOnFire()
 				&& level.getBlockEntity(hit.getBlockPos()) instanceof IncensePlateBlockEntity plate) {
 			plate.ignite();
 		}

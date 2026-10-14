@@ -9,10 +9,8 @@
 package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
@@ -22,6 +20,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import vazkii.botania.api.block_entity.RadiusDescriptor;
@@ -166,16 +166,16 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 	public abstract void playSound();
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
 		cmp.putInt(TAG_BURN_TIME, burnTime);
 		cmp.putInt(TAG_COOLDOWN, cooldown);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
 		burnTime = cmp.getIntOr(TAG_BURN_TIME, 0);
 		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);

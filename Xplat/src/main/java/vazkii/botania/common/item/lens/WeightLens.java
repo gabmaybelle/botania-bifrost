@@ -28,6 +28,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.internal.ManaBurst;
+import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.xplat.BotaniaConfig;
 
@@ -42,7 +43,7 @@ public class WeightLens extends Lens {
 			BlockPos bPos = ((BlockHitResult) pos).getBlockPos();
 			BlockState state = level.getBlockState(bPos);
 
-			if (entity.mayInteract(entity.level(), bPos)
+			if (EntityHelper.mayInteract(entity, bPos)
 					&& FallingBlock.isFree(level.getBlockState(bPos.below()))
 					&& state.getDestroySpeed(level, bPos) != -1
 					&& level.getBlockEntity(bPos) == null

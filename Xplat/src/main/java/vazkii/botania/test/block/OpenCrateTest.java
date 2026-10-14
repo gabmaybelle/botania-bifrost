@@ -14,6 +14,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 
 import vazkii.botania.test.BotaniaGameTest;
@@ -38,10 +39,10 @@ public class OpenCrateTest {
 		helper.pullLever(new BlockPos(0, 4, 0));
 		BlockPos belowCrate = new BlockPos(2, 2, 1);
 		helper.succeedWhen(() -> {
-			var be = helper.getBlockEntity(belowCrate);
+			var be = helper.getBlockEntity(belowCrate, BlockEntity.class);
 			if (!(be instanceof HopperBlockEntity hopper
 					&& hopper.countItem(Items.STICK) == 8)) {
-				throw new GameTestAssertException(Component.literal("Sticks not in lower hopper"), helper.getTick());
+				throw new GameTestAssertException(Component.literal("Sticks not in lower hopper"), (int) helper.getTick());
 			}
 		});
 	}

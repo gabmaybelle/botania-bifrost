@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
@@ -30,6 +31,7 @@ import vazkii.botania.common.entity.PinkWitherEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PinkinatorItem extends Item {
 
@@ -46,14 +48,14 @@ public class PinkinatorItem extends Item {
 			if (wither.isAlive() && !(wither instanceof PinkWitherEntity)) {
 				if (!world.isClientSide()) {
 					wither.discard();
-					PinkWitherEntity pink = BotaniaEntities.PINK_WITHER.create(world);
+					PinkWitherEntity pink = BotaniaEntities.PINK_WITHER.create(world, EntitySpawnReason.EVENT);
 					pink.moveTo(wither.getX(), wither.getY(), wither.getZ(), wither.getYRot(), wither.getXRot());
 					pink.setNoAi(wither.isNoAi());
 					if (wither.hasCustomName()) {
 						pink.setCustomName(wither.getCustomName());
 						pink.setCustomNameVisible(wither.isCustomNameVisible());
 					}
-					pink.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(pink.blockPosition()), EntitySpawnReason.CONVERSION, null);
+					pink.finalizeSpawn((ServerLevelAccessor) world, ((ServerLevel) world).getCurrentDifficultyAt(pink.blockPosition()), EntitySpawnReason.CONVERSION, null);
 					world.addFreshEntity(pink);
 					pink.spawnAnim();
 					pink.playSound(BotaniaSounds.THE_PINKINATOR, 1F, (1F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
@@ -68,8 +70,8 @@ public class PinkinatorItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		tooltip.add(Component.translatable("botaniamisc.pinkinatorDesc").withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		tooltip.accept(Component.translatable("botaniamisc.pinkinatorDesc").withStyle(ChatFormatting.GRAY));
 	}
 
 }

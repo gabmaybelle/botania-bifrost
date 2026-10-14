@@ -46,11 +46,6 @@ public class BuriedPetalBlock extends BushBlock implements TallFlowerGrower, Col
 	public final DyeColor color;
 	private final Function<TallFlowerGrower, @Nullable Block> tallFlowerFunction;
 
-	@Override
-	protected MapCodec<BuriedPetalBlock> codec() {
-		return CODEC;
-	}
-
 	public BuriedPetalBlock(DyeColor color, Function<TallFlowerGrower, @Nullable Block> tallFlowerFunction, Properties builder) {
 		super(builder);
 		this.color = color;

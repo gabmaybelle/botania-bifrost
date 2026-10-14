@@ -34,6 +34,6 @@ public class BotaniaExplosionDamageCalculator extends ExplosionDamageCalculator 
 
 	@Override
 	public boolean shouldDamageEntity(Explosion explosion, Entity entity) {
-		return !entity.getType().is(ignoredEntities);
+		return !entity.typeHolder().is(ignoredEntities);
 	}
 }

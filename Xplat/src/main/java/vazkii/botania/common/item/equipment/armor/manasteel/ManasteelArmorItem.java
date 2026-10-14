@@ -18,6 +18,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 
@@ -30,7 +32,7 @@ import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.proxy.Proxy;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 // PORT-26.3: ArmorItem is gone; being armor is a matter of item properties (Item.Properties#humanoidArmor in
@@ -68,23 +70,23 @@ public class ManasteelArmorItem extends Item implements PhantomInkable {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
 		TooltipHandler.addOnShift(list, flags, () -> addInformationAfterShift(stack, context, list, flags));
 	}
 
-	public void addInformationAfterShift(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void addInformationAfterShift(ItemStack stack, TooltipContext context, Consumer<Component> list, TooltipFlag flags) {
 		Player player = Proxy.INSTANCE.getClientPlayer();
-		list.add(getArmorSetTitle(player));
+		list.accept(getArmorSetTitle(player));
 		addArmorSetDescription(stack, list);
 		ItemStack[] stacks = getArmorSetStacks();
 		for (ItemStack armor : stacks) {
 			EquipmentSlot slot = ((ManasteelArmorItem) armor.getItem()).getEquipmentSlot();
 			MutableComponent cmp = Component.translatable("botaniamisc.template.tooltip_list", armor.getHoverName())
 					.withStyle(hasArmorSetItem(player, slot) ? ChatFormatting.GREEN : ChatFormatting.GRAY);
-			list.add(cmp);
+			list.accept(cmp);
 		}
 		if (hasPhantomInk(stack)) {
-			list.add(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.GRAY));
+			list.accept(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.GRAY));
 		}
 	}
 
@@ -146,8 +148,8 @@ public class ManasteelArmorItem extends Item implements PhantomInkable {
 		return Component.translatable("botaniamisc.armorset", setInfo);
 	}
 
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
-		list.add(Component.translatable("botania.armorset.manasteel.desc").withStyle(ChatFormatting.GRAY));
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
+		list.accept(Component.translatable("botania.armorset.manasteel.desc").withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

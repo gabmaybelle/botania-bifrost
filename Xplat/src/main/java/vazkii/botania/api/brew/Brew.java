@@ -53,7 +53,7 @@ public class Brew {
 	 * @param effects A supplier that supplies a list of effects to apply to the player when they drink it.
 	 */
 	public Brew(int cost, Supplier<List<MobEffectInstance>> effects) {
-		this.color = () -> PotionContents.getColor(effects.get());
+		this.color = () -> PotionContents.getColorOptional(effects.get()).orElse(PotionContents.BASE_POTION_COLOR);
 		this.cost = cost;
 		this.effects = effects;
 	}

@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -80,7 +81,7 @@ public class UnstableReservoirRodItem extends Item {
 	public static boolean spawnMissile(Level level, @Nullable LivingEntity thrower, double x, double y, double z) {
 		MagicMissileEntity missile = thrower != null
 				? new MagicMissileEntity(thrower, false)
-				: BotaniaEntities.MAGIC_MISSILE.create(level);
+				: BotaniaEntities.MAGIC_MISSILE.create(level, EntitySpawnReason.EVENT);
 		if (missile == null) {
 			return false;
 		}

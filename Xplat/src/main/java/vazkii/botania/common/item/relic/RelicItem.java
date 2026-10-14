@@ -16,12 +16,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.item.Relic;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class RelicItem extends Item {
 	public RelicItem(Properties properties) {
@@ -39,7 +40,7 @@ public class RelicItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
 		RelicImpl.addDefaultTooltip(stack, tooltip);
 	}
 }

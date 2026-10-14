@@ -9,11 +9,10 @@
 package vazkii.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +40,7 @@ public class FakeAirBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput tag) {
 		if (flowerPos != null) {
 			tag.putInt(TAG_FLOWER_X, flowerPos.getX());
 			tag.putInt(TAG_FLOWER_Y, flowerPos.getY());
@@ -50,13 +49,13 @@ public class FakeAirBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		flowerPos = tag.contains(TAG_FLOWER_X, Tag.TAG_INT)
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
+		flowerPos = tag.getInt(TAG_FLOWER_X).isPresent()
 				? new BlockPos(
 						tag.getIntOr(TAG_FLOWER_X, 0),
-						tag.getInt(TAG_FLOWER_Y),
-						tag.getInt(TAG_FLOWER_Z)
+						tag.getIntOr(TAG_FLOWER_Y, 0),
+						tag.getIntOr(TAG_FLOWER_Z, 0)
 				)
 				: null;
 	}

@@ -15,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,18 +28,18 @@ public interface TallFlowerGrower extends BonemealableBlock {
 	Block getTallFlower();
 
 	@Override
-	default boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
+	default boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, BonemealSource source) {
 		return world.getBlockState(pos.above()).isAir()
 				&& getTallFlower() instanceof DoublePlantBlock;
 	}
 
 	@Override
-	default boolean isBonemealSuccess(Level world, RandomSource rand, BlockPos pos, BlockState state) {
-		return isValidBonemealTarget(world, pos, state);
+	default boolean isBonemealSuccess(Level world, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
+		return isValidBonemealTarget(world, pos, state, source);
 	}
 
 	@Override
-	default void performBonemeal(ServerLevel world, RandomSource rand, BlockPos pos, BlockState state) {
+	default void performBonemeal(ServerLevel world, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		if (getTallFlower() instanceof DoublePlantBlock block) {
 			DoublePlantBlock.placeAt(world, block.defaultBlockState(), pos, 3);
 		}

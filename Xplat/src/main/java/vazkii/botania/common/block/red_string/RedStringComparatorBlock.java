@@ -9,6 +9,7 @@
 package vazkii.botania.common.block.red_string;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -34,7 +35,7 @@ public class RedStringComparatorBlock extends RedStringBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos, BotaniaBlockEntities.RED_STRINGED_COMPARATOR)
 				.map(RedStringComparatorBlockEntity::getComparatorValue).orElse(0);
 	}

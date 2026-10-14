@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.brew.Brew;
@@ -26,7 +27,7 @@ import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class IncenseStickItem extends Item implements BrewItem, BrewContainer, CustomCreativeTabContents {
 
@@ -48,14 +49,14 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
 		Brew brew = getBrew(stack);
 		if (brew == BotaniaBrews.FALLBACK) {
-			list.add(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
+			list.accept(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
 			return;
 		}
 
-		list.add(Component.translatable("botaniamisc.brewOf",
+		list.accept(Component.translatable("botaniamisc.brewOf",
 				Component.translatable(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		PotionContents.addPotionTooltip(brew.getPotionEffects(stack), list::add, TIME_MULTIPLIER, context.tickRate());
 	}
@@ -63,7 +64,7 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		Identifier id = stack.get(BotaniaDataComponents.BREW);
-		return BotaniaAPI.instance().getBrewRegistry().get(id);
+		return BotaniaAPI.instance().getBrewRegistry().getValue(id);
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {
@@ -77,7 +78,7 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	@Override
 	public ItemStack getItemForBrew(Brew brew, ItemStack stack) {
 		if (!brew.canInfuseIncense() || brew.getPotionEffects(stack).size() != 1
-				|| brew.getPotionEffects(stack).getFirst().getEffect().value().isInstantenous()) {
+				|| brew.getPotionEffects(stack).getFirst().getEffect().value().isInstantaneous()) {
 			return ItemStack.EMPTY;
 		}
 

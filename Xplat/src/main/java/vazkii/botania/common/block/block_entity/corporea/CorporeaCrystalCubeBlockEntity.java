@@ -30,6 +30,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -138,17 +140,16 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput tag) {
 		if (!requestTarget.isEmpty()) {
-			tag.put(TAG_REQUEST_TARGET, requestTarget.save(registries));
+			tag.store(TAG_REQUEST_TARGET, ItemStack.CODEC, requestTarget);
 		}
 		tag.putInt(TAG_ITEM_COUNT, itemCount);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		CompoundTag cmp = tag.getCompoundOrEmpty(TAG_REQUEST_TARGET);
-		requestTarget = ItemStack.parse(registries, cmp).orElse(ItemStack.EMPTY);
+	protected void loadAdditional(ValueInput tag) {
+		requestTarget = tag.read(TAG_REQUEST_TARGET, ItemStack.CODEC).orElse(ItemStack.EMPTY);
 		setCount(tag.getIntOr(TAG_ITEM_COUNT, 0));
 	}
 
@@ -156,7 +157,7 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		if (!requestTarget.isEmpty()) {
-			tag.put(TAG_REQUEST_TARGET, requestTarget.save(registries));
+			tag.store(TAG_REQUEST_TARGET, ItemStack.CODEC, requestTarget);
 		}
 		NbtHelper.putVarInt(tag, TAG_ITEM_COUNT, itemCount);
 		return tag;

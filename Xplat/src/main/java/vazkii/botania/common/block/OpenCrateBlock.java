@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,13 +22,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Orientation;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.block.RedstoneSensitiveBlock;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.OpenCrateBlockEntity;
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 public class OpenCrateBlock extends BotaniaBlock implements EntityBlock {
 
@@ -50,18 +49,8 @@ public class OpenCrateBlock extends BotaniaBlock implements EntityBlock {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation fromPos, boolean isMoving) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, world, pos);
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!newState.is(state.getBlock())) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
 	}
 
 	@Override
@@ -74,7 +63,7 @@ public class OpenCrateBlock extends BotaniaBlock implements EntityBlock {
 	public static void redstoneParticlesOnFullBlock(Level world, BlockPos pos, RandomSource random) {
 		for (Direction direction : Direction.values()) {
 			BlockPos blockpos = pos.relative(direction);
-			if (!world.getBlockState(blockpos).isSolidRender(world, blockpos)) {
+			if (!world.getBlockState(blockpos).isSolidRender()) {
 				Direction.Axis axis = direction.getAxis();
 				double dx = axis == Direction.Axis.X ? 0.5D + 0.5625D * direction.getStepX() : random.nextFloat();
 				double dy = axis == Direction.Axis.Y ? 0.5D + 0.5625D * direction.getStepY() : random.nextFloat();

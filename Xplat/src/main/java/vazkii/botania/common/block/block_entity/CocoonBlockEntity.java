@@ -12,12 +12,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerType;
@@ -26,6 +26,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -87,12 +89,11 @@ public class CocoonBlockEntity extends BlockEntity {
 			}
 
 			if (Math.random() < shulkerChance) {
-				entity = EntityTypes.SHULKER.create(level);
+				entity = EntityTypes.SHULKER.create(level, EntitySpawnReason.EVENT);
 			} else if (Math.random() < villagerChance) {
-				Villager villager = EntityTypes.VILLAGER.create(level);
+				Villager villager = EntityTypes.VILLAGER.create(level, EntitySpawnReason.EVENT);
 				if (villager != null) {
-					VillagerType type = VillagerType.byBiome(level.getBiome(pos));
-					villager.setVillagerData(villager.getVillagerData().setType(type));
+					villager.setVillagerData(villager.getVillagerData().withType(level.registryAccess(), VillagerType.byBiome(level.getBiome(pos))));
 				}
 				entity = villager;
 			} else if (!validWater.isEmpty()) {
@@ -126,7 +127,7 @@ public class CocoonBlockEntity extends BlockEntity {
 				if (entity instanceof AgeableMob ageable) {
 					ageable.setBaby(true);
 				}
-				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
+				entity.finalizeSpawn((ServerLevelAccessor) level, ((ServerLevel) level).getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
 				entity.setPersistenceRequired();
 				level.addFreshEntity(entity);
 				entity.spawnAnim();
@@ -152,12 +153,12 @@ public class CocoonBlockEntity extends BlockEntity {
 		if (type == EntityTypes.COW && level.getRandom().nextFloat() < 0.01) {
 			type = EntityTypes.MOOSHROOM;
 		}
-		Entity entity = type.create(level);
+		Entity entity = type.create(level, EntitySpawnReason.EVENT);
 		return entity instanceof Mob mob ? mob : null;
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput cmp) {
 		cmp.putInt(TAG_TIME_PASSED, timePassed);
 		cmp.putInt(TAG_EMERALDS_GIVEN, emeraldsGiven);
 		cmp.putInt(TAG_CHORUS_FRUIT_GIVEN, chorusFruitGiven);
@@ -165,7 +166,7 @@ public class CocoonBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		timePassed = cmp.getIntOr(TAG_TIME_PASSED, 0);
 		emeraldsGiven = cmp.getIntOr(TAG_EMERALDS_GIVEN, 0);
 		chorusFruitGiven = cmp.getIntOr(TAG_CHORUS_FRUIT_GIVEN, 0);

@@ -14,7 +14,9 @@ import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,6 +43,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -186,7 +189,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation fromPos, boolean isMoving) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, world, pos);
 	}
 
@@ -199,7 +202,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
+	public VoxelShape getOcclusionShape(BlockState state) {
 		return SHAPE;
 	}
 
@@ -299,7 +302,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 		if (state.getValue(HAS_SCAFFOLDING) && player.isSecondaryUseActive()) {
 			ItemStack scaffolding = new ItemStack(Items.SCAFFOLDING);
 			if (!player.hasInfiniteMaterials() || !player.getInventory().contains(scaffolding)) {
-				player.getInventory().placeItemBackInInventory(scaffolding);
+				player.getInventory().placeItemBackInInventory(scaffolding, Prediction.SERVER_ONLY);
 			}
 			world.setBlockAndUpdate(pos, state.setValue(HAS_SCAFFOLDING, false));
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
@@ -310,7 +313,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 		}
 		if (!lens.isEmpty() && (mainHandEmpty || lensIsSame)) {
 			if (!player.hasInfiniteMaterials() || !player.getInventory().contains(lens)) {
-				player.getInventory().placeItemBackInInventory(lens);
+				player.getInventory().placeItemBackInInventory(lens, Prediction.SERVER_ONLY);
 			}
 			spreader.getItemHandler().setItem(0, ItemStack.EMPTY);
 
@@ -320,7 +323,7 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 		}
 		if (coverColor != null && (mainHandEmpty || woolIsSame)) {
 			ItemStack wool = new ItemStack(ColorHelper.WOOL_MAP.apply(coverColor));
-			player.getInventory().placeItemBackInInventory(wool);
+			player.getInventory().placeItemBackInInventory(wool, Prediction.SERVER_ONLY);
 			world.setBlockAndUpdate(pos,
 					BotaniaBlocks.findOptionallyDyedBlock(this, null, "_covered_")
 							.withPropertiesOf(state));
@@ -334,15 +337,15 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() instanceof ManaSpreaderBlock oldBlock
-				&& newState.getBlock() instanceof ManaSpreaderBlock newBlock
-				&& ManaSpreaderBlock.getBaseBlock(oldBlock) == ManaSpreaderBlock.getBaseBlock(newBlock)) {
-			// don't delete block entity if it's the same spreader type
-			return;
-		}
-		Containers.dropContentsOnDestroy(state, newState, level, pos);
-		super.onRemove(state, level, pos, newState, isMoving);
+	protected boolean shouldChangedStateKeepBlockEntity(BlockState oldState) {
+		// don't delete block entity if it's the same spreader type
+		return oldState.getBlock() instanceof ManaSpreaderBlock oldBlock
+				&& ManaSpreaderBlock.getBaseBlock(oldBlock) == ManaSpreaderBlock.getBaseBlock(this);
+	}
+
+	@Override
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
+		Containers.updateNeighboursAfterDestroy(state, level, pos);
 	}
 
 	@Override

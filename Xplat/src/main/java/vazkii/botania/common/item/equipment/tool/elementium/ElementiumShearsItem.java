@@ -8,6 +8,7 @@
  */
 package vazkii.botania.common.item.equipment.tool.elementium;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -58,8 +59,8 @@ public class ElementiumShearsItem extends ManasteelShearsItem {
 			if (!shearables.isEmpty()) {
 				for (Entity entity : shearables) {
 					if (entity instanceof Shearable shearable && shearable.readyForShearing()) {
-						shearable.shear(living.getSoundSource());
-						stack.hurtAndBreak(1, living, LivingEntity.getSlotForHand(living.getUsedItemHand()));
+						shearable.shear((ServerLevel) world, living.getSoundSource(), stack);
+						stack.hurtAndBreak(1, living, living.getUsedItemHand().asEquipmentSlot());
 						break;
 					}
 				}

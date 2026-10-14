@@ -13,12 +13,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -39,10 +40,10 @@ public class LokiPlaceTrigger extends SimpleCriterionTrigger<LokiPlaceTrigger.In
 		return Instance.CODEC;
 	}
 
-	public record Instance(Optional<ContextAwarePredicate> player, Optional<ItemPredicate> ring, MinMaxBounds.Ints blocksPlaced) implements SimpleInstance {
+	public record Instance(Optional<Holder<LootItemCondition>> player, Optional<ItemPredicate> ring, MinMaxBounds.Ints blocksPlaced) implements SimpleInstance {
 
 		public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				ItemPredicate.CODEC.optionalFieldOf("ring").forGetter(Instance::ring),
 				MinMaxBounds.Ints.CODEC.optionalFieldOf("blocks_placed", MinMaxBounds.Ints.ANY).forGetter(Instance::blocksPlaced)
 		).apply(instance, Instance::new));

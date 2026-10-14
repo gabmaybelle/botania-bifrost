@@ -40,7 +40,7 @@ public class JadedAmaranthusBlockEntity extends FunctionalFlowerBlockEntity {
 			return;
 		}
 		Optional<HolderSet.Named<Block>> flowersTag =
-				BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
+				BuiltInRegistries.BLOCK.get(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 		if (flowersTag.flatMap(holders -> holders.stream().findAny()).isEmpty()) {
 			// missing or empty flowers tag
 			return;

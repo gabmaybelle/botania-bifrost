@@ -18,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -32,6 +31,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -112,12 +113,12 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 
 		// POIs might be an even more efficient option for this, but there can only be one POI type per block state
 		List<ChunkPos> chunkPosList = ChunkPos.rangeClosed(
-				new ChunkPos(center.offset(-rangeLimit, 0, -rangeLimit)),
-				new ChunkPos(center.offset(rangeLimit, 0, rangeLimit))
+				ChunkPos.containing(center.offset(-rangeLimit, 0, -rangeLimit)),
+				ChunkPos.containing(center.offset(rangeLimit, 0, rangeLimit))
 		).toList();
 
 		for (ChunkPos chunkPos : chunkPosList) {
-			LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+			LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z());
 			if (chunk != null) {
 				for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 					BlockPos pos = entry.getKey();
@@ -162,7 +163,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 		RandomSource rng = level.getRandom();
 		if (rng.nextDouble() > particleChance) {
 			BlockPos pos = getBlockPos();
-			Vec3 offset = level.getBlockState(pos).getOffset(level, pos);
+			Vec3 offset = level.getBlockState(pos).getOffset(pos);
 			double x = pos.getX() + offset.x;
 			double y = pos.getY() + offset.y;
 			double z = pos.getZ() + offset.z;
@@ -247,27 +248,31 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
 		if (bindingPos != null) {
-			cmp.put(TAG_BINDING, NbtUtils.writeBlockPos(bindingPos));
+			cmp.store(TAG_BINDING, BlockPos.CODEC, bindingPos);
 		}
 		cmp.putBoolean(TAG_AUTO_BINDING, autoBinding);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
-		NbtUtils.readBlockPos(cmp, TAG_BINDING).ifPresentOrElse(this::setBindingPos, () -> setBindingPos(null));
-		autoBinding = !cmp.contains(TAG_AUTO_BINDING) || cmp.getBoolean(TAG_AUTO_BINDING);
+		cmp.read(TAG_BINDING, BlockPos.CODEC).ifPresentOrElse(this::setBindingPos, () -> setBindingPos(null));
+		autoBinding = cmp.getBooleanOr(TAG_AUTO_BINDING, true);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
-		tag.put(TAG_BINDING, bindingPos != null ? NbtUtils.writeBlockPos(bindingPos) : new IntArrayTag(List.of()));
+		if (bindingPos != null) {
+			tag.store(TAG_BINDING, BlockPos.CODEC, bindingPos);
+		} else {
+			tag.put(TAG_BINDING, new IntArrayTag(new int[0]));
+		}
 		return tag;
 	}
 

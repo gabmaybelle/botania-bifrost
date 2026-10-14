@@ -16,6 +16,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.api.block.FloatingFlower;
 import vazkii.botania.api.block.FloatingFlowerImpl;
@@ -23,6 +25,7 @@ import vazkii.botania.api.block.FloatingFlowerProvider;
 import vazkii.botania.api.block.IslandType;
 import vazkii.botania.common.annotations.SoftImplement;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
+import vazkii.botania.common.helper.NbtHelper;
 
 public class FloatingFlowerBlockEntity extends BlockEntity implements FloatingFlowerProvider {
 	private static final String TAG_FLOATING_DATA = "floating";
@@ -38,14 +41,14 @@ public class FloatingFlowerBlockEntity extends BlockEntity implements FloatingFl
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.put(TAG_FLOATING_DATA, floatingData.writeNBT(registries));
+	protected void saveAdditional(ValueOutput cmp) {
+		NbtHelper.putTag(cmp, TAG_FLOATING_DATA, floatingData.writeNBT(level.registryAccess()));
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		IslandType oldType = floatingData.getIslandType();
-		floatingData.readNBT(cmp.getCompoundOrEmpty(TAG_FLOATING_DATA), registries);
+		floatingData.readNBT(cmp.read(TAG_FLOATING_DATA, CompoundTag.CODEC).orElseGet(CompoundTag::new), cmp.lookup());
 		if (oldType != floatingData.getIslandType() && level != null && level.isClientSide()) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
@@ -54,7 +57,7 @@ public class FloatingFlowerBlockEntity extends BlockEntity implements FloatingFl
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
-		saveAdditional(tag, registries);
+		tag.merge(saveCustomOnly(registries));
 		return tag;
 	}
 

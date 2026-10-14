@@ -9,7 +9,7 @@
 package vazkii.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.common.block.BotaniaWaterloggedBlock;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.BotanicalBreweryBlockEntity;
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import vazkii.botania.common.helper.InventoryHelper;
 
 public class BotanicalBreweryBlock extends BotaniaWaterloggedBlock implements EntityBlock {
@@ -74,22 +73,12 @@ public class BotanicalBreweryBlock extends BotaniaWaterloggedBlock implements En
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
-	}
-
-	@Override
 	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof BotanicalBreweryBlockEntity brew ? brew.signal : 0;
 	}
 

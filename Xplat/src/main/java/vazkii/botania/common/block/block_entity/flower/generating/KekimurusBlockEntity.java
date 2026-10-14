@@ -14,7 +14,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CakeBlock;
 import net.minecraft.world.level.block.LevelEvent;
@@ -61,9 +60,9 @@ public class KekimurusBlockEntity extends GeneratingFlowerBlockEntity {
 			getLevel().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
 			getLevel().gameEvent(null, GameEvent.EAT, effectivePos);
 			//Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-			getLevel().playSound(null, effectivePos, SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
-			Vec3 offset = getLevel().getBlockState(effectivePos).getOffset(getLevel(), effectivePos).add(0.5, 0.75, 0.5);
-			((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(state.getBlock())),
+			getLevel().playSound(null, effectivePos, SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
+			Vec3 offset = getLevel().getBlockState(effectivePos).getOffset(effectivePos).add(0.5, 0.75, 0.5);
+			((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, state.getBlock().asItem()),
 					effectivePos.getX() + offset.x, effectivePos.getY() + offset.y, effectivePos.getZ() + offset.z,
 					5, 0.1, 0.1, 0.1, 0.03);
 			addMana(MANA_PER_SLICE);

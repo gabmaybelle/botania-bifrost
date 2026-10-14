@@ -17,10 +17,13 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.common.item.CacophoniumItem;
 
@@ -42,20 +45,28 @@ public class CacophoniumBlockEntity extends BlockEntity {
 		}
 	}
 
+	// PORT-26.3: the block used to drop the stack in onRemove
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		cmp.put(TAG_STACK, stack.saveOptional(registries));
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null) {
+			Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
+		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		stack = ItemStack.parseOptional(registries, cmp.getCompound(TAG_STACK));
+	protected void saveAdditional(ValueOutput cmp) {
+		cmp.store(TAG_STACK, ItemStack.OPTIONAL_CODEC, stack);
+	}
+
+	@Override
+	protected void loadAdditional(ValueInput cmp) {
+		stack = cmp.read(TAG_STACK, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
-		tag.put(TAG_STACK, stack.saveOptional(registries));
+		tag.store(TAG_STACK, ItemStack.OPTIONAL_CODEC, stack);
 		return tag;
 	}
 

@@ -16,8 +16,11 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -89,9 +92,9 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 
 		BlockPos coords = getEffectivePos().offset(POSITIONS[positionAt]);
 		if (!level.isEmptyBlock(coords)) {
-			level.getProfiler().push("findRecipe");
+			Profiler.get().push("findRecipe");
 			PureDaisyRecipe recipe = findRecipe(coords);
-			level.getProfiler().pop();
+			Profiler.get().pop();
 
 			if (recipe != null) {
 				if (ticksRemaining[positionAt] == -1) {
@@ -173,11 +176,11 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 		positionAt = cmp.getIntOr(TAG_POSITION, 0);
 
-		if (level != null && level.isClientSide() && cmp.contains(TAG_TICKED_POSITIONS)) {
+		if (level != null && level.isClientSide() && cmp.getInt(TAG_TICKED_POSITIONS).isPresent()) {
 			byte tickedPositionBits = cmp.getByteOr(TAG_TICKED_POSITIONS, (byte) 0);
 			for (int i = 0; i < 8; i++) {
 				ticksRemaining[i] = (tickedPositionBits >>> i) & 1;
@@ -190,8 +193,8 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		cmp.putInt(TAG_POSITION, positionAt);
 		for (int i = 0; i < ticksRemaining.length; i++) {
 			cmp.putInt(TAG_TICKS_REMAINING + i, ticksRemaining[i]);

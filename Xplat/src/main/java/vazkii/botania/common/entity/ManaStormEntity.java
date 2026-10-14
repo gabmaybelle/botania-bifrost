@@ -8,14 +8,16 @@
  */
 package vazkii.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +97,7 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	private void spawnBurst() {
-		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(level());
+		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(level(), EntitySpawnReason.EVENT);
 		if (burst == null) {
 			return;
 		}
@@ -122,7 +124,7 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
+	protected void readAdditionalSaveData(ValueInput cmp) {
 		liveTime = cmp.getIntOr(TAG_TIME, 0);
 		burstColor = cmp.getIntOr(TAG_BURST_COLOR, 0);
 		burstsFired = cmp.getIntOr(TAG_BURSTS_FIRED, 0);
@@ -130,7 +132,7 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag cmp) {
+	protected void addAdditionalSaveData(ValueOutput cmp) {
 		cmp.putInt(TAG_TIME, liveTime);
 		cmp.putInt(TAG_BURST_COLOR, burstColor);
 		cmp.putInt(TAG_BURSTS_FIRED, burstsFired);

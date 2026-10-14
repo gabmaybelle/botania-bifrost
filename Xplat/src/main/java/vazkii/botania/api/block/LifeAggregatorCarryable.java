@@ -12,6 +12,7 @@ package vazkii.botania.api.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.component.BlockItemStateProperties;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -99,7 +101,10 @@ public interface LifeAggregatorCarryable {
 
 		@Override
 		default CustomData gatherBlockEntityData(HolderLookup.Provider providers) {
-			return CustomData.of(blockEntity().saveWithId(providers));
+			// PORT-26.3: block entities save through a ValueOutput now
+			TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, providers);
+			blockEntity().saveWithId(output);
+			return CustomData.of(output.buildResult());
 		}
 
 		@Nullable

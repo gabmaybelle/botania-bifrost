@@ -145,9 +145,9 @@ public class WandOfTheForestItem extends Item implements CustomCreativeTabConten
 	}
 
 	public static void doParticleBeamWithOffset(Level world, BlockPos orig, BlockPos end) {
-		Vec3 origOffset = world.getBlockState(orig).getOffset(world, orig);
+		Vec3 origOffset = world.getBlockState(orig).getOffset(orig);
 		Vec3 vorig = new Vec3(orig.getX() + origOffset.x() + 0.5, orig.getY() + origOffset.y() + 0.5, orig.getZ() + origOffset.z() + 0.5);
-		Vec3 endOffset = world.getBlockState(end).getOffset(world, end);
+		Vec3 endOffset = world.getBlockState(end).getOffset(end);
 		Vec3 vend = new Vec3(end.getX() + endOffset.x() + 0.5, end.getY() + endOffset.y() + 0.5, end.getZ() + endOffset.z() + 0.5);
 		doParticleBeam(world, vorig, vend);
 	}

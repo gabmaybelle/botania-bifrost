@@ -99,6 +99,6 @@ public class TinyPotatoBlockItem extends BlockItem {
 	@SoftImplement("IItemExtension") // TODO implement on fabric
 	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity) {
 		return armorType == getEquipmentSlot(stack) && entity instanceof Player player
-				&& ContributorList.hasFlower(player.getGameProfile().getName().toLowerCase(Locale.ROOT));
+				&& ContributorList.hasFlower(player.getGameProfile().name().toLowerCase(Locale.ROOT));
 	}
 }

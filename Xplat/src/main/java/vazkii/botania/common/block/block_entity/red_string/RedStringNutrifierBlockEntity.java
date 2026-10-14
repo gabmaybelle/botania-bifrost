@@ -14,6 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -33,7 +34,7 @@ public class RedStringNutrifierBlockEntity extends RedStringBlockEntity {
 		BlockState state = getStateAtBinding();
 		Block block = state.getBlock();
 
-		return block instanceof BonemealableBlock mealable && mealable.isValidBonemealTarget(world, binding, state);
+		return block instanceof BonemealableBlock mealable && mealable.isValidBonemealTarget(world, binding, state, BonemealSource.INTERACTION);
 	}
 
 	public boolean canUseBonemeal(Level world, RandomSource rand) {
@@ -44,7 +45,7 @@ public class RedStringNutrifierBlockEntity extends RedStringBlockEntity {
 
 		BlockState state = getStateAtBinding();
 		Block block = state.getBlock();
-		return block instanceof BonemealableBlock mealable && mealable.isBonemealSuccess(world, rand, binding, state);
+		return block instanceof BonemealableBlock mealable && mealable.isBonemealSuccess(world, rand, binding, state, BonemealSource.INTERACTION);
 	}
 
 	public void grow(ServerLevel world, RandomSource rand) {
@@ -56,7 +57,7 @@ public class RedStringNutrifierBlockEntity extends RedStringBlockEntity {
 		BlockState state = getStateAtBinding();
 		Block block = state.getBlock();
 		if (block instanceof BonemealableBlock mealable) {
-			mealable.performBonemeal(world, rand, binding, state);
+			mealable.performBonemeal(world, rand, binding, state, BonemealSource.INTERACTION);
 		}
 	}
 

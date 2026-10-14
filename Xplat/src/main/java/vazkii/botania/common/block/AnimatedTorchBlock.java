@@ -11,6 +11,7 @@ package vazkii.botania.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +33,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -72,21 +75,26 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 	@Override
 	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
 		this.updateNeighborsInFront(level, pos, state);
+		// PORT-26.3: the removal hook only runs when the block itself changes, so a turned torch updates its old front here
+		if (state.is(oldState.getBlock()) && state.getValue(FACING) != oldState.getValue(FACING)) {
+			this.updateNeighborsInFront(level, pos, oldState);
+		}
 	}
 
 	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		super.onRemove(state, level, pos, newState, movedByPiston);
-		if (!movedByPiston && !state.is(newState.getBlock()) || state.getValue(FACING) != newState.getValue(FACING)) {
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		if (!movedByPiston) {
 			this.updateNeighborsInFront(level, pos, state);
 		}
 	}
 
+	// [VanillaCopy] ObserverBlock#updateNeighborsInFront, with the torch's own front
 	protected void updateNeighborsInFront(final Level level, final BlockPos pos, final BlockState state) {
 		Direction direction = state.getValue(FACING);
 		BlockPos poweredPos = pos.relative(direction);
-		level.neighborChanged(poweredPos, this, pos);
-		level.updateNeighborsAtExceptFromFacing(poweredPos, this, direction.getOpposite());
+		Orientation orientation = ExperimentalRedstoneUtils.initialOrientation(level, direction, null);
+		level.neighborChanged(poweredPos, this, orientation);
+		level.updateNeighborsAtExceptFromFacing(poweredPos, this, direction.getOpposite(), orientation);
 	}
 
 	@Override
@@ -149,7 +157,7 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 	}
 
 	@Override
-	protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
+	protected void onExplosionHit(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
 		if (explosion.canTriggerBlocks() && level.getBlockEntity(pos) instanceof AnimatedTorchBlockEntity torch) {
 			torch.toggle();
 		}

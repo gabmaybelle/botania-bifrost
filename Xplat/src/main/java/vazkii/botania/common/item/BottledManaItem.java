@@ -11,6 +11,7 @@ package vazkii.botania.common.item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlockContainer;
@@ -33,9 +35,9 @@ import net.minecraft.world.level.material.Fluids;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.entity.PixieEntity;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
 public class BottledManaItem extends Item {
 	public static final int SWIGS = 6;
@@ -152,7 +154,7 @@ public class BottledManaItem extends Item {
 	private static void effectHighestPossible(Level level, LivingEntity living) {
 		int x = Mth.floor(living.getX());
 		int z = Mth.floor(living.getZ());
-		for (int i = level.getMaxBuildHeight(); i > level.getMinBuildHeight(); i--) {
+		for (int i = level.getMaxY(); i > level.getMinY(); i--) {
 			BlockState state = level.getBlockState(new BlockPos(x, i, z));
 			if (!state.isAir()) {
 				living.teleportTo(living.getX(), i, living.getZ());
@@ -199,7 +201,7 @@ public class BottledManaItem extends Item {
 			living.hurt(living.damageSources().magic(), living.getHealth() - 1);
 			ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
 			skull.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
-			living.spawnAtLocation(skull, 0);
+			living.spawnAtLocation((ServerLevel) level, skull, 0);
 		}
 	}
 
@@ -218,8 +220,8 @@ public class BottledManaItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
-		stacks.add(Component.translatable("botaniamisc.bottleTooltip"));
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
+		stacks.accept(Component.translatable("botaniamisc.bottleTooltip"));
 	}
 
 	@Override

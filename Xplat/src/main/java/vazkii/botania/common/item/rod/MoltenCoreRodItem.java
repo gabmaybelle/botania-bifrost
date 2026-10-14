@@ -79,7 +79,7 @@ public class MoltenCoreRodItem extends Item {
 
 			SingleRecipeInput input = new SingleRecipeInput(new ItemStack(state.getBlock()));
 			BotaniaRecipeTypes.recipeManager(world).getRecipeFor(RecipeType.SMELTING, input, p.level())
-					.map(r -> r.value().assemble(input, world.registryAccess()))
+					.map(r -> r.value().assemble(input))
 					.filter(r -> !r.isEmpty() && r.getItem() instanceof BlockItem)
 					.ifPresent(result -> {
 						boolean decremented = false;

@@ -20,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import vazkii.botania.api.internal.ManaBurst;
+import vazkii.botania.common.helper.EntityHelper;
 
 public class KindleLens extends Lens {
 	@Override
@@ -45,10 +46,10 @@ public class KindleLens extends Lens {
 			BlockState stateAt = entity.level().getBlockState(pos);
 			BlockState stateAtOffset = entity.level().getBlockState(offPos);
 
-			if (stateAt.is(Blocks.NETHER_PORTAL) && entity.mayInteract(entity.level(), pos)) {
+			if (stateAt.is(Blocks.NETHER_PORTAL) && EntityHelper.mayInteract(entity, pos)) {
 				entity.level().destroyBlock(pos, false, entity);
 			}
-			if (!entity.mayInteract(entity.level(), offPos)) {
+			if (!EntityHelper.mayInteract(entity, offPos)) {
 				return true;
 			}
 			if (stateAtOffset.is(Blocks.NETHER_PORTAL)) {

@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -158,14 +160,22 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		// a burning stick is gone, it is not dropped
+		if (!state.getValue(BlockStateProperties.LIT)) {
+			super.preRemoveSideEffects(pos, state);
+		}
+	}
+
+	@Override
+	protected void saveAdditional(ValueOutput tag) {
+		super.saveAdditional(tag);
 		tag.putInt(TAG_TIME_LEFT, timeLeft);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
 		timeLeft = tag.getIntOr(TAG_TIME_LEFT, 0);
 	}
 

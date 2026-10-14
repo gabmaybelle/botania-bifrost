@@ -9,15 +9,15 @@
 package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
@@ -59,7 +59,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	@Override
 	public void playSound() {
 		//Usage of vanilla sound event: Subtitle is "Sipping", generic sounds are meant to be reused.
-		getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK, SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);
+		getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK.value(), SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);
 	}
 
 	@Override
@@ -73,14 +73,14 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	public void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 		passiveDecayTicks = cmp.getIntOr(TAG_PASSIVE_DECAY_TICKS, 0);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		cmp.putInt(TAG_PASSIVE_DECAY_TICKS, passiveDecayTicks);
 	}
 

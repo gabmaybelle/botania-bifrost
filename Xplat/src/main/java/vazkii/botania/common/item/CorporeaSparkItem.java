@@ -10,12 +10,14 @@ package vazkii.botania.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -26,7 +28,7 @@ import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.impl.corporea.DummyCorporeaNode;
 import vazkii.botania.common.lib.BotaniaTags;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class CorporeaSparkItem extends Item {
 
@@ -54,7 +56,7 @@ public class CorporeaSparkItem extends Item {
 	}
 
 	public static boolean attachSpark(Level world, BlockPos pos, ItemStack stack, ItemStack otherHandStack) {
-		CorporeaSparkEntity spark = BotaniaEntities.CORPOREA_SPARK.create(world);
+		CorporeaSparkEntity spark = BotaniaEntities.CORPOREA_SPARK.create(world, EntitySpawnReason.EVENT);
 		if (stack.is(BotaniaItems.MASTER_CORPOREA_SPARK)) {
 			spark.setMaster(true);
 		}
@@ -62,9 +64,9 @@ public class CorporeaSparkItem extends Item {
 			spark.setCreative(true);
 		}
 		spark.setPos(pos.getX() + 0.5, pos.getY() + 1.25, pos.getZ() + 0.5);
-		if (otherHandStack.getItem() instanceof DyeItem dye) {
+		if (otherHandStack.has(DataComponents.DYE)) {
+			spark.setNetwork(otherHandStack.get(DataComponents.DYE));
 			otherHandStack.shrink(1);
-			spark.setNetwork(dye.getDyeColor());
 		}
 
 		if (canPlace(world, spark) && !CorporeaHelper.instance().doesBlockHaveSpark(world, pos)) {
@@ -78,9 +80,9 @@ public class CorporeaSparkItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
 		if (stack.is(BotaniaItems.CREATIVE_CORPOREA_SPARK)) {
-			tooltip.add(Component.translatable("botaniamisc.creativeSpark").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.creativeSpark").withStyle(ChatFormatting.GRAY));
 		}
 	}
 }

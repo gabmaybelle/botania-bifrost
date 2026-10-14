@@ -9,9 +9,7 @@
 package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -19,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import vazkii.botania.api.block_entity.RadiusDescriptor;
@@ -164,16 +164,16 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
 		cmp.putInt(TAG_BURN_TIME, burnTime);
 		cmp.putInt(TAG_COOLDOWN_TIME, cooldownTime);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
 		burnTime = cmp.getIntOr(TAG_BURN_TIME, 0);
 		cooldownTime = cmp.getIntOr(TAG_COOLDOWN_TIME, 0);

@@ -10,7 +10,7 @@ package vazkii.botania.common.block.block_entity.corporea;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -39,13 +39,11 @@ public class CorporeaFunnelBlockEntity extends BaseCorporeaBlockEntity implement
 	public void doRequest() {
 		CorporeaSpark spark = getSpark();
 		if (spark != null && spark.getMaster() != null) {
-			WeightedRandomList<FilterHelper.WeightedItemStack> filter = FilterHelper.getWeightedFiltersOnBlock(level, getBlockPos(),
+			WeightedList<ItemStack> filter = FilterHelper.getWeightedFiltersOnBlock(level, getBlockPos(),
 					(itemFrame, stack) -> stack.copyWithCount(ROTATION_TO_STACK_SIZE[itemFrame.getRotation()]),
 					(itemFrame, stack) -> stack.getCount());
 			if (!filter.isEmpty()) {
-				ItemStack stack = filter.getRandom(level.getRandom())
-						.map(FilterHelper.WeightedItemStack::stack)
-						.orElse(ItemStack.EMPTY);
+				ItemStack stack = filter.getRandom(level.getRandom()).orElse(ItemStack.EMPTY);
 
 				if (!stack.isEmpty()) {
 					var matcher = CorporeaHelper.instance().createMatcher(stack, true);

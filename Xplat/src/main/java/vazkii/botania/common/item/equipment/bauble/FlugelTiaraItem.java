@@ -30,6 +30,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +58,7 @@ import vazkii.botania.xplat.ClientXplatAbstractions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabContents {
 
@@ -88,9 +91,9 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(Component.translatable("botania.wings" + getVariant(stack)));
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(Component.translatable("botania.wings" + getVariant(stack)));
 	}
 
 	public static int getMaxFlightTime(ItemStack stack) {
@@ -180,13 +183,13 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 	}
 
 	public static void playerLoggedOut(ServerPlayer player) {
-		String username = player.getGameProfile().getName();
+		String username = player.getGameProfile().name();
 		playersWithFlight.remove(username + ":false");
 		playersWithFlight.remove(username + ":true");
 	}
 
 	private static String playerStr(Player player) {
-		return player.getGameProfile().getName() + ":" + player.level().isClientSide();
+		return player.getGameProfile().name() + ":" + player.level().isClientSide();
 	}
 
 	private static boolean shouldPlayerHaveFlight(Player player) {

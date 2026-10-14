@@ -61,7 +61,7 @@ public class ManaPylonBlock extends PylonBlock {
 							0, 0, 0);
 				}
 
-				Vec3 flowerOffset = flowerState.getOffset(level, flowerPos);
+				Vec3 flowerOffset = flowerState.getOffset(flowerPos);
 				Vec3 ourCoords = Vec3.atCenterOf(pos).add(0, 1 + (rng.nextDouble() - 0.5) * 0.25, 0);
 				Vec3 movementVector = centerBlock.subtract(ourCoords).scale(0.04);
 

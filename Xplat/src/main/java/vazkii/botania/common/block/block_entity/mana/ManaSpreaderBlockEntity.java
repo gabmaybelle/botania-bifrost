@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
@@ -29,6 +30,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -269,10 +272,10 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
-		cmp.putUUID(TAG_UUID, getIdentifier());
+		cmp.store(TAG_UUID, UUIDUtil.CODEC, getIdentifier());
 
 		cmp.putInt(TAG_MANA, mana);
 		cmp.putFloat(TAG_ROTATION_X, rotationX);
@@ -302,12 +305,10 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
-		if (cmp.hasUUID(TAG_UUID)) {
-			identity = cmp.getUUID(TAG_UUID);
-		}
+		cmp.read(TAG_UUID, UUIDUtil.CODEC).ifPresent(uuid -> identity = uuid);
 
 		mana = cmp.getIntOr(TAG_MANA, 0);
 		rotationX = cmp.getFloatOr(TAG_ROTATION_X, 0F);
@@ -325,7 +326,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 		mmForcedGravity = cmp.getFloatOr(TAG_FORCED_GRAVITY, 0F);
 		mmForcedVelocityMultiplier = cmp.getFloatOr(TAG_FORCED_VELOCITY_MULTIPLIER, 0F);
 
-		canShootBurst = !cmp.contains(TAG_CAN_SHOOT_BURST) || cmp.getBoolean(TAG_CAN_SHOOT_BURST);
+		canShootBurst = cmp.getBooleanOr(TAG_CAN_SHOOT_BURST, true);
 
 		pingbackTicks = cmp.getIntOr(TAG_PINGBACK_TICKS, 0);
 		lastPingbackX = cmp.getDoubleOr(TAG_LAST_PINGBACK_X, 0);
@@ -353,7 +354,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = new CompoundTag();
 		// FIXME: figure this out separately
-		saveAdditional(tag, registries);
+		tag.merge(saveCustomOnly(registries));
 
 		requestsClientUpdate = false;
 		return tag;

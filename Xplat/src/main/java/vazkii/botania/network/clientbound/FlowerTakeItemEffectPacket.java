@@ -65,7 +65,7 @@ public record FlowerTakeItemEffectPacket(int itemId, BlockPos pos, int amount, b
 		// [VanillaCopy] ClientPacketListener::handleTakeItemEntity
 		public static void handle(FlowerTakeItemEffectPacket packet, Player localPlayer) {
 			ClientLevel level = (ClientLevel) localPlayer.level();
-			RandomSource random = level.random;
+			RandomSource random = level.getRandom();
 			Entity entity = level.getEntity(packet.itemId());
 
 			// Usage of vanilla sound events: Subtitles are "Experience gained" and "Item picked up", which both apply

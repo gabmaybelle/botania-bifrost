@@ -12,19 +12,21 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.fx.SparkleParticleData;
 
-public class PixieEntity extends FlyingMob {
+public class PixieEntity extends Mob {
 	private boolean gaia;
 	@Nullable
 	private LivingEntity summoner;
@@ -67,7 +69,7 @@ public class PixieEntity extends FlyingMob {
 	}
 
 	@Override
-	protected void customServerAiStep() {
+	protected void customServerAiStep(ServerLevel level) {
 		LivingEntity target = getTarget();
 		if (target != null) {
 			double d0 = target.getX() - getX();
@@ -101,7 +103,7 @@ public class PixieEntity extends FlyingMob {
 	}
 
 	@Override
-	public boolean isInvulnerableTo(DamageSource source) {
+	public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
 		if (!isGaia() && source.getEntity() == summoner) {
 			return true;
 		}
@@ -110,7 +112,7 @@ public class PixieEntity extends FlyingMob {
 			return true;
 		}
 
-		return super.isInvulnerableTo(source);
+		return super.isInvulnerableTo(level, source);
 	}
 
 	@Override
@@ -143,6 +145,12 @@ public class PixieEntity extends FlyingMob {
 			}
 		}
 		super.remove(reason);
+	}
+
+	// PORT-26.3: FlyingMob is gone; flying mobs drive travelFlying themselves (like the ghast)
+	@Override
+	public void travel(Vec3 input) {
+		this.travelFlying(input, 0.02F);
 	}
 
 	@Override

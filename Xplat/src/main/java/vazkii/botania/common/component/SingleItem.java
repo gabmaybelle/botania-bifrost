@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 
 public record SingleItem(ItemStack item) {
-	public static final Codec<SingleItem> CODEC = ItemStack.SINGLE_ITEM_CODEC
+	public static final Codec<SingleItem> CODEC = ItemStack.CODEC
 			.xmap(SingleItem::new, SingleItem::item);
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, SingleItem> STREAM_CODEC = ItemStack.STREAM_CODEC

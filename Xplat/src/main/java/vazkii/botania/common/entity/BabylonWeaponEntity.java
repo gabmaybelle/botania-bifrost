@@ -10,7 +10,6 @@ package vazkii.botania.common.entity;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -25,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -188,7 +189,7 @@ public class BabylonWeaponEntity extends LegallyDistinctThrowableProjectile {
 
 	private void explodeAndDie() {
 		if (!level().isClientSide()) {
-			Holder<DamageType> type = level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(BotaniaDamageTypes.KEY_EXPLOSION);
+			Holder<DamageType> type = level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(BotaniaDamageTypes.KEY_EXPLOSION);
 			DamageSource source = new DamageSource(type, this, this.getOwner());
 			level().explode(this, source, EXPLOSION_DAMAGE_CALCULATOR, getX(), getY(), getZ(), 3F, false, Level.ExplosionInteraction.NONE);
 			discard();
@@ -196,7 +197,7 @@ public class BabylonWeaponEntity extends LegallyDistinctThrowableProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
+	public void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putBoolean(TAG_CHARGING, isCharging());
 		cmp.putInt(TAG_VARIETY, getVariety());
@@ -207,7 +208,7 @@ public class BabylonWeaponEntity extends LegallyDistinctThrowableProjectile {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
+	public void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
 		setCharging(cmp.getBooleanOr(TAG_CHARGING, false));
 		setVariety(cmp.getIntOr(TAG_VARIETY, 0));

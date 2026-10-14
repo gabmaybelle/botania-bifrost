@@ -85,9 +85,9 @@ public final class AstrolabePreviewHandler {
 	}
 
 	private static void renderBlockAt(PoseStack ms, VertexConsumer buffer, BlockState state, BlockPos pos) {
-		double renderPosX = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().x();
-		double renderPosY = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().y();
-		double renderPosZ = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().z();
+		double renderPosX = Minecraft.getInstance().getEntityRenderDispatcher().camera.position().x();
+		double renderPosY = Minecraft.getInstance().getEntityRenderDispatcher().camera.position().y();
+		double renderPosZ = Minecraft.getInstance().getEntityRenderDispatcher().camera.position().z();
 
 		ms.pushPose();
 		ms.translate(-renderPosX, -renderPosY, -renderPosZ);

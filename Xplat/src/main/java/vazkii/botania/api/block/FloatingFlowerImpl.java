@@ -40,7 +40,7 @@ public class FloatingFlowerImpl implements FloatingFlower {
 	public void readNBT(CompoundTag nbt, HolderLookup.Provider registries) {
 		Identifier islandTypeId = Identifier.tryParse(nbt.getStringOr("islandType", ""));
 		if (islandTypeId != null) {
-			setIslandType(BotaniaAPI.instance().getIslandTypeRegistry().get(islandTypeId));
+			setIslandType(BotaniaAPI.instance().getIslandTypeRegistry().getValue(islandTypeId));
 		}
 	}
 }

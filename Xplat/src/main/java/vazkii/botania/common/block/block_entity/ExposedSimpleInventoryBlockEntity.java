@@ -13,6 +13,7 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -76,13 +77,13 @@ public abstract class ExposedSimpleInventoryBlockEntity extends SimpleInventoryB
 	}
 
 	@Override
-	public void startOpen(Player player) {
-		getItemHandler().startOpen(player);
+	public void startOpen(ContainerUser user) {
+		getItemHandler().startOpen(user);
 	}
 
 	@Override
-	public void stopOpen(Player player) {
-		getItemHandler().stopOpen(player);
+	public void stopOpen(ContainerUser user) {
+		getItemHandler().stopOpen(user);
 	}
 
 	@Override

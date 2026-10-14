@@ -28,6 +28,7 @@ import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.item.SparkEntity;
 import vazkii.botania.common.helper.ColorHelper;
+import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.network.clientbound.PaintLensEffectPacket;
 import vazkii.botania.xplat.XplatAbstractions;
 
@@ -65,7 +66,7 @@ public class PaintslingerLens extends Lens {
 				Identifier blockId = BuiltInRegistries.BLOCK.getKey(hitBlock);
 
 				if (BotaniaAPI.instance().getPaintableBlocks().containsKey(blockId)
-						&& entity.mayInteract(entity.level(), hitPos)) {
+						&& EntityHelper.mayInteract(entity, hitPos)) {
 					List<BlockPos> coordsToPaint = new ArrayList<>();
 					Queue<BlockPos> coordsToCheck = new ArrayDeque<>();
 					Set<BlockPos> checkedCoords = new HashSet<>();
@@ -80,7 +81,7 @@ public class PaintslingerLens extends Lens {
 							BlockPos candidatePos = coords.relative(dir);
 							if (checkedCoords.add(candidatePos)
 									&& entity.level().getBlockState(candidatePos).is(hitBlock)
-									&& entity.mayInteract(entity.level(), hitPos)) {
+									&& EntityHelper.mayInteract(entity, hitPos)) {
 								coordsToCheck.add(candidatePos);
 							}
 						}

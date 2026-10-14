@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.SlotAccess;
@@ -107,7 +108,7 @@ public class InventoryHelper {
 			ItemStack stackAt = inv.getItemHandler().getItem(i);
 			if (!stackAt.isEmpty()) {
 				ItemStack copy = stackAt.copy();
-				player.getInventory().placeItemBackInInventory(copy);
+				player.getInventory().placeItemBackInInventory(copy, Prediction.SERVER_ONLY);
 				inv.getItemHandler().setItem(i, ItemStack.EMPTY);
 				inv.getLevel().gameEvent(null, GameEvent.BLOCK_CHANGE, inv.getBlockPos());
 				break;

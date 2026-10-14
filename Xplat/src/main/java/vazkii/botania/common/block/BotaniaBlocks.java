@@ -9,6 +9,7 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.*;
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.*;
 import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,7 +23,6 @@ import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -1389,7 +1389,7 @@ public final class BotaniaBlocks {
 					.isValidSpawn(NO_SPAWN)
 					.isRedstoneConductor(NEVER)
 					.isSuffocating(NEVER)
-					.isViewBlocking(NEVER)
+					.isViewBlocking((state, level, pos, aabb) -> false)
 					// Botania: mana glasses emit a lot of light
 					.lightLevel(constInt(15))));
 	public static final Block ALFGLASS = make(LibBlockNames.ALFGLASS,
@@ -1507,7 +1507,7 @@ public final class BotaniaBlocks {
 					.strength(2, 5)
 					.isValidSpawn(NO_SPAWN)
 					.noOcclusion()
-					.isViewBlocking(NEVER)
+					.isViewBlocking((state, level, pos, aabb) -> false)
 					.isSuffocating(NEVER)));
 	public static final Block SPECTRAL_PLATFORM = make(LibBlockNames.PLATFORM_SPECTRAL,
 			new SpectralPlatformBlock(BlockBehaviour.Properties.ofFullCopy(ABSTRUSE_PLATFORM)));
@@ -2660,9 +2660,7 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(LIVINGWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
 				LIVINGWOOD_PRESSURE_PLATE));
 		r.accept(new BlockItem(LIVINGWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_BUTTON));
-		r.accept(new SignItem(BotaniaItems.defaultBuilder().stacksTo(16), LIVINGWOOD_SIGN,
-				LIVINGWOOD_WALL_SIGN
-		), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SIGN));
+		r.accept(new StandingAndWallBlockItem(LIVINGWOOD_SIGN, LIVINGWOOD_WALL_SIGN, Direction.DOWN, BotaniaItems.defaultBuilder().stacksTo(16).signText()), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SIGN));
 		r.accept(new HangingSignItem(
 				LIVINGWOOD_HANGING_SIGN, LIVINGWOOD_WALL_HANGING_SIGN,
 				BotaniaItems.defaultBuilder().stacksTo(16)), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_HANGING_SIGN));
@@ -2699,9 +2697,7 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(DREAMWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
 				DREAMWOOD_PRESSURE_PLATE));
 		r.accept(new BlockItem(DREAMWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_BUTTON));
-		r.accept(new SignItem(BotaniaItems.defaultBuilder().stacksTo(16), DREAMWOOD_SIGN,
-				DREAMWOOD_WALL_SIGN
-		), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SIGN));
+		r.accept(new StandingAndWallBlockItem(DREAMWOOD_SIGN, DREAMWOOD_WALL_SIGN, Direction.DOWN, BotaniaItems.defaultBuilder().stacksTo(16).signText()), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SIGN));
 		r.accept(new HangingSignItem(
 				DREAMWOOD_HANGING_SIGN, DREAMWOOD_WALL_HANGING_SIGN,
 				BotaniaItems.defaultBuilder().stacksTo(16)), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_HANGING_SIGN));

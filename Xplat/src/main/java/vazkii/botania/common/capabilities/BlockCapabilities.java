@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.block.EdibleBlockWithEffects;
@@ -76,7 +77,7 @@ public final class BlockCapabilities {
 		// for performance reasons we register the types we know, even though they would be covered by the fallback
 		registration.register(ExoflameHeatable.LOOKUP, List.of(
 				blockEntityApi(ExoflameFurnaceHandler.FurnaceExoflameHeatable::new,
-						BlockEntityType.FURNACE, BlockEntityType.BLAST_FURNACE, BlockEntityType.SMOKER
+						BlockEntityTypes.FURNACE, BlockEntityTypes.BLAST_FURNACE, BlockEntityTypes.SMOKER
 				)
 		));
 
@@ -85,8 +86,8 @@ public final class BlockCapabilities {
 		));
 
 		registration.register(LifeAggregatorCarryable.LOOKUP, List.of(
-				blockEntityApi(LifeAggregatorHandler.MonsterSpawnerCarryable::new, BlockEntityType.MOB_SPAWNER),
-				blockEntityApi(LifeAggregatorHandler.TrialSpawnerCarryable::new, BlockEntityType.TRIAL_SPAWNER)
+				blockEntityApi(LifeAggregatorHandler.MonsterSpawnerCarryable::new, BlockEntityTypes.MOB_SPAWNER),
+				blockEntityApi(LifeAggregatorHandler.TrialSpawnerCarryable::new, BlockEntityTypes.TRIAL_SPAWNER)
 		));
 
 		registration.register(ManaCollisionGhost.LOOKUP, List.of(

@@ -9,16 +9,16 @@
 
 package vazkii.botania.common.config;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.util.StrictJsonParser;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +28,8 @@ import vazkii.botania.api.configdata.GaiaFightConfiguration;
 import vazkii.botania.api.configdata.LooniumStructureConfiguration;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -122,9 +124,9 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 	}
 
 	@Override
-	public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager,
-			ProfilerFiller prepProfiler, ProfilerFiller reloadProfiler,
-			Executor backgroundExecutor, Executor gameExecutor) {
+	public CompletableFuture<Void> reload(SharedState sharedState, Executor backgroundExecutor, PreparationBarrier barrier,
+			Executor gameExecutor) {
+		ResourceManager manager = sharedState.resourceManager();
 		var looniumTask = scheduleConfigParse(barrier, manager, backgroundExecutor, gameExecutor, ConfigDataType.LOONIUM);
 		var gaiaFightTask = scheduleConfigParse(barrier, manager, backgroundExecutor, gameExecutor, ConfigDataType.GAIA_FIGHT);
 
@@ -134,15 +136,20 @@ public class ConfigDataManagerImpl implements ConfigDataManager {
 	private <T> CompletableFuture<Void> scheduleConfigParse(PreparationBarrier barrier, ResourceManager manager,
 			Executor backgroundExecutor, Executor gameExecutor, ConfigDataType<T> type) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<Identifier, JsonElement> resourceMap = new HashMap<>();
-			SimpleJsonResourceReloadListener.scanDirectory(manager, type.directory, new Gson(), resourceMap);
-			Map<Identifier, T> configs = new HashMap<>(resourceMap.size());
-			resourceMap.forEach((id, jsonElement) -> {
+			// PORT-26.3: [VanillaCopy] SimpleJsonResourceReloadListener#prepare, the directory scan helper is gone
+			FileToIdConverter lister = FileToIdConverter.json(type.directory);
+			Map<Identifier, T> configs = new HashMap<>();
+			for (Map.Entry<Identifier, Resource> entry : lister.listMatchingResources(manager).entrySet()) {
+				Identifier id = lister.fileToId(entry.getKey());
 				BotaniaAPI.LOGGER.debug("Parsing {} config '{}'", type.directory, id);
-				type.codec.parse(JsonOps.INSTANCE, jsonElement)
-						.ifError(error -> BotaniaAPI.LOGGER.error("Error parsing {}[{}]: {}", type.directory, id, error.message()))
-						.ifSuccess(c -> configs.put(id, c));
-			});
+				try (Reader reader = entry.getValue().openAsReader()) {
+					type.codec.parse(JsonOps.INSTANCE, StrictJsonParser.parse(reader))
+							.ifError(error -> BotaniaAPI.LOGGER.error("Error parsing {}[{}]: {}", type.directory, id, error.message()))
+							.ifSuccess(c -> configs.put(id, c));
+				} catch (JsonParseException | IllegalArgumentException | IOException e) {
+					BotaniaAPI.LOGGER.error("Error parsing {}[{}]", type.directory, id, e);
+				}
+			}
 			type.validateFunction.accept(configs);
 			return configs;
 		}, backgroundExecutor)

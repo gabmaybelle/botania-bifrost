@@ -9,9 +9,11 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +50,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if (!world.isClientSide() && e instanceof ItemEntity item) {
 			ItemStack stack = item.getItem();
 			if (isSunflower(stack) && removeRain(world) || isBlueOrchid(stack) && startRain(world)) {
@@ -103,7 +105,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.isRaining() ? 15 : 0;
 	}
 

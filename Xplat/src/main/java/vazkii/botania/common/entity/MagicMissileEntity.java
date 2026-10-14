@@ -8,7 +8,6 @@
  */
 package vazkii.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,6 +26,8 @@ import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -51,7 +52,9 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	}
 
 	public MagicMissileEntity(LivingEntity owner, boolean evil) {
-		super(BotaniaEntities.MAGIC_MISSILE, owner, owner.level());
+		// [VanillaCopy] the removed ThrowableProjectile(type, owner, level) constructor
+		super(BotaniaEntities.MAGIC_MISSILE, owner.getX(), owner.getEyeY() - 0.1, owner.getZ(), owner.level());
+		setOwner(owner);
 		setEvil(evil);
 	}
 
@@ -158,13 +161,13 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
+	public void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putInt(TAG_TIME, time);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
+	public void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
 		time = cmp.getIntOr(TAG_TIME, 0);
 	}

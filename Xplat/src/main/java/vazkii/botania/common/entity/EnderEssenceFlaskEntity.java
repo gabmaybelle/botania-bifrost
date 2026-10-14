@@ -55,7 +55,9 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 	}
 
 	public EnderEssenceFlaskEntity(LivingEntity entity, Level world) {
-		super(BotaniaEntities.ENDER_ESSENCE_FLASK, entity, world);
+		// [VanillaCopy] the removed ThrowableProjectile(type, owner, level) constructor
+		super(BotaniaEntities.ENDER_ESSENCE_FLASK, entity.getX(), entity.getEyeY() - 0.1, entity.getZ(), world);
+		setOwner(entity);
 	}
 
 	public EnderEssenceFlaskEntity(double x, double y, double z, Level world) {
@@ -102,7 +104,7 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 			Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
 
 			// Position chosen to appear roughly in the ghast's face
-			((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GHAST_TEAR)),
+			((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.GHAST_TEAR.asItem()),
 					entity.getX() + (2.3 * vec.x), entity.getY() + vec.y + 2.6, entity.getZ() + (2.3 * vec.z),
 					40,
 					Math.abs(vec.z) + 0.15, 0.2, Math.abs(vec.x) + 0.15, 0.2);
@@ -115,7 +117,7 @@ public class EnderEssenceFlaskEntity extends ThrowableProjectile implements Item
 
 			LootParams context = builder.create(LootContextParamSets.ENTITY);
 			for (ItemStack stack : table.getRandomItems(context)) {
-				ItemEntity item = entity.spawnAtLocation(stack, 2);
+				ItemEntity item = entity.spawnAtLocation((ServerLevel) level(), stack, 2);
 				item.setDeltaMovement(item.getDeltaMovement().add(vec.scale(0.4)));
 			}
 		} else {

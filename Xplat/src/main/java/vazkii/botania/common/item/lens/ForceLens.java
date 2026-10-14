@@ -21,6 +21,7 @@ import net.minecraft.world.phys.HitResult;
 import vazkii.botania.api.block.Bound;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.helper.ForcePushHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.mixin.PistonBaseBlockAccessor;
@@ -42,7 +43,7 @@ public class ForceLens extends Lens {
 				// warp+force should not move the force relay
 				return false;
 			}
-			if (entity.mayInteract(entity.level(), blockPos)) {
+			if (EntityHelper.mayInteract(entity, blockPos)) {
 				// mana burst could have been warped here, so don't assume that any block is unmovable
 				moveBlocks(entity.level(), blockPos.relative(rtr.getDirection()), rtr.getDirection().getOpposite(),
 						Bound.UNBOUND_POS);

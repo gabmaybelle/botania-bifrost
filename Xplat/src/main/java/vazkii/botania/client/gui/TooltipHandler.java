@@ -18,6 +18,7 @@ import vazkii.botania.common.item.ResoluteIvyItem;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class TooltipHandler {
 
@@ -32,11 +33,11 @@ public final class TooltipHandler {
 		return Component.translatable("botaniamisc.shiftinfo", shift).withStyle(ChatFormatting.GRAY);
 	}
 
-	public static void addOnShift(List<Component> tooltip, TooltipFlag flags, Runnable lambda) {
+	public static void addOnShift(Consumer<Component> tooltip, TooltipFlag flags, Runnable lambda) {
 		if (XplatAbstractions.instance().shouldShowExtendedItemTooltip(flags)) {
 			lambda.run();
 		} else {
-			tooltip.add(getShiftInfoTooltip());
+			tooltip.accept(getShiftInfoTooltip());
 		}
 	}
 

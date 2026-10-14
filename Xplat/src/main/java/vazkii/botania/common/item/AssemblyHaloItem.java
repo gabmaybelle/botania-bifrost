@@ -26,27 +26,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.*;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.RecipeBookMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -142,16 +143,16 @@ public class AssemblyHaloItem extends Item {
 	}
 
 	private static boolean hasRoomFor(Inventory inv, ItemStack stack) {
-		Inventory dummy = new Inventory(inv.player);
-		for (int i = 0; i < inv.items.size(); i++) {
-			dummy.items.set(i, inv.items.get(i).copy());
+		Inventory dummy = new Inventory(inv.player, new EntityEquipment());
+		for (int i = 0; i < inv.getNonEquipmentItems().size(); i++) {
+			dummy.getNonEquipmentItems().set(i, inv.getNonEquipmentItems().get(i).copy());
 		}
 		// warning: must be careful to not cause side effects / dupes with dummy here
 		return dummy.add(stack.copy());
 	}
 
 	private static boolean canCraftHeuristic(Player player, Recipe<CraftingInput> recipe) {
-		StackedContents stackedContents = new StackedContents();
+		StackedItemContents stackedContents = new StackedItemContents();
 		player.getInventory().fillStackedContents(stackedContents);
 		return stackedContents.canCraft(recipe, null);
 	}
@@ -164,10 +165,11 @@ public class AssemblyHaloItem extends Item {
 
 		CraftingMenu dummy = new CraftingMenu(-999, player.getInventory());
 		CraftingContainer craftInv = (CraftingContainer) dummy.getSlot(1).container;
-		RecipePlacer<CraftingInput, CraftingRecipe> placer = new RecipePlacer<>(dummy);
 
 		// Try placing the recipe into the dummy workbench, extracting items from player's inventory to do so
-		if (!placer.place((ServerPlayer) player, recipe)) {
+		// PORT-26.3: the menu runs vanilla's placer; anything but NOTHING means it could not place the whole recipe
+		if (dummy.handlePlacement(false, false, recipe, (ServerLevel) player.level(), player.getInventory())
+				!= RecipeBookMenu.PostPlaceAction.NOTHING) {
 			return;
 		}
 
@@ -176,15 +178,15 @@ public class AssemblyHaloItem extends Item {
 		if (!recipe.value().matches(craftInput, player.level())) {
 			// If the placer worked but the recipe still didn't, this might be a dynamic recipe with special conditions.
 			// Return items to the inventory and bail.
-			placer.clearGrid();
+			clearGrid(dummy, player);
 			return;
 		}
 
-		ItemStack result = recipe.value().assemble(craftInput, player.level().registryAccess());
+		ItemStack result = recipe.value().assemble(craftInput);
 
 		// Check if we have room for the result
 		if (!hasRoomFor(player.getInventory(), result)) {
-			placer.clearGrid();
+			clearGrid(dummy, player);
 			return;
 		}
 
@@ -193,7 +195,7 @@ public class AssemblyHaloItem extends Item {
 
 		// Give or toss all byproducts
 		NonNullList<ItemStack> remainingItems = recipe.value().getRemainingItems(craftInput);
-		remainingItems.forEach(s -> player.getInventory().placeItemBackInInventory(s));
+		remainingItems.forEach(s -> player.getInventory().placeItemBackInInventory(s, Prediction.SERVER_ONLY));
 
 		// The items we consumed will stay in the dummy workbench and get deleted
 
@@ -522,38 +524,14 @@ public class AssemblyHaloItem extends Item {
 		}
 	}
 
-	public static class RecipePlacer<I extends CraftingInput, R extends Recipe<I>> extends ServerPlaceRecipe<I, R> {
-		public RecipePlacer(RecipeBookMenu<I, R> container) {
-			super(container);
+	// [VanillaCopy] ServerPlaceRecipe#clearGrid, which is private now: give the grid back to the player
+	private static void clearGrid(CraftingMenu menu, Player player) {
+		for (Slot slot : menu.getInputGridSlots()) {
+			ItemStack stack = slot.getItem().copy();
+			player.getInventory().placeItemBackInInventory(stack, false, Prediction.SERVER_ONLY);
+			slot.set(stack);
 		}
-
-		// [VanillaCopy] Based on super.recipeClicked
-		public boolean place(ServerPlayer player, @Nullable RecipeHolder<R> recipe) {
-			if (recipe != null) {
-				this.inventory = player.getInventory();
-				this.stackedContents.clear();
-				player.getInventory().fillStackedContents(this.stackedContents);
-				this.menu.fillCraftSlotsStackedContents(this.stackedContents);
-
-				boolean ret;
-				if (this.stackedContents.canCraft(recipe.value(), null)) {
-					this.handleRecipeClicked(recipe, false);
-					ret = true;
-				} else {
-					this.clearGrid();
-					ret = false;
-				}
-
-				player.getInventory().setChanged();
-				return ret;
-			}
-			return false;
-		}
-
-		// Make public
-		@Override
-		public void clearGrid() {
-			super.clearGrid();
-		}
+		menu.getResultSlot().set(ItemStack.EMPTY);
+		menu.getInputGridSlots().forEach(slot -> slot.set(ItemStack.EMPTY));
 	}
 }

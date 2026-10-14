@@ -20,6 +20,7 @@ import net.minecraft.world.phys.HitResult;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.ManaFlameBlockEntity;
+import vazkii.botania.common.helper.EntityHelper;
 
 public class FlashLens extends Lens {
 
@@ -34,10 +35,10 @@ public class FlashLens extends Lens {
 			BlockState stateAt = entity.level().getBlockState(blockPos);
 			BlockState neighbor = entity.level().getBlockState(neighborPos);
 
-			if (stateAt.is(BotaniaBlocks.MANA_FLAME) && entity.mayInteract(entity.level(), blockPos)) {
+			if (stateAt.is(BotaniaBlocks.MANA_FLAME) && EntityHelper.mayInteract(entity, blockPos)) {
 				entity.level().destroyBlock(blockPos, false, entity);
 			} else if ((neighbor.isAir() || neighbor.canBeReplaced())
-					&& entity.mayInteract(entity.level(), neighborPos)) {
+					&& EntityHelper.mayInteract(entity, neighborPos)) {
 				var fluid = entity.level().getFluidState(neighborPos);
 				var water = fluid.isSource() && fluid.is(FluidTags.WATER);
 				entity.level().setBlockAndUpdate(neighborPos,

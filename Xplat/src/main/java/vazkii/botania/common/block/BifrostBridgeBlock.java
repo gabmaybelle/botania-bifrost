@@ -31,7 +31,7 @@ public class BifrostBridgeBlock extends BifrostBlock implements EntityBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(BotaniaItems.ROD_OF_THE_BIFROST);
 	}
 

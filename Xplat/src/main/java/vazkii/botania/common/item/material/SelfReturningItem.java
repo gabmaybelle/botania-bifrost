@@ -20,8 +20,5 @@ public class SelfReturningItem extends Item {
 		super(properties);
 	}
 
-	@Override
-	public boolean hasCraftingRemainingItem() {
-		return true;
-	}
+	// PORT-26.3: hasCraftingRemainingItem is gone; ItemMixin alone makes the item return itself
 }

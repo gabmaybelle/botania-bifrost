@@ -93,7 +93,7 @@ public class SojournersSashItem extends BaubleItem {
 		if (tryConsumeMana(player)) {
 			if (player.level().isClientSide()) {
 				SojournersSashItem beltItem = (SojournersSashItem) belt.getItem();
-				if ((player.onGround() || player.getAbilities().flying) && player.zza > 0F && !player.isInWaterOrBubble()) {
+				if ((player.onGround() || player.getAbilities().flying) && player.zza > 0F && !player.isInWater()) {
 					float speed = beltItem.getSpeed(belt);
 					player.moveRelative(player.getAbilities().flying ? speed : speed, new Vec3(0, 0, 1));
 					beltItem.onMovedTick(belt, player);

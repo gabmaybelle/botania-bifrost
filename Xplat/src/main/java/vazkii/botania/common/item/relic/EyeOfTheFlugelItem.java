@@ -20,10 +20,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -43,6 +45,7 @@ import vazkii.botania.network.clientbound.FlugelEyeEffectPacket;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
@@ -174,8 +177,8 @@ public class EyeOfTheFlugelItem extends RelicItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
 
 		if (context.registries() == null) {
 			return;
@@ -189,7 +192,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 		Component worldText = Component.literal(dimension.toString()).withStyle(ChatFormatting.GREEN);
 
 		if (binding == null) {
-			tooltip.add(Component.translatable("botaniamisc.flugelUnbound", worldText).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.flugelUnbound", worldText).withStyle(ChatFormatting.GRAY));
 		} else {
 			Component bindingText = Component.literal("[").withStyle(ChatFormatting.WHITE)
 					.append(Component.literal(Integer.toString(binding.getX())).withStyle(ChatFormatting.GOLD))
@@ -199,7 +202,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 					.append(Component.literal(Integer.toString(binding.getZ())).withStyle(ChatFormatting.GOLD))
 					.append("]");
 
-			tooltip.add(Component.translatable("botaniamisc.flugelBound", bindingText, worldText).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.flugelBound", bindingText, worldText).withStyle(ChatFormatting.GRAY));
 		}
 	}
 

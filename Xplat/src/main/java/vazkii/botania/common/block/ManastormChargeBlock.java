@@ -10,6 +10,7 @@ package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
@@ -41,7 +42,7 @@ public class ManastormChargeBlock extends BotaniaBlock {
 					&& (!(entity.getOwner() instanceof ServerPlayer player)
 							|| !player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer()))
 					&& world.destroyBlock(pos, false, entity)) {
-				ManaStormEntity storm = BotaniaEntities.MANASTORM_EPICENTER.create(world);
+				ManaStormEntity storm = BotaniaEntities.MANASTORM_EPICENTER.create(world, EntitySpawnReason.EVENT);
 				if (storm == null) {
 					return;
 				}

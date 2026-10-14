@@ -11,6 +11,7 @@ package vazkii.botania.common.handler;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -79,7 +80,7 @@ public final class PixieHandler {
 				}
 
 				pixie.setProps(livingSource, player, dmg);
-				pixie.finalizeSpawn((ServerLevelAccessor) player.level(), player.level().getCurrentDifficultyAt(pixie.blockPosition()),
+				pixie.finalizeSpawn((ServerLevelAccessor) player.level(), ((ServerLevel) player.level()).getCurrentDifficultyAt(pixie.blockPosition()),
 						EntitySpawnReason.EVENT, null);
 				player.level().addFreshEntity(pixie);
 			}

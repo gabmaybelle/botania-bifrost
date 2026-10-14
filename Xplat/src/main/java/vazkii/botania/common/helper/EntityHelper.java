@@ -24,6 +24,11 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 
 public class EntityHelper {
+	// PORT-26.3: Entity#mayInteract takes a ServerLevel now; on the client there is no spawn protection to check
+	public static boolean mayInteract(Entity entity, BlockPos pos) {
+		return !(entity.level() instanceof ServerLevel serverLevel) || entity.mayInteract(serverLevel, pos);
+	}
+
 	/**
 	 * Shrinks the itemstack in an entity and ensures that the new size is sent to clients
 	 */
@@ -89,8 +94,8 @@ public class EntityHelper {
 	 * related lag spikes, but does not necessarily make the target chunk entity-/redstone-processing.
 	 */
 	public static void addTeleportTicketIfFarAway(Entity entity, BlockPos sourcePos) {
-		ChunkPos entityChunk = new ChunkPos(entity.blockPosition());
-		ChunkPos sourceChunk = new ChunkPos(sourcePos);
+		ChunkPos entityChunk = ChunkPos.containing(entity.blockPosition());
+		ChunkPos sourceChunk = ChunkPos.containing(sourcePos);
 		if (entity.level() instanceof ServerLevel serverLevel && entityChunk.getChessboardDistance(sourceChunk) > 2) {
 			serverLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, entityChunk, 0, entity.getId());
 		}

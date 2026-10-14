@@ -31,6 +31,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.brew.Brew;
@@ -46,7 +47,7 @@ import vazkii.botania.common.item.CustomCreativeTabContents;
 import vazkii.botania.common.proxy.Proxy;
 import vazkii.botania.mixin.client.MinecraftAccessor;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer, BrewItem, CustomCreativeTabContents {
 
@@ -67,16 +68,16 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag adv) {
-		super.appendHoverText(stack, context, tooltip, adv);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag adv) {
+		super.appendHoverText(stack, context, display, tooltip, adv);
 
 		Brew brew = getBrew(stack);
 		if (brew == BotaniaBrews.FALLBACK) {
-			tooltip.add(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltip.accept(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
 			return;
 		}
 
-		tooltip.add(Component.translatable("botaniamisc.brewOf", I18n.get(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltip.accept(Component.translatable("botaniamisc.brewOf", I18n.get(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		for (MobEffectInstance effect : brew.getPotionEffects(stack)) {
 			ChatFormatting format = effect.getEffect().value().getCategory().getTooltipFormatting();
 			MutableComponent cmp = Component.translatable(effect.getDescriptionId());
@@ -84,7 +85,7 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 				cmp.append(" ");
 				cmp.append(Component.translatable("botania.roman" + (effect.getAmplifier() + 1)));
 			}
-			tooltip.add(cmp.withStyle(format));
+			tooltip.accept(cmp.withStyle(format));
 		}
 	}
 
@@ -135,7 +136,7 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
-		return BotaniaAPI.instance().getBrewRegistry().get(stack.get(BotaniaDataComponents.BREW));
+		return BotaniaAPI.instance().getBrewRegistry().getValue(stack.get(BotaniaDataComponents.BREW));
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {
@@ -148,7 +149,7 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 
 	@Override
 	public ItemStack getItemForBrew(Brew brew, ItemStack stack) {
-		if (!brew.canInfuseBloodPendant() || brew.getPotionEffects(stack).size() != 1 || brew.getPotionEffects(stack).getFirst().getEffect().value().isInstantenous()) {
+		if (!brew.canInfuseBloodPendant() || brew.getPotionEffects(stack).size() != 1 || brew.getPotionEffects(stack).getFirst().getEffect().value().isInstantaneous()) {
 			return ItemStack.EMPTY;
 		}
 

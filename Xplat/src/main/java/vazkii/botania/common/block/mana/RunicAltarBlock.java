@@ -9,7 +9,7 @@
 package vazkii.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.common.block.BotaniaWaterloggedBlock;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.RunicAltarBlockEntity;
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import vazkii.botania.common.helper.InventoryHelper;
 
 public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBlock {
@@ -75,16 +74,6 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
-	}
-
-	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new RunicAltarBlockEntity(pos, state);
 	}
@@ -105,7 +94,7 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof RunicAltarBlockEntity altar ? altar.signal : 0;
 	}
 

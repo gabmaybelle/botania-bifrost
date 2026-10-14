@@ -33,6 +33,7 @@ import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDiscountArmor, AncientWillContainer {
 
@@ -87,11 +88,11 @@ public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDisco
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
 		super.addArmorSetDescription(stack, list);
 		for (AncientWillType type : AncientWillType.values()) {
 			if (hasAncientWill(stack, type)) {
-				list.add(Component.translatable("botania.armorset.will_" + getWillId(type) + ".desc").withStyle(ChatFormatting.GRAY));
+				list.accept(Component.translatable("botania.armorset.will_" + getWillId(type) + ".desc").withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}

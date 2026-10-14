@@ -13,7 +13,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +44,6 @@ import vazkii.botania.api.item.HourglassMaterial;
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.block.block_entity.HoveringHourglassBlockEntity;
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import vazkii.botania.common.item.WandOfTheForestItem;
 
 import java.util.function.BiConsumer;
@@ -139,7 +140,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedBlock implements E
 
 		if (state.getValue(LOCKED)) {
 			if (level.isClientSide()) {
-				player.displayClientMessage(Component.translatable("botaniamisc.hourglassLock"), true);
+				player.sendOverlayMessage(Component.translatable("botaniamisc.hourglassLock"));
 			}
 			// There's BS going on in the server code. "Fail" doesn't prevent the item itself from being used/placed.
 			return InteractionResult.CONSUME_PARTIAL;
@@ -154,7 +155,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedBlock implements E
 		if (!level.isClientSide()) {
 			hourglass.setContents(ItemStack.EMPTY);
 			if (!player.addItem(hourglassStack)) {
-				player.drop(hourglassStack, false);
+				player.drop(hourglassStack, false, Prediction.SERVER_ONLY);
 			}
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 		}
@@ -189,9 +190,8 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedBlock implements E
 	}
 
 	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		SimpleInventoryBlockEntity.dropContentsOnDestroy(state, newState, level, pos);
-		super.onRemove(state, level, pos, newState, isMoving);
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
+		Containers.updateNeighboursAfterDestroy(state, level, pos);
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class HoveringHourglassBlock extends BotaniaWaterloggedBlock implements E
 	}
 
 	@Override
-	protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
+	protected void onExplosionHit(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
 		if (explosion.canTriggerBlocks() && level.getBlockEntity(pos) instanceof HoveringHourglassBlockEntity hourglass) {
 			hourglass.flipEarly();
 		}

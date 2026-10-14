@@ -134,7 +134,7 @@ public class TerraFirmaRodItem extends Item {
 		private final Block block;
 
 		private CoordsWithBlock(BlockPos pos, Block block) {
-			super(pos);
+			super(pos.getX(), pos.getY(), pos.getZ());
 			this.block = block;
 		}
 

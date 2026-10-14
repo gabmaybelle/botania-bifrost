@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +48,7 @@ import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.proxy.Proxy;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ManaBlasterItem extends Item {
 
@@ -132,7 +134,7 @@ public class ManaBlasterItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
 		boolean clip = hasClip(stack);
 		if (clip) {
 			TooltipHandler.addOnShift(tooltip, flags, () -> appendHoverTextImpl(stack, tooltip));
@@ -141,10 +143,10 @@ public class ManaBlasterItem extends Item {
 		}
 	}
 
-	private void appendHoverTextImpl(ItemStack stack, List<Component> tooltip) {
+	private void appendHoverTextImpl(ItemStack stack, Consumer<Component> tooltip) {
 		boolean clip = hasClip(stack);
 		if (clip && !Screen.hasShiftDown()) {
-			tooltip.add(TooltipHandler.getShiftInfoTooltip());
+			tooltip.accept(TooltipHandler.getShiftInfoTooltip());
 			return;
 		}
 
@@ -159,7 +161,7 @@ public class ManaBlasterItem extends Item {
 
 		if (clip) {
 			int pos = getClipPos(stack);
-			tooltip.add(Component.translatable("botaniamisc.hasClip"));
+			tooltip.accept(Component.translatable("botaniamisc.hasClip"));
 			List<ItemStack> lenses = getAllLens(stack);
 			for (int i = 0; i < CLIP_SLOTS; i++) {
 				ItemStack lensAt = lenses.get(i);
@@ -173,7 +175,7 @@ public class ManaBlasterItem extends Item {
 
 				MutableComponent tip = Component.translatable("botaniamisc.template.tooltip_list", name)
 						.withStyle(i == pos ? ChatFormatting.GREEN : ChatFormatting.GRAY);
-				tooltip.add(tip);
+				tooltip.accept(tip);
 			}
 		}
 	}

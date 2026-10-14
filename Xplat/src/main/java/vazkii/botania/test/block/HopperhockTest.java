@@ -22,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
@@ -217,11 +218,11 @@ public class HopperhockTest {
 	}
 
 	private static AbstractFurnaceBlockEntity getFurnaceBlockEntity(GameTestHelper helper, BlockPos furnacePos) {
-		if (helper.getBlockEntity(furnacePos) instanceof AbstractFurnaceBlockEntity furnace) {
+		if (helper.getBlockEntity(furnacePos, BlockEntity.class) instanceof AbstractFurnaceBlockEntity furnace) {
 			return furnace;
 		} else {
 			throw new GameTestAssertPosException(
-					Component.literal("Expected furnace here"), helper.absolutePos(furnacePos), furnacePos, helper.getTick());
+					Component.literal("Expected furnace here"), helper.absolutePos(furnacePos), furnacePos, (int) helper.getTick());
 		}
 	}
 }

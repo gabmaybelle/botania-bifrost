@@ -16,12 +16,13 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
@@ -32,7 +33,6 @@ import vazkii.botania.api.recipe.ElvenTradeRecipe;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.xplat.XplatAbstractions;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -95,8 +95,8 @@ public class BotaniaRecipeIngredientsCache implements ResourceManagerReloadListe
 			// TODO: terra plate allows special ingredients, for which this caching approach is incorrect
 			BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.TERRA_PLATE_TYPE).stream()
 					.flatMap(holder -> holder.value().getIngredients().stream())
-					.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
-					.map(ItemStack::getItem)
+					.flatMap(Ingredient::items)
+					.map(Holder::value)
 					.mapToInt(BuiltInRegistries.ITEM::getId)
 					.forEach(terraPlateInputItemIds::add);
 		}
@@ -120,8 +120,8 @@ public class BotaniaRecipeIngredientsCache implements ResourceManagerReloadListe
 		Int2ObjectMap<Set<RecipeHolder<ElvenTradeRecipe>>> mutableCacheMap = new Int2ObjectOpenHashMap<>();
 		for (RecipeHolder<ElvenTradeRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
 			holder.value().getIngredients().stream()
-					.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
-					.map(ItemStack::getItem)
+					.flatMap(Ingredient::items)
+					.map(Holder::value)
 					.mapToInt(BuiltInRegistries.ITEM::getId)
 					.forEach(itemId -> mutableCacheMap
 							.computeIfAbsent(itemId, id -> new HashSet<>())

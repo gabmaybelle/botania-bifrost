@@ -13,12 +13,14 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -58,7 +60,7 @@ public final class SkyblockWorldEvents {
 	}
 
 	public static void onPlayerJoin(ServerPlayer player) {
-		ServerLevel world = player.serverLevel();
+		ServerLevel world = player.level();
 		if (SkyblockChunkGenerator.isWorldSkyblock(world)) {
 			SkyblockSavedData data = SkyblockSavedData.get(world);
 			if (!data.skyblocks.containsValue(Util.NIL_UUID)) {
@@ -83,7 +85,7 @@ public final class SkyblockWorldEvents {
 					player.playSound(sound, st.getVolume() * 0.4F, st.getPitch() + (float) (Math.random() * 0.2 - 0.1));
 
 					if (world.isClientSide()) {
-						player.swing(hand);
+						player.swing(hand, SwingAnimation.DEFAULT, false);
 					} else if (world instanceof ServerLevel level) {
 						var table = level.getServer().reloadableRegistries().getLootTable(
 								BotaniaLootTables.GOG_PEBBLES_TABLE);
@@ -92,7 +94,7 @@ public final class SkyblockWorldEvents {
 								.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(hit.getBlockPos()))
 								.withParameter(LootContextParams.THIS_ENTITY, player)
 								.create(LootContextParamSets.BLOCK_USE);
-						table.getRandomItems(context, s -> player.drop(s, false));
+						table.getRandomItems(context, s -> player.drop(s, false, Prediction.SERVER_ONLY));
 					}
 
 					return InteractionResult.SUCCESS;
@@ -108,7 +110,7 @@ public final class SkyblockWorldEvents {
 							if (equipped.isEmpty()) {
 								player.setItemInHand(hand, new ItemStack(BotaniaItems.WATER_BOWL));
 							} else {
-								player.getInventory().placeItemBackInInventory(new ItemStack(BotaniaItems.WATER_BOWL));
+								player.getInventory().placeItemBackInInventory(new ItemStack(BotaniaItems.WATER_BOWL), Prediction.SERVER_ONLY);
 							}
 						}
 
@@ -124,7 +126,7 @@ public final class SkyblockWorldEvents {
 		BlockPos pos = islandPos.getCenter();
 
 		if (player instanceof ServerPlayer pmp) {
-			createSkyblock(pmp.serverLevel(), pos);
+			createSkyblock(pmp.level(), pos);
 			pmp.teleportTo(pos.getX() + 0.5, pos.getY() + 1.6, pos.getZ() + 0.5);
 			pmp.setRespawnPosition(pmp.level().dimension(), pos, 0, true, false);
 			if (BotaniaConfig.common().gogSpawnWithLexicon()) {

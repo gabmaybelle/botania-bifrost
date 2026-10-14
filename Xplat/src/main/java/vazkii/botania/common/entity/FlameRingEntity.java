@@ -8,8 +8,8 @@
  */
 package vazkii.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import vazkii.botania.client.fx.WispParticleData;
@@ -94,14 +96,14 @@ public class FlameRingEntity extends Entity {
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float amount) {
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 		return false;
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag var1) {}
+	protected void readAdditionalSaveData(ValueInput var1) {}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag var1) {}
+	protected void addAdditionalSaveData(ValueOutput var1) {}
 
 }

@@ -11,10 +11,9 @@ package vazkii.botania.common.block.block_entity;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -28,6 +27,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -102,7 +103,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 		}
 		List<ItemEntity> itemEntities = self.getItemEntities();
 		ProcessingRecipeInput recipeInput = RecipeUtils.getInputFromEntities(itemEntities);
-		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipeHolderOptional = self.cachedCheck.getRecipeFor(recipeInput, level);
+		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipeHolderOptional = self.cachedCheck.getRecipeFor(recipeInput, (ServerLevel) level);
 		if (recipeHolderOptional.isEmpty()) {
 			self.stopCollecting();
 			return;
@@ -132,10 +133,10 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 	private void finishCrafting(Level level, BlockPos pos, BlockState state, List<ItemEntity> itemEntities,
 			ProcessingRecipeInput recipeInput, RecipeHolder<TerrestrialAgglomerationRecipe> recipeHolder) {
 		Player player = getCraftingPlayer(itemEntities);
-		ItemStack result = recipeHolder.value().assemble(recipeInput, level.registryAccess());
+		ItemStack result = recipeHolder.value().assemble(recipeInput);
 		if (player != null) {
 			player.triggerRecipeCrafted(recipeHolder, List.of(result));
-			result.onCraftedBy(level, player, result.getCount());
+			result.onCraftedBy(player, result.getCount());
 		} else {
 			result.onCraftedBySystem(level);
 		}
@@ -240,7 +241,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 				this.currentProgress = -1;
 				if (level.isClientSide()) {
 					for (int i = 0; i < 10; i++) {
-						getBlockState().getBlock().animateTick(getBlockState(), level, getBlockPos(), level.random);
+						getBlockState().getBlock().animateTick(getBlockState(), level, getBlockPos(), level.getRandom());
 					}
 				}
 				return true;
@@ -261,7 +262,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 		}
 		List<ItemEntity> itemEntities = getItemEntities();
 		ProcessingRecipeInput recipeInput = RecipeUtils.getInputFromEntities(itemEntities);
-		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipe = cachedCheck.getRecipeFor(recipeInput, level);
+		Optional<RecipeHolder<TerrestrialAgglomerationRecipe>> recipe = cachedCheck.getRecipeFor(recipeInput, (ServerLevel) level);
 		if (recipe.isPresent()) {
 			manaToGet = recipe.get().value().getMana();
 			level.setBlock(getBlockPos(),
@@ -292,13 +293,13 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput cmp) {
 		cmp.putInt(TAG_MANA, mana);
 		cmp.putInt(TAG_MANA_TO_GET, manaToGet);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		mana = cmp.getIntOr(TAG_MANA, 0);
 		manaToGet = cmp.getIntOr(TAG_MANA_TO_GET, 0);
 	}

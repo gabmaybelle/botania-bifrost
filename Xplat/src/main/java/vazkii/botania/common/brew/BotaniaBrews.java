@@ -71,7 +71,7 @@ public class BotaniaBrews {
 	}
 
 	private static Brew make(int cost, MobEffectInstance... effects) {
-		return new Brew(PotionContents.getColor(Arrays.asList(effects)), cost, effects);
+		return new Brew(PotionContents.getColorOptional(Arrays.asList(effects)).orElse(PotionContents.BASE_POTION_COLOR), cost, effects);
 	}
 
 }

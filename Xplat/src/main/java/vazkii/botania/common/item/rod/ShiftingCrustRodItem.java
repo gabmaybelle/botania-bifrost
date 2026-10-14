@@ -26,6 +26,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -80,7 +81,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 
 		if (player != null && player.isSecondaryUseActive()) {
 			if (world.getBlockEntity(pos) == null && block.asItem() != Items.AIR
-					&& (wstate.isSolidRender(world, pos) || wstate.getRenderShape() == RenderShape.MODEL)
+					&& (wstate.isSolidRender() || wstate.getRenderShape() == RenderShape.MODEL)
 					&& (wstate.canOcclude() || block instanceof TransparentBlock || block instanceof IronBarsBlock)
 					&& block.asItem() instanceof BlockItem) {
 				setItemToPlace(stack, block.asItem());
@@ -105,8 +106,8 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 	}
 
 	@Override
-	public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
-		return !player.isCreative();
+	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level world, BlockPos pos, LivingEntity entity) {
+		return !(entity instanceof Player player && player.isCreative());
 	}
 
 	public InteractionResult onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction side) {
@@ -163,7 +164,7 @@ public class ShiftingCrustRodItem extends Item implements WireframeCoordinateLis
 				return;
 			}
 
-			BlockPos coords = swap.get(world.random.nextInt(swap.size()));
+			BlockPos coords = swap.get(world.getRandom().nextInt(swap.size()));
 			int exchange = exchange(world, player, coords, stack, replacement);
 			if (exchange > 0) {
 				ManaItemHandler.instance().requestManaForTool(stack, player, exchange, true);

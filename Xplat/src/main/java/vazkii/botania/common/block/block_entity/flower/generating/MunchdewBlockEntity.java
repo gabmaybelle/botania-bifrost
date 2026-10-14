@@ -10,20 +10,19 @@ package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
@@ -59,7 +58,7 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 		if (level.isClientSide()) {
 			if (getBlockState().getValue(BotaniaStateProperties.ON_COOLDOWN)) {
 				if (Math.random() < 0.5) {
-					Vec3 offset = level.getBlockState(getBlockPos()).getOffset(level, getBlockPos());
+					Vec3 offset = level.getBlockState(getBlockPos()).getOffset(getBlockPos());
 					double x = getBlockPos().getX() + offset.x + 0.2 + Math.random() * 0.6;
 					double y = getBlockPos().getY() + offset.y + 0.6 + Math.random() * 0.3;
 					double z = getBlockPos().getZ() + offset.z + 0.2 + Math.random() * 0.6;
@@ -147,8 +146,8 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 		level.removeBlock(breakCoords, false);
 		if (BotaniaConfig.common().blockBreakParticles()) {
 			level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, breakCoords, Block.getId(state));
-			Vec3 offset = level.getBlockState(effectivePos).getOffset(level, effectivePos).add(0.5, 0.75, 0.5);
-			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(state.getBlock())),
+			Vec3 offset = level.getBlockState(effectivePos).getOffset(effectivePos).add(0.5, 0.75, 0.5);
+			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, state.getBlock().asItem()),
 					effectivePos.getX() + offset.x, effectivePos.getY() + offset.y, effectivePos.getZ() + offset.z,
 					5, 0.1, 0.1, 0.1, 0.03);
 		}
@@ -163,15 +162,15 @@ public class MunchdewBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
 		cmp.putInt(TAG_COOLDOWN, cooldown);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
 		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 	}

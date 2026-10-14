@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +50,7 @@ public class HellsRodItem extends Item {
 
 		if (player != null && ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)) {
 			if (!level.isClientSide()) {
-				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(level);
+				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(level, EntitySpawnReason.EVENT);
 				if (entity != null) {
 					entity.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
 					level.addFreshEntity(entity);
@@ -72,7 +73,7 @@ public class HellsRodItem extends Item {
 		public void onAvatarUpdate(ServerLevel level, BlockPos pos, ManaReceiver receiver) {
 			if (receiver.getCurrentMana() >= COST && avatar.isEnabled()
 					&& getTimeSinceLastActivation(level) >= COOLDOWN_AVATAR) {
-				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(level);
+				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(level, EntitySpawnReason.EVENT);
 				if (entity == null) {
 					return;
 				}

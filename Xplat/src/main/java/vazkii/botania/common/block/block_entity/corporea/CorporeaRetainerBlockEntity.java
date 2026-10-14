@@ -24,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +35,7 @@ import vazkii.botania.api.corporea.*;
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
+import vazkii.botania.common.helper.NbtHelper;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,7 +106,7 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput cmp) {
 		if (requestPos != null) {
 			cmp.putInt(TAG_REQUEST_X, requestPos.getX());
 			cmp.putInt(TAG_REQUEST_Y, requestPos.getY());
@@ -113,24 +116,28 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 
 		if (reqType != null) {
 			cmp.putString(TAG_REQUEST_TYPE, reqType.toString());
-			request.writeToNBT(cmp, registries);
+			// PORT-26.3: the matcher API still writes a CompoundTag; its keys are copied into the save data as they are
+			CompoundTag requestTag = new CompoundTag();
+			request.writeToNBT(requestTag, level.registryAccess());
+			cmp.store(NbtHelper.COMPOUND_PASSTHROUGH_CODEC, requestTag);
 			cmp.putInt(TAG_REQUEST_COUNT, requestCount);
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		if (cmp.contains(TAG_REQUEST_X)) {
+	protected void loadAdditional(ValueInput cmp) {
+		if (cmp.getInt(TAG_REQUEST_X).isPresent()) {
 			requestPos = new BlockPos(
 					cmp.getIntOr(TAG_REQUEST_X, 0),
-					cmp.getInt(TAG_REQUEST_Y),
-					cmp.getInt(TAG_REQUEST_Z));
+					cmp.getIntOr(TAG_REQUEST_Y, 0),
+					cmp.getIntOr(TAG_REQUEST_Z, 0));
 		} else {
 			requestPos = null;
 		}
 		Identifier reqType = Identifier.tryParse(cmp.getStringOr(TAG_REQUEST_TYPE, ""));
 		if (reqType != null && corporeaMatcherDeserializers.containsKey(reqType)) {
-			request = corporeaMatcherDeserializers.get(reqType).apply(cmp, registries);
+			request = corporeaMatcherDeserializers.get(reqType)
+					.apply(cmp.read(NbtHelper.COMPOUND_PASSTHROUGH_CODEC).orElseGet(CompoundTag::new), cmp.lookup());
 		} else {
 			request = null;
 		}

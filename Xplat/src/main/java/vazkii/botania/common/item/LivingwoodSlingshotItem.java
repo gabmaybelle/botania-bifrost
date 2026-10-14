@@ -34,7 +34,7 @@ public class LivingwoodSlingshotItem extends Item {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level world, LivingEntity living, int duration) {
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity living, int duration) {
 		int j = getUseDuration(stack, living) - duration;
 
 		if (!world.isClientSide() && (!(living instanceof Player player) || player.hasInfiniteMaterials() || PlayerHelper.hasAmmo(player, AMMO_FUNC))) {
@@ -42,7 +42,7 @@ public class LivingwoodSlingshotItem extends Item {
 			f = (f * f + f * 2.0F) / 3.0F;
 
 			if (f < 1F) {
-				return;
+				return false;
 			}
 
 			if (living instanceof Player player && !player.hasInfiniteMaterials()) {
@@ -55,6 +55,7 @@ public class LivingwoodSlingshotItem extends Item {
 			world.addFreshEntity(ball);
 			world.playSound(null, living.getX(), living.getY(), living.getZ(), BotaniaSounds.VINE_BALL_THROW, SoundSource.NEUTRAL, 1F, 0.4F / (living.getRandom().nextFloat() * 0.4F + 0.8F));
 		}
+		return true;
 	}
 
 	@Override

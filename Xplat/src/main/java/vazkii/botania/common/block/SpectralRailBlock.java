@@ -9,10 +9,10 @@
 package vazkii.botania.common.block;
 
 import com.google.common.base.Preconditions;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -29,8 +29,6 @@ import vazkii.botania.common.internal_caps.SpectralFloatTicks;
 import vazkii.botania.common.lib.BotaniaTags;
 
 public class SpectralRailBlock extends BaseRailBlock {
-	public static final MapCodec<SpectralRailBlock> CODEC = simpleCodec(SpectralRailBlock::new);
-
 	public static final String TAG_FLOAT_TICKS = "botania:float_ticks";
 
 	public SpectralRailBlock(Properties builder) {
@@ -44,7 +42,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 	}
 
 	private void updateFloating(AbstractMinecart cart) {
-		cart.level().getProfiler().push("cartFloating");
+		Profiler.get().push("cartFloating");
 		int floatTicks = SpectralFloatTicks.HOLDER.getOrDefault(cart, 0);
 		Preconditions.checkState(floatTicks > 0);
 
@@ -68,7 +66,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 			cart.level().levelEvent(LevelEvent.PARTICLES_SHOOT_SMOKE, entPos, 0);
 		}
 
-		cart.level().getProfiler().pop();
+		Profiler.get().pop();
 	}
 
 	@SoftImplement("IBaseRailBlockExtension")
@@ -94,11 +92,6 @@ public class SpectralRailBlock extends BaseRailBlock {
 		if (!SpectralFloatTicks.HOLDER.existsFor(c)) {
 			c.noPhysics = false;
 		}
-	}
-
-	@Override
-	protected MapCodec<? extends BaseRailBlock> codec() {
-		return CODEC;
 	}
 
 	@Override

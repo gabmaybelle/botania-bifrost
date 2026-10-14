@@ -10,6 +10,7 @@ package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -56,7 +57,7 @@ public class ManaFlameBlock extends BotaniaWaterloggedBlock implements EntityBlo
 				&& !InventoryHelper.containsType(player.getInventory(), BotaniaItems.LEXICA_BOTANIA)) {
 			if (!level.isClientSide()) {
 				stack.shrink(1);
-				player.getInventory().placeItemBackInInventory(new ItemStack(BotaniaItems.LEXICA_BOTANIA));
+				player.getInventory().placeItemBackInInventory(new ItemStack(BotaniaItems.LEXICA_BOTANIA), Prediction.SERVER_ONLY);
 			}
 			return InteractionResult.SUCCESS;
 		}

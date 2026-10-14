@@ -11,10 +11,10 @@ package vazkii.botania.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -26,6 +26,8 @@ import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -132,17 +134,17 @@ public class LuminizerMoverEntity extends Entity {
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float damage) {
+	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		return false;
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
+	protected void readAdditionalSaveData(ValueInput cmp) {
 		setExit(new BlockPos(cmp.getIntOr(TAG_EXIT_X, 0), cmp.getIntOr(TAG_EXIT_Y, 0), cmp.getIntOr(TAG_EXIT_Z, 0)));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag cmp) {
+	protected void addAdditionalSaveData(ValueOutput cmp) {
 		BlockPos exit = getExitPos();
 		cmp.putInt(TAG_EXIT_X, exit.getX());
 		cmp.putInt(TAG_EXIT_Y, exit.getY());

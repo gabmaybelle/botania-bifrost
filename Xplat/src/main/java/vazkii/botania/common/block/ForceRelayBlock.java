@@ -8,14 +8,12 @@
  */
 package vazkii.botania.common.block;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -29,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.PistonType;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +41,10 @@ import vazkii.botania.network.clientbound.ParticleBeamEffectPacket;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class ForceRelayBlock extends BotaniaBlock {
 
@@ -52,8 +55,10 @@ public class ForceRelayBlock extends BotaniaBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!world.isClientSide()) {
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean isMoving) {
+		// PORT-26.3: this replaces onRemove; the new state is already in the world when it runs
+		BlockState newState = world.getBlockState(pos);
+		{
 			var data = WorldData.get(world);
 
 			Direction movementContextDirection = ForcePushHelper.getMovementContextDirection();
@@ -149,41 +154,35 @@ public class ForceRelayBlock extends BotaniaBlock {
 
 	public static class WorldData extends SavedData {
 
-		private static final String ID = "PistonRelayPairs";
-		public static final Factory<WorldData> FACTORY = new Factory<>(WorldData::new, WorldData::new, DataFixTypes.LEVEL);
+		// PORT-26.3: saved data is described by a type with a codec, and the file is named by an identifier now
+		// (data/botania/piston_relay_pairs.dat; the old PistonRelayPairs name is not a valid identifier)
+		private static final Identifier ID = botaniaRL("piston_relay_pairs");
+		private static final Codec<WorldData> CODEC = BlockPos.CODEC.listOf().fieldOf("list").codec()
+				.xmap(WorldData::new, WorldData::toList);
+		public static final SavedDataType<WorldData> TYPE = new SavedDataType<>(ID, WorldData::new, CODEC, DataFixTypes.LEVEL);
 		public final Map<BlockPos, BlockPos> mapping = new HashMap<>();
 
 		public WorldData() {
 			// initialize with empty data
 		}
 
-		public WorldData(CompoundTag cmp, HolderLookup.Provider registries) {
-			ListTag list = cmp.getList("list", Tag.TAG_INT_ARRAY);
+		private WorldData(List<BlockPos> list) {
 			for (int i = 0; i < list.size(); i += 2) {
-				Tag from = list.get(i);
-				Tag to = list.get(i + 1);
-				BlockPos fromPos = BlockPos.CODEC.decode(NbtOps.INSTANCE, from).result().orElseThrow().getFirst();
-				BlockPos toPos = BlockPos.CODEC.decode(NbtOps.INSTANCE, to).result().orElseThrow().getFirst();
-
-				mapping.put(fromPos, toPos);
+				mapping.put(list.get(i), list.get(i + 1));
 			}
 		}
 
-		@Override
-		public CompoundTag save(CompoundTag cmp, HolderLookup.Provider registries) {
-			ListTag list = new ListTag();
+		private List<BlockPos> toList() {
+			List<BlockPos> list = new ArrayList<>();
 			for (Map.Entry<BlockPos, BlockPos> e : mapping.entrySet()) {
-				Tag from = BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, e.getKey()).result().orElseThrow();
-				Tag to = BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue()).result().orElseThrow();
-				list.add(from);
-				list.add(to);
+				list.add(e.getKey());
+				list.add(e.getValue());
 			}
-			cmp.put("list", list);
-			return cmp;
+			return list;
 		}
 
 		public static WorldData get(Level world) {
-			return ((ServerLevel) world).getDataStorage().computeIfAbsent(FACTORY, ID);
+			return ((ServerLevel) world).getDataStorage().computeIfAbsent(TYPE);
 		}
 	}
 }

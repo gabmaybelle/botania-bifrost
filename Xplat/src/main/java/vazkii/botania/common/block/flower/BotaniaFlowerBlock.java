@@ -42,7 +42,7 @@ public abstract class BotaniaFlowerBlock extends FlowerBlock implements Colored 
 		if (rand.nextDouble() >= BotaniaConfig.client().flowerParticleFrequency()) {
 			return;
 		}
-		Vec3 offset = state.getOffset(world, pos);
+		Vec3 offset = state.getOffset(pos);
 		double x = pos.getX() + offset.x;
 		double y = pos.getY() + offset.y;
 		double z = pos.getZ() + offset.z;

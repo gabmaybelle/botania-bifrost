@@ -21,11 +21,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -51,8 +53,8 @@ import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.helper.MathHelper;
 import vazkii.botania.common.lib.BotaniaTags;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetExcempt, CustomCreativeTabContents {
 
@@ -77,18 +79,18 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
 		int level = getShardLevel(stack);
 		Component levelLoc = Component.translatable("botania.roman" + level);
-		list.add(Component.translatable("botaniamisc.shardLevel", levelLoc).withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botaniamisc.shardRange", getRange(stack)).withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botaniamisc.shardLevel", levelLoc).withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botaniamisc.shardRange", getRange(stack)).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		if (pos.getY() < world.getMaxBuildHeight() - BASE_OFFSET && !world.dimensionType().hasCeiling()) {
+		if (pos.getY() < world.getMaxY() - BASE_OFFSET && !world.dimensionType().hasCeiling()) {
 			if (!world.isClientSide()) {
 				world.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, pos);
 				world.playSound(null, pos, BotaniaSounds.LAPUTA_START, SoundSource.BLOCKS, 1.0F + world.getRandom().nextFloat(), world.getRandom().nextFloat() * 0.7F + 1.3F);
@@ -226,7 +228,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	}
 
 	public ManaBurstEntity getBurst(Level world, BlockPos pos, ItemStack stack) {
-		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(world);
+		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(world, EntitySpawnReason.EVENT);
 		burst.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 
 		burst.setColor(0x00EAFF);

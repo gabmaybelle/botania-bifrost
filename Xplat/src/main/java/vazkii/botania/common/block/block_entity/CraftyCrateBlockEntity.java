@@ -17,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -129,7 +130,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	}
 
 	private boolean craft(boolean fullCheck, @Nullable Player player) {
-		level.getProfiler().push("craft");
+		Profiler.get().push("craft");
 		if (fullCheck && !isFull()) {
 			return false;
 		}
@@ -159,7 +160,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 		matchingRecipe.ifPresent(recipe -> {
 			CraftingInput.Positioned positioned = CraftingInput.ofPositioned(craft.getWidth(), craft.getHeight(), craft.getItems());
 			CraftingInput input = positioned.input();
-			ItemStack result = recipe.value().assemble(input, this.getLevel().registryAccess());
+			ItemStack result = recipe.value().assemble(input);
 
 			// Given some mods can return air by a bad implementation of their recipe handler,
 			// check for air before continuing on.
@@ -171,7 +172,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 			if (player != null) {
 				player.triggerRecipeCrafted(recipe, List.of(result));
-				result.onCraftedBy(level, player, result.getCount());
+				result.onCraftedBy(player, result.getCount());
 			} else {
 				result.onCraftedBySystem(level);
 			}
@@ -199,7 +200,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 			matchFailed = true;
 		}
 
-		level.getProfiler().pop();
+		Profiler.get().pop();
 		// Return only if present and not air.
 		return matchingRecipe.isPresent() && !craftResult.isEmpty();
 	}

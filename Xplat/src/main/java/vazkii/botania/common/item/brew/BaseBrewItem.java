@@ -19,7 +19,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +34,8 @@ import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabContents {
@@ -70,7 +72,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 		if (!world.isClientSide()) {
 			for (MobEffectInstance effect : getBrew(stack).getPotionEffects(stack)) {
 				MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), effect.getDuration(), effect.getAmplifier(), true, true);
-				if (effect.getEffect().value().isInstantenous()) {
+				if (effect.getEffect().value().isInstantaneous()) {
 					effect.getEffect().value().applyInstantenousEffect(living, living, living, newEffect.getAmplifier(), 1F);
 				} else {
 					living.addEffect(newEffect);
@@ -119,14 +121,14 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flags) {
 		PotionContents.addPotionTooltip(getBrew(stack).getPotionEffects(stack), list::add, 1, context.tickRate());
 	}
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		Identifier id = stack.get(BotaniaDataComponents.BREW);
-		return BotaniaAPI.instance().getBrewRegistry().get(id);
+		return BotaniaAPI.instance().getBrewRegistry().getValue(id);
 	}
 
 	public static void setBrew(ItemStack stack, @Nullable Brew brew) {

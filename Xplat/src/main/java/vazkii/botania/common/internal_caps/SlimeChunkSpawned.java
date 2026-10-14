@@ -33,8 +33,8 @@ public final class SlimeChunkSpawned {
 	public static final DataMarkerId MARKER = new DataMarkerId(ID);
 
 	public static boolean isSlimeChunk(Level world, BlockPos pos) {
-		ChunkPos chunkpos = new ChunkPos(pos);
-		return WorldgenRandom.seedSlimeChunk(chunkpos.x, chunkpos.z, ((ServerLevel) world).getSeed(), 987234911L).nextInt(10) == 0;
+		ChunkPos chunkpos = ChunkPos.containing(pos);
+		return WorldgenRandom.seedSlimeChunk(chunkpos.x(), chunkpos.z(), ((ServerLevel) world).getSeed(), 987234911L).nextInt(10) == 0;
 	}
 
 	private static boolean isSlimeChunk(Level world, double x, double z) {

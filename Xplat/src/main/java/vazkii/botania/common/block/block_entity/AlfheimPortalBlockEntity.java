@@ -20,8 +20,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -47,6 +45,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -79,6 +79,7 @@ import vazkii.patchouli.api.IStateMatcher;
 import vazkii.patchouli.api.PatchouliAPI;
 import vazkii.patchouli.api.TriPredicate;
 
+import java.net.URI;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
@@ -133,8 +134,8 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 	private static final ExplosionDamageCalculator EXPLOSION_DAMAGE_CALCULATOR = new BotaniaExplosionDamageCalculator(true, BotaniaTags.Entities.PORTAL_BREAD_IMMUNE);
 	private static final float EXPLOSION_RADIUS = 3f;
 	public static final Style PORTAL_EXPLOSION_EXPLAINER_STYLE = Style.EMPTY
-			.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/VazkiiMods/Botania/issues/2403"))
-			.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("VazkiiMods/Botania#2403")));
+			.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://github.com/VazkiiMods/Botania/issues/2403")))
+			.withHoverEvent(new HoverEvent.ShowText(Component.literal("VazkiiMods/Botania#2403")));
 
 	public static final int MANA_COST = 500;
 	public static final int MANA_COST_OPENING = 200000;
@@ -240,8 +241,8 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 				level.setBlockAndUpdate(worldPosition, blockState.setValue(BotaniaStateProperties.ALFPORTAL_STATE, newState));
 			}
 		} else if (self.explode) {
-			Holder<DamageType> type = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
-					.getHolderOrThrow(BotaniaDamageTypes.PORTAL_BREAD_EXPLOSION);
+			Holder<DamageType> type = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
+					.getOrThrow(BotaniaDamageTypes.PORTAL_BREAD_EXPLOSION);
 			Vec3 sourcePosition = Vec3.atCenterOf(worldPosition).add(0, 2, 0);
 			level.explode(null, new DamageSource(type, sourcePosition), EXPLOSION_DAMAGE_CALCULATOR,
 					sourcePosition, EXPLOSION_RADIUS, false, Level.ExplosionInteraction.TNT);
@@ -294,7 +295,7 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 			if (newState != AlfheimPortalState.OFF) {
 				level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BotaniaStateProperties.ALFPORTAL_STATE, newState));
 				if (player instanceof ServerPlayer serverPlayer) {
-					AlfheimPortalTrigger.INSTANCE.trigger(serverPlayer, serverPlayer.serverLevel(), getBlockPos(), stack);
+					AlfheimPortalTrigger.INSTANCE.trigger(serverPlayer, serverPlayer.level(), getBlockPos(), stack);
 				}
 				return true;
 			}
@@ -409,26 +410,20 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	public void saveAdditional(ValueOutput cmp) {
 		cmp.putInt(TAG_TICKS_OPEN, ticksOpen);
 		cmp.putInt(TAG_TICKS_SINCE_LAST_ITEM, ticksSinceLastItem);
 
-		ListTag stacksList = new ListTag();
-		for (ItemStack stack : portalStacks) {
-			stacksList.add(stack.save(registries));
-		}
-		cmp.put(TAG_PORTAL_STACKS, stacksList);
+		cmp.store(TAG_PORTAL_STACKS, ItemStack.CODEC.listOf(), portalStacks);
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	public void loadAdditional(ValueInput cmp) {
 		ticksOpen = cmp.getIntOr(TAG_TICKS_OPEN, 0);
 		ticksSinceLastItem = cmp.getIntOr(TAG_TICKS_SINCE_LAST_ITEM, 0);
 
-		ListTag stacksList = cmp.getList(TAG_PORTAL_STACKS, Tag.TAG_COMPOUND);
 		portalStacks.clear();
-		for (int i = 0; i < stacksList.size(); i++) {
-			ItemStack stack = ItemStack.parse(registries, stacksList.getCompound(i)).orElse(ItemStack.EMPTY);
+		for (ItemStack stack : cmp.listOrEmpty(TAG_PORTAL_STACKS, ItemStack.CODEC)) {
 			if (!stack.isEmpty()) {
 				portalStacks.add(stack);
 			}

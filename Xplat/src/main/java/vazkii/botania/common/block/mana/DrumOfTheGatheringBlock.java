@@ -12,6 +12,7 @@ package vazkii.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Shearable;
@@ -62,16 +63,16 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 			if (mob instanceof Armadillo armadillo) {
 				speedUpScuteDropping(armadillo);
 			}
-			if (mob.getType().is(BotaniaTags.Entities.DRUM_MILKABLE) && !mob.isBaby()) {
+			if (mob.typeHolder().is(BotaniaTags.Entities.DRUM_MILKABLE) && !mob.isBaby()) {
 				convertNearby(mob, Items.BUCKET, Items.MILK_BUCKET);
 			}
 			if (mob instanceof MushroomCow mooshroom && !mooshroom.isBaby()) {
-				if (mooshroom.getVariant() == MushroomCow.MushroomType.BROWN) {
+				if (mooshroom.getVariant() == MushroomCow.Variant.BROWN) {
 					fillBowlSuspiciously(mooshroom);
 				}
 				convertNearby(mob, Items.BOWL, Items.MUSHROOM_STEW);
 			}
-			if (mob instanceof Shearable shearable && !mob.getType().is(BotaniaTags.Entities.DRUM_NO_SHEARING) && shearable.readyForShearing()) {
+			if (mob instanceof Shearable shearable && !mob.typeHolder().is(BotaniaTags.Entities.DRUM_NO_SHEARING) && shearable.readyForShearing()) {
 				shearables.add(shearable);
 			}
 		}
@@ -84,7 +85,7 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 				break;
 			}
 
-			shearable.shear(SoundSource.BLOCKS);
+			shearable.shear((ServerLevel) world, SoundSource.BLOCKS, new ItemStack(Items.SHEARS));
 			++sheared;
 		}
 	}
@@ -128,8 +129,10 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 	}
 
 	private static void spawnItem(Mob mob, ItemStack to) {
-		Level world = mob.level();
-		ItemEntity ent = mob.spawnAtLocation(to, 1.0F);
+		if (!(mob.level() instanceof ServerLevel world)) {
+			return;
+		}
+		ItemEntity ent = mob.spawnAtLocation(world, to, 1.0F);
 		if (ent != null) {
 			ent.setDeltaMovement(ent.getDeltaMovement().add(
 					world.getRandom().nextFloat() * 0.05F,

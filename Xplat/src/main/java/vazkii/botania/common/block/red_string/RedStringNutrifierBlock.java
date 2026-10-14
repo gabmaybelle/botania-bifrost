@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -33,19 +34,19 @@ public class RedStringNutrifierBlock extends RedStringBlock implements Bonemeala
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, BonemealSource source) {
 		return world.getBlockEntity(pos, BotaniaBlockEntities.RED_STRINGED_NUTRIFIER)
 				.map(be -> be.canGrow(world)).orElse(false);
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level world, RandomSource rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level world, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		return world.getBlockEntity(pos, BotaniaBlockEntities.RED_STRINGED_NUTRIFIER)
 				.map(be -> be.canUseBonemeal(world, rand)).orElse(false);
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel world, RandomSource rand, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel world, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		world.getBlockEntity(pos, BotaniaBlockEntities.RED_STRINGED_NUTRIFIER)
 				.ifPresent(be -> be.grow(world, rand));
 	}

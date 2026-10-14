@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -61,8 +62,7 @@ public class ManaPumpBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
-			boolean movedByPiston) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation neighborPos, boolean movedByPiston) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, level, pos);
 	}
 
@@ -93,7 +93,7 @@ public class ManaPumpBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof ManaPumpBlockEntity pump ? pump.comparator : 0;
 	}
 

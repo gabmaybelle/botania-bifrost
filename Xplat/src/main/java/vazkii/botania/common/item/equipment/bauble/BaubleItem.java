@@ -22,6 +22,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import vazkii.botania.api.item.CosmeticAttachable;
 import vazkii.botania.api.item.PhantomInkable;
@@ -31,7 +32,7 @@ import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.xplat.BotaniaConfig;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
@@ -43,14 +44,14 @@ public abstract class BaubleItem extends Item implements CosmeticAttachable, Pha
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
 		ItemStack cosmetic = getCosmeticItem(stack);
 		if (!cosmetic.isEmpty()) {
-			tooltip.add(Component.translatable("botaniamisc.hasCosmetic", cosmetic.getHoverName()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+			tooltip.accept(Component.translatable("botaniamisc.hasCosmetic", cosmetic.getHoverName()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 		}
 
 		if (hasPhantomInk(stack)) {
-			tooltip.add(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.AQUA));
+			tooltip.accept(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.AQUA));
 		}
 	}
 

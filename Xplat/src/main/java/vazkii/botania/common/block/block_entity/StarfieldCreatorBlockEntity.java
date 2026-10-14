@@ -29,7 +29,7 @@ public class StarfieldCreatorBlockEntity extends BlockEntity {
 
 		double radius = 512;
 		int renderDistance = Proxy.INSTANCE.getClientRenderDistance() * 16;
-		int worldHeight = level.getMaxBuildHeight();
+		int worldHeight = level.getMaxY();
 		var random = level.getRandom();
 		int iter = 2;
 		for (int i = 0; i < iter; i++) {
@@ -48,7 +48,7 @@ public class StarfieldCreatorBlockEntity extends BlockEntity {
 			int lifeMult = 50;
 
 			SparkleParticleData data = SparkleParticleData.sparkle(size, red, green, blue, lifeMult);
-			level.addParticle(data, true, x, y, z, 0, 0, 0);
+			level.addParticle(data, true, false, x, y, z, 0, 0, 0);
 		}
 	}
 

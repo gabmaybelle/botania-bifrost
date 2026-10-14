@@ -9,17 +9,17 @@
 package vazkii.botania.common.block.block_entity.flower.functional;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.util.random.WeightedRandom;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -97,13 +97,11 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	@Nullable
 	private OrechidRecipe findMatchingRecipe(BlockPos coords) {
 		BlockState input = getLevel().getBlockState(coords);
-		List<WeightedEntry.Wrapper<OrechidRecipe>> values = new ArrayList<>();
+		List<Weighted<OrechidRecipe>> values = new ArrayList<>();
 		for (OrechidRecipe recipe : OrechidManager.getMatchingRecipes(BotaniaRecipeTypes.recipeManager(getLevel()), getRecipeType(), input)) {
-			values.add(WeightedEntry.wrap(recipe, recipe.getWeight(getLevel(), coords)));
+			values.add(new Weighted<>(recipe, recipe.getWeight(getLevel(), coords)));
 		}
-		return WeightedRandom.getRandomItem(getLevel().getRandom(), values)
-				.map(WeightedEntry.Wrapper::data)
-				.orElse(null);
+		return WeightedList.of(values).getRandom(getLevel().getRandom()).orElse(null);
 	}
 
 	private void trySetRecipe(BlockPos coords, OrechidRecipe recipe) {
@@ -149,15 +147,15 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
 		cmp.putInt(TAG_COOLDOWN, cooldown);
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	public void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
 		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 	}

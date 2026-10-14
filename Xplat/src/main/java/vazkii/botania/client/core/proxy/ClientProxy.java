@@ -103,7 +103,7 @@ public class ClientProxy implements Proxy {
 	@Override
 	public void addParticleForceNear(Level world, ParticleOptions particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 		Camera info = Minecraft.getInstance().gameRenderer.getMainCamera();
-		if (info.isInitialized() && info.getPosition().distanceToSqr(x, y, z) <= 1024.0D) {
+		if (info.isInitialized() && info.position().distanceToSqr(x, y, z) <= 1024.0D) {
 			world.addParticle(particleData, true, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}

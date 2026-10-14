@@ -8,12 +8,22 @@
  */
 package vazkii.botania.common.world;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 public final class IslandPos {
 	private final int x;
 	private final int z;
+
+	// PORT-26.3: saved data is codec based now; this keeps the IslandX/IslandZ keys of the old tags
+	public static final MapCodec<IslandPos> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			Codec.INT.fieldOf("IslandX").forGetter(pos -> pos.x),
+			Codec.INT.fieldOf("IslandZ").forGetter(pos -> pos.z)
+	).apply(instance, IslandPos::new));
 
 	public IslandPos(int x, int z) {
 		this.x = x;

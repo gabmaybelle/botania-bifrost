@@ -15,11 +15,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -36,6 +39,7 @@ import vazkii.botania.xplat.BotaniaConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DiceOfFateItem extends RelicItem {
@@ -88,7 +92,7 @@ public class DiceOfFateItem extends RelicItem {
 
 				List<ItemStack> generated = table.getRandomItems(context);
 				for (ItemStack drop : generated) {
-					player.getInventory().placeItemBackInInventory(drop);
+					player.getInventory().placeItemBackInInventory(drop, Prediction.SERVER_ONLY);
 				}
 				String langKey = generated.isEmpty() ? "botaniamisc.dudDiceRoll" : "botaniamisc.diceRoll";
 				player.sendSystemMessage(Component.translatable(langKey, roll).withStyle(ChatFormatting.DARK_GREEN));
@@ -102,13 +106,13 @@ public class DiceOfFateItem extends RelicItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, tooltipContext, tooltip, flags);
-		tooltip.add(Component.literal(""));
+	public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, tooltipContext, display, tooltip, flags);
+		tooltip.accept(Component.literal(""));
 		TooltipHandler.addOnShift(tooltip, flags, () -> {
-			String name = stack.getDescriptionId() + ".poem";
+			String name = stack.getItem().getDescriptionId() + ".poem";
 			for (int i = 0; i < 4; i++) {
-				tooltip.add(Component.translatable(name + i).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+				tooltip.accept(Component.translatable(name + i).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			}
 		});
 	}

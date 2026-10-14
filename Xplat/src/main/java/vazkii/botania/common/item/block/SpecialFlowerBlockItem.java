@@ -13,14 +13,16 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.xplat.BotaniaConfig;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class SpecialFlowerBlockItem extends BlockItem {
 
@@ -29,19 +31,19 @@ public class SpecialFlowerBlockItem extends BlockItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
 		// Prevent crash when tooltips queried before configs load
 		// TODO: This should be moved to being builtin tooltip text components on the relevant items
 		if (BotaniaConfig.client() != null) {
 			if (stack.is(BotaniaTags.Items.GENERATING_SPECIAL_FLOWERS)
 					|| stack.is(BotaniaTags.Items.GENERATING_FLOATING_FLOWERS)) {
-				tooltip.add(Component.translatable("botania.flowerType.generating").withStyle(ChatFormatting.ITALIC, ChatFormatting.BLUE));
+				tooltip.accept(Component.translatable("botania.flowerType.generating").withStyle(ChatFormatting.ITALIC, ChatFormatting.BLUE));
 			} else if (stack.is(BotaniaTags.Items.FUNCTIONAL_SPECIAL_FLOWERS)
 					|| stack.is(BotaniaTags.Items.FUNCTIONAL_FLOATING_FLOWERS)) {
-				tooltip.add(Component.translatable("botania.flowerType.functional").withStyle(ChatFormatting.ITALIC, ChatFormatting.BLUE));
+				tooltip.accept(Component.translatable("botania.flowerType.functional").withStyle(ChatFormatting.ITALIC, ChatFormatting.BLUE));
 			} else if (stack.is(BotaniaTags.Items.MISC_SPECIAL_FLOWERS)
 					|| stack.is(BotaniaTags.Items.MISC_FLOATING_FLOWERS)) {
-				tooltip.add(Component.translatable("botania.flowerType.misc").withStyle(ChatFormatting.ITALIC, ChatFormatting.BLUE));
+				tooltip.accept(Component.translatable("botania.flowerType.misc").withStyle(ChatFormatting.ITALIC, ChatFormatting.BLUE));
 			}
 
 			if (BotaniaConfig.client().referencesEnabled()) {
@@ -51,7 +53,7 @@ public class SpecialFlowerBlockItem extends BlockItem {
 				}
 				MutableComponent lore = Component.translatable(key);
 				if (!lore.getString().equals(key)) {
-					tooltip.add(lore.withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+					tooltip.accept(lore.withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
 				}
 			}
 		}

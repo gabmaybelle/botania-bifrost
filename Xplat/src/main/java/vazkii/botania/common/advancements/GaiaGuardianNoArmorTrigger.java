@@ -15,9 +15,11 @@ import net.minecraft.advancements.predicates.DamageSourcePredicate;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import vazkii.botania.common.entity.GaiaGuardianEntity;
 
@@ -40,12 +42,12 @@ public class GaiaGuardianNoArmorTrigger extends SimpleCriterionTrigger<GaiaGuard
 		return Instance.CODEC;
 	}
 
-	public record Instance(Optional<ContextAwarePredicate> player, Optional<EntityPredicate> guardian, Optional<DamageSourcePredicate> killingBlow)
+	public record Instance(Optional<Holder<LootItemCondition>> player, Optional<EntityPredicate> guardian, Optional<DamageSourcePredicate> killingBlow)
 			implements
 				SimpleInstance {
 
 		public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				EntityPredicate.CODEC.optionalFieldOf("guardian").forGetter(Instance::guardian),
 				DamageSourcePredicate.CODEC.optionalFieldOf("killingBlow").forGetter(Instance::killingBlow)
 		).apply(instance, Instance::new));

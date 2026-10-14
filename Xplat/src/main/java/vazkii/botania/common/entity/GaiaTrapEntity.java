@@ -8,15 +8,18 @@
  */
 package vazkii.botania.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.client.fx.WispParticleData;
@@ -76,9 +79,14 @@ public class GaiaTrapEntity extends Entity {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag var1) {}
+	protected void readAdditionalSaveData(ValueInput var1) {}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag var1) {}
+	protected void addAdditionalSaveData(ValueOutput var1) {}
 
+	// PORT-26.3: Entity#hurt is final and routes to this; these entities never took damage
+	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
+	}
 }

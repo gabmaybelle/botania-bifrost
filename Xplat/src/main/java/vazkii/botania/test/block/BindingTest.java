@@ -49,7 +49,7 @@ public class BindingTest {
 	private void autobindTest(GameTestHelper helper, Block bindTargetBlock, Block flower, int maxDistance) {
 		BlockPos middle = new BlockPos(16, 16, 16);
 		helper.setBlock(middle, bindTargetBlock);
-		BlockPos absoluteBindTarget = helper.getBlockEntity(middle).getBlockPos();
+		BlockPos absoluteBindTarget = helper.getBlockEntity(middle, BlockEntity.class).getBlockPos();
 
 		List<BlockPos> justCloseEnough = placeAxialFlowers(helper, middle, flower, maxDistance);
 		List<BlockPos> tooFarAway = placeAxialFlowers(helper, middle, flower, maxDistance + 1);
@@ -79,7 +79,7 @@ public class BindingTest {
 		List<BlockPos> tooFarAway = placeAxialFlowers(helper, middle, flower, maxDistance + 1);
 
 		helper.setBlock(middle, bindTargetBlock);
-		BlockPos absoluteBindTarget = helper.getBlockEntity(middle).getBlockPos();
+		BlockPos absoluteBindTarget = helper.getBlockEntity(middle, BlockEntity.class).getBlockPos();
 
 		//Bind each flower with the Wand of the Forest. (before doing any assertions, so you can examine the result in-game)
 		justCloseEnough.forEach(pos -> TestingUtil.bindWithWandOfTheForest(helper, pos, middle));
@@ -110,7 +110,7 @@ public class BindingTest {
 		List<BlockPos> tooFarAway = placeAxialFlowers(helper, middle, flower, maxDistance + 1);
 
 		helper.setBlock(middle, bindTargetBlock);
-		BlockPos absoluteBindTarget = helper.getBlockEntity(middle).getBlockPos();
+		BlockPos absoluteBindTarget = helper.getBlockEntity(middle, BlockEntity.class).getBlockPos();
 
 		//Use a Floral Obedience Stick on the pool
 		Player player = helper.makeMockPlayer(GameType.CREATIVE);
@@ -134,7 +134,7 @@ public class BindingTest {
 	private static void assertFlowerBoundTo(GameTestHelper helper, BlockPos relativePos, @Nullable BlockPos absoluteBindTarget) {
 		String message = absoluteBindTarget == null ? "Flower should not have bound" : "Flower should have bound to " + absoluteBindTarget;
 
-		BlockEntity be = helper.getBlockEntity(relativePos);
+		BlockEntity be = helper.getBlockEntity(relativePos, BlockEntity.class);
 		if (be instanceof GeneratingFlowerBlockEntity tege) {
 			TestingUtil.assertEqualsAt(helper, relativePos, tege.getBinding(), absoluteBindTarget, () -> message);
 		} else if (be instanceof FunctionalFlowerBlockEntity tefe) {

@@ -88,7 +88,7 @@ public class DrumBlockTest {
 	@BotaniaGameTest(template = TEMPLATE, timeoutTicks = 20)
 	public void testMilkingBrownMooshroomSuspiciousStew(GameTestHelper helper) {
 		var cow = setup(helper, EntityTypes.MOOSHROOM, Items.BOWL);
-		cow.setVariant(MushroomCow.MushroomType.BROWN);
+		cow.setVariant(MushroomCow.Variant.BROWN);
 		var cowAccessor = (MushroomCowAccessor) cow;
 		cowAccessor.botania_setStewEffects(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.BLINDNESS, 15))));
 		helper.startSequence()

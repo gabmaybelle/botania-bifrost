@@ -15,9 +15,11 @@ import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -38,12 +40,12 @@ public class ManaBlasterTrigger extends SimpleCriterionTrigger<ManaBlasterTrigge
 		return Instance.CODEC;
 	}
 
-	public record Instance(Optional<ContextAwarePredicate> player, Optional<ItemPredicate> item, Optional<EntityPredicate> user)
+	public record Instance(Optional<Holder<LootItemCondition>> player, Optional<ItemPredicate> item, Optional<EntityPredicate> user)
 			implements
 				SimpleInstance {
 
 		public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				ItemPredicate.CODEC.optionalFieldOf("item").forGetter(Instance::item),
 				EntityPredicate.CODEC.optionalFieldOf("user").forGetter(Instance::user)
 		).apply(instance, Instance::new));

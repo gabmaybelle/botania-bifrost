@@ -64,7 +64,8 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 
 	@Nullable
 	private List<ItemStack> lastRecipe = null;
-	private Ingredient lastReagent = Ingredient.EMPTY;
+	@Nullable
+	private Ingredient lastReagent = null; // PORT-26.3: there is no empty Ingredient any more
 	private int recipeKeepTicks = 0;
 
 	public PetalApothecaryBlockEntity(BlockPos pos, BlockState state) {
@@ -113,7 +114,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			var recipe = maybeRecipe.get();
 			if (recipe.value().getReagent().test(item.getItem())) {
 				saveLastRecipe(recipe.value().getReagent());
-				ItemStack output = recipe.value().assemble(getRecipeInput(), getLevel().registryAccess());
+				ItemStack output = recipe.value().assemble(getRecipeInput());
 				Entity thrower = item.getOwner();
 
 				for (int i = 0; i < inventorySize(); i++) {
@@ -126,7 +127,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 				ItemSource.HOLDER.setFor(outputItem, ItemSources.PETAL_APOTHECARY);
 				if (thrower instanceof Player player) {
 					player.triggerRecipeCrafted(recipe, List.of(output));
-					output.onCraftedBy(level, player, output.getCount());
+					output.onCraftedBy(player, output.getCount());
 				} else {
 					output.onCraftedBySystem(level);
 				}
@@ -146,7 +147,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 				return false;
 			}
 
-			if (lastReagent.test(item.getItem())) {
+			if (lastReagent != null && lastReagent.test(item.getItem())) {
 				return false;
 			}
 
@@ -191,7 +192,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 
 	public void clearLastRecipe() {
 		lastRecipe = null;
-		lastReagent = Ingredient.EMPTY;
+		lastReagent = null;
 	}
 
 	public InteractionResult trySetLastRecipe(Player player) {
@@ -350,7 +351,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 					RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, 0, 8, 22, 15);
 
-					ItemStack stack = recipe.value().assemble(altar.getRecipeInput(), altar.getLevel().registryAccess());
+					ItemStack stack = recipe.value().assemble(altar.getRecipeInput());
 					gui.renderFakeItem(stack, xc + radius + 32, yc - 8);
 
 					var reagents = RecipeUtils.stacksOf(recipe.value().getReagent());

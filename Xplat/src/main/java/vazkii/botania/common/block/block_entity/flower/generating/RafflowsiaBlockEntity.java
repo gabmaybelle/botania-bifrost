@@ -9,7 +9,6 @@
 package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,6 +16,8 @@ import net.minecraft.nbt.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import vazkii.botania.api.block_entity.RadiusDescriptor;
@@ -116,31 +117,20 @@ public class RafflowsiaBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 
-		ListTag flowerList = new ListTag();
-		for (Identifier flower : lastFlowers) {
-			flowerList.add(StringTag.valueOf(flower.toString()));
-		}
-		cmp.put(TAG_LAST_FLOWERS, flowerList);
+		cmp.store(TAG_LAST_FLOWERS, Identifier.CODEC.listOf(), lastFlowers);
 		cmp.putInt(TAG_LAST_FLOWER_TIMES, lastFlowerCount);
 		cmp.putInt(TAG_STREAK_LENGTH, streakLength);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 
 		lastFlowers.clear();
-		ListTag flowerList = cmp.getList(TAG_LAST_FLOWERS, Tag.TAG_STRING);
-		for (int i = 0; i < flowerList.size(); i++) {
-			Identifier blockID = Identifier.tryParse(flowerList.getStringOr(i, ""));
-			if (blockID == null) {
-				continue;
-			}
-			lastFlowers.add(blockID);
-		}
+		cmp.listOrEmpty(TAG_LAST_FLOWERS, Identifier.CODEC).forEach(lastFlowers::add);
 		lastFlowerCount = cmp.getIntOr(TAG_LAST_FLOWER_TIMES, 0);
 		streakLength = cmp.getIntOr(TAG_STREAK_LENGTH, 0);
 	}

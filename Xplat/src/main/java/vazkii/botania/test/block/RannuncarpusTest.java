@@ -11,6 +11,7 @@ package vazkii.botania.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -92,7 +93,7 @@ public class RannuncarpusTest {
 
 	@BotaniaGameTest(template = TEMPLATE_CANDLES, timeoutTicks = MULTI_PLACEMENT_TIMEOUT_TICKS, batch = "rannuncarpus3")
 	public void testMultiplePlacements(GameTestHelper helper) {
-		final var yellowCandles = helper.spawnItem(Blocks.YELLOW_CANDLE.asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
+		final var yellowCandles = helper.spawnItem(Blocks.DYED_CANDLE.yellow().asItem(), FLOWER_POS.getX(), FLOWER_POS.getY() + 1, FLOWER_POS.getZ());
 		helper.startSequence().thenExecute(() -> {
 			// phase 1: fill all free spots with yellow candles
 			final var stack = yellowCandles.getItem();
@@ -100,15 +101,15 @@ public class RannuncarpusTest {
 			yellowCandles.setItem(stack);
 		}).thenWaitUntil(() -> {
 			// should place 2x 4 candles in the free spaces, even though one of them is occupied by grass
-			helper.assertBlockPresent(Blocks.YELLOW_CANDLE, EXPECTED_PLACE_POS1);
-			helper.assertBlockPresent(Blocks.YELLOW_CANDLE, EXPECTED_PLACE_POS2);
+			helper.assertBlockPresent(Blocks.DYED_CANDLE.yellow(), EXPECTED_PLACE_POS1);
+			helper.assertBlockPresent(Blocks.DYED_CANDLE.yellow(), EXPECTED_PLACE_POS2);
 			helper.assertBlockProperty(EXPECTED_PLACE_POS1, CandleBlock.CANDLES, 4);
 			helper.assertBlockProperty(EXPECTED_PLACE_POS2, CandleBlock.CANDLES, 4);
 		}).thenExecuteAfter(RannuncarpusBlockEntity.PLACE_INTERVAL_TICKS + 1, () -> {
 			// once both spots are filled, no other yellow candles should have been place anywhere else
 			helper.assertBlockProperty(FLOATING_YELLOW_CANDLE_POS, CandleBlock.CANDLES, 1);
 			if (yellowCandles.getItem().getCount() < 2) {
-				helper.fail("Too few yellow candles left over", yellowCandles);
+				helper.fail(Component.literal("Too few yellow candles left over"), yellowCandles);
 			}
 			helper.killAllEntities();
 		}).thenExecute(() -> {
@@ -154,7 +155,7 @@ public class RannuncarpusTest {
 						helper.assertBlockProperty(pos, SeaPickleBlock.PICKLES, 1);
 					}
 					if (!stack.isEmpty()) {
-						helper.fail("Not all items used", seaPickles);
+						helper.fail(Component.literal("Not all items used"), seaPickles);
 					}
 				}).thenSucceed();
 	}

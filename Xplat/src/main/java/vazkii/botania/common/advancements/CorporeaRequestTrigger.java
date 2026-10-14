@@ -13,13 +13,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.predicates.LocationPredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -40,12 +41,12 @@ public class CorporeaRequestTrigger extends SimpleCriterionTrigger<CorporeaReque
 		return Instance.CODEC;
 	}
 
-	public record Instance(Optional<ContextAwarePredicate> player, MinMaxBounds.Ints extracted, Optional<LocationPredicate> location)
+	public record Instance(Optional<Holder<LootItemCondition>> player, MinMaxBounds.Ints extracted, Optional<LocationPredicate> location)
 			implements
 				SimpleInstance {
 
 		public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				MinMaxBounds.Ints.CODEC.optionalFieldOf("extracted", MinMaxBounds.Ints.ANY).forGetter(Instance::extracted),
 				LocationPredicate.CODEC.optionalFieldOf("location").forGetter(Instance::location)
 		).apply(instance, Instance::new));

@@ -103,7 +103,7 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 							if (cursors.size() < MAX_NUM_CURSORS) {
 								cursors.add(relPos);
 							} else {
-								player.displayClientMessage(Component.translatable("botaniamisc.lokiRingLimitReached"), true);
+								player.sendOverlayMessage(Component.translatable("botaniamisc.lokiRingLimitReached"));
 							}
 						}
 						setCursorList(lokiRing, cursors);

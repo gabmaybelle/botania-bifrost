@@ -12,13 +12,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.predicates.LocationPredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class AlfheimPortalBreadTrigger extends SimpleCriterionTrigger<AlfheimPor
 	private AlfheimPortalBreadTrigger() {}
 
 	public void trigger(ServerPlayer player, BlockPos portal) {
-		this.trigger(player, instance -> instance.test(player.serverLevel(), portal));
+		this.trigger(player, instance -> instance.test(player.level(), portal));
 	}
 
 	@Override
@@ -39,11 +40,11 @@ public class AlfheimPortalBreadTrigger extends SimpleCriterionTrigger<AlfheimPor
 		return Instance.CODEC;
 	}
 
-	public record Instance(Optional<ContextAwarePredicate> player, Optional<LocationPredicate> portalLocation)
+	public record Instance(Optional<Holder<LootItemCondition>> player, Optional<LocationPredicate> portalLocation)
 			implements
 				SimpleInstance {
 		public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				LocationPredicate.CODEC.optionalFieldOf("portal_location").forGetter(Instance::portalLocation)
 		).apply(instance, Instance::new));
 

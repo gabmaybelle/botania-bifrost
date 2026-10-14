@@ -10,8 +10,8 @@ package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -43,7 +44,6 @@ import vazkii.botania.api.item.AvatarWieldable;
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.common.block.block_entity.AvatarBlockEntity;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock, RedstoneSensitiveBlock {
 
@@ -80,7 +80,7 @@ public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock,
 			if (!stackOnAvatar.isEmpty()) {
 				if (!level.isClientSide()) {
 					avatar.getItemHandler().setItem(0, ItemStack.EMPTY);
-					player.getInventory().placeItemBackInInventory(stackOnAvatar);
+					player.getInventory().placeItemBackInInventory(stackOnAvatar, Prediction.SERVER_ONLY);
 					level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
 				}
 				return InteractionResult.SUCCESS;
@@ -98,23 +98,13 @@ public class AvatarBlock extends BotaniaWaterloggedBlock implements EntityBlock,
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, level, pos, newState, isMoving);
-		}
-	}
-
-	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return RedstoneSensitiveBlock.getPoweredStateForPlacement(super.getStateForPlacement(context), context)
 				.setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation fromPos, boolean isMoving) {
 		RedstoneSensitiveBlock.updateRedstonePower(state, level, pos);
 	}
 

@@ -10,7 +10,6 @@ package vazkii.botania.common.entity;
 
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -19,11 +18,14 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.common.item.BotaniaItems;
 
@@ -58,7 +60,7 @@ public class EnderEssenceCloudEntity extends Entity {
 		EntityType<EnderEssenceCloudEntity> type = entity.level().dimension() == Level.END
 				? BotaniaEntities.PURE_ENDER_ESSENCE_CLOUD
 				: BotaniaEntities.DILUTED_ENDER_ESSENCE_CLOUD;
-		EnderEssenceCloudEntity cloud = type.create(entity.level());
+		EnderEssenceCloudEntity cloud = type.create(entity.level(), EntitySpawnReason.EVENT);
 		if (cloud != null) {
 			cloud.moveTo(entity.position(), entity.getYRot(), 0);
 			cloud.setFromEnderman(true);
@@ -118,13 +120,13 @@ public class EnderEssenceCloudEntity extends Entity {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag) {
+	protected void readAdditionalSaveData(ValueInput tag) {
 		tickCount = tag.getIntOr(TAG_AGE, 0);
 		setFromEnderman(tag.getBooleanOr(TAG_FROM_ENDERMAN, false));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag) {
+	protected void addAdditionalSaveData(ValueOutput tag) {
 		tag.putInt(TAG_AGE, tickCount);
 		tag.putBoolean(TAG_FROM_ENDERMAN, isFromEnderman());
 	}

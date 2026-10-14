@@ -65,7 +65,7 @@ public class IdleFlowerTickingTest {
 				helper.setBlock(FLOWER_POS.below(), Blocks.GRASS_BLOCK);
 			}
 			helper.setBlock(FLOWER_POS, block);
-			BlockEntity be = helper.getBlockEntity(FLOWER_POS);
+			BlockEntity be = helper.getBlockEntity(FLOWER_POS, BlockEntity.class);
 			if (!(be instanceof SpecialFlowerBlockEntity specialFlower)) {
 				helper.fail("Missing special flower block entity");
 				return;

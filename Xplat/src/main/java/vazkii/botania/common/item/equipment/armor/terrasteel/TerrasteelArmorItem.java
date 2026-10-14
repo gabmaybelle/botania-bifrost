@@ -30,7 +30,7 @@ import vazkii.botania.common.annotations.SoftImplement;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
@@ -93,10 +93,10 @@ public class TerrasteelArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
-		list.add(Component.translatable("botania.armorset.terrasteel.desc0").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botania.armorset.terrasteel.desc1").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botania.armorset.terrasteel.desc2").withStyle(ChatFormatting.GRAY));
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
+		list.accept(Component.translatable("botania.armorset.terrasteel.desc0").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.terrasteel.desc1").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.terrasteel.desc2").withStyle(ChatFormatting.GRAY));
 	}
 
 	@SoftImplement("IItemExtension")

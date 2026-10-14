@@ -28,6 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +45,7 @@ import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.DataComponentHelper;
 import vazkii.botania.common.helper.PlayerHelper;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class BlackHoleTalismanItem extends Item {
 
@@ -180,14 +181,14 @@ public class BlackHoleTalismanItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
 		Block block = getBlock(stack);
 		if (block != null) {
 			int count = getBlockCount(stack);
-			stacks.add(Component.translatable("botaniamisc.template.num_and_name", count, block.getName()).withStyle(ChatFormatting.GRAY));
+			stacks.accept(Component.translatable("botaniamisc.template.num_and_name", count, block.getName()).withStyle(ChatFormatting.GRAY));
 		}
 
-		stacks.add(Component.translatable(stack.has(BotaniaDataComponents.ACTIVE)
+		stacks.accept(Component.translatable(stack.has(BotaniaDataComponents.ACTIVE)
 				? "botaniamisc.active" : "botaniamisc.inactive"));
 	}
 

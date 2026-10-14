@@ -9,6 +9,7 @@
 package vazkii.botania.common.block.block_entity.flower.generating;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,10 +27,13 @@ import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -47,6 +51,7 @@ import vazkii.botania.network.clientbound.FlowerTakeItemEffectPacket;
 import vazkii.botania.xplat.BotaniaConfig;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,15 +94,15 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 						: (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F + 1.0F;
 				//Usage of vanilla sound event: this sheep do be dying though. And generic sounds are meant to be reused.
 				sheep.playSound(SoundEvents.SHEEP_DEATH, 0.9F, pitch);
-				sheep.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+				sheep.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
 
 				ItemStack morbid = new ItemStack(sheep.isOnFire() ? Items.COOKED_MUTTON : Items.MUTTON);
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, morbid),
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(morbid)),
 						sheep.getX(), sheep.getY() + sheep.getEyeHeight(), sheep.getZ(),
 						20, 0.1, 0.1, 0.1, 0.05);
 
 				ItemStack wool = new ItemStack(ColorHelper.WOOL_MAP.apply(sheep.getColor()));
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, wool),
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(wool)),
 						sheep.getX(), sheep.getY() + sheep.getEyeHeight(), sheep.getZ(),
 						20, 0.1, 0.1, 0.1, 0.05);
 			}
@@ -117,7 +122,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 				Vec3 offset = getLevel().getBlockState(getEffectivePos()).getOffset(getLevel(),
 						getEffectivePos()).add(0.5, 0.6, 0.5);
 
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack),
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack)),
 						getEffectivePos().getX() + offset.x,
 						getEffectivePos().getY() + offset.y,
 						getEffectivePos().getZ() + offset.z,
@@ -195,17 +200,22 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		cmp.putByte(TAG_NEXT_COLOR, (byte) nextColor.getId());
-		cmp.putByteArray(TAG_COLORS, colors.stream().map(color -> (byte) color.getId()).toList());
+		byte[] colorIds = new byte[colors.size()];
+		for (int i = 0; i < colorIds.length; i++) {
+			colorIds[i] = (byte) colors.get(i).getId();
+		}
+		// PORT-26.3: a byte buffer keeps the byte-array tag the old saves used
+		cmp.store(TAG_COLORS, Codec.BYTE_BUFFER, ByteBuffer.wrap(colorIds));
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 		nextColor = DyeColor.byId(cmp.getIntOr(TAG_NEXT_COLOR, 0));
-		byte[] colorIds = cmp.getByteArray(TAG_COLORS);
+		byte[] colorIds = cmp.read(TAG_COLORS, Codec.BYTE_BUFFER).map(ByteBuffer::array).orElse(new byte[0]);
 		colors = (colorIds.length == 0
 				? IntStream.range(0, 16)
 				: IntStream.range(0, colorIds.length).map(i -> colorIds[i])).mapToObj(DyeColor::byId).toList();

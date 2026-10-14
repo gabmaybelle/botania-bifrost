@@ -177,7 +177,7 @@ public final class PlayerHelper {
 		}
 
 		player.currentExplosionCause = cause;
-		player.setIgnoreFallDamageFromCurrentImpulse(true);
+		player.setIgnoreFallDamageFromCurrentImpulse(true, player.currentImpulseImpactPos);
 	}
 
 	public static InteractionResult substituteUse(UseOnContext ctx, ItemStack toUse) {

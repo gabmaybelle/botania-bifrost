@@ -874,14 +874,14 @@ public final class BotaniaItems {
 
 	// Banner patterns
 	public static final Item BANNER_PATTERN_BOTANIA = make("botania_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_BOTANIA, unstackable()
-					.rarity(Rarity.UNCOMMON)));
+			new Item(unstackable()
+					.rarity(Rarity.UNCOMMON).delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS, context -> context.getOrThrow(BotaniaTags.BannerPatterns.PATTERN_ITEM_BOTANIA))));
 	public static final Item BANNER_PATTERN_MATERIALS = make("materials_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_MATERIALS, unstackable()));
+			new Item(unstackable().delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS, context -> context.getOrThrow(BotaniaTags.BannerPatterns.PATTERN_ITEM_MATERIALS))));
 	public static final Item BANNER_PATTERN_SPARK_AUGMENTS = make("spark_augments_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_SPARK_AUGMENTS, unstackable()));
+			new Item(unstackable().delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS, context -> context.getOrThrow(BotaniaTags.BannerPatterns.PATTERN_ITEM_SPARK_AUGMENTS))));
 	public static final Item BANNER_PATTERN_TOOLS = make("tools_banner_pattern",
-			new BannerPatternItem(BotaniaTags.BannerPatterns.PATTERN_ITEM_TOOLS, unstackable()));
+			new Item(unstackable().delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS, context -> context.getOrThrow(BotaniaTags.BannerPatterns.PATTERN_ITEM_TOOLS))));
 
 	public static final MenuType<TrinketCaseMenu> TRINKET_CASE_MENU_TYPE =
 			XplatAbstractions.INSTANCE.createMenuType(TrinketCaseMenu::new, ByteBufCodecs.BOOL);

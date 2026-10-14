@@ -45,12 +45,13 @@ public class KeyOfTheKingsLawItem extends RelicItem {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
 		int spawned = getWeaponsSpawned(stack);
 		if (spawned == 20) {
 			setCharging(stack, false);
 			setWeaponsSpawned(stack, 0);
 		}
+		return true;
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class KeyOfTheKingsLawItem extends RelicItem {
 
 			Vec3 pl = look.add(VecHelper.fromEntityCenter(living)).add(0, 1.6, div * 0.1);
 
-			var rand = world.random;
+			var rand = world.getRandom();
 			Vec3 axis = look.normalize().cross(new Vec3(-1, 0, -1)).normalize();
 
 			double rot = mod * Math.PI / 4 - Math.PI / 2;

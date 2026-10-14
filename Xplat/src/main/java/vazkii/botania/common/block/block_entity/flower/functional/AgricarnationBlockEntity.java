@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -82,10 +83,10 @@ public class AgricarnationBlockEntity extends FunctionalFlowerBlockEntity {
 		RandomSource random = serverLevel.getRandom();
 		if (state.is(BotaniaTags.Blocks.AGRICARNATION_APPLY_BONEMEAL)
 				&& block instanceof BonemealableBlock bonemealableBlock
-				&& bonemealableBlock.isValidBonemealTarget(serverLevel, pos, state)) {
+				&& bonemealableBlock.isValidBonemealTarget(serverLevel, pos, state, BonemealSource.INTERACTION)) {
 			if (random.nextFloat() < BONEMEAL_SUCCESS_CHANCE
-					&& bonemealableBlock.isBonemealSuccess(serverLevel, random, pos, state)) {
-				bonemealableBlock.performBonemeal(serverLevel, random, pos, state);
+					&& bonemealableBlock.isBonemealSuccess(serverLevel, random, pos, state, BonemealSource.INTERACTION)) {
+				bonemealableBlock.performBonemeal(serverLevel, random, pos, state, BonemealSource.INTERACTION);
 			}
 		} else {
 			state.randomTick(serverLevel, pos, random);
@@ -119,7 +120,7 @@ public class AgricarnationBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 
 		boolean couldApplyBonemeal = block instanceof BonemealableBlock bonemealableBlock
-				&& bonemealableBlock.isValidBonemealTarget(level, pos, state);
+				&& bonemealableBlock.isValidBonemealTarget(level, pos, state, BonemealSource.INTERACTION);
 
 		boolean isTargetCandidate = couldApplyBonemeal
 				|| block instanceof BushBlock

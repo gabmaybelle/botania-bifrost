@@ -18,13 +18,14 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.Nameable;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -128,7 +131,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 				if (stack.isEmpty()) {
 					player.setItemInHand(hand, stackAt);
 				} else if (!stackAt.isEmpty()) {
-					player.getInventory().placeItemBackInInventory(stackAt);
+					player.getInventory().placeItemBackInInventory(stackAt, Prediction.SERVER_ONLY);
 				}
 
 				getItemHandler().setItem(index, copy);
@@ -260,7 +263,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 						level.removeBlock(facingPos, false);
 						level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, facingPos, Block.getId(facingState));
 						// Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-						level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
+						level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
 
 						for (var player : players) {
 							PlayerHelper.grantCriterion((ServerPlayer) player, BIRTHDAY_ADVANCEMENT, "code_triggered");
@@ -284,28 +287,24 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		if (name != null) {
-			cmp.putString(TAG_NAME, Component.Serializer.toJson(name, registries));
+			cmp.store(TAG_NAME, ComponentSerialization.CODEC, name);
 		}
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		if (cmp.contains(TAG_NAME, Tag.TAG_STRING)) {
-			name = Component.Serializer.fromJson(cmp.getString(TAG_NAME), registries);
-		} else {
-			name = null;
-		}
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
+		name = cmp.read(TAG_NAME, ComponentSerialization.CODEC).orElse(null);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		if (name != null) {
-			tag.putString(TAG_NAME, Component.Serializer.toJson(name, registries));
+			tag.store(TAG_NAME, ComponentSerialization.CODEC, name);
 		}
 		return tag;
 	}
@@ -343,13 +342,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 		return name;
 	}
 
-	private static final List<Block> ALL_CANDLE_CAKES = List.of(
-			Blocks.WHITE_CANDLE_CAKE, Blocks.ORANGE_CANDLE_CAKE, Blocks.MAGENTA_CANDLE_CAKE, Blocks.LIGHT_BLUE_CANDLE_CAKE,
-			Blocks.YELLOW_CANDLE_CAKE, Blocks.LIME_CANDLE_CAKE, Blocks.PINK_CANDLE_CAKE, Blocks.GRAY_CANDLE_CAKE,
-			Blocks.LIGHT_GRAY_CANDLE_CAKE, Blocks.CYAN_CANDLE_CAKE, Blocks.PURPLE_CANDLE_CAKE, Blocks.BLUE_CANDLE_CAKE,
-			Blocks.BROWN_CANDLE_CAKE, Blocks.GREEN_CANDLE_CAKE, Blocks.RED_CANDLE_CAKE, Blocks.BLACK_CANDLE_CAKE,
-			Blocks.CANDLE_CAKE
-	);
+	private static final List<Block> ALL_CANDLE_CAKES = Blocks.DYED_CANDLE_CAKE.asList();
 
 	@Nullable
 	private static DyeColor getLitCakeColor(BlockState state, RandomSource rand) {

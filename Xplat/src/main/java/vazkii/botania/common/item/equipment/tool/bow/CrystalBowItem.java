@@ -59,11 +59,11 @@ public class CrystalBowItem extends BowItem {
 
 	// [VanillaCopy] BowItem::releaseUsing
 	@Override
-	public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+	public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
 		if (entityLiving instanceof Player player) {
 			ItemStack projectile = getProjectile(stack, player); // Botania - potentially conjure an arrow
 			if (projectile.isEmpty()) {
-				return;
+				return false;
 			}
 
 			int timeHeld = (this.getUseDuration(stack, entityLiving) - timeLeft) * 2; // Botania - twice the draw speed
@@ -72,7 +72,7 @@ public class CrystalBowItem extends BowItem {
 					// Botania - consume mana if firing conjured projectile
 					|| projectile.has(BotaniaDataComponents.CONJURED_PROJECTILE) && !ManaItemHandler.instance()
 							.requestManaExactForTool(stack, player, getArrowCost(stack, player.level()), true)) {
-				return;
+				return false;
 			}
 
 			List<ItemStack> firedProjectiles = draw(stack, projectile, player);
@@ -93,6 +93,7 @@ public class CrystalBowItem extends BowItem {
 			);
 			player.awardStat(Stats.ITEM_USED.get(this));
 		}
+		return true;
 	}
 
 	protected ItemStack getProjectile(ItemStack stack, Player player) {

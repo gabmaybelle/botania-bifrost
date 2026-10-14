@@ -9,6 +9,7 @@
 package vazkii.botania.common.item;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
@@ -50,23 +51,23 @@ public class EquestrianVirusItem extends Item {
 
 				// Not all AbstractHorse's have saddles in slot 0
 				if (!saddle.isEmpty() && !saddle.is(Items.SADDLE)) {
-					horse.spawnAtLocation(saddle, 0);
+					horse.spawnAtLocation((ServerLevel) horse.level(), saddle, 0);
 					saddle = ItemStack.EMPTY;
 				}
 
 				for (int i = 1; i < inv.getContainerSize(); i++) {
 					if (!inv.getItem(i).isEmpty()) {
-						horse.spawnAtLocation(inv.getItem(i), 0);
+						horse.spawnAtLocation((ServerLevel) horse.level(), inv.getItem(i), 0);
 					}
 				}
 
 				horse.discard();
 
 				AbstractHorse newHorse = stack.is(BotaniaItems.NECRODERMAL_VIRUS)
-						? EntityTypes.ZOMBIE_HORSE.create(player.level())
-						: EntityTypes.SKELETON_HORSE.create(player.level());
+						? EntityTypes.ZOMBIE_HORSE.create(player.level(), EntitySpawnReason.EVENT)
+						: EntityTypes.SKELETON_HORSE.create(player.level(), EntitySpawnReason.EVENT);
 				newHorse.tameWithName(player);
-				newHorse.absMoveTo(horse.getX(), horse.getY(), horse.getZ(), horse.getYRot(), horse.getXRot());
+				newHorse.absSnapTo(horse.getX(), horse.getY(), horse.getZ(), horse.getYRot(), horse.getXRot());
 
 				// Put the saddle back
 				if (!saddle.isEmpty()) {
@@ -89,7 +90,7 @@ public class EquestrianVirusItem extends Item {
 				jumpHeight.addPermanentModifier(new AttributeModifier(virusId, jumpHeight.getBaseValue() * 0.5, AttributeModifier.Operation.ADD_VALUE));
 
 				newHorse.playSound(BotaniaSounds.VIRUS_INFECT, 1.0F + living.level().getRandom().nextFloat(), living.level().getRandom().nextFloat() * 0.7F + 1.3F);
-				newHorse.finalizeSpawn((ServerLevelAccessor) player.level(), player.level().getCurrentDifficultyAt(newHorse.blockPosition()), EntitySpawnReason.CONVERSION, null);
+				newHorse.finalizeSpawn((ServerLevelAccessor) player.level(), ((ServerLevel) player.level()).getCurrentDifficultyAt(newHorse.blockPosition()), EntitySpawnReason.CONVERSION, null);
 				newHorse.setAge(horse.getAge());
 				player.level().addFreshEntity(newHorse);
 				newHorse.spawnAnim();

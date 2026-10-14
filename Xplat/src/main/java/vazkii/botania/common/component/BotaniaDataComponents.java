@@ -320,7 +320,7 @@ public class BotaniaDataComponents {
 	public static final DataComponentType<Integer> LAST_REPEATS = make("last_repeats",
 			builder -> builder.persistent(ExtraCodecs.POSITIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 	public static final DataComponentType<List<ItemStack>> LAST_FOODS = make("last_foods",
-			builder -> builder.persistent(ExtraCodecs.nonEmptyList(ItemStack.SINGLE_ITEM_CODEC.sizeLimitedListOf(GourmaryllisBlockEntity.getMaxStreak())))
+			builder -> builder.persistent(ExtraCodecs.nonEmptyList(ItemStack.CODEC.sizeLimitedListOf(GourmaryllisBlockEntity.getMaxStreak())))
 					.cacheEncoding().networkSynchronized(ItemStack.LIST_STREAM_CODEC));
 	public static final DataComponentType<List<Identifier>> LAST_FLOWERS = make("last_flowers",
 			builder -> builder.persistent(ExtraCodecs.nonEmptyList(Identifier.CODEC.sizeLimitedListOf(RafflowsiaBlockEntity.getMaxStreak())))

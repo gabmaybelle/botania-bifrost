@@ -44,7 +44,7 @@ public class TestingUtil {
 	@Contract("_,_,_ -> fail")
 	public static void throwPositionedAssertion(GameTestHelper helper, BlockPos relativePos, Supplier<String> msg) {
 		//A couple of GameTestHelper's assertion errors throw this exception, but it's inconvenient to throw yourself
-		throw new GameTestAssertPosException(Component.literal(msg.get()), helper.absolutePos(relativePos), relativePos, helper.getTick());
+		throw new GameTestAssertPosException(Component.literal(msg.get()), helper.absolutePos(relativePos), relativePos, (int) helper.getTick());
 	}
 
 	@Contract("false,_ -> fail")
@@ -82,7 +82,7 @@ public class TestingUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends BlockEntity> T assertBlockEntity(GameTestHelper helper, BlockPos relativePos, BlockEntityType<T> type) {
-		BlockEntity be = helper.getBlockEntity(relativePos);
+		BlockEntity be = helper.getBlockEntity(relativePos, BlockEntity.class);
 
 		assertAt(helper, relativePos, be.getType() == type, () -> "Expected BlockEntity of type " + BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type) + " but found " + BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType()));
 
@@ -90,7 +90,7 @@ public class TestingUtil {
 	}
 
 	public static <T extends BlockEntity> T assertBlockEntity(GameTestHelper helper, BlockPos relativePos, Class<T> classs) {
-		BlockEntity be = helper.getBlockEntity(relativePos);
+		BlockEntity be = helper.getBlockEntity(relativePos, BlockEntity.class);
 
 		assertAt(helper, relativePos, classs.isAssignableFrom(be.getClass()), () -> "Expected BlockEntity to be an instance of " + classs.getSimpleName() + " but found " + be.getClass().getSimpleName());
 

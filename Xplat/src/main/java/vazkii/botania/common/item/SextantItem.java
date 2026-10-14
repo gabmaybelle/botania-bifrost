@@ -209,9 +209,9 @@ public class SextantItem extends Item {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
 		if (!(living instanceof Player)) {
-			return;
+			return false;
 		}
 
 		double radius = calculateRadius(stack, living);
@@ -227,6 +227,7 @@ public class SextantItem extends Item {
 						centerPos.pos(), Rotation.NONE);
 			}
 		}
+		return true;
 	}
 
 	private static ShapeCreator defineCircleShapeCreator(Direction axis1, Direction axis2) {
@@ -241,8 +242,8 @@ public class SextantItem extends Item {
 				if (z < x) {
 					break;
 				}
-				generateMirroredPositions(axis1.getNormal(), axis2.getNormal(), x, z, map, matcher);
-				generateMirroredPositions(axis1.getNormal(), axis2.getNormal(), z, x, map, matcher);
+				generateMirroredPositions(axis1.getUnitVec3i(), axis2.getUnitVec3i(), x, z, map, matcher);
+				generateMirroredPositions(axis1.getUnitVec3i(), axis2.getUnitVec3i(), z, x, map, matcher);
 			}
 		};
 	}
@@ -250,10 +251,10 @@ public class SextantItem extends Item {
 	private static void generateMirroredPositions(Vec3i normal1, Vec3i normal2, int offset1, int offset2,
 			Map<BlockPos, IStateMatcher> map, IStateMatcher matcher) {
 		Stream.of(
-				new BlockPos(normal1.multiply(offset1).offset(normal2.multiply(offset2))),
-				new BlockPos(normal1.multiply(-offset1).offset(normal2.multiply(offset2))),
-				new BlockPos(normal1.multiply(offset1).offset(normal2.multiply(-offset2))),
-				new BlockPos(normal1.multiply(-offset1).offset(normal2.multiply(-offset2)))
+				BlockPos.ZERO.offset(normal1.multiply(offset1).offset(normal2.multiply(offset2))),
+				BlockPos.ZERO.offset(normal1.multiply(-offset1).offset(normal2.multiply(offset2))),
+				BlockPos.ZERO.offset(normal1.multiply(offset1).offset(normal2.multiply(-offset2))),
+				BlockPos.ZERO.offset(normal1.multiply(-offset1).offset(normal2.multiply(-offset2)))
 		).forEach(pos -> map.put(pos, matcher));
 	}
 

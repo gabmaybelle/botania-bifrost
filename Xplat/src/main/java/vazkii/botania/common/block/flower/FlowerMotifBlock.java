@@ -16,11 +16,12 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.FlowerBlock;
 
 import vazkii.botania.common.item.CustomCreativeTabContents;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabContents {
 	private final boolean hidden;
@@ -31,11 +32,11 @@ public class FlowerMotifBlock extends FlowerBlock implements CustomCreativeTabCo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
 		if (hidden) {
-			tooltip.add(Component.translatable("block.botania.daybloom_motif.description").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("block.botania.daybloom_motif.description").withStyle(ChatFormatting.GRAY));
 		} else {
-			tooltip.add(Component.translatable("block.botania.hydroangeas_motif.description").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("block.botania.hydroangeas_motif.description").withStyle(ChatFormatting.GRAY));
 		}
 	}
 

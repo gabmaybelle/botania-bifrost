@@ -9,6 +9,7 @@
 package vazkii.botania.common.block.corporea;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -77,7 +78,7 @@ public class CorporeaCrystalCubeBlock extends BotaniaWaterloggedBlock implements
 		}
 		if (cube.isLocked()) {
 			if (!level.isClientSide()) {
-				player.displayClientMessage(Component.translatable("botaniamisc.crystalCubeLocked"), false);
+				player.sendSystemMessage(Component.translatable("botaniamisc.crystalCubeLocked"));
 			}
 		} else {
 			cube.setRequestTarget(stack);
@@ -105,7 +106,7 @@ public class CorporeaCrystalCubeBlock extends BotaniaWaterloggedBlock implements
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof CorporeaCrystalCubeBlockEntity cube
 				? cube.getComparatorValue()
 				: 0;

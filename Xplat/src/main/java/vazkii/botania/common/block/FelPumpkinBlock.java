@@ -8,13 +8,12 @@
  */
 package vazkii.botania.common.block;
 
-import com.mojang.serialization.MapCodec;
-
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -41,7 +40,6 @@ import vazkii.botania.common.loot.BotaniaLootTables;
 import vazkii.botania.mixin.MobAccessor;
 
 public class FelPumpkinBlock extends BotaniaBlock {
-	public static final MapCodec<FelPumpkinBlock> CODEC = simpleCodec(FelPumpkinBlock::new);
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	@Nullable
 	private BlockPattern felBlazeFull;
@@ -51,11 +49,6 @@ public class FelPumpkinBlock extends BotaniaBlock {
 	public FelPumpkinBlock(Properties builder) {
 		super(builder);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.SOUTH));
-	}
-
-	@Override
-	public MapCodec<? extends FelPumpkinBlock> codec() {
-		return CODEC;
 	}
 
 	@Override
@@ -97,7 +90,7 @@ public class FelPumpkinBlock extends BotaniaBlock {
 	private void trySpawnBlaze(Level level, BlockPos pos) {
 		BlockPattern.BlockPatternMatch blockPatternMatch = this.getOrCreateFelBlazeFull().find(level, pos);
 		if (blockPatternMatch != null) {
-			Blaze blaze = EntityTypes.BLAZE.create(level);
+			Blaze blaze = EntityTypes.BLAZE.create(level, EntitySpawnReason.EVENT);
 			if (blaze != null) {
 				blaze.setPersistenceRequired();
 				((MobAccessor) blaze).botania_setLootTable(BotaniaLootTables.FEL_BLAZE);

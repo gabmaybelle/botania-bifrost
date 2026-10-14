@@ -27,7 +27,7 @@ import vazkii.botania.common.handler.PixieHandler;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
@@ -89,9 +89,9 @@ public class ElementiumArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
 		super.addArmorSetDescription(stack, list);
-		list.add(Component.translatable("botania.armorset.elementium.desc").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.elementium.desc").withStyle(ChatFormatting.GRAY));
 	}
 
 }

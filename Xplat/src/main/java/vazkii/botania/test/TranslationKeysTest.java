@@ -24,6 +24,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -112,7 +113,8 @@ public class TranslationKeysTest {
 										return null;
 									}
 								},
-								tooltipLines,
+								TooltipDisplay.DEFAULT,
+								tooltipLines::add,
 								TooltipFlag.ADVANCED
 						);
 						for (Component tooltipLine : tooltipLines) {
@@ -242,7 +244,7 @@ public class TranslationKeysTest {
 	public void everyBiomeTagHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
 		Set<TagKey<Item>> additionalTags = findAdditionalTagKeys(ADDITIONAL_BIOME_TAG_SOURCES);
-		Registry<Biome> biomeRegistry = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+		Registry<Biome> biomeRegistry = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
 		biomeRegistry.getTagNames()
 				.filter(tag -> (tag.identifier().getNamespace().equals(BotaniaAPI.MODID)
 						|| additionalTags.contains(tag)) && !IGNORED_BIOME_TAGS.contains(tag))
@@ -266,7 +268,7 @@ public class TranslationKeysTest {
 	@BotaniaGameTest(template = TestingUtil.EMPTY_STRUCTURE)
 	public void everyStructureHasATranslationKey(GameTestHelper helper) {
 		MutableInt missing = new MutableInt();
-		Registry<Structure> structureRegistry = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
+		Registry<Structure> structureRegistry = helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);
 		structureRegistry.stream()
 				.forEach(structure -> {
 					Identifier structureId = structureRegistry.getKey(structure);

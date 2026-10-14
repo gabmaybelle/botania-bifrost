@@ -9,8 +9,8 @@
 package vazkii.botania.common.item;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -49,9 +49,9 @@ public class ManaSparkItem extends Item {
 					stack.shrink(1);
 					ManaSparkEntity spark = new ManaSparkEntity(world);
 					spark.setPos(pos.getX() + 0.5, pos.getY() + 1.25, pos.getZ() + 0.5);
-					if (otherHandStack.getItem() instanceof DyeItem dye) {
+					if (otherHandStack.has(DataComponents.DYE)) {
+						spark.setNetwork(otherHandStack.get(DataComponents.DYE));
 						otherHandStack.shrink(1);
-						spark.setNetwork(dye.getDyeColor());
 					}
 					world.addFreshEntity(spark);
 					attach.attachSpark(spark);

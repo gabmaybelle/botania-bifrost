@@ -74,7 +74,7 @@ public class FlowerItemPickupParticle extends Particle {
 		double yy = Mth.lerp(time, this.itemEntity.getY(), targetPos.y);
 		double zz = Mth.lerp(time, this.itemEntity.getZ(), targetPos.z);
 		MultiBufferSource.BufferSource source = this.renderBuffers.bufferSource();
-		Vec3 pos = renderInfo.getPosition();
+		Vec3 pos = renderInfo.position();
 		this.entityRenderDispatcher
 				.render(
 						this.itemEntity,

@@ -14,7 +14,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import vazkii.botania.common.entity.GaiaGuardianEntity;
 
@@ -26,14 +25,14 @@ public class TrueGuardianKiller implements LootItemCondition {
 
 	@Override
 	public boolean test(LootContext context) {
-		Entity victim = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+		Entity victim = context.getOptional(LootContextParams.THIS_ENTITY);
 		return victim instanceof GaiaGuardianEntity gg
-				&& context.getParamOrNull(LootContextParams.ATTACKING_ENTITY) == gg.trueKiller;
+				&& context.getOptional(LootContextParams.ATTACKING_ENTITY) == gg.trueKiller;
 	}
 
 	@Override
-	public LootItemConditionType getType() {
-		return BotaniaLootModifiers.TRUE_GUARDIAN_KILLER;
+	public MapCodec<? extends LootItemCondition> codec() {
+		return CODEC;
 	}
 
 	public static LootItemCondition.Builder builder() {

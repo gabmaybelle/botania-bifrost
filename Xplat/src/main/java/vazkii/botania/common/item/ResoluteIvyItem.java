@@ -8,6 +8,7 @@
  */
 package vazkii.botania.common.item;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +51,7 @@ public class ResoluteIvyItem extends Item {
 				ItemStack copy = stack.copy();
 				copy.remove(BotaniaDataComponents.RESOLUTE_IVY);
 				if (!newPlayer.getInventory().add(copy)) {
-					newPlayer.spawnAtLocation(copy);
+					newPlayer.spawnAtLocation((ServerLevel) newPlayer.level(), copy);
 				}
 			}
 		}

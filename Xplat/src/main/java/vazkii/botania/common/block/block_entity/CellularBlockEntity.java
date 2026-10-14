@@ -9,12 +9,11 @@
 package vazkii.botania.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -84,7 +83,7 @@ public class CellularBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void saveAdditional(ValueOutput cmp) {
 		cmp.putInt(TAG_GENERATION, generation);
 		cmp.putBoolean(TAG_TICKED, ticked);
 		if (ticked) {
@@ -102,30 +101,27 @@ public class CellularBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput cmp) {
 		generation = cmp.getIntOr(TAG_GENERATION, 0);
 		ticked = cmp.getBooleanOr(TAG_TICKED, false);
 		if (ticked) {
-			if (cmp.contains(TAG_FLOWER_X, Tag.TAG_INT)) {
+			if (cmp.getInt(TAG_FLOWER_X).isPresent()) {
 				flowerCoords = new BlockPos(
 						cmp.getIntOr(TAG_FLOWER_X, 0),
-						cmp.getInt(TAG_FLOWER_Y),
-						cmp.getInt(TAG_FLOWER_Z)
+						cmp.getIntOr(TAG_FLOWER_Y, 0),
+						cmp.getIntOr(TAG_FLOWER_Z, 0)
 				);
 			}
-			if (cmp.contains(TAG_VALID_X, Tag.TAG_INT)) {
+			if (cmp.getInt(TAG_VALID_X).isPresent()) {
 				validCoords = new BlockPos(
 						cmp.getIntOr(TAG_VALID_X, 0),
-						cmp.getInt(TAG_VALID_Y),
-						cmp.getInt(TAG_VALID_Z)
+						cmp.getIntOr(TAG_VALID_Y, 0),
+						cmp.getIntOr(TAG_VALID_Z, 0)
 				);
 			}
 		}
 	}
 
-	@Override
-	public boolean onlyOpCanSetNbt() {
-		// targeting Create here, sorry about any instances of https://xkcd.com/1172/
-		return true;
-	}
+	// PORT-26.3: onlyOpCanSetNbt moved to BlockEntityType and vanilla keeps a fixed list there, so the Create
+	// workaround ("sorry about any instances of https://xkcd.com/1172/") has no hook any more.
 }

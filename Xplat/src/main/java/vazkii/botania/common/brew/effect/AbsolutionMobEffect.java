@@ -8,6 +8,7 @@
  */
 package vazkii.botania.common.brew.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.InstantaneousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -22,12 +23,12 @@ public class AbsolutionMobEffect extends InstantaneousMobEffect {
 	}
 
 	@Override
-	public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
+	public void applyInstantaneousEffect(ServerLevel level, @Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
 		livingEntity.removeAllEffects();
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int amplifier) {
 		// SuspiciousStewItem does not support instant effects, so need to implement removal here.
 		// This exits the loop over all potions effects with a ConcurrentModificationException, but It's Fine(tm),
 		// since that loop is specifically guarded against that case.

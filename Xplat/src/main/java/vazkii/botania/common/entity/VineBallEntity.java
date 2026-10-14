@@ -48,7 +48,9 @@ public class VineBallEntity extends ThrowableProjectile implements ItemSupplier 
 	}
 
 	public VineBallEntity(LivingEntity thrower, boolean gravity) {
-		super(BotaniaEntities.VINE_BALL, thrower, thrower.level());
+		// [VanillaCopy] the removed ThrowableProjectile(type, owner, level) constructor
+		super(BotaniaEntities.VINE_BALL, thrower.getX(), thrower.getEyeY() - 0.1, thrower.getZ(), thrower.level());
+		setOwner(thrower);
 		entityData.set(GRAVITY, gravity ? 0.03F : 0F);
 	}
 
@@ -66,7 +68,7 @@ public class VineBallEntity extends ThrowableProjectile implements ItemSupplier 
 	public void handleEntityEvent(byte id) {
 		if (id == EntityEvent.DEATH) {
 			for (int j = 0; j < 16; j++) {
-				level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(BotaniaItems.VINE_BALL)), getX(), getY(), getZ(), Math.random() * 0.2 - 0.1, Math.random() * 0.25, Math.random() * 0.2 - 0.1);
+				level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, BotaniaItems.VINE_BALL.asItem()), getX(), getY(), getZ(), Math.random() * 0.2 - 0.1, Math.random() * 0.25, Math.random() * 0.2 - 0.1);
 			}
 		}
 	}

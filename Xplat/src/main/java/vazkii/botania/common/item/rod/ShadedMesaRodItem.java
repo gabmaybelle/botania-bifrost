@@ -47,7 +47,7 @@ import java.util.function.Predicate;
 public class ShadedMesaRodItem extends Item {
 	private static final float RANGE = 3F;
 	private static final int COST = 2;
-	private static final Predicate<Entity> CAN_TARGET = e -> !e.isSpectator() && e.isAlive() && !e.getType().is(
+	private static final Predicate<Entity> CAN_TARGET = e -> !e.isSpectator() && e.isAlive() && !e.typeHolder().is(
 			BotaniaTags.Entities.SHADED_MESA_NO_PICKUP);
 
 	public ShadedMesaRodItem(Properties props) {
@@ -155,7 +155,7 @@ public class ShadedMesaRodItem extends Item {
 			}
 
 			if (target != null) {
-				if (target.getType().is(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP)) {
+				if (target.typeHolder().is(BotaniaTags.Entities.SHADED_MESA_NO_PICKUP)) {
 					return InteractionResult.FAIL;
 				}
 
@@ -245,7 +245,7 @@ public class ShadedMesaRodItem extends Item {
 					} else {
 						if (target instanceof LivingEntity living) {
 							living.setLastHurtByMob(player);
-							living.setLastHurtByPlayer(player);
+							living.setLastHurtByPlayer(player, 100);
 						}
 						target.setDeltaMovement(moveVector.multiply(3, 1.5, 3));
 					}

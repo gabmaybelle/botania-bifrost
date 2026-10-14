@@ -14,15 +14,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class RelicBaubleItem extends BaubleItem {
 
@@ -41,8 +43,8 @@ public abstract class RelicBaubleItem extends BaubleItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
 		RelicImpl.addDefaultTooltip(stack, tooltip);
 	}
 

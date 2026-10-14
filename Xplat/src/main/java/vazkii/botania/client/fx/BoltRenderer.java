@@ -54,7 +54,7 @@ public class BoltRenderer {
 	public static void onWorldRenderLast(Camera camera, float partialTicks, PoseStack ps, RenderBuffers buffers) {
 		ps.pushPose();
 		// here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-		Vec3 camVec = camera.getPosition();
+		Vec3 camVec = camera.position();
 		ps.translate(-camVec.x, -camVec.y, -camVec.z);
 		var bufferSource = buffers.bufferSource();
 		BoltRenderer.INSTANCE.render(partialTicks, ps, bufferSource);

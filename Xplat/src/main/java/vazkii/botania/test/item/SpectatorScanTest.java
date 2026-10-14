@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.common.component.BotaniaDataComponents;
@@ -86,7 +86,7 @@ public class SpectatorScanTest {
 		regularChestCart.setItem(2, new ItemStack(Items.COAL));
 		regularChestCart.setItem(5, new ItemStack(Items.IRON_INGOT));
 
-		var regularChest = TestingUtil.assertBlockEntity(helper, POSITION_CHEST_NORMAL, BlockEntityType.CHEST);
+		var regularChest = TestingUtil.assertBlockEntity(helper, POSITION_CHEST_NORMAL, BlockEntityTypes.CHEST);
 		regularChest.setItem(3, new ItemStack(Items.FLINT));
 		regularChest.setItem(7, new ItemStack(Items.IRON_INGOT));
 
@@ -105,7 +105,7 @@ public class SpectatorScanTest {
 		var lootChestCart = helper.spawn(EntityTypes.CHEST_MINECART, POSITION_CART_LOOT);
 		lootChestCart.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(LOOT_TABLE_CART)), 1L);
 
-		var lootChest = TestingUtil.assertBlockEntity(helper, POSITION_CHEST_LOOT, BlockEntityType.CHEST);
+		var lootChest = TestingUtil.assertBlockEntity(helper, POSITION_CHEST_LOOT, BlockEntityTypes.CHEST);
 		lootChest.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(LOOT_TABLE_CHEST)), 1L);
 
 		// set up player

@@ -42,9 +42,9 @@ public class FloralFertilizerItem extends Item {
 		BlockPos pos = ctx.getClickedPos();
 		if (!world.isClientSide()) {
 			Optional<HolderSet.Named<Block>> flowersTag =
-					BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
+					BuiltInRegistries.BLOCK.get(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 			Optional<HolderSet.Named<Block>> mushroomsTag =
-					BuiltInRegistries.BLOCK.getTag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
+					BuiltInRegistries.BLOCK.get(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
 			boolean flowersAvailable = flowersTag.map(holders -> holders.size() > 0).orElse(false);
 			boolean mushroomsAvailable = mushroomsTag.map(holders -> holders.size() > 0).orElse(false);
 
@@ -71,9 +71,9 @@ public class FloralFertilizerItem extends Item {
 
 				Optional<Holder<Block>> toPlace;
 				if (tryPlaceMushroom && (!tryPlaceFlower || world.getRandom().nextInt(3) == 0)) {
-					toPlace = mushroomsTag.get().getRandomElement(world.random);
+					toPlace = mushroomsTag.get().getRandomElement(world.getRandom());
 				} else if (tryPlaceFlower) {
-					toPlace = flowersTag.get().getRandomElement(world.random);
+					toPlace = flowersTag.get().getRandomElement(world.getRandom());
 					petalCount--;
 				} else {
 					continue;
@@ -101,7 +101,7 @@ public class FloralFertilizerItem extends Item {
 	}
 
 	private static boolean canPlaceMushroom(BlockState belowState) {
-		return belowState.is(BlockTags.MUSHROOM_GROW_BLOCK);
+		return belowState.is(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT);
 	}
 
 	private static boolean canPlaceFlower(BlockState belowState, Level world) {

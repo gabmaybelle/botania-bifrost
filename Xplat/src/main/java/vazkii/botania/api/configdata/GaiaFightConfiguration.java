@@ -16,9 +16,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +41,7 @@ public record GaiaFightConfiguration(
 		int missileSpawnInterval,
 		IntProvider missileSpawnCount,
 		IntProvider mobSpawnsPerPlayer,
-		WeightedRandomList<MobSpawnData> spawnedMobs,
+		WeightedList<MobSpawnData> spawnedMobs,
 		List<MobAttributeModifier> attributeModifiers,
 		List<MobEffectToApply> effectsToApply) {
 
@@ -49,25 +51,25 @@ public record GaiaFightConfiguration(
 							.forGetter(GaiaFightConfiguration::rewardLootTable),
 					Codec.INT.fieldOf("teleportDelay")
 							.forGetter(GaiaFightConfiguration::teleportDelay),
-					IntProvider.CODEC.fieldOf("mineCount")
+					IntProviders.CODEC.fieldOf("mineCount")
 							.forGetter(GaiaFightConfiguration::mineCount),
 					Codec.FLOAT.fieldOf("dyingHealthPercent")
 							.forGetter(GaiaFightConfiguration::dyingHealthPercent),
 					Codec.INT.fieldOf("dyingTeleportDelay")
 							.forGetter(GaiaFightConfiguration::dyingTeleportDelay),
-					IntProvider.CODEC.fieldOf("dyingMineCount")
+					IntProviders.CODEC.fieldOf("dyingMineCount")
 							.forGetter(GaiaFightConfiguration::dyingMineCount),
-					IntProvider.CODEC.fieldOf("pixiesAfterHurtCount")
+					IntProviders.CODEC.fieldOf("pixiesAfterHurtCount")
 							.forGetter(GaiaFightConfiguration::pixiesAfterHurtCount),
-					IntProvider.CODEC.fieldOf("pixiesAfterTeleportCount")
+					IntProviders.CODEC.fieldOf("pixiesAfterTeleportCount")
 							.forGetter(GaiaFightConfiguration::pixiesAfterTeleportCount),
 					Codec.INT.optionalFieldOf("missileSpawnInterval", 0)
 							.forGetter(GaiaFightConfiguration::missileSpawnInterval),
-					IntProvider.CODEC.optionalFieldOf("missileSpawnCount", ConstantInt.ZERO)
+					IntProviders.CODEC.optionalFieldOf("missileSpawnCount", ConstantInt.ZERO)
 							.forGetter(GaiaFightConfiguration::missileSpawnCount),
-					IntProvider.CODEC.fieldOf("mobSpawnsPerPlayer")
+					IntProviders.CODEC.fieldOf("mobSpawnsPerPlayer")
 							.forGetter(GaiaFightConfiguration::mobSpawnsPerPlayer),
-					WeightedRandomList.codec(MobSpawnData.CODEC)
+					WeightedList.codec(MobSpawnData.CODEC)
 							.validate(list -> list.isEmpty()
 									? DataResult.error(() -> "Spawned mobs cannot be empty", list)
 									: DataResult.success(list))
@@ -110,7 +112,7 @@ public record GaiaFightConfiguration(
 		private IntProvider missileSpawnCount = ConstantInt.ZERO;
 		IntProvider mobSpawnsPerPlayer = ConstantInt.of(3);
 		@Nullable
-		private WeightedRandomList<MobSpawnData> spawnedMobs;
+		private WeightedList<MobSpawnData> spawnedMobs;
 		@Nullable
 		private List<MobAttributeModifier> attributeModifiers;
 		@Nullable
@@ -128,9 +130,9 @@ public record GaiaFightConfiguration(
 			this.pixiesAfterHurtCount = pixiesAfterHurtCount;
 		}
 
-		public Builder spawnedMobs(IntProvider mobSpawnsPerPlayer, MobSpawnData... spawnedMobs) {
+		public Builder spawnedMobs(IntProvider mobSpawnsPerPlayer, Weighted<MobSpawnData>... spawnedMobs) {
 			this.mobSpawnsPerPlayer = mobSpawnsPerPlayer;
-			this.spawnedMobs = WeightedRandomList.create(spawnedMobs);
+			this.spawnedMobs = WeightedList.of(spawnedMobs);
 			return this;
 		}
 
@@ -160,7 +162,7 @@ public record GaiaFightConfiguration(
 					dyingHealthPercent, dyingTeleportDelay, dyingMineCount,
 					pixiesAfterHurtCount, pixiesAfterTeleportCount,
 					missileSpawnInterval, missileSpawnCount,
-					mobSpawnsPerPlayer, spawnedMobs == null ? WeightedRandomList.create() : spawnedMobs,
+					mobSpawnsPerPlayer, spawnedMobs == null ? WeightedList.of() : spawnedMobs,
 					attributeModifiers == null ? List.of() : attributeModifiers,
 					effectsToApply == null ? List.of() : effectsToApply);
 		}

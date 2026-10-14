@@ -43,7 +43,7 @@ public class ManaPoolMinecartItem extends Item {
 			if (level instanceof ServerLevel serverlevel) {
 				RailShape railShape = XplatAbstractions.INSTANCE.getRailDirection(blockState, level, blockPos, null);
 				double yOffset = 0.0;
-				if (railShape.isAscending()) {
+				if (railShape.isSlope()) {
 					yOffset = 0.5;
 				}
 

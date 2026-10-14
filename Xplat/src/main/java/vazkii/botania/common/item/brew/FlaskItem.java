@@ -26,6 +26,7 @@ import net.minecraft.world.phys.HitResult;
 import vazkii.botania.api.brew.Brew;
 import vazkii.botania.common.entity.EnderEssenceCloudEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
+import vazkii.botania.common.helper.EntityHelper;
 import vazkii.botania.common.item.BotaniaItems;
 
 public class FlaskItem extends VialItem {
@@ -52,7 +53,7 @@ public class FlaskItem extends VialItem {
 				player.entityInteractionRange());
 		if (!(hitResult instanceof EntityHitResult entityHitResult)
 				|| !(entityHitResult.getEntity() instanceof EnderEssenceCloudEntity cloud)
-				|| !player.mayInteract(level, cloud.blockPosition())) {
+				|| !EntityHelper.mayInteract(player, cloud.blockPosition())) {
 			return super.use(level, player, usedHand);
 		}
 

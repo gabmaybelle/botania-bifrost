@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +77,7 @@ public class RedStringInterceptorBlockEntity extends RedStringBlockEntity {
 
 		interceptors.removeAll(remove);
 		if (did) {
-			player.swing(hand);
+			player.swing(hand, SwingAnimation.DEFAULT, false);
 			world.playSound(null, pos, BotaniaSounds.RED_STRINGED_INTERCEPTOR_CLICK, SoundSource.BLOCKS, 1F, 1F);
 			return InteractionResult.SUCCESS;
 		}

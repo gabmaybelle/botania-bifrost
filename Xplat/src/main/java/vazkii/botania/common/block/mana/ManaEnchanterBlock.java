@@ -10,7 +10,7 @@ package vazkii.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -78,7 +78,7 @@ public class ManaEnchanterBlock extends BotaniaBlock implements EntityBlock {
 				return InteractionResult.TRY_WITH_EMPTY_HAND;
 			}
 		} else if (enchanter.stage == ManaEnchanterBlockEntity.State.IDLE) {
-			player.getInventory().placeItemBackInInventory(enchanter.itemToEnchant.copy());
+			player.getInventory().placeItemBackInInventory(enchanter.itemToEnchant.copy(), Prediction.SERVER_ONLY);
 			enchanter.itemToEnchant = ItemStack.EMPTY;
 			enchanter.sync();
 		}
@@ -86,16 +86,4 @@ public class ManaEnchanterBlock extends BotaniaBlock implements EntityBlock {
 		return InteractionResult.SUCCESS;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-
-			if (world.getBlockEntity(pos) instanceof ManaEnchanterBlockEntity enchanter
-					&& !enchanter.itemToEnchant.isEmpty()) {
-				Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), enchanter.itemToEnchant);
-			}
-
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
-	}
 }

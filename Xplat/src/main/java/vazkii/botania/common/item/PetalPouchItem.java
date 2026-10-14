@@ -12,6 +12,7 @@ package vazkii.botania.common.item;
 import it.unimi.dsi.fastutil.ints.IntList;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -28,6 +29,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.RecipeCache;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -38,6 +40,7 @@ import vazkii.botania.common.helper.DataComponentHelper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PetalPouchItem extends ColoredContentsPouchItem {
 	private static final RecipeCache RECIPE_CACHE = new RecipeCache(16);
@@ -63,11 +66,14 @@ public class PetalPouchItem extends ColoredContentsPouchItem {
 	@Override
 	public IntList findCandidateSlots(Level level, ItemStack pouch, ItemStack pickupStack) {
 		if (isActive(pouch) && !super.isSupportedItem(pouch, pickupStack)) {
+			if (!(level instanceof ServerLevel serverLevel)) {
+				return IntList.of();
+			}
 			CraftingContainer craft = getCraftingContainer();
 			craft.setItem(0, pickupStack.copyWithCount(1));
-			return RECIPE_CACHE.get(level, craft.asCraftInput())
+			return RECIPE_CACHE.get(serverLevel, craft.asCraftInput())
 					.map(RecipeHolder::value)
-					.map(recipe -> recipe.assemble(craft.asCraftInput(), level.registryAccess()))
+					.map(recipe -> recipe.assemble(craft.asCraftInput()))
 					.map(stack -> super.findCandidateSlots(level, pouch, stack))
 					.orElseGet(IntList::of);
 		}
@@ -94,10 +100,13 @@ public class PetalPouchItem extends ColoredContentsPouchItem {
 		if (super.isSupportedItem(pouch, pickupStack) || !isActive(pouch)) {
 			return super.tryPutItem(level, pouch, pickupStack, container, slot);
 		}
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return false;
+		}
 		CraftingContainer craft = getCraftingContainer();
 		craft.setItem(0, pickupStack.copyWithCount(1));
-		var convertedStackOptional = RECIPE_CACHE.get(level, craft.asCraftInput()).map(RecipeHolder::value)
-				.map(recipe -> recipe.assemble(craft.asCraftInput(), level.registryAccess()));
+		var convertedStackOptional = RECIPE_CACHE.get(serverLevel, craft.asCraftInput()).map(RecipeHolder::value)
+				.map(recipe -> recipe.assemble(craft.asCraftInput()));
 		if (convertedStackOptional.map(ItemStack::isEmpty).orElse(true)) {
 			return false;
 		}
@@ -128,9 +137,9 @@ public class PetalPouchItem extends ColoredContentsPouchItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> stacks, TooltipFlag flags) {
-		stacks.add(Component.translatable(isActive(stack) ? "botaniamisc.active" : "botaniamisc.inactive"));
-		super.appendHoverText(stack, context, stacks, flags);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> stacks, TooltipFlag flags) {
+		stacks.accept(Component.translatable(isActive(stack) ? "botaniamisc.active" : "botaniamisc.inactive"));
+		super.appendHoverText(stack, context, display, stacks, flags);
 	}
 
 	@Override

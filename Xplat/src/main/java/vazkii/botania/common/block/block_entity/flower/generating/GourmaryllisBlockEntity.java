@@ -9,7 +9,6 @@
 package vazkii.botania.common.block.block_entity.flower.generating;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -19,18 +18,18 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
@@ -151,11 +150,11 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 				level.gameEvent(null, GameEvent.BLOCK_DEACTIVATE, getEffectivePos());
 			} else if (cooldown % munchInterval == 0) {
 				//Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-				level.playSound(null, getEffectivePos(), SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 0.5f, 1);
+				level.playSound(null, getEffectivePos(), SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 0.5f, 1);
 
-				Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(level, getEffectivePos()).add(0.5, 0.6, 0.5);
+				Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(getEffectivePos()).add(0.5, 0.6, 0.5);
 
-				((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, lastFoods.getFirst()),
+				((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(lastFoods.getFirst())),
 						getEffectivePos().getX() + offset.x,
 						getEffectivePos().getY() + offset.y,
 						getEffectivePos().getZ() + offset.z,
@@ -178,7 +177,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 				digestingMana = getDigestingMana(val, getMultiplierForStreak(streakLength));
 				cooldown = getCooldown(val);
 				//Usage of vanilla sound event: Subtitle is "Eating", generic sounds are meant to be reused.
-				item.playSound(SoundEvents.GENERIC_EAT, 0.2f, 0.6f);
+				item.playSound(SoundEvents.GENERIC_EAT.value(), 0.2f, 0.6f);
 				level.gameEvent(null, GameEvent.BLOCK_ACTIVATE, getEffectivePos());
 				setChanged();
 			}
@@ -213,29 +212,22 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		cmp.putInt(TAG_COOLDOWN, cooldown);
 		cmp.putInt(TAG_DIGESTING_MANA, digestingMana);
-		ListTag foodList = new ListTag();
-		for (ItemStack food : lastFoods) {
-			foodList.add(food.save(registries));
-		}
-		cmp.put(TAG_LAST_FOODS, foodList);
+		cmp.store(TAG_LAST_FOODS, ItemStack.OPTIONAL_CODEC.listOf(), lastFoods);
 		cmp.putInt(TAG_LAST_FOOD_COUNT, lastFoodCount);
 		cmp.putInt(TAG_STREAK_LENGTH, streakLength);
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
 		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 		digestingMana = cmp.getIntOr(TAG_DIGESTING_MANA, 0);
 		lastFoods.clear();
-		ListTag foodList = cmp.getList(TAG_LAST_FOODS, Tag.TAG_COMPOUND);
-		for (int i = 0; i < foodList.size(); i++) {
-			lastFoods.add(ItemStack.parseOptional(registries, foodList.getCompound(i)));
-		}
+		cmp.listOrEmpty(TAG_LAST_FOODS, ItemStack.OPTIONAL_CODEC).forEach(lastFoods::add);
 		lastFoodCount = cmp.getIntOr(TAG_LAST_FOOD_COUNT, 0);
 		streakLength = cmp.getIntOr(TAG_STREAK_LENGTH, 0);
 	}

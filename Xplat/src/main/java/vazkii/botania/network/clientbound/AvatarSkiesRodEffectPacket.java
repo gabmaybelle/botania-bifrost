@@ -45,7 +45,7 @@ public record AvatarSkiesRodEffectPacket(boolean elytra, int entityId) implement
 			Entity p = world.getEntity(packet.entityId());
 			if (p != null) {
 				p.playSound(BotaniaSounds.DASH, 1, 1);
-				RandomSource rng = world.random;
+				RandomSource rng = world.getRandom();
 				WispParticleData data =
 						WispParticleData.wisp(0.35f + rng.nextFloat() * 0.1f, 0.25f, 0.25f, 0.25f);
 				if (packet.elytra()) {

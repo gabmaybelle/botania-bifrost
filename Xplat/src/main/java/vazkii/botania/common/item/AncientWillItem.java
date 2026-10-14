@@ -13,11 +13,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import vazkii.botania.api.item.AncientWillContainer;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class AncientWillItem extends Item {
 	public final AncientWillContainer.AncientWillType type;
@@ -28,8 +29,8 @@ public class AncientWillItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flag) {
-		list.add(Component.translatable("botaniamisc.craftToAddWill").withStyle(ChatFormatting.GREEN));
-		list.add(Component.translatable("botania.armorset.will_" + type.name().toLowerCase(Locale.ROOT) + ".shortDesc").withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+		list.accept(Component.translatable("botaniamisc.craftToAddWill").withStyle(ChatFormatting.GREEN));
+		list.accept(Component.translatable("botania.armorset.will_" + type.name().toLowerCase(Locale.ROOT) + ".shortDesc").withStyle(ChatFormatting.GRAY));
 	}
 }

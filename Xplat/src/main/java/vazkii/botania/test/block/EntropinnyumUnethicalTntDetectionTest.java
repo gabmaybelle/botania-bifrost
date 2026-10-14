@@ -18,6 +18,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
@@ -50,12 +51,12 @@ public class EntropinnyumUnethicalTntDetectionTest {
 
 	private static Runnable checkEntropinnyumForUnethicalManaAmount(GameTestHelper helper) {
 		return () -> {
-			final var be = helper.getBlockEntity(POSITION_ENTROPINNYUM);
+			final var be = helper.getBlockEntity(POSITION_ENTROPINNYUM, BlockEntity.class);
 			if (!(be instanceof EntropinnyumBlockEntity entropinnyum)) {
-				throw new GameTestAssertException(Component.literal("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM), helper.getTick());
+				throw new GameTestAssertException(Component.literal("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM), (int) helper.getTick());
 			}
 			if (entropinnyum.getMana() != 3) {
-				throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + 3 + " but was " + entropinnyum.getMana()), helper.getTick());
+				throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + 3 + " but was " + entropinnyum.getMana()), (int) helper.getTick());
 			}
 		};
 	}
@@ -72,7 +73,7 @@ public class EntropinnyumUnethicalTntDetectionTest {
 
 					if (helper.getBlockState(POSITION_FORCE_LENS_DETECTOR_RAIL).getBlock() != Blocks.DETECTOR_RAIL) {
 						throw new GameTestAssertException(Component.literal("Missing detector rail at: " +
-								POSITION_FORCE_LENS_DETECTOR_RAIL), helper.getTick());
+								POSITION_FORCE_LENS_DETECTOR_RAIL), (int) helper.getTick());
 					}
 					helper.spawn(EntityTypes.MINECART, POSITION_FORCE_LENS_DETECTOR_RAIL);
 					helper.pressButton(POSITION_FORCE_LENS_BUTTON);
@@ -86,14 +87,14 @@ public class EntropinnyumUnethicalTntDetectionTest {
 		helper.startSequence()
 				.thenExecute(() -> {
 					if (helper.getBlockState(POSITION_FORCE_RELAY).getBlock() != BotaniaBlocks.FORCE_RELAY) {
-						throw new GameTestAssertException(Component.literal("Missing force relay at: " + POSITION_FORCE_RELAY), helper.getTick());
+						throw new GameTestAssertException(Component.literal("Missing force relay at: " + POSITION_FORCE_RELAY), (int) helper.getTick());
 					}
 					TestingUtil.bindForceRelayTarget(helper, POSITION_FORCE_RELAY,
 							POSITION_FORCE_RELAY_PUSHED_SLIME_BLOCK);
 
 					if (helper.getBlockState(POSITION_FORCE_RELAY_DETECTOR_RAIL).getBlock() != Blocks.DETECTOR_RAIL) {
 						throw new GameTestAssertException(Component.literal("Missing detector rail at: " +
-								POSITION_FORCE_RELAY_DETECTOR_RAIL), helper.getTick());
+								POSITION_FORCE_RELAY_DETECTOR_RAIL), (int) helper.getTick());
 					}
 					helper.spawn(EntityTypes.MINECART, POSITION_FORCE_RELAY_DETECTOR_RAIL);
 				})
@@ -115,12 +116,12 @@ public class EntropinnyumUnethicalTntDetectionTest {
 		helper.startSequence()
 				.thenExecute(() -> helper.pressButton(POSITION_ETHICAL_TNT_BLOCK_BUTTON))
 				.thenExecuteAfter(95, () -> {
-					final var be = helper.getBlockEntity(POSITION_ENTROPINNYUM);
+					final var be = helper.getBlockEntity(POSITION_ENTROPINNYUM, BlockEntity.class);
 					if (!(be instanceof EntropinnyumBlockEntity entropinnyum)) {
-						throw new GameTestAssertException(Component.literal("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM), helper.getTick());
+						throw new GameTestAssertException(Component.literal("Missing Entropinnyum at: " + POSITION_ENTROPINNYUM), (int) helper.getTick());
 					}
 					if (entropinnyum.getMana() != entropinnyum.getMaxMana()) {
-						throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + entropinnyum.getMaxMana() + " but was " + entropinnyum.getMana()), helper.getTick());
+						throw new GameTestAssertException(Component.literal("Wrong amount of mana: expected " + entropinnyum.getMaxMana() + " but was " + entropinnyum.getMana()), (int) helper.getTick());
 					}
 				})
 				.thenSucceed();

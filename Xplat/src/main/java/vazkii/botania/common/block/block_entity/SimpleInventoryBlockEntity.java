@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -27,10 +28,12 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -46,16 +49,6 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 		super(type, pos, state);
 		this.synchronize = synchronize;
 		itemHandler.addListener(i -> setChanged());
-	}
-
-	// [VanillaCopy] Containers::dropContentsOnDestroy, except for SimpleInventoryBlockEntity instead of Container
-	public static void dropContentsOnDestroy(BlockState state, BlockState newState, Level level, BlockPos pos) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity simpleInventory) {
-				Containers.dropContents(level, pos, simpleInventory.getItemHandler());
-				level.updateNeighbourForOutputSignal(pos, state.getBlock());
-			}
-		}
 	}
 
 	private static void copyToInv(NonNullList<ItemStack> src, Container dest) {
@@ -74,22 +67,33 @@ public abstract class SimpleInventoryBlockEntity extends BlockEntity implements 
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+	protected void loadAdditional(ValueInput tag) {
 		NonNullList<ItemStack> tmp = NonNullList.withSize(inventorySize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, tmp, registries);
+		ContainerHelper.loadAllItems(tag, tmp);
 		copyToInv(tmp, itemHandler);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		ContainerHelper.saveAllItems(tag, copyFromInv(itemHandler), registries);
+	protected void saveAdditional(ValueOutput tag) {
+		ContainerHelper.saveAllItems(tag, copyFromInv(itemHandler));
+	}
+
+	// PORT-26.3: blocks used to drop their inventory in onRemove; the block entity does it itself now, like vanilla containers
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null) {
+			Containers.dropContents(level, pos, getItemHandler());
+		}
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		var tag = super.getUpdateTag(registries);
 		if (synchronize) {
-			ContainerHelper.saveAllItems(tag, copyFromInv(itemHandler), registries);
+			// PORT-26.3: ContainerHelper writes through a ValueOutput now, so build one over the packet tag
+			TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+			ContainerHelper.saveAllItems(output, copyFromInv(itemHandler));
+			tag.merge(output.buildResult());
 		}
 		return tag;
 	}

@@ -10,7 +10,6 @@ package vazkii.botania.common.entity;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -30,6 +29,8 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -51,7 +52,9 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	public ThornChakramEntity(LivingEntity e, Level world, ItemStack stack) {
-		super(BotaniaEntities.THORN_CHAKRAM, e, world);
+		// [VanillaCopy] the removed ThrowableProjectile(type, owner, level) constructor
+		super(BotaniaEntities.THORN_CHAKRAM, e.getX(), e.getEyeY() - 0.1, e.getZ(), world);
+		setOwner(e);
 		this.stack = stack.copy();
 	}
 
@@ -211,20 +214,18 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
+	public void addAdditionalSaveData(ValueOutput compound) {
 		super.addAdditionalSaveData(compound);
 		if (!stack.isEmpty()) {
-			compound.put("fly_stack", stack.save(level().registryAccess()));
+			compound.store("fly_stack", ItemStack.CODEC, stack);
 		}
 		compound.putBoolean("flare", isFire());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
+	public void readAdditionalSaveData(ValueInput compound) {
 		super.readAdditionalSaveData(compound);
-		if (compound.contains("fly_stack")) {
-			stack = ItemStack.parseOptional(level().registryAccess(), compound.getCompound("fly_stack"));
-		}
+		compound.read("fly_stack", ItemStack.CODEC).ifPresent(flyStack -> stack = flyStack);
 		setFire(compound.getBooleanOr("flare", false));
 	}
 

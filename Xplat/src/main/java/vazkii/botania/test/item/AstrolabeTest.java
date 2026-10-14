@@ -13,6 +13,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ import java.util.Objects;
 public class AstrolabeTest {
 	//region Tests with candles
 	private static final String TEMPLATE_CANDLES = "botania:item/worldshapers_astrolabe_candles";
-	private static final Block BLOCK_CANDLES = Blocks.YELLOW_CANDLE;
+	private static final Block BLOCK_CANDLES = Blocks.DYED_CANDLE.yellow();
 	private static final BlockPos POS_WATER_SLAB = new BlockPos(2, 2, 3);
 	private static final BlockPos POS_SEAGRASS = new BlockPos(2, 2, 1);
 	private static final BlockPos POS_SUPPORTED_CANDLE = new BlockPos(2, 4, 1);
@@ -70,14 +71,14 @@ public class AstrolabeTest {
 		checkWaterSlabAndSeaGrass(helper);
 
 		helper.assertBlockState(POS_WATER_SLAB.above(), BlockBehaviour.BlockStateBase::isAir,
-				() -> "Expected air above water slab, but found " + helper.getBlockState(POS_WATER_SLAB.above()));
+				found -> Component.literal("Expected air above water slab, but found " + helper.getBlockState(POS_WATER_SLAB.above())));
 		helper.assertBlockState(POS_SEAGRASS.above(), state -> state.is(Blocks.SMOOTH_STONE_SLAB),
-				() -> "Expected slab above sea grass, but found " + helper.getBlockState(POS_SEAGRASS.above()));
+				found -> Component.literal("Expected slab above sea grass, but found " + helper.getBlockState(POS_SEAGRASS.above())));
 
 		for (var pos : BlockPos.betweenClosed(1, 2, 1, 3, 2, 3)) {
 			if (!pos.equals(POS_WATER_SLAB)) {
 				helper.assertBlockState(pos, block -> block.is(BLOCK_CANDLES),
-						() -> "Missing candle, found " + helper.getBlockState(pos));
+						found -> Component.literal("Missing candle, found " + helper.getBlockState(pos)));
 				helper.assertBlockProperty(pos, CandleBlock.WATERLOGGED, true);
 			}
 		}
@@ -175,11 +176,11 @@ public class AstrolabeTest {
 		checkThreeByThreeVerticalCandleArea(helper);
 
 		helper.assertBlockState(POS_WATER_SLAB.above().south(), block -> block.is(BLOCK_CANDLES),
-				() -> "Expected candle on rim next to water slab, but found "
-						+ helper.getBlockState(POS_WATER_SLAB.above().south()));
+				found -> Component.literal("Expected candle on rim next to water slab, but found "
+						+ helper.getBlockState(POS_WATER_SLAB.above().south())));
 		helper.assertBlockState(POS_SEAGRASS.above().north(), block -> block.is(BLOCK_CANDLES),
-				() -> "Expected candle on rim next to seagrass, but found "
-						+ helper.getBlockState(POS_WATER_SLAB.above().north()));
+				found -> Component.literal("Expected candle on rim next to seagrass, but found "
+						+ helper.getBlockState(POS_WATER_SLAB.above().north())));
 
 		checkRemainingCandles(player, EXPECTED_REMAINING_CANDLES_VERTICAL_5X5, SLOT_FIRST_PROVIDER);
 		checkRemainingMana(player, ManaTabletItem.DEFAULT_MAX_MANA - 5 * AstrolabeItem.BASE_COST);
@@ -210,19 +211,19 @@ public class AstrolabeTest {
 		checkWaterSlabAndSeaGrass(helper);
 
 		helper.assertBlockState(POS_WATER_SLAB.above(), block -> block.is(BLOCK_CANDLES),
-				() -> "Expected candle on water slab, but found " + helper.getBlockState(POS_WATER_SLAB.above()));
+				found -> Component.literal("Expected candle on water slab, but found " + helper.getBlockState(POS_WATER_SLAB.above())));
 		helper.assertBlockProperty(POS_WATER_SLAB.above(), CandleBlock.WATERLOGGED, false);
 		helper.assertBlockState(POS_SEAGRASS.above(), state -> state.is(Blocks.SMOOTH_STONE_SLAB),
-				() -> "Expected slab above sea grass, but found " + helper.getBlockState(POS_SEAGRASS.above()));
+				found -> Component.literal("Expected slab above sea grass, but found " + helper.getBlockState(POS_SEAGRASS.above())));
 
 		helper.assertBlockState(POS_FLOATING_CANDLE, block -> block.is(BLOCK_CANDLES),
-				() -> "Floating candle was replaced with " + helper.getBlockState(POS_FLOATING_CANDLE));
+				found -> Component.literal("Floating candle was replaced with " + helper.getBlockState(POS_FLOATING_CANDLE)));
 		helper.assertBlockProperty(POS_FLOATING_CANDLE, CandleBlock.CANDLES, 1);
 		helper.assertBlockProperty(POS_FLOATING_CANDLE, CandleBlock.LIT, true);
 		helper.assertBlockProperty(POS_FLOATING_CANDLE, CandleBlock.WATERLOGGED, false);
 
 		helper.assertBlockState(POS_SUPPORTED_CANDLE, block -> block.is(BLOCK_CANDLES),
-				() -> "Supported candle was replaced with " + helper.getBlockState(POS_FLOATING_CANDLE));
+				found -> Component.literal("Supported candle was replaced with " + helper.getBlockState(POS_FLOATING_CANDLE)));
 		helper.assertBlockProperty(POS_SUPPORTED_CANDLE, CandleBlock.CANDLES, 2);
 		helper.assertBlockProperty(POS_SUPPORTED_CANDLE, CandleBlock.LIT, true);
 		helper.assertBlockProperty(POS_SUPPORTED_CANDLE, CandleBlock.WATERLOGGED, false);
@@ -230,10 +231,10 @@ public class AstrolabeTest {
 		for (var pos : BlockPos.betweenClosed(1, 2, 1, 3, 2, 3)) {
 			if (pos.getX() != 2) {
 				helper.assertBlockState(pos, block -> block.is(Blocks.WATER),
-						() -> "Water was replaced with " + helper.getBlockState(pos));
+						found -> Component.literal("Water was replaced with " + helper.getBlockState(pos)));
 			} else if (!pos.equals(POS_WATER_SLAB)) {
 				helper.assertBlockState(pos, block -> block.is(BLOCK_CANDLES),
-						() -> "Missing candle, found " + helper.getBlockState(pos));
+						found -> Component.literal("Missing candle, found " + helper.getBlockState(pos)));
 				helper.assertBlockProperty(pos, CandleBlock.WATERLOGGED, true);
 			}
 		}
@@ -241,8 +242,8 @@ public class AstrolabeTest {
 
 	private void checkWaterSlabAndSeaGrass(final GameTestHelper helper) {
 		helper.assertBlockState(POS_WATER_SLAB, block -> block.is(Blocks.SMOOTH_STONE_SLAB),
-				() -> "Slab was replaced with " + helper.getBlockState(POS_WATER_SLAB));
-		helper.assertBlockState(POS_SEAGRASS, block -> !block.is(Blocks.SEAGRASS), () -> "Seagrass was not replaced");
+				found -> Component.literal("Slab was replaced with " + helper.getBlockState(POS_WATER_SLAB)));
+		helper.assertBlockState(POS_SEAGRASS, block -> !block.is(Blocks.SEAGRASS), found -> Component.literal("Seagrass was not replaced"));
 	}
 	//endregion
 

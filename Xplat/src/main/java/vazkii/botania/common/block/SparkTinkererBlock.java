@@ -9,7 +9,8 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,11 +23,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
+import org.jetbrains.annotations.Nullable;
+
 import vazkii.botania.common.block.block_entity.SparkTinkererBlockEntity;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.lib.BotaniaTags;
@@ -52,8 +55,7 @@ public class SparkTinkererBlock extends BotaniaWaterloggedBlock implements Entit
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
-			boolean movedByPiston) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation neighborPos, boolean movedByPiston) {
 		boolean power = level.getBestNeighborSignal(pos) > 0;
 		boolean powered = state.getValue(BlockStateProperties.POWERED);
 
@@ -76,7 +78,7 @@ public class SparkTinkererBlock extends BotaniaWaterloggedBlock implements Entit
 		ItemStack cstack = changer.getItemHandler().getItem(0);
 		if (!cstack.isEmpty()) {
 			changer.getItemHandler().setItem(0, ItemStack.EMPTY);
-			player.getInventory().placeItemBackInInventory(cstack);
+			player.getInventory().placeItemBackInInventory(cstack, Prediction.SERVER_ONLY);
 			return InteractionResult.SUCCESS;
 		} else if (!stack.isEmpty() && stack.is(BotaniaTags.Items.MANA_SPARK_AUGMENTS)) {
 			changer.getItemHandler().setItem(0, stack.split(1));
@@ -89,22 +91,12 @@ public class SparkTinkererBlock extends BotaniaWaterloggedBlock implements Entit
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (!state.is(newState.getBlock())) {
-			if (level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(level, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, level, pos, newState, movedByPiston);
-		}
-	}
-
-	@Override
 	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		if (level.getBlockEntity(pos) instanceof SparkTinkererBlockEntity changer) {
 			ItemStack stack = changer.getItemHandler().getItem(0);
 			if (!stack.isEmpty() && stack.is(BotaniaTags.Items.MANA_SPARK_AUGMENTS)) {

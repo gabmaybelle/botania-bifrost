@@ -26,10 +26,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -43,6 +46,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -163,12 +169,12 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			return;
 		}
 
-		MobSpawnData pickedMobType = pickedConfig.spawnedMobs.getRandom(world.random).orElse(null);
+		MobSpawnData pickedMobType = pickedConfig.spawnedMobs.getRandom(world.getRandom()).orElse(null);
 		if (pickedMobType == null) {
 			return;
 		}
 
-		int numToSpawn = pickedMobType.count.sample(world.random);
+		int numToSpawn = pickedMobType.count.sample(world.getRandom());
 		if (numToSpawn <= 0) {
 			return;
 		}
@@ -193,31 +199,32 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			return false;
 		}
 
-		RandomSource random = world.random;
+		RandomSource random = world.getRandom();
 		double x = getEffectivePos().getX() + 0.5 - RANGE + 2 * RANGE * random.nextDouble();
 		double y = getEffectivePos().getY();
 		double z = getEffectivePos().getZ() + 0.5 - RANGE + 2 * RANGE * random.nextDouble();
 
 		while (!world.noCollision(pickedMobType.type.getSpawnAABB(x, y, z))) {
 			y += 1.0;
-			if (y >= world.getMaxBuildHeight()) {
+			if (y >= world.getMaxY()) {
 				return false;
 			}
 		}
 
-		Entity entity = pickedMobType.type.create(world);
+		Entity entity = pickedMobType.type.create(world, EntitySpawnReason.SPAWNER);
 		if (!(entity instanceof Mob mob)) {
 			return false;
 		}
 
 		if (pickedMobType.nbt != null) {
-			mob.readAdditionalSaveData(pickedMobType.nbt);
+			// PORT-26.3: readAdditionalSaveData is protected now; load() reads the same keys (position is set right after)
+			mob.load(TagValueInput.create(ProblemReporter.DISCARDING, mob.registryAccess(), pickedMobType.nbt));
 		}
 		if (pickedMobType.spawnAsBaby != null) {
 			mob.setBaby(pickedMobType.spawnAsBaby);
 		}
 
-		mob.absMoveTo(x, y, z, random.nextFloat() * 360F, 0);
+		mob.absSnapTo(x, y, z, random.nextFloat() * 360F, 0);
 		mob.setDeltaMovement(Vec3.ZERO);
 
 		applyAttributesAndEffects(pickedMobType, pickedConfig, mob);
@@ -225,7 +232,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 		SlowDespawn.MARKER.addFor(mob);
 		LooniumDrop.HOLDER.setFor(mob, new LooniumDrop(lootStack));
 
-		mob.finalizeSpawn(world, world.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.SPAWNER, null);
+		mob.finalizeSpawn(world, ((ServerLevel) world).getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.SPAWNER, null);
 		equipSpawnedMob(world, pickedMobType, mob);
 
 		// in case the mob spawned with a vehicle or passenger(s), ensure those don't drop unexpected loot
@@ -244,7 +251,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 					return;
 				}
 
-				Optional<MobSpawnData> mobType = pickedConfig.spawnedMobs.unwrap().stream()
+				Optional<MobSpawnData> mobType = pickedConfig.spawnedMobs.unwrap().stream().map(Weighted::value)
 						.filter(mobSpawnData -> mobSpawnData.type.tryCast(otherMob) != null).findFirst();
 
 				ItemStack bonusLoot;
@@ -338,7 +345,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	private int countNearbyMobs(ServerLevel world, LooniumStructureConfiguration pickedConfig) {
-		var setOfMobTypes = pickedConfig.spawnedMobs.unwrap().stream().map(msd -> msd.type).collect(Collectors.toSet());
+		var setOfMobTypes = pickedConfig.spawnedMobs.unwrap().stream().map(Weighted::value).map(msd -> msd.type).collect(Collectors.toSet());
 		return world.getEntitiesOfClass(Mob.class, MathHelper.inflateBoxAround(getEffectivePos(), CHECK_RANGE),
 				m -> setOfMobTypes.contains(m.getType())).size();
 	}
@@ -442,7 +449,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			StructureStart start = structureManager.getStructureAt(pos, structure);
 			if (start.isValid()) {
 				Identifier structureId =
-						world.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(structure);
+						world.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(structure);
 				boolean insidePiece = structureManager.structureHasPieceAt(pos, start);
 				if (insidePiece || !structureMap.getBoolean(structureId)) {
 					structureMap.put(structureId, insidePiece);
@@ -477,18 +484,18 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
-		if (cmp.contains(TAG_LOOT_TABLE)) {
+	public void loadAdditional(ValueInput cmp) {
+		super.loadAdditional(cmp);
+		if (cmp.getString(TAG_LOOT_TABLE).isPresent()) {
 			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(cmp.getStringOr(TAG_LOOT_TABLE, "")));
 		}
-		if (cmp.contains(TAG_CONFIG_OVERRIDE)) {
+		if (cmp.getString(TAG_CONFIG_OVERRIDE).isPresent()) {
 			configOverride = Identifier.parse(cmp.getStringOr(TAG_CONFIG_OVERRIDE, ""));
 		}
-		if (cmp.contains(TAG_ATTUNE_DISPLAY_OVERRIDE)) {
+		if (cmp.getString(TAG_ATTUNE_DISPLAY_OVERRIDE).isPresent()) {
 			attuneDisplayOverride = cmp.getStringOr(TAG_ATTUNE_DISPLAY_OVERRIDE, "");
 		}
-		if (cmp.contains(TAG_DETECTED_STRUCTURE)) {
+		if (cmp.getString(TAG_DETECTED_STRUCTURE).isPresent()) {
 			String rawString = cmp.getStringOr(TAG_DETECTED_STRUCTURE, "");
 			if (rawString.isEmpty()) {
 				detectedStructures = Object2BooleanMaps.emptyMap();
@@ -510,8 +517,8 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	public void saveAdditional(ValueOutput cmp) {
+		super.saveAdditional(cmp);
 		if (lootTableOverride != null) {
 			cmp.putString(TAG_LOOT_TABLE, lootTableOverride.identifier().toString());
 		}

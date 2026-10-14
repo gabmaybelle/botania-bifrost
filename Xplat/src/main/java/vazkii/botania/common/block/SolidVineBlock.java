@@ -9,6 +9,7 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -24,8 +25,8 @@ public class SolidVineBlock extends VineBlock {
 	}
 
 	@Override
-	public String getDescriptionId() {
-		return Blocks.VINE.getDescriptionId();
+	public MutableComponent getName() {
+		return Blocks.VINE.getName();
 	}
 
 	private static Properties unsetVanillaProps(Properties props) {
@@ -37,7 +38,7 @@ public class SolidVineBlock extends VineBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(Blocks.VINE);
 	}
 }

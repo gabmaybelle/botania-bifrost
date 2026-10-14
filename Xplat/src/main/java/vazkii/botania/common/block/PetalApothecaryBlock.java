@@ -9,6 +9,7 @@
 package vazkii.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -18,6 +19,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -87,7 +89,7 @@ public class PetalApothecaryBlock extends BotaniaBlock implements EntityBlock {
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if (!world.isClientSide() && entity instanceof ItemEntity itemEntity
 				&& world.getBlockEntity(pos) instanceof PetalApothecaryBlockEntity apothecary
 				&& apothecary.collideEntityItem(itemEntity)) {
@@ -121,6 +123,15 @@ public class PetalApothecaryBlock extends BotaniaBlock implements EntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
+	}
+
+	@Override
+	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+		// PORT-26.3: losing the water used to drop the contents through onRemove; the removal hook no longer sees state changes
+		if (oldState.is(this) && state.getValue(FLUID) != State.WATER
+				&& level.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
+			Containers.dropContents(level, pos, inventory.getItemHandler());
+		}
 	}
 
 	@Override
@@ -215,25 +226,12 @@ public class PetalApothecaryBlock extends BotaniaBlock implements EntityBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		boolean blockChanged = !state.is(newState.getBlock());
-		if (blockChanged || newState.getValue(FLUID) != State.WATER) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			if (blockChanged) {
-				super.onRemove(state, world, pos, newState, isMoving);
-			}
-		}
-	}
-
-	@Override
 	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return state.getValue(FLUID) == State.WATER ? 15 : 0;
 	}
 

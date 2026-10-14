@@ -10,6 +10,7 @@ package vazkii.botania.common.block.mana;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -17,9 +18,12 @@ import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -49,8 +53,8 @@ import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.lib.BotaniaTags;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBlock, OptionallyColored {
 	public static final int MAX_MANA = 1000000;
@@ -113,12 +117,12 @@ public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	public String getDescriptionId() {
+	public MutableComponent getName() {
 		if (creative) {
-			return Util.makeDescriptionId("block",
-					BuiltInRegistries.BLOCK.getKey(getUndyedBlock(this)));
+			return Component.translatable(Util.makeDescriptionId("block",
+					BuiltInRegistries.BLOCK.getKey(getUndyedBlock(this))));
 		}
-		return super.getDescriptionId();
+		return super.getName();
 	}
 
 	@Override
@@ -131,11 +135,11 @@ public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, context, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, display, tooltip, flag);
 		if (creative) {
 			for (int i = 0; i < 2; i++) {
-				tooltip.add(Component.translatable("botaniamisc.creativePool" + i).withStyle(ChatFormatting.GRAY));
+				tooltip.accept(Component.translatable("botaniamisc.creativePool" + i).withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}
@@ -188,14 +192,10 @@ public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (state.getBlock() instanceof ManaPoolBlock oldBlock
-				&& newState.getBlock() instanceof ManaPoolBlock newBlock
-				&& ManaPoolBlock.getUndyedBlock(oldBlock) == ManaPoolBlock.getUndyedBlock(newBlock)) {
-			// don't delete block entity if it's the same pool type
-			return;
-		}
-		super.onRemove(state, level, pos, newState, movedByPiston);
+	protected boolean shouldChangedStateKeepBlockEntity(BlockState oldState) {
+		// don't delete block entity if it's the same pool type
+		return oldState.getBlock() instanceof ManaPoolBlock oldBlock
+				&& ManaPoolBlock.getUndyedBlock(oldBlock) == ManaPoolBlock.getUndyedBlock(this);
 	}
 
 	@Override
@@ -210,7 +210,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if (entity instanceof ItemEntity item && world.getBlockEntity(pos) instanceof ManaPoolBlockEntity pool) {
 			pool.collideEntityItem(item);
 		}
@@ -231,7 +231,7 @@ public class ManaPoolBlock extends BotaniaWaterloggedBlock implements EntityBloc
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof ManaPoolBlockEntity pool
 				? ManaPoolBlockEntity.calculateComparatorLevel(pool.getCurrentMana(), pool.getMaxMana())
 				: 0;

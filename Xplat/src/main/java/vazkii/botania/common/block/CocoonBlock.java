@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +57,7 @@ public class CocoonBlock extends BotaniaWaterloggedBlock implements EntityBlock 
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if (!world.isClientSide() && e instanceof ItemEntity item) {
 			ItemStack stack = item.getItem();
 			addStack(world, pos, stack, false);

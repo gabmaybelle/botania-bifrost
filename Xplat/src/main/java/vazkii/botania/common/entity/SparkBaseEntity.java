@@ -9,15 +9,18 @@
 package vazkii.botania.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import vazkii.botania.api.item.SparkEntity;
 import vazkii.botania.api.mana.ManaCollisionGhost;
@@ -70,15 +73,20 @@ public abstract class SparkBaseEntity extends Entity implements SparkEntity, Man
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound) {
+	protected void readAdditionalSaveData(ValueInput compound) {
 		setInvisible(compound.getBooleanOr(TAG_INVIS, false));
 		setNetwork(DyeColor.byId(compound.getIntOr(TAG_NETWORK, 0)));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound) {
+	protected void addAdditionalSaveData(ValueOutput compound) {
 		compound.putBoolean(TAG_INVIS, isInvisible());
 		compound.putInt(TAG_NETWORK, getNetwork().getId());
 	}
 
+	// PORT-26.3: Entity#hurt is final and routes to this; these entities never took damage
+	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
+	}
 }
