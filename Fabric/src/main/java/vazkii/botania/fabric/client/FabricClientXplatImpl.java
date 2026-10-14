@@ -12,32 +12,27 @@ package vazkii.botania.fabric.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.fabric.item.TinyPotatoRenderCallback;
 import vazkii.botania.xplat.ClientXplatAbstractions;
 
 public class FabricClientXplatImpl implements ClientXplatAbstractions {
 	@Override
-	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		TinyPotatoRenderCallback.EVENT.invoker().onRender(potato, name, tickDelta, ms, buffers, light, overlay);
+	public void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		TinyPotatoRenderCallback.EVENT.invoker().onRender(potato, name, tickDelta, ms, collector, light, overlay);
 	}
 
 	@Override
@@ -45,14 +40,10 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 		ClientPlayNetworking.send(packet);
 	}
 
+	@Nullable
 	@Override
-	public BakedModel getResourceModel(Identifier id) {
-		return Minecraft.getInstance().getModelManager().getModel(id);
-	}
-
-	@Override
-	public BakedModel wrapPlatformModel(BakedModel original) {
-		return new FabricPlatformModel(original);
+	public BlockStateModel getResourceModel(Identifier id) {
+		return FabricExtraModels.get(id);
 	}
 
 	@Override
@@ -71,24 +62,6 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
 		}
 
 		return rightHeight;
-	}
-
-	@Override
-	public void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap) {
-		((ExtendedTexture) texture).setFilterSave(filter, mipmap);
-	}
-
-	@Override
-	public void restoreLastFilter(AbstractTexture texture) {
-		((ExtendedTexture) texture).restoreLastFilter();
-	}
-
-	@Override
-	public void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay) {
-		var brd = Minecraft.getInstance().getBlockRenderer();
-		var buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
-		brd.getModelRenderer().tesselateBlock(level, brd.getBlockModel(state), state, pos, ps,
-				buffer, true, RandomSource.create(), state.getSeed(pos), overlay);
 	}
 
 	@Override

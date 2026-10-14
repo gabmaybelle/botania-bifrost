@@ -3,5 +3,6 @@
   "flower": {
     "parent": "botania:block/hydroangeas"
   },
+  "fabric:type": "botania:floating_flower",
   "loader": "botania:floating_flower"
 }

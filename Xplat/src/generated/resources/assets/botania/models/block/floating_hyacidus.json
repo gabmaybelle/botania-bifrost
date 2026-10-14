@@ -3,5 +3,6 @@
   "flower": {
     "parent": "botania:block/hyacidus"
   },
+  "fabric:type": "botania:floating_flower",
   "loader": "botania:floating_flower"
 }

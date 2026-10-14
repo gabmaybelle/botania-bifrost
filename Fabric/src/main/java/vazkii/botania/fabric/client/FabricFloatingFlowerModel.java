@@ -11,21 +11,35 @@ package vazkii.botania.fabric.client;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.mojang.math.Transformation;
 
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
+import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModel;
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModelPart;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.client.resources.model.cuboid.ItemTransforms;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -34,113 +48,150 @@ import org.joml.Vector3f;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.block.IslandType;
 import vazkii.botania.common.block.block_entity.flower.BotaniaIslandTypes;
-import vazkii.botania.xplat.ClientXplatAbstractions;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
-/*
- * NB: We extend BlockModel only as an artifact of where we inject our mixin.
- * Pretty much all of the data of the superclass is ignored.
+/**
+ * PORT-26.3: the floating flower model loader. The model file ("fabric:type": "botania:floating_flower" with a
+ * "flower" model) loads as an unbaked model whose geometry is the flower, shrunk and lifted, on a grass island;
+ * that is what items and anything else reading the file get. In the world the island follows the flower's island
+ * type, so every floating flower block gets a block state resolver whose model picks the island part from the
+ * block entity's render data.
  */
-public class FabricFloatingFlowerModel extends BlockModel {
-	private final UnbakedModel unbakedFlower;
-	private final Map<IslandType, UnbakedModel> unbakedIslands = new HashMap<>();
+public class FabricFloatingFlowerModel implements UnbakedModel {
+	private static final Transformation MOVE_FLOWER = new Transformation(new Vector3f(0F, 0.2F, 0F), null, new Vector3f(0.5F, 0.5F, 0.5F), null);
+	private final Identifier flowerModelId;
 
-	private FabricFloatingFlowerModel(UnbakedModel flower) {
-		super(null, Collections.emptyList(), Collections.emptyMap(), false, GuiLight.SIDE, ItemTransforms.NO_TRANSFORMS, Collections.emptyList());
-		this.unbakedFlower = flower;
+	private FabricFloatingFlowerModel(Identifier flowerModelId) {
+		this.flowerModelId = flowerModelId;
+	}
+
+	public static UnbakedModel deserialize(JsonObject json, JsonDeserializationContext context) {
+		JsonElement flower = json.get("flower");
+		Identifier flowerModelId;
+		if (flower != null && flower.isJsonPrimitive()) {
+			flowerModelId = Identifier.parse(flower.getAsString());
+		} else if (flower != null && flower.isJsonObject() && flower.getAsJsonObject().has("parent")) {
+			// the generated files nest a model that only names its parent: that parent is the flower
+			flowerModelId = Identifier.parse(GsonHelper.getAsString(flower.getAsJsonObject(), "parent"));
+		} else {
+			throw new JsonParseException("Floating flower model needs a \"flower\" model");
+		}
+		return new FabricFloatingFlowerModel(flowerModelId);
+	}
+
+	@Nullable
+	@Override
+	public Identifier parent() {
+		// textures, item transforms and gui light come from the flower
+		return flowerModelId;
 	}
 
 	@Override
-	public Collection<Identifier> getDependencies() {
-		return Collections.emptyList();
+	public UnbakedGeometry geometry() {
+		return (textureSlots, baker, state, name) -> new QuadCollection.Builder()
+				.addAll(bakeGeometry(baker, flowerModelId, shrinkAndLift(state)))
+				.addAll(bakeGeometry(baker, BotaniaIslandTypes.GRASS.islandModel(), state))
+				.build();
 	}
 
-	@Override
-	public void resolveParents(Function<Identifier, UnbakedModel> modelGetter) {
-		this.unbakedFlower.resolveParents(modelGetter);
-		BotaniaAPI.instance().getIslandTypeRegistry().stream().forEach(islandType -> {
-			UnbakedModel islandModel = modelGetter.apply(islandType.islandModel());
-			islandModel.resolveParents(modelGetter);
-			this.unbakedIslands.put(islandType, islandModel);
-		});
+	private static QuadCollection bakeGeometry(ModelBaker baker, Identifier id, ModelState state) {
+		ResolvedModel model = baker.getModel(id);
+		return model.bakeTopGeometry(model.getTopTextureSlots(), baker, state);
 	}
 
-	@Override
-	public BakedModel bake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter,
-			ModelState transform, boolean guiLight3d) {
-		final Transformation moveFlower = new Transformation(new Vector3f(0F, 0.2F, 0F), null, new Vector3f(0.5F, 0.5F, 0.5F), null);
-		Transformation mul = moveFlower.compose(transform.getRotation());
-		ModelState newTransform = new ModelState() {
+	private static ModelState shrinkAndLift(ModelState state) {
+		Transformation mul = MOVE_FLOWER.compose(state.transformation());
+		return new ModelState() {
 			@Override
-			public Transformation getRotation() {
+			public Transformation transformation() {
 				return mul;
 			}
-
-			@Override
-			public boolean isUvLocked() {
-				return transform.isUvLocked();
-			}
 		};
-		BakedModel bakedFlower = unbakedFlower.bake(baker, spriteGetter, newTransform);
-
-		Map<IslandType, BakedModel> bakedIslands = new HashMap<>();
-		for (Map.Entry<IslandType, UnbakedModel> e : unbakedIslands.entrySet()) {
-			BakedModel bakedIsland = e.getValue().bake(baker, spriteGetter, transform);
-			bakedIslands.put(e.getKey(), bakedIsland);
-		}
-		return new Baked(bakedFlower, bakedIslands);
 	}
 
-	public static class Baked extends ForwardingBakedModel {
-		private final Map<IslandType, BakedModel> islands;
+	/** Gives every state of a floating flower block the island-aware model. */
+	public record Resolver(Block block) implements BlockStateResolver {
+		@Override
+		public void resolveBlockStates(BlockStateResolver.Context context) {
+			Root root = new Root(BuiltInRegistries.BLOCK.getKey(block).withPrefix("block/"));
+			for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+				context.setModel(state, root);
+			}
+		}
+	}
 
-		Baked(BakedModel flower, Map<IslandType, BakedModel> islands) {
-			this.wrapped = flower;
+	/** Bakes the block model's flower, plus one island part per island type. */
+	public static class Root implements BlockStateModel.UnbakedRoot {
+		private final Identifier blockModelId;
+
+		Root(Identifier blockModelId) {
+			this.blockModelId = blockModelId;
+		}
+
+		@Override
+		public void resolveDependencies(ResolvableModel.Resolver resolver) {
+			resolver.markDependency(blockModelId);
+			BotaniaAPI.instance().getIslandTypeRegistry().forEach(type -> resolver.markDependency(type.islandModel()));
+		}
+
+		@Override
+		public BlockStateModel bake(BlockState blockState, ModelBaker baker) {
+			if (!(baker.getModel(blockModelId).wrapped() instanceof FabricFloatingFlowerModel floating)) {
+				// a resource pack replaced the model with something else: bake it like a plain variant
+				return new SingleVariant(SimpleModelWrapper.bake(baker, blockModelId, BlockModelRotation.IDENTITY));
+			}
+			BlockStateModelPart flower = SimpleModelWrapper.bake(baker, floating.flowerModelId, shrinkAndLift(BlockModelRotation.IDENTITY));
+			Map<IslandType, BlockStateModelPart> islands = new HashMap<>();
+			BotaniaAPI.instance().getIslandTypeRegistry().forEach(
+					type -> islands.put(type, SimpleModelWrapper.bake(baker, type.islandModel(), BlockModelRotation.IDENTITY)));
+			return new Baked(flower, islands);
+		}
+
+		@Override
+		public Object visualEqualityGroup(BlockState blockState) {
+			return this;
+		}
+	}
+
+	public static class Baked implements BlockStateModel, FabricBlockStateModel {
+		private final BlockStateModelPart flower;
+		private final Map<IslandType, BlockStateModelPart> islands;
+
+		Baked(BlockStateModelPart flower, Map<IslandType, BlockStateModelPart> islands) {
+			this.flower = flower;
 			this.islands = islands;
 		}
 
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-			List<BakedQuad> flower = wrapped.getQuads(null, null, rand);
-			List<BakedQuad> island = islands.get(BotaniaIslandTypes.GRASS).getQuads(null, null, rand);
-			List<BakedQuad> ret = new ArrayList<>(flower.size() + island.size());
-			ret.addAll(flower);
-			ret.addAll(island);
-			return ret;
+		public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
+			output.add(flower);
+			output.add(islands.get(BotaniaIslandTypes.GRASS));
 		}
 
 		@Override
-		public boolean isVanillaAdapter() {
-			return false;
+		public Material.Baked particleMaterial() {
+			return flower.particleMaterial();
 		}
 
 		@Override
-		public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-			wrapped.emitItemQuads(stack, randomSupplier, context);
-			islands.get(BotaniaIslandTypes.GRASS).emitItemQuads(stack, randomSupplier, context);
+		public int materialFlags() {
+			int flags = flower.materialFlags();
+			for (BlockStateModelPart island : islands.values()) {
+				flags |= island.materialFlags();
+			}
+			return flags;
 		}
 
 		@Override
-		public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-			wrapped.emitBlockQuads(blockView, state, pos, randomSupplier, context);
-			Object data = blockView.getBlockEntityRenderData(pos);
-			islands.get(data instanceof IslandType type ? type : BotaniaIslandTypes.GRASS)
-					.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+		public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
+			Object data = ((FabricBlockGetter) blockView).getBlockEntityRenderData(pos);
+			BlockStateModelPart island = islands.get(data instanceof IslandType type ? type : BotaniaIslandTypes.GRASS);
+			((FabricBlockStateModelPart) flower).emitQuads(emitter, cullTest);
+			((FabricBlockStateModelPart) island).emitQuads(emitter, cullTest);
 		}
-	}
-
-	@Nullable
-	public static FabricFloatingFlowerModel hookModelLoad(JsonElement jsonElement, JsonDeserializationContext context) {
-		JsonObject json = jsonElement.getAsJsonObject();
-		JsonElement loader = json.get("loader");
-		if (loader != null && loader.isJsonPrimitive()
-				&& loader.getAsString().equals(ClientXplatAbstractions.FLOATING_FLOWER_MODEL_LOADER_ID.toString())) {
-			BlockModel flowerModel = context.deserialize(json.getAsJsonObject("flower"), BlockModel.class);
-			return new FabricFloatingFlowerModel(flowerModel);
-		}
-		return null;
 	}
 }

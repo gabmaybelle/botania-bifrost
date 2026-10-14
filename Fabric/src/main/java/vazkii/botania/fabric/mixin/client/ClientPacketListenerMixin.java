@@ -38,7 +38,7 @@ public class ClientPacketListenerMixin {
 		slice = @Slice(
 			from = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/multiplayer/SessionSearchTrees;updateRecipes(Lnet/minecraft/client/ClientRecipeBook;Lnet/minecraft/core/RegistryAccess$Frozen;)V"
+				target = "Lnet/minecraft/client/multiplayer/SessionSearchTrees;updateRecipes(Lnet/minecraft/client/ClientRecipeBook;Lnet/minecraft/world/level/Level;)V"
 			)
 		)
 	)

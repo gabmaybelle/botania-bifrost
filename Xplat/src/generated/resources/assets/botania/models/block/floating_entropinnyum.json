@@ -3,5 +3,6 @@
   "flower": {
     "parent": "botania:block/entropinnyum"
   },
+  "fabric:type": "botania:floating_flower",
   "loader": "botania:floating_flower"
 }

@@ -26,15 +26,11 @@
     "ServerPlayerContainerListenerFabricMixin"
   ],
   "client": [
-    "client.AbstractTextureFabricMixin",
-    "client.BlockModelDeserializerFabricMixin",
     "client.BossHealthOverlayFabricMixin",
     "client.ClientPacketListenerMixin",
-    "client.DebugScreenOverlayFabricMixin",
     "client.GuiGraphicsFabricMixin",
     "client.KeyboardHandlerFabricMixin",
-    "client.MinecraftFabricMixin",
-    "client.ParticleEngineFabricMixin"
+    "client.MinecraftFabricMixin"
   ],
   "server": [],
   "injectors": {
