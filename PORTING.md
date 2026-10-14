@@ -138,6 +138,8 @@ upstream parked CraftTweaker), so Phase 5 can move it back.
 | Carpet (dev runtime only) | `Fabric/build.gradle` | Not checked for 26.3. | None in the mod. |
 | `forged-conditions-21.1.0.jar` (dev runtime only) | `Fabric/build.gradle` | A 1.21.1 jar used while generating data load conditions. | Step 4 (datagen) decides what replaces it. |
 
+| Data generators (temporarily) | `Xplat/.../data` (34 files), `Fabric/.../fabric/data` (26), `NeoForge/.../neoforge/data` (16), three Fabric `HashCache*` mixins; the Fabric `fabric-datagen` entrypoint | Parked during step 3 so the 1.21.4 datagen rewrite (about 1,200 of the compile errors, `BlockstateProvider` alone 599) doesn't hide gameplay errors; they only run at build time. Come back in step 4 (rerun datagen). The `normalizeLanguageFiles` Gradle task points at the parked `LangSortTool` until then. | None in the game; the generated JSON in `src/generated` is unchanged and still ships. |
+
 Kept as they are: `common/integration/corporea`, `InventorySorterIntegration` (NeoForge IMC only) and
 `integration/speedrunigt/BotaniaSpeedrunCategories` (plain data, no dependency).
 

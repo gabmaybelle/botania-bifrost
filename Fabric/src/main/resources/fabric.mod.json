@@ -62,9 +62,6 @@
       "vazkii.botania.test.item.lens.PaintslingerLensTest",
       "vazkii.botania.test.item.lens.WarpForceTest",
       "vazkii.botania.test.TranslationKeysTest"
-    ],
-    "fabric-datagen": [
-      "vazkii.botania.fabric.data.FabricDatagenInitializer"
     ]
   },
   "mixins": [
