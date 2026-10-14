@@ -122,19 +122,19 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		if (cmp.contains(TAG_REQUEST_X)) {
 			requestPos = new BlockPos(
-					cmp.getInt(TAG_REQUEST_X),
+					cmp.getIntOr(TAG_REQUEST_X, 0),
 					cmp.getInt(TAG_REQUEST_Y),
 					cmp.getInt(TAG_REQUEST_Z));
 		} else {
 			requestPos = null;
 		}
-		Identifier reqType = Identifier.tryParse(cmp.getString(TAG_REQUEST_TYPE));
+		Identifier reqType = Identifier.tryParse(cmp.getStringOr(TAG_REQUEST_TYPE, ""));
 		if (reqType != null && corporeaMatcherDeserializers.containsKey(reqType)) {
 			request = corporeaMatcherDeserializers.get(reqType).apply(cmp, registries);
 		} else {
 			request = null;
 		}
-		requestCount = cmp.getInt(TAG_REQUEST_COUNT);
+		requestCount = cmp.getIntOr(TAG_REQUEST_COUNT, 0);
 	}
 
 	public static <T extends CorporeaRequestMatcher> void addCorporeaRequestMatcher(Identifier id, Class<T> clazz, BiFunction<CompoundTag, HolderLookup.Provider, T> deserializer) {

@@ -45,7 +45,7 @@ public class FloatingFlowerBlockEntity extends BlockEntity implements FloatingFl
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		IslandType oldType = floatingData.getIslandType();
-		floatingData.readNBT(cmp.getCompound(TAG_FLOATING_DATA), registries);
+		floatingData.readNBT(cmp.getCompoundOrEmpty(TAG_FLOATING_DATA), registries);
 		if (oldType != floatingData.getIslandType() && level != null && level.isClientSide()) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}

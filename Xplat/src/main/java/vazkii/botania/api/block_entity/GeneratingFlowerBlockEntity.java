@@ -100,7 +100,7 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
-		lastMana = mana = cmp.getInt(TAG_MANA);
+		lastMana = mana = cmp.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

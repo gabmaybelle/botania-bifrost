@@ -132,9 +132,9 @@ public class DrumOfTheGatheringBlock extends DrumBlock {
 		ItemEntity ent = mob.spawnAtLocation(to, 1.0F);
 		if (ent != null) {
 			ent.setDeltaMovement(ent.getDeltaMovement().add(
-					world.random.nextFloat() * 0.05F,
-					(world.random.nextFloat() - world.random.nextFloat()) * 0.1F,
-					(world.random.nextFloat() - world.random.nextFloat()) * 0.1F
+					world.getRandom().nextFloat() * 0.05F,
+					(world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.1F,
+					(world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.1F
 			));
 		}
 	}

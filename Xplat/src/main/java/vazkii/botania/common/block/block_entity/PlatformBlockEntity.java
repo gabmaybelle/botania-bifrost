@@ -129,7 +129,7 @@ public class PlatformBlockEntity extends BlockEntity implements Wandable, Phanto
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		HolderGetter<Block> holderGetter = this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
-		BlockState state = NbtUtils.readBlockState(holderGetter, cmp.getCompound(TAG_CAMO));
+		BlockState state = NbtUtils.readBlockState(holderGetter, cmp.getCompoundOrEmpty(TAG_CAMO));
 		if (state.isAir()) {
 			state = null;
 		}

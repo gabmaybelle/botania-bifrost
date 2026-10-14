@@ -88,7 +88,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 
 	private boolean startRain(Level world) {
 		if (!world.isRaining()) {
-			if (world.random.nextInt(10) == 0) {
+			if (world.getRandom().nextInt(10) == 0) {
 				world.getLevelData().setRaining(true);
 				TeruTeruBozuBlockEntity.resetRainTime(world);
 			}

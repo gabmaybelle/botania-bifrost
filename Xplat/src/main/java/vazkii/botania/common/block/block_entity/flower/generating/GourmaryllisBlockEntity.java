@@ -229,15 +229,15 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
-		cooldown = cmp.getInt(TAG_COOLDOWN);
-		digestingMana = cmp.getInt(TAG_DIGESTING_MANA);
+		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
+		digestingMana = cmp.getIntOr(TAG_DIGESTING_MANA, 0);
 		lastFoods.clear();
 		ListTag foodList = cmp.getList(TAG_LAST_FOODS, Tag.TAG_COMPOUND);
 		for (int i = 0; i < foodList.size(); i++) {
 			lastFoods.add(ItemStack.parseOptional(registries, foodList.getCompound(i)));
 		}
-		lastFoodCount = cmp.getInt(TAG_LAST_FOOD_COUNT);
-		streakLength = cmp.getInt(TAG_STREAK_LENGTH);
+		lastFoodCount = cmp.getIntOr(TAG_LAST_FOOD_COUNT, 0);
+		streakLength = cmp.getIntOr(TAG_STREAK_LENGTH, 0);
 	}
 
 	@Override

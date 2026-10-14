@@ -309,33 +309,33 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity
 			identity = cmp.getUUID(TAG_UUID);
 		}
 
-		mana = cmp.getInt(TAG_MANA);
-		rotationX = cmp.getFloat(TAG_ROTATION_X);
-		rotationY = cmp.getFloat(TAG_ROTATION_Y);
-		requestsClientUpdate = cmp.getBoolean(TAG_REQUEST_UPDATE);
+		mana = cmp.getIntOr(TAG_MANA, 0);
+		rotationX = cmp.getFloatOr(TAG_ROTATION_X, 0F);
+		rotationY = cmp.getFloatOr(TAG_ROTATION_Y, 0F);
+		requestsClientUpdate = cmp.getBooleanOr(TAG_REQUEST_UPDATE, false);
 
-		inputKey = cmp.getString(TAG_INPUT_KEY);
-		outputKey = cmp.getString(TAG_OUTPUT_KEY);
+		inputKey = cmp.getStringOr(TAG_INPUT_KEY, "");
+		outputKey = cmp.getStringOr(TAG_OUTPUT_KEY, "");
 
-		mapmakerOverride = cmp.getBoolean(TAG_MAPMAKER_OVERRIDE);
-		mmForcedColor = cmp.getInt(TAG_FORCED_COLOR);
-		mmForcedManaPayload = cmp.getInt(TAG_FORCED_MANA_PAYLOAD);
-		mmForcedTicksBeforeManaLoss = cmp.getInt(TAG_FORCED_TICKS_BEFORE_MANA_LOSS);
-		mmForcedManaLossPerTick = cmp.getFloat(TAG_FORCED_MANA_LOSS_PER_TICK);
-		mmForcedGravity = cmp.getFloat(TAG_FORCED_GRAVITY);
-		mmForcedVelocityMultiplier = cmp.getFloat(TAG_FORCED_VELOCITY_MULTIPLIER);
+		mapmakerOverride = cmp.getBooleanOr(TAG_MAPMAKER_OVERRIDE, false);
+		mmForcedColor = cmp.getIntOr(TAG_FORCED_COLOR, 0);
+		mmForcedManaPayload = cmp.getIntOr(TAG_FORCED_MANA_PAYLOAD, 0);
+		mmForcedTicksBeforeManaLoss = cmp.getIntOr(TAG_FORCED_TICKS_BEFORE_MANA_LOSS, 0);
+		mmForcedManaLossPerTick = cmp.getFloatOr(TAG_FORCED_MANA_LOSS_PER_TICK, 0F);
+		mmForcedGravity = cmp.getFloatOr(TAG_FORCED_GRAVITY, 0F);
+		mmForcedVelocityMultiplier = cmp.getFloatOr(TAG_FORCED_VELOCITY_MULTIPLIER, 0F);
 
 		canShootBurst = !cmp.contains(TAG_CAN_SHOOT_BURST) || cmp.getBoolean(TAG_CAN_SHOOT_BURST);
 
-		pingbackTicks = cmp.getInt(TAG_PINGBACK_TICKS);
-		lastPingbackX = cmp.getDouble(TAG_LAST_PINGBACK_X);
-		lastPingbackY = cmp.getDouble(TAG_LAST_PINGBACK_Y);
-		lastPingbackZ = cmp.getDouble(TAG_LAST_PINGBACK_Z);
+		pingbackTicks = cmp.getIntOr(TAG_PINGBACK_TICKS, 0);
+		lastPingbackX = cmp.getDoubleOr(TAG_LAST_PINGBACK_X, 0);
+		lastPingbackY = cmp.getDoubleOr(TAG_LAST_PINGBACK_Y, 0);
+		lastPingbackZ = cmp.getDoubleOr(TAG_LAST_PINGBACK_Z, 0);
 
 		if (requestsClientUpdate && level != null) {
-			int x = cmp.getInt(TAG_FORCE_CLIENT_BINDING_X);
-			int y = cmp.getInt(TAG_FORCE_CLIENT_BINDING_Y);
-			int z = cmp.getInt(TAG_FORCE_CLIENT_BINDING_Z);
+			int x = cmp.getIntOr(TAG_FORCE_CLIENT_BINDING_X, 0);
+			int y = cmp.getIntOr(TAG_FORCE_CLIENT_BINDING_Y, 0);
+			int z = cmp.getIntOr(TAG_FORCE_CLIENT_BINDING_Z, 0);
 			if (y != Integer.MIN_VALUE) {
 				var pos = new BlockPos(x, y, z);
 				receiver = ManaReceiver.LOOKUP.find(level, pos, null);

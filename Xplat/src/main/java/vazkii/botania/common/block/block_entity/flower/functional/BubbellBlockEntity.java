@@ -91,7 +91,7 @@ public class BubbellBlockEntity extends FunctionalFlowerBlockEntity {
 	@Override
 	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
-		range = cmp.getInt(TAG_RANGE);
+		range = cmp.getIntOr(TAG_RANGE, 0);
 	}
 
 	@Override

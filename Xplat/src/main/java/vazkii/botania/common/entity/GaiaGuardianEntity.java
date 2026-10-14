@@ -510,16 +510,16 @@ public class GaiaGuardianEntity extends Mob {
 	@Override
 	public void readAdditionalSaveData(CompoundTag cmp) {
 		super.readAdditionalSaveData(cmp);
-		setInvulTime(cmp.getInt(TAG_INVUL_TIME));
-		aggro = cmp.getBoolean(TAG_AGGRO);
-		mobSpawnTicks = cmp.getInt(TAG_MOB_SPAWN_TICKS);
+		setInvulTime(cmp.getIntOr(TAG_INVUL_TIME, 0));
+		aggro = cmp.getBooleanOr(TAG_AGGRO, false);
+		mobSpawnTicks = cmp.getIntOr(TAG_MOB_SPAWN_TICKS, 0);
 
-		int x = cmp.getInt(TAG_SOURCE_X);
-		int y = cmp.getInt(TAG_SOURCE_Y);
-		int z = cmp.getInt(TAG_SOURCE_Z);
+		int x = cmp.getIntOr(TAG_SOURCE_X, 0);
+		int y = cmp.getIntOr(TAG_SOURCE_Y, 0);
+		int z = cmp.getIntOr(TAG_SOURCE_Z, 0);
 		setSource(new BlockPos(x, y, z));
 
-		setHardMode(cmp.getBoolean(TAG_HARD_MODE));
+		setHardMode(cmp.getBooleanOr(TAG_HARD_MODE, false));
 		setInitialPlayerCount(cmp.contains(TAG_PLAYER_COUNT) ? cmp.getInt(TAG_PLAYER_COUNT) : 1);
 
 		if (this.hasCustomName()) {

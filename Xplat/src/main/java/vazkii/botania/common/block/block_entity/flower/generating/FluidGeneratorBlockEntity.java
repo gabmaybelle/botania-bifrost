@@ -177,8 +177,8 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 
-		burnTime = cmp.getInt(TAG_BURN_TIME);
-		cooldown = cmp.getInt(TAG_COOLDOWN);
+		burnTime = cmp.getIntOr(TAG_BURN_TIME, 0);
+		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 	}
 
 	@Override

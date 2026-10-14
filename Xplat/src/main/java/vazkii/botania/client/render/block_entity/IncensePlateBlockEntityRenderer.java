@@ -42,7 +42,7 @@ public class IncensePlateBlockEntityRenderer implements BlockEntityRenderer<Ince
 			case EAST -> 270;
 			default -> 0;
 		};
-		ms.mulPose(VecHelper.rotateY(degrees));
+		ms.rotate(VecHelper.rotateY(degrees));
 		float s = 0.6F;
 		ms.translate(-0.11F, -1.35F, 0F);
 		ms.scale(s, s, s);

@@ -175,8 +175,8 @@ public class EndoflameBlockEntity extends GeneratingFlowerBlockEntity {
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 
-		burnTime = cmp.getInt(TAG_BURN_TIME);
-		cooldownTime = cmp.getInt(TAG_COOLDOWN_TIME);
+		burnTime = cmp.getIntOr(TAG_BURN_TIME, 0);
+		cooldownTime = cmp.getIntOr(TAG_COOLDOWN_TIME, 0);
 	}
 
 	private int getBurnTime(ItemStack stack) {

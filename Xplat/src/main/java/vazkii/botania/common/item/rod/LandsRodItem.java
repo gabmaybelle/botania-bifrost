@@ -97,7 +97,7 @@ public class LandsRodItem extends Item {
 		@Override
 		public void onAvatarUpdate(ServerLevel world, BlockPos blockPos, ManaReceiver receiver) {
 			if (receiver.getCurrentMana() >= COST && avatar.isEnabled() && getTimeSinceLastActivation(world) >= 4) {
-				if (world.random.nextInt(8) == 0) {
+				if (world.getRandom().nextInt(8) == 0) {
 					BlockPos pos = blockPos.relative(avatar.getAvatarFacing());
 					BlockState state = world.getBlockState(pos);
 					if (state.isAir()) {

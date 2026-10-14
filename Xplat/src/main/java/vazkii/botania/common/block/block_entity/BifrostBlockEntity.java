@@ -40,7 +40,7 @@ public class BifrostBlockEntity extends BlockEntity {
 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		ticks = tag.getInt(TAG_TICKS);
+		ticks = tag.getIntOr(TAG_TICKS, 0);
 	}
 
 }

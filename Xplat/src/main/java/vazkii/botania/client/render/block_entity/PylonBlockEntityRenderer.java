@@ -87,7 +87,7 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 		ms.pushPose();
 		ms.translate(0.5F, 0F, -0.5F);
 		if (pylon != null) {
-			ms.mulPose(VecHelper.rotateY(worldTime * 1.5F));
+			ms.rotate(VecHelper.rotateY(worldTime * 1.5F));
 		}
 
 		RenderType layer = RenderType.entityTranslucent(texture);
@@ -106,7 +106,7 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 
 		ms.translate(0.5F, 0F, -0.5F);
 		if (pylon != null) {
-			ms.mulPose(VecHelper.rotateY(-worldTime));
+			ms.rotate(VecHelper.rotateY(-worldTime));
 		}
 
 		buffer = buffers.getBuffer(shaderLayer);

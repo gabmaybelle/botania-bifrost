@@ -418,17 +418,17 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
-		manaRequired = cmp.getInt(TAG_MANA_REQUIRED);
-		stage = State.values()[cmp.getInt(TAG_STAGE)];
-		stageTicks = cmp.getInt(TAG_STAGE_TICKS);
-		stage3EndTicks = cmp.getInt(TAG_STAGE_3_END_TICKS);
+		mana = cmp.getIntOr(TAG_MANA, 0);
+		manaRequired = cmp.getIntOr(TAG_MANA_REQUIRED, 0);
+		stage = State.values()[cmp.getIntOr(TAG_STAGE, 0)];
+		stageTicks = cmp.getIntOr(TAG_STAGE_TICKS, 0);
+		stage3EndTicks = cmp.getIntOr(TAG_STAGE_3_END_TICKS, 0);
 
-		CompoundTag itemCmp = cmp.getCompound(TAG_ITEM);
+		CompoundTag itemCmp = cmp.getCompoundOrEmpty(TAG_ITEM);
 		itemToEnchant = itemCmp.isEmpty() ? ItemStack.EMPTY : ItemStack.parseOptional(registries, itemCmp);
 
 		enchants.clear();
-		String enchStr = cmp.getString(TAG_ENCHANTS);
+		String enchStr = cmp.getStringOr(TAG_ENCHANTS, "");
 		if (!enchStr.isEmpty()) {
 			String[] enchTokens = enchStr.split(",");
 			for (String token : enchTokens) {

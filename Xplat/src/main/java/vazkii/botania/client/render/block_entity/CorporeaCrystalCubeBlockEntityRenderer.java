@@ -82,7 +82,7 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 			ms.pushPose();
 			ms.translate(0F, 0.96F, 0F);
 			ms.scale(0.64F, 0.64F, 0.64F);
-			ms.mulPose(VecHelper.rotateZ(180F));
+			ms.rotate(VecHelper.rotateZ(180F));
 			Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity).render(entity, 0, partialTick, ms, buffers, light);
 			ms.popPose();
 		}
@@ -120,7 +120,7 @@ public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRender
 			ms.translate(0F, 55F, 0F);
 			float tr = -16.5F;
 			for (int i = 0; i < 4; i++) {
-				ms.mulPose(VecHelper.rotateY(90F));
+				ms.rotate(VecHelper.rotateY(90F));
 				ms.translate(0F, 0F, tr);
 				// cannot use dropshadow parameter as that shadow somehow renders in front of the text, not behind it
 				mc.font.drawInBatch(countStr, -l / 2, 0, colorText, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);

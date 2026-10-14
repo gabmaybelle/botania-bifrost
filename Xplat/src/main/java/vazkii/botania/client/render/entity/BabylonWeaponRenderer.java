@@ -18,8 +18,8 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.joml.Matrix4f;
 
@@ -39,7 +39,7 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 	@Override
 	public void render(BabylonWeaponEntity weapon, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
 		ms.pushPose();
-		ms.mulPose(VecHelper.rotateY(weapon.getRotation()));
+		ms.rotate(VecHelper.rotateY(weapon.getRotation()));
 
 		int live = weapon.getLiveTicks();
 		int delay = weapon.getDelay();
@@ -50,15 +50,15 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 		ms.translate(-0.75, 0, 1); // X shifts the weapon hilt to the center of the circle, Z makes it intersect it.
 		float s = 1.5F;
 		ms.scale(s, s, s);
-		ms.mulPose(VecHelper.rotateY(90F)); // Rotate to make it match facing, instead of perpendicular to the circle
-		ms.mulPose(VecHelper.rotateZ(-45F)); // Perpendicular to the ground, instead of the rising 45 deg of the sprite
+		ms.rotate(VecHelper.rotateY(90F)); // Rotate to make it match facing, instead of perpendicular to the circle
+		ms.rotate(VecHelper.rotateZ(-45F)); // Perpendicular to the ground, instead of the rising 45 deg of the sprite
 
 		BakedModel model = MiscellaneousModels.INSTANCE.kingKeyWeaponModels[weapon.getVariety()];
 		Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffers.getBuffer(Sheets.translucentItemSheet()), null, model, 1, 1, 1, 0xF000F0, OverlayTexture.NO_OVERLAY);
 		ms.popPose();
 
 		Random rand = new Random(weapon.getUUID().getMostSignificantBits());
-		ms.mulPose(VecHelper.rotateX(-90F)); // Lay the circle horizontally
+		ms.rotate(VecHelper.rotateX(-90F)); // Lay the circle horizontally
 		ms.translate(0F, -0.3F + rand.nextFloat() * 0.1F, 0F); // Randomly offset how deep the item is in the circle
 
 		s = chargeMul;
@@ -68,7 +68,7 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 		s *= 2F;
 		ms.scale(s, s, s);
 
-		ms.mulPose(VecHelper.rotateY(charge * 9F + (weapon.tickCount + partialTicks) * 0.5F + rand.nextFloat() * 360F));
+		ms.rotate(VecHelper.rotateY(charge * 9F + (weapon.tickCount + partialTicks) * 0.5F + rand.nextFloat() * 360F));
 
 		VertexConsumer buffer = buffers.getBuffer(RenderHelper.BABYLON_ICON);
 		Matrix4f mat = ms.last().pose();
@@ -82,7 +82,7 @@ public class BabylonWeaponRenderer extends EntityRenderer<BabylonWeaponEntity> {
 
 	@Override
 	public Identifier getTextureLocation(BabylonWeaponEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
+		return AtlasIds.BLOCKS;
 	}
 
 }

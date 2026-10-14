@@ -57,7 +57,7 @@ public class AvatarBlockEntity extends SimpleInventoryBlockEntity implements Ava
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		mana = tag.getInt(TAG_MANA);
+		mana = tag.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

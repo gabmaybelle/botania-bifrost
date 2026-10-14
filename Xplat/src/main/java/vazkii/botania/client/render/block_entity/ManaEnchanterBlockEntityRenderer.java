@@ -16,8 +16,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +39,7 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 
 	public ManaEnchanterBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.overlaySprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
 						.apply(botaniaRL("block/mana_enchanter_overlay"))
 		);
 	}
@@ -71,7 +71,7 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 			ms.translate(-0.5F, -1.25F, -0.5F);
 		}
 
-		ms.mulPose(VecHelper.rotateX(90F));
+		ms.rotate(VecHelper.rotateX(90F));
 		ms.translate(-2F, -2F, -0.001F);
 
 		float alpha = (float) ((Math.sin((ticksInGame + partialTick) / 8D) + 1D) / 5D + 0.4D) * alphaMod;
@@ -85,7 +85,7 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 
 				ms.translate(2.5F, 2.5F, -yTranslation);
 				ms.scale(scale, scale, 1F);
-				ms.mulPose(VecHelper.rotateZ(angle));
+				ms.rotate(VecHelper.rotateZ(angle));
 				ms.translate(-2.5F, -2.5F, 0F);
 			}
 

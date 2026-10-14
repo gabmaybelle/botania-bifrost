@@ -42,7 +42,7 @@ public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<Teru
 	@Override
 	public void render(@Nullable TeruTeruBozuBlockEntity teruTeruBozu, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
 		ms.pushPose();
-		ms.mulPose(VecHelper.rotateX(180));
+		ms.rotate(VecHelper.rotateX(180));
 		double time = ClientTickHandler.getEntityTicksInGame() + partialTicks;
 		boolean hasWorld = teruTeruBozu != null && teruTeruBozu.getLevel() != null;
 		if (hasWorld) {
@@ -51,8 +51,8 @@ public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<Teru
 
 		ms.translate(0.5F, -1.25F + (hasWorld ? (float) Math.sin(time * 0.01F) * 0.05F : 0F), -0.5F);
 		if (hasWorld) {
-			ms.mulPose(VecHelper.rotateY((float) (time * 0.3)));
-			ms.mulPose(VecHelper.rotateZ(4F * (float) Math.sin(time * 0.05F)));
+			ms.rotate(VecHelper.rotateY((float) (time * 0.3)));
+			ms.rotate(VecHelper.rotateZ(4F * (float) Math.sin(time * 0.05F)));
 			float s = 0.75F;
 			ms.scale(s, s, s);
 		}

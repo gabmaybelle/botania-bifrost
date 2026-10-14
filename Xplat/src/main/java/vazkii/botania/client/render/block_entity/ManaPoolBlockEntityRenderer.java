@@ -20,9 +20,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,7 +56,7 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 	public ManaPoolBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
 		this.waterSprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
 						.apply(botaniaRL("block/mana_water"))
 		);
 	}
@@ -117,13 +117,13 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 			Block below = pool.getLevel().getBlockState(pool.getBlockPos().below()).getBlock();
 			if (below instanceof PoolOverlayProvider overlayProvider) {
 				var overlaySpriteId = overlayProvider.getIcon(pool.getLevel(), pool.getBlockPos());
-				var overlayIcon = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(overlaySpriteId);
+				var overlayIcon = minecraft.getTextureAtlas(AtlasIds.BLOCKS).apply(overlaySpriteId);
 				ms.pushPose();
 
 				float alpha = (float) ((Mth.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 20.0f) + 1) * 0.3 + 0.2);
 
 				ms.translate(0, poolBottom, 0);
-				ms.mulPose(VecHelper.rotateX(90F));
+				ms.rotate(VecHelper.rotateX(90F));
 
 				VertexConsumer buffer = buffers.getBuffer(RenderHelper.ICON_OVERLAY);
 				RenderHelper.renderIconCropped(
@@ -140,7 +140,7 @@ public class ManaPoolBlockEntityRenderer implements BlockEntityRenderer<ManaPool
 		if (manaLevel > 0) {
 			ms.pushPose();
 			ms.translate(0, Mth.clampedMap(manaLevel, 0, 1, poolBottom, poolTop), 0);
-			ms.mulPose(VecHelper.rotateX(90F));
+			ms.rotate(VecHelper.rotateX(90F));
 
 			VertexConsumer buffer = buffers.getBuffer(RenderHelper.MANA_POOL_WATER);
 			RenderHelper.renderIconCropped(

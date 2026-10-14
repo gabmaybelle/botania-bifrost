@@ -86,7 +86,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 					}
 					case EYEPATCH -> {
 						ms.translate(0.125, -0.225, -0.3);
-						ms.mulPose(VecHelper.rotateY(180F));
+						ms.rotate(VecHelper.rotateY(180F));
 						ms.scale(0.3F, -0.3F, -0.3F);
 						renderItem(stack, ms, buffers, light);
 					}
@@ -97,37 +97,37 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 					}
 					case RED_RIBBONS -> {
 						ms.translate(0, -0.65, 0.2);
-						ms.mulPose(VecHelper.rotateY(180F));
+						ms.rotate(VecHelper.rotateY(180F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 					}
 					case PINK_FLOWER_BUD -> {
 						ms.translate(0.275, -0.6, 0);
-						ms.mulPose(VecHelper.rotateY(-90F));
+						ms.rotate(VecHelper.rotateY(-90F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 					}
 					case POLKA_DOTTED_BOWS -> {
 						ms.pushPose();
 						ms.translate(0.275, -0.4, 0);
-						ms.mulPose(VecHelper.rotateY(-90F));
+						ms.rotate(VecHelper.rotateY(-90F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 						ms.popPose();
 						ms.translate(-0.275, -0.4, 0);
-						ms.mulPose(VecHelper.rotateY(90F));
+						ms.rotate(VecHelper.rotateY(90F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 					}
 					case BLUE_BUTTERFLY -> {
 						ms.pushPose();
 						ms.translate(0.275, -0.4, 0);
-						ms.mulPose(VecHelper.rotateY(45F));
+						ms.rotate(VecHelper.rotateY(45F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 						ms.popPose();
 						ms.translate(0.275, -0.4, 0);
-						ms.mulPose(VecHelper.rotateY(-45F));
+						ms.rotate(VecHelper.rotateY(-45F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 					}
@@ -148,7 +148,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 					}
 					case UNICORN_HORN -> {
 						ms.translate(0, -0.7, -0.3);
-						ms.mulPose(VecHelper.rotateY(-90F));
+						ms.rotate(VecHelper.rotateY(-90F));
 						ms.scale(0.6F, -0.6F, -0.6F);
 						renderItem(stack, ms, buffers, light);
 					}
@@ -197,7 +197,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 						renderItem(stack, ms, buffers, light);
 						ms.popPose();
 						ms.translate(0.1, -0.3, -0.3);
-						ms.mulPose(VecHelper.rotateY(180F));
+						ms.rotate(VecHelper.rotateY(180F));
 						ms.scale(0.3F, -0.3F, -0.3F);
 						renderItem(stack, ms, buffers, light);
 					}
@@ -213,7 +213,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 					}
 					case THINKING_HAND -> {
 						ms.translate(-0.1, 0, -0.3);
-						ms.mulPose(VecHelper.rotateZ(-15F));
+						ms.rotate(VecHelper.rotateZ(-15F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						renderItem(stack, ms, buffers, light);
 					}
@@ -240,7 +240,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 					}
 					case DEVIL_TAIL -> {
 						ms.translate(0, 0.55, 0.2);
-						ms.mulPose(VecHelper.rotateY(-90F));
+						ms.rotate(VecHelper.rotateY(-90F));
 						ms.scale(0.6F, -0.6F, -0.6F);
 						renderItem(stack, ms, buffers, light);
 					}
@@ -251,7 +251,7 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 						renderItem(stack, ms, buffers, light);
 						ms.popPose();
 						ms.translate(-0.4, 0.1, -0.2);
-						ms.mulPose(VecHelper.rotateY(180F));
+						ms.rotate(VecHelper.rotateY(180F));
 						ms.scale(0.5F, -0.5F, -0.5F);
 						RenderHelper.renderItemCustomColor(living, stack, 0xFF00004C, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 					}
@@ -267,8 +267,8 @@ public class CosmeticBaubleItem extends BaubleItem implements CosmeticBauble {
 					}
 					case LUSITANIC_SHIELD -> {
 						ms.translate(0F, 0.35, 0.13);
-						ms.mulPose(VecHelper.rotateZ(8F));
-						ms.mulPose(VecHelper.rotateY(180F));
+						ms.rotate(VecHelper.rotateZ(8F));
+						ms.rotate(VecHelper.rotateY(180F));
 						ms.scale(0.6F, -0.6F, -0.6F);
 						renderItem(stack, ms, buffers, light);
 					}

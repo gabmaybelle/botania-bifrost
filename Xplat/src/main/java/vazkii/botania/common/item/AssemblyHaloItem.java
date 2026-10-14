@@ -389,7 +389,7 @@ public class AssemblyHaloItem extends Item {
 				boolean inside = false;
 				float rotationAngle = (seg + 0.5F) * segAngles + shift;
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateY(rotationAngle));
+				ms.rotate(VecHelper.rotateY(rotationAngle));
 				ms.translate(s * m, -0.75F, 0F);
 
 				if (segmentLookedAt == seg) {
@@ -400,17 +400,17 @@ public class AssemblyHaloItem extends Item {
 				if (!slotStack.isEmpty()) {
 					float scale = seg == 0 ? 0.9F : 0.8F;
 					ms.scale(scale, scale, scale);
-					ms.mulPose(VecHelper.rotateY(180F));
+					ms.rotate(VecHelper.rotateY(180F));
 					ms.translate(seg == 0 ? 0.5F : 0F, seg == 0 ? -0.1F : 0.6F, 0F);
 
-					ms.mulPose(VecHelper.rotateY(90.0F));
+					ms.rotate(VecHelper.rotateY(90.0F));
 					Minecraft.getInstance().getItemRenderer().renderStatic(slotStack, ItemDisplayContext.GUI,
 							0xF000F0, OverlayTexture.NO_OVERLAY, ms, bufferSource, player.level(), player.getId());
 				}
 				ms.popPose();
 
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateX(180));
+				ms.rotate(VecHelper.rotateX(180));
 				float r = 1;
 				float g = 1;
 				float b = 1;

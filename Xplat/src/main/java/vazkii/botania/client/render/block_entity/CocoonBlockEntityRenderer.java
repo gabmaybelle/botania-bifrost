@@ -41,7 +41,7 @@ public class CocoonBlockEntityRenderer implements BlockEntityRenderer<CocoonBloc
 
 		ms.pushPose();
 		ms.translate(0.5, 0, 0);
-		ms.mulPose(VecHelper.rotateX(rot));
+		ms.rotate(VecHelper.rotateX(rot));
 		ms.translate(-0.5, 0, 0);
 		BlockState state = cocoon.getBlockState();
 		BakedModel model = blockRenderDispatcher.getBlockModel(state);

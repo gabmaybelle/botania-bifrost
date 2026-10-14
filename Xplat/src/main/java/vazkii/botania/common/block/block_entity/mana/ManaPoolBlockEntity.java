@@ -457,17 +457,17 @@ public class ManaPoolBlockEntity extends BlockEntity implements ManaPool, KeyLoc
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		lastSynchronizedMana = mana = cmp.getInt(TAG_MANA);
+		lastSynchronizedMana = mana = cmp.getIntOr(TAG_MANA, 0);
 
 		if (cmp.contains(TAG_MANA_CAP, Tag.TAG_ANY_NUMERIC)) {
-			manaCap = cmp.getInt(TAG_MANA_CAP);
+			manaCap = cmp.getIntOr(TAG_MANA_CAP, 0);
 		} else {
 			manaCap = -1;
 		}
 		canAccept = !cmp.contains(TAG_CAN_ACCEPT, Tag.TAG_ANY_NUMERIC) || cmp.getBoolean(TAG_CAN_ACCEPT);
 		canSpare = !cmp.contains(TAG_CAN_SPARE, Tag.TAG_ANY_NUMERIC) || cmp.getBoolean(TAG_CAN_SPARE);
-		inputKey = cmp.getString(TAG_INPUT_KEY);
-		outputKey = cmp.getString(TAG_OUTPUT_KEY);
+		inputKey = cmp.getStringOr(TAG_INPUT_KEY, "");
+		outputKey = cmp.getStringOr(TAG_OUTPUT_KEY, "");
 	}
 
 	@Override

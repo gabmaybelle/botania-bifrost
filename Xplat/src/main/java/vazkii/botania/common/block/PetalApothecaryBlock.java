@@ -125,7 +125,7 @@ public class PetalApothecaryBlock extends BotaniaBlock implements EntityBlock {
 
 	@Override
 	public void handlePrecipitation(BlockState state, Level world, BlockPos pos, Biome.Precipitation precipitation) {
-		if (precipitation == Biome.Precipitation.RAIN && world.random.nextInt(20) == 1) {
+		if (precipitation == Biome.Precipitation.RAIN && world.getRandom().nextInt(20) == 1) {
 			if (state.getValue(FLUID) == State.EMPTY) {
 				world.setBlockAndUpdate(pos, state.setValue(FLUID, State.WATER));
 				world.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);

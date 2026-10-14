@@ -142,7 +142,7 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity
 
 		IslandType oldType = floatingData.getIslandType();
 		if (cmp.contains(TAG_FLOATING_DATA)) {
-			floatingData.readNBT(cmp.getCompound(TAG_FLOATING_DATA), registries);
+			floatingData.readNBT(cmp.getCompoundOrEmpty(TAG_FLOATING_DATA), registries);
 		}
 		if (isFloating() && oldType != floatingData.getIslandType() && level != null && level.isClientSide()) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);

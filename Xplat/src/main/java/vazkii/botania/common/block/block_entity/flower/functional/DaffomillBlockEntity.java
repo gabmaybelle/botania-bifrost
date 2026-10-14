@@ -149,7 +149,7 @@ public class DaffomillBlockEntity extends FunctionalFlowerBlockEntity implements
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 
-		windTicks = cmp.getInt(TAG_WIND_TICKS);
+		windTicks = cmp.getIntOr(TAG_WIND_TICKS, 0);
 	}
 
 	@Override

@@ -27,11 +27,11 @@ public class SparkTinkererBlockEntityRenderer implements BlockEntityRenderer<Spa
 	@Override
 	public void render(SparkTinkererBlockEntity tileentity, float pticks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
 		ms.pushPose();
-		ms.mulPose(VecHelper.rotateX(90));
+		ms.rotate(VecHelper.rotateX(90));
 		ms.translate(1.0F, -0.125F, -0.25F);
 		ItemStack stack = tileentity.getItemHandler().getItem(0);
 		if (!stack.isEmpty()) {
-			ms.mulPose(VecHelper.rotateY(180));
+			ms.rotate(VecHelper.rotateY(180));
 			ms.translate(0.5F, 0.5F, 0);
 			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
 					light, overlay, ms, buffers, tileentity.getLevel(), 0);

@@ -155,7 +155,7 @@ public class AnimatedTorchBlockEntity extends BlockEntity implements ManaTrigger
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		if (level != null && !level.isClientSide()) {
-			rotationTicks = cmp.getInt(TAG_ROTATION_TICKS);
+			rotationTicks = cmp.getIntOr(TAG_ROTATION_TICKS, 0);
 		}
 	}
 }

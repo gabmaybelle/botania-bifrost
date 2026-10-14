@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.data.AtlasIds;
 
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.api.state.enums.AlfheimPortalState;
@@ -34,7 +34,7 @@ public class AlfheimPortalBlockEntityRenderer implements BlockEntityRenderer<Alf
 
 	public AlfheimPortalBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.portalSprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
 						.apply(botaniaRL("block/alfheim_portal_swirl"))
 		);
 	}
@@ -54,7 +54,7 @@ public class AlfheimPortalBlockEntityRenderer implements BlockEntityRenderer<Alf
 		ms.pushPose();
 		if (state == AlfheimPortalState.ON_X) {
 			ms.translate(0.3125, 1, 2);
-			ms.mulPose(VecHelper.rotateY(90));
+			ms.rotate(VecHelper.rotateY(90));
 		} else {
 			ms.translate(-1, 1, 0.3125);
 		}
@@ -64,11 +64,11 @@ public class AlfheimPortalBlockEntityRenderer implements BlockEntityRenderer<Alf
 		ms.pushPose();
 		if (state == AlfheimPortalState.ON_X) {
 			ms.translate(0.6875, 1, -1);
-			ms.mulPose(VecHelper.rotateY(90));
+			ms.rotate(VecHelper.rotateY(90));
 		} else {
 			ms.translate(2, 1, 0.6875);
 		}
-		ms.mulPose(VecHelper.rotateY(180));
+		ms.rotate(VecHelper.rotateY(180));
 		renderIcon(ms, buffers, this.portalSprite, 0, 0, 3, 3, alpha, overlay);
 		ms.popPose();
 	}

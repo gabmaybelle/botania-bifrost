@@ -58,7 +58,7 @@ public class LuminizerBlockEntityRenderer implements BlockEntityRenderer<Luminiz
 
 		float off = 0.25F;
 		ms.translate(0F, off, 0F);
-		ms.mulPose(VecHelper.rotateZ((float) time));
+		ms.rotate(VecHelper.rotateZ((float) time));
 		ms.translate(0F, -off, 0F);
 
 		VertexConsumer buffer = buffers.getBuffer(RenderHelper.LIGHT_RELAY);

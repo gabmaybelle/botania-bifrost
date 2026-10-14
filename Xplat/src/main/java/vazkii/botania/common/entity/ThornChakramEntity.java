@@ -225,7 +225,7 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 		if (compound.contains("fly_stack")) {
 			stack = ItemStack.parseOptional(level().registryAccess(), compound.getCompound("fly_stack"));
 		}
-		setFire(compound.getBoolean("flare"));
+		setFire(compound.getBooleanOr("flare", false));
 	}
 
 	@Override

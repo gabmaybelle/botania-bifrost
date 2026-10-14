@@ -166,7 +166,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	@Override
 	public void readAdditionalSaveData(CompoundTag cmp) {
 		super.readAdditionalSaveData(cmp);
-		time = cmp.getInt(TAG_TIME);
+		time = cmp.getIntOr(TAG_TIME, 0);
 	}
 
 	public boolean findTarget() {

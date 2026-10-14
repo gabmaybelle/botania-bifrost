@@ -61,7 +61,7 @@ public class CorporeaStringMatcher implements CorporeaRequestMatcher {
 	}
 
 	public static CorporeaStringMatcher createFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-		String expression = tag.getString(TAG_REQUEST_CONTENTS);
+		String expression = tag.getStringOr(TAG_REQUEST_CONTENTS, "");
 		return new CorporeaStringMatcher(expression);
 	}
 

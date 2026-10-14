@@ -209,12 +209,12 @@ public class BabylonWeaponEntity extends LegallyDistinctThrowableProjectile {
 	@Override
 	public void readAdditionalSaveData(CompoundTag cmp) {
 		super.readAdditionalSaveData(cmp);
-		setCharging(cmp.getBoolean(TAG_CHARGING));
-		setVariety(cmp.getInt(TAG_VARIETY));
-		setChargeTicks(cmp.getInt(TAG_CHARGE_TICKS));
-		setLiveTicks(cmp.getInt(TAG_LIVE_TICKS));
-		setDelay(cmp.getInt(TAG_DELAY));
-		setRotation(cmp.getFloat(TAG_ROTATION));
+		setCharging(cmp.getBooleanOr(TAG_CHARGING, false));
+		setVariety(cmp.getIntOr(TAG_VARIETY, 0));
+		setChargeTicks(cmp.getIntOr(TAG_CHARGE_TICKS, 0));
+		setLiveTicks(cmp.getIntOr(TAG_LIVE_TICKS, 0));
+		setDelay(cmp.getIntOr(TAG_DELAY, 0));
+		setRotation(cmp.getFloatOr(TAG_ROTATION, 0F));
 	}
 
 	public boolean isCharging() {

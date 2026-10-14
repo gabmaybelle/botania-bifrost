@@ -237,12 +237,12 @@ public class LuminizerBlockEntity extends BlockEntity implements WandBindable, B
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		if (cmp.contains(TAG_BIND_X, Tag.TAG_INT)) {
 			bindPos = new BlockPos(
-					cmp.getInt(TAG_BIND_X),
+					cmp.getIntOr(TAG_BIND_X, 0),
 					cmp.getInt(TAG_BIND_Y),
 					cmp.getInt(TAG_BIND_Z)
 			);
 		}
-		noParticle = cmp.getBoolean(TAG_NO_PARTICLE);
+		noParticle = cmp.getBooleanOr(TAG_NO_PARTICLE, false);
 	}
 
 	@Override

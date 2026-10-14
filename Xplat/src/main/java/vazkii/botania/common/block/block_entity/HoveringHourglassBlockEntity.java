@@ -236,7 +236,7 @@ public class HoveringHourglassBlockEntity extends ExposedSimpleInventoryBlockEnt
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		time = tag.getInt(TAG_TIME);
+		time = tag.getIntOr(TAG_TIME, 0);
 	}
 
 	@Override

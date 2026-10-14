@@ -22,7 +22,7 @@ public final class AccessoryRenderHelper {
 	public static void rotateIfSneaking(PoseStack ms, LivingEntity living) {
 		if (living.isCrouching()) {
 			ms.translate(0F, 0.2F, 0F);
-			ms.mulPose(VecHelper.rotateX(90F / (float) Math.PI));
+			ms.rotate(VecHelper.rotateX(90F / (float) Math.PI));
 		}
 	}
 

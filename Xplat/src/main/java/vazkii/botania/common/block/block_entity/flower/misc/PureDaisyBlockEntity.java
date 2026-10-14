@@ -175,16 +175,16 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
-		positionAt = cmp.getInt(TAG_POSITION);
+		positionAt = cmp.getIntOr(TAG_POSITION, 0);
 
 		if (level != null && level.isClientSide() && cmp.contains(TAG_TICKED_POSITIONS)) {
-			byte tickedPositionBits = cmp.getByte(TAG_TICKED_POSITIONS);
+			byte tickedPositionBits = cmp.getByteOr(TAG_TICKED_POSITIONS, (byte) 0);
 			for (int i = 0; i < 8; i++) {
 				ticksRemaining[i] = (tickedPositionBits >>> i) & 1;
 			}
 		} else {
 			for (int i = 0; i < ticksRemaining.length; i++) {
-				ticksRemaining[i] = cmp.getInt(TAG_TICKS_REMAINING + i);
+				ticksRemaining[i] = cmp.getIntOr(TAG_TICKS_REMAINING + i, 0);
 			}
 		}
 	}

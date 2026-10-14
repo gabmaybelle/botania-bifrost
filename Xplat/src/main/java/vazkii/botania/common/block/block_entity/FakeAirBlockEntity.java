@@ -54,7 +54,7 @@ public class FakeAirBlockEntity extends BlockEntity {
 		super.loadAdditional(tag, registries);
 		flowerPos = tag.contains(TAG_FLOWER_X, Tag.TAG_INT)
 				? new BlockPos(
-						tag.getInt(TAG_FLOWER_X),
+						tag.getIntOr(TAG_FLOWER_X, 0),
 						tag.getInt(TAG_FLOWER_Y),
 						tag.getInt(TAG_FLOWER_Z)
 				)

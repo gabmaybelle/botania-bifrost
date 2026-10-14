@@ -63,7 +63,7 @@ public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<Mana
 
 		Quaternionf transform = VecHelper.rotateY(spreader.rotationX + 90F);
 		transform.mul(VecHelper.rotateX(spreader.rotationY));
-		ms.mulPose(transform);
+		ms.rotate(transform);
 
 		ms.translate(-0.5F, -0.5F, -0.5F);
 
@@ -86,7 +86,7 @@ public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<Mana
 
 		ms.pushPose();
 		ms.translate(0.5, 0.5, 0.5);
-		ms.mulPose(VecHelper.rotateY(time % 360));
+		ms.rotate(VecHelper.rotateY(time % 360));
 		ms.translate(-0.5, -0.5, -0.5);
 		ms.translate(0F, Mth.sin(time / 20.0f) * 0.05F, 0F);
 		BakedModel core = getCoreModel(spreader);
@@ -99,8 +99,8 @@ public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<Mana
 		if (!stack.isEmpty()) {
 			ms.pushPose();
 			ms.translate(0.5F, 0.5F, 0.094F);
-			ms.mulPose(VecHelper.rotateZ(180));
-			ms.mulPose(VecHelper.rotateX(180));
+			ms.rotate(VecHelper.rotateZ(180));
+			ms.rotate(VecHelper.rotateX(180));
 			// Prevents z-fighting. Otherwise not noticeable.
 			ms.scale(0.997F, 0.997F, 1F);
 			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
@@ -113,8 +113,8 @@ public class ManaSpreaderBlockEntityRenderer implements BlockEntityRenderer<Mana
 			// The padding model is facing up so that the textures are rotated the correct way
 			// It's simpler to do this than mess with rotation and UV in the json model
 			ms.translate(0.5F, 0.5F, 0.5F);
-			ms.mulPose(VecHelper.rotateX(-90));
-			ms.mulPose(VecHelper.rotateY(180));
+			ms.rotate(VecHelper.rotateX(-90));
+			ms.rotate(VecHelper.rotateY(180));
 			ms.translate(-0.5F, -0.5F, -0.5F);
 			BakedModel paddingModel = getPaddingModel(spreaderBlock.getOptionalColor().get());
 			blockRenderDispatcher.getModelRenderer()

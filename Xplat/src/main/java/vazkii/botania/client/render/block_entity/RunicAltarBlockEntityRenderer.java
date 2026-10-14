@@ -71,9 +71,9 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 		for (int i = 0; i < altar.inventorySize(); i++) {
 			ms.pushPose();
 			ms.translate(0.5F, 1.25F, 0.5F);
-			ms.mulPose(VecHelper.rotateY(angles[i] + (float) (time % 360f)));
+			ms.rotate(VecHelper.rotateY(angles[i] + (float) (time % 360f)));
 			ms.translate(1.125F, 0F, 0.25F);
-			ms.mulPose(VecHelper.rotateY(90F));
+			ms.rotate(VecHelper.rotateY(90F));
 			ms.translate(0D, 0.075 * Math.sin((time + i * 10) / 5D), 0F);
 			ItemStack stack = altar.getItemHandler().getItem(i);
 			Minecraft mc = Minecraft.getInstance();
@@ -129,7 +129,7 @@ public class RunicAltarBlockEntityRenderer implements BlockEntityRenderer<RunicA
 				float yRotate = (float) Math.max(0.6F, Math.sin(ticks * 0.1F) / 2F + 0.5F);
 				float zRotate = (float) Math.cos(ticks * rotationModifier) / 2F;
 
-				ms.mulPose(new Quaternionf().rotateAxis(rad, xRotate, yRotate, zRotate));
+				ms.rotate(new Quaternionf().rotateAxis(rad, xRotate, yRotate, zRotate));
 				float alpha = 1;
 				if (curIter < iters) {
 					alpha = (float) curIter / (float) iters * 0.4F;

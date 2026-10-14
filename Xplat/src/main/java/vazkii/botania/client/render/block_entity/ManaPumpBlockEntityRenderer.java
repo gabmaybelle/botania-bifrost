@@ -56,7 +56,7 @@ public class ManaPumpBlockEntityRenderer implements BlockEntityRenderer<ManaPump
 			default:
 				break;
 		}
-		ms.mulPose(VecHelper.rotateY(angle));
+		ms.rotate(VecHelper.rotateY(angle));
 		ms.translate(-0.5, 0, -0.5);
 		double diff = Math.max(0F, Math.min(8F, pump.innerRingPos + pump.moving * partialTicks));
 		ms.translate(0, 0, diff / 14);

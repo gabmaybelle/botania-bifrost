@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.data.AtlasIds;
 
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.helper.RenderHelper;
@@ -32,7 +32,7 @@ public class TerrestrialAgglomerationPlateBlockEntityRenderer implements BlockEn
 
 	public TerrestrialAgglomerationPlateBlockEntityRenderer(BlockEntityRendererProvider.Context manager) {
 		this.overlaySprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+				Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
 						.apply(botaniaRL("block/terrestrial_agglomeration_plate_overlay"))
 		);
 	}
@@ -44,7 +44,7 @@ public class TerrestrialAgglomerationPlateBlockEntityRenderer implements BlockEn
 
 		poseStack.pushPose();
 		poseStack.translate(0F, 3F / 16F + 0.001F, 0F);
-		poseStack.mulPose(VecHelper.rotateX(90F));
+		poseStack.rotate(VecHelper.rotateX(90F));
 
 		float alpha = (float) ((Math.sin((ClientTickHandler.getEntityTicksInGame() + partialTick) / 8D) + 1D) / 5D + 0.6D) * alphaMod;
 

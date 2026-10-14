@@ -86,7 +86,7 @@ public class LifeImbuerBlockEntity extends BlockEntity implements ManaReceiver {
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
+		mana = cmp.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

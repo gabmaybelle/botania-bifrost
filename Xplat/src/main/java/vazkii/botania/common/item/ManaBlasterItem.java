@@ -68,7 +68,7 @@ public class ManaBlasterItem extends Item {
 
 		if (player.isSecondaryUseActive() && hasClip(stack)) {
 			rotatePos(stack);
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER_CYCLE, SoundSource.PLAYERS, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER_CYCLE, SoundSource.PLAYERS, 0.6F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
 			if (!world.isClientSide()) {
 				ItemStack lens = getLens(stack);
 				ItemsRemainingRenderHandler.send(player, lens, -2);
@@ -87,7 +87,7 @@ public class ManaBlasterItem extends Item {
 					player.setDeltaMovement(player.getDeltaMovement().subtract(burst.getDeltaMovement().multiply(0.1, 0.3, 0.1)));
 				}
 			} else {
-				player.playSound(BotaniaSounds.MANA_BLASTER_MISFIRE, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
+				player.playSound(BotaniaSounds.MANA_BLASTER_MISFIRE, 0.6F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
 			}
 			return InteractionResult.SUCCESS;
 		}

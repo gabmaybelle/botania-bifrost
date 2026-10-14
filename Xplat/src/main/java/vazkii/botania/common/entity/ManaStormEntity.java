@@ -123,10 +123,10 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag cmp) {
-		liveTime = cmp.getInt(TAG_TIME);
-		burstColor = cmp.getInt(TAG_BURST_COLOR);
-		burstsFired = cmp.getInt(TAG_BURSTS_FIRED);
-		deathTime = cmp.getInt(TAG_DEATH_TIME);
+		liveTime = cmp.getIntOr(TAG_TIME, 0);
+		burstColor = cmp.getIntOr(TAG_BURST_COLOR, 0);
+		burstsFired = cmp.getIntOr(TAG_BURSTS_FIRED, 0);
+		deathTime = cmp.getIntOr(TAG_DEATH_TIME, 0);
 	}
 
 	@Override

@@ -51,10 +51,10 @@ public final class ManaTabletRenderHandler extends RenderLayer<AbstractClientPla
 				ms.translate(0, 0.65, 0);
 				if (renderedOne) {
 					ms.translate(armor ? 0.3 : 0.25, 0, 0);
-					ms.mulPose(VecHelper.rotateY(-90F));
+					ms.rotate(VecHelper.rotateY(-90F));
 				} else {
 					ms.translate(armor ? -0.3 : -0.25, 0, 0);
-					ms.mulPose(VecHelper.rotateY(90F));
+					ms.rotate(VecHelper.rotateY(90F));
 				}
 
 				ms.scale(0.375F, -0.375F, -0.375F);

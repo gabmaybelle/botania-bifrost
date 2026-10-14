@@ -78,7 +78,7 @@ public class LuminizerLauncherBlock extends BotaniaWaterloggedBlock {
 			var items = world.getEntitiesOfClass(ItemEntity.class, aabb);
 
 			for (Entity entity : Iterables.concat(living, items)) {
-				LuminizerBlockEntity relay = relays.get(world.random.nextInt(relays.size()));
+				LuminizerBlockEntity relay = relays.get(world.getRandom().nextInt(relays.size()));
 				relay.mountEntity(entity);
 			}
 		}

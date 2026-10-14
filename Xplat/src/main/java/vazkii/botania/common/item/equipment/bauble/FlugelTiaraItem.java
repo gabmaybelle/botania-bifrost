@@ -295,13 +295,13 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 			for (int i = 0; i < 2; i++) {
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
+				ms.rotate(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
 
 				// move so flapping about the edge instead of center of texture
 				ms.translate(-1, 0, 0);
 
 				// rotate since the textures are stored rotated
-				ms.mulPose(VecHelper.rotateZ(-60));
+				ms.rotate(VecHelper.rotateZ(-60));
 				ms.scale(1.5F, -1.5F, -1.5F);
 				Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, light, OverlayTexture.NO_OVERLAY, model);
 				ms.popPose();
@@ -315,10 +315,10 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(0, 0.5, 0.2);
 
-			ms.mulPose(VecHelper.rotateY(flap));
+			ms.rotate(VecHelper.rotateY(flap));
 			ms.translate(-1.1, 0, 0);
 
-			ms.mulPose(VecHelper.rotateZ(-60));
+			ms.rotate(VecHelper.rotateZ(-60));
 			ms.scale(1.6F, -1.6F, -1.6F);
 			Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, light, OverlayTexture.NO_OVERLAY, model);
 			ms.popPose();
@@ -333,7 +333,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				ms.pushPose();
 
 				if (i == 1) {
-					ms.mulPose(VecHelper.rotateY(180));
+					ms.rotate(VecHelper.rotateY(180));
 					ms.translate(-1.6, 0, 0);
 				}
 
@@ -352,7 +352,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 			for (int i = 0; i < 2; i++) {
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
+				ms.rotate(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
 
 				ms.translate(-0.9, 0, 0);
 
@@ -371,7 +371,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 			for (int i = 0; i < 2; i++) {
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
+				ms.rotate(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
 
 				ms.translate(-1.3, 0, 0);
 
@@ -390,7 +390,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 			for (int i = 0; i < 2; i++) {
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
+				ms.rotate(VecHelper.rotateY(i == 0 ? flap : 180 - flap));
 				ms.translate(-0.7, 0, 0);
 
 				ms.scale(1.5F, -1.5F, -1.5F);
@@ -462,8 +462,8 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			}
 
 			ms.translate(0.2, -0.65, 0);
-			ms.mulPose(VecHelper.rotateZ(30));
-			ms.mulPose(VecHelper.rotateY(tickTime));
+			ms.rotate(VecHelper.rotateZ(30));
+			ms.rotate(VecHelper.rotateY(tickTime));
 
 			ms.scale(0.75F, -0.75F, -0.75F);
 			VertexConsumer buffer = buffers.getBuffer(RenderHelper.HALO);

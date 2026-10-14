@@ -142,7 +142,7 @@ public class CacophoniumItem extends Item {
 		SoundEvent sound = getSound(stack);
 
 		if (sound != null) {
-			world.playSound(null, x, y, z, sound, category, volume, sound == BotaniaSounds.DOIT ? 1F : (world.random.nextFloat() - world.random.nextFloat()) * 0.2F + 1.0F);
+			world.playSound(null, x, y, z, sound, category, volume, sound == BotaniaSounds.DOIT ? 1F : (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F + 1.0F);
 		}
 	}
 

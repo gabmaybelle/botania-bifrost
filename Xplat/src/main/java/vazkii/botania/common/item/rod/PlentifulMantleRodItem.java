@@ -82,9 +82,9 @@ public class PlentifulMantleRodItem extends Item {
 						rand.nextFloat(), rand.nextFloat(), rand.nextFloat(),
 						8, false);
 				level.addParticle(data, true,
-						pos.getX() + level.random.nextFloat(),
-						pos.getY() + level.random.nextFloat(),
-						pos.getZ() + level.random.nextFloat(),
+						pos.getX() + level.getRandom().nextFloat(),
+						pos.getY() + level.getRandom().nextFloat(),
+						pos.getZ() + level.getRandom().nextFloat(),
 						0, 0, 0);
 			}
 		}

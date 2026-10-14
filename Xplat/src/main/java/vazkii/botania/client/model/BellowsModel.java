@@ -69,7 +69,7 @@ public class BellowsModel extends Model {
 		top.render(ms, buffer, light, overlay, color);
 		ms.translate(0F, -mov, 0F);
 
-		ms.mulPose(VecHelper.rotateX(180F));
+		ms.rotate(VecHelper.rotateX(180F));
 		ms.translate(-0.19F, -1.375F, -0.19F);
 		ms.scale(1F, fract, 1F);
 		funnel.render(ms, buffer, light, overlay, color);

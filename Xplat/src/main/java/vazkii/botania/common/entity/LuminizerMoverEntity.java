@@ -138,7 +138,7 @@ public class LuminizerMoverEntity extends Entity {
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag cmp) {
-		setExit(new BlockPos(cmp.getInt(TAG_EXIT_X), cmp.getInt(TAG_EXIT_Y), cmp.getInt(TAG_EXIT_Z)));
+		setExit(new BlockPos(cmp.getIntOr(TAG_EXIT_X, 0), cmp.getIntOr(TAG_EXIT_Y, 0), cmp.getIntOr(TAG_EXIT_Z, 0)));
 	}
 
 	@Override

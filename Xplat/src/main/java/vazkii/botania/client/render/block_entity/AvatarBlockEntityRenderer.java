@@ -53,7 +53,7 @@ public class AvatarBlockEntityRenderer implements BlockEntityRenderer<AvatarBloc
 
 		ms.translate(0.5F, 1.6F, 0.5F);
 		ms.scale(1F, -1F, -1F);
-		ms.mulPose(VecHelper.rotateY(ROTATIONS[Math.max(Math.min(ROTATIONS.length - 1, facing.get3DDataValue() - 2), 0)]));
+		ms.rotate(VecHelper.rotateY(ROTATIONS[Math.max(Math.min(ROTATIONS.length - 1, facing.get3DDataValue() - 2), 0)]));
 		VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
 		model.renderToBuffer(ms, buffer, light, overlay, 0xFFFFFF);
 
@@ -64,7 +64,7 @@ public class AvatarBlockEntityRenderer implements BlockEntityRenderer<AvatarBloc
 				float s = 0.6F;
 				ms.scale(s, s, s);
 				ms.translate(-0.5F, 2F, -0.25F);
-				ms.mulPose(VecHelper.rotateX(-70));
+				ms.rotate(VecHelper.rotateX(-70));
 				Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
 						light, overlay, ms, buffers, avatar.getLevel(), 0);
 				ms.popPose();

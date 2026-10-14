@@ -137,7 +137,7 @@ public class BellowsBlockEntity extends BlockEntity {
 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		active = tag.getBoolean(TAG_ACTIVE);
+		active = tag.getBooleanOr(TAG_ACTIVE, false);
 	}
 
 	public void setActive(boolean active) {

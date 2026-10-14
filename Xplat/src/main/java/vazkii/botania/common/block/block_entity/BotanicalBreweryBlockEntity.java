@@ -238,7 +238,7 @@ public class BotanicalBreweryBlockEntity extends SimpleInventoryBlockEntity impl
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
 
-		mana = tag.getInt(TAG_MANA);
+		mana = tag.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

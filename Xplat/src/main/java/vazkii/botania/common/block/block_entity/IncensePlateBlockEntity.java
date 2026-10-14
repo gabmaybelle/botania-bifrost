@@ -166,7 +166,7 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		timeLeft = tag.getInt(TAG_TIME_LEFT);
+		timeLeft = tag.getIntOr(TAG_TIME_LEFT, 0);
 	}
 
 	@Override

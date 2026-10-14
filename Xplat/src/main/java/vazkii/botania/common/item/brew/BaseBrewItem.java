@@ -77,7 +77,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 				}
 			}
 
-			if (world.random.nextBoolean()) {
+			if (world.getRandom().nextBoolean()) {
 				world.playSound(null, living.getX(), living.getY(), living.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 1F, 1F);
 			}
 

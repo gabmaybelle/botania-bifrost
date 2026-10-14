@@ -16,6 +16,7 @@
     "BaseSpawnerMixin",
     "BeaconBlockEntityAccessor",
     "CauldronInteractionDispatcherAccessor",
+    "FireBlockAccessor",
     "BeaconBlockEntityMixin",
     "BeeMixin",
     "BiomeAccessor",

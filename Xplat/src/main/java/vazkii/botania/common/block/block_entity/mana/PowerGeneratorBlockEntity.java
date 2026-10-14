@@ -87,7 +87,7 @@ public class PowerGeneratorBlockEntity extends BlockEntity implements ManaReceiv
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		energy = cmp.getInt(TAG_ENERGY);
+		energy = cmp.getIntOr(TAG_ENERGY, 0);
 	}
 
 	@Override

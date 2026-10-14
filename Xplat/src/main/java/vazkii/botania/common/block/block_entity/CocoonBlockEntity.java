@@ -166,9 +166,9 @@ public class CocoonBlockEntity extends BlockEntity {
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		timePassed = cmp.getInt(TAG_TIME_PASSED);
-		emeraldsGiven = cmp.getInt(TAG_EMERALDS_GIVEN);
-		chorusFruitGiven = cmp.getInt(TAG_CHORUS_FRUIT_GIVEN);
-		gaiaSpiritGiven = cmp.getBoolean(TAG_GAIA_SPIRIT_GIVEN);
+		timePassed = cmp.getIntOr(TAG_TIME_PASSED, 0);
+		emeraldsGiven = cmp.getIntOr(TAG_EMERALDS_GIVEN, 0);
+		chorusFruitGiven = cmp.getIntOr(TAG_CHORUS_FRUIT_GIVEN, 0);
+		gaiaSpiritGiven = cmp.getBooleanOr(TAG_GAIA_SPIRIT_GIVEN, false);
 	}
 }

@@ -71,8 +71,8 @@ public abstract class SparkBaseEntity extends Entity implements SparkEntity, Man
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
-		setInvisible(compound.getBoolean(TAG_INVIS));
-		setNetwork(DyeColor.byId(compound.getInt(TAG_NETWORK)));
+		setInvisible(compound.getBooleanOr(TAG_INVIS, false));
+		setNetwork(DyeColor.byId(compound.getIntOr(TAG_NETWORK, 0)));
 	}
 
 	@Override

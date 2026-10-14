@@ -86,7 +86,7 @@ public class HourglassModel extends Model {
 			if (flip) {
 				ms.translate(-2.0F * f, 1.0F * f, -2.0F * f);
 			} else {
-				ms.mulPose(VecHelper.rotateZ(180F));
+				ms.rotate(VecHelper.rotateZ(180F));
 				ms.translate(-2.0F * f, -5.0F * f, -2.0F * f);
 			}
 			ms.scale(1F, fract1, 1F);
@@ -99,7 +99,7 @@ public class HourglassModel extends Model {
 			if (flip) {
 				ms.translate(-2.0F * f, -5.0F * f, -2.0F * f);
 			} else {
-				ms.mulPose(VecHelper.rotateZ(180F));
+				ms.rotate(VecHelper.rotateZ(180F));
 				ms.translate(-2.0F * f, 1.0F * f, -2.0F * f);
 			}
 			ms.scale(1F, fract2, 1F);

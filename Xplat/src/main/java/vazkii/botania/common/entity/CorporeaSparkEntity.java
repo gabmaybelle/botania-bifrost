@@ -312,8 +312,8 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 	@Override
 	protected void readAdditionalSaveData(CompoundTag cmp) {
 		super.readAdditionalSaveData(cmp);
-		setMaster(cmp.getBoolean(TAG_MASTER));
-		setCreative(cmp.getBoolean(TAG_CREATIVE));
+		setMaster(cmp.getBooleanOr(TAG_MASTER, false));
+		setCreative(cmp.getBooleanOr(TAG_CREATIVE, false));
 	}
 
 	@Override

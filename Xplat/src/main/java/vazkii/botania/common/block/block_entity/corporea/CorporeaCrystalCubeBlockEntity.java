@@ -147,9 +147,9 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		CompoundTag cmp = tag.getCompound(TAG_REQUEST_TARGET);
+		CompoundTag cmp = tag.getCompoundOrEmpty(TAG_REQUEST_TARGET);
 		requestTarget = ItemStack.parse(registries, cmp).orElse(ItemStack.EMPTY);
-		setCount(tag.getInt(TAG_ITEM_COUNT));
+		setCount(tag.getIntOr(TAG_ITEM_COUNT, 0));
 	}
 
 	@Override

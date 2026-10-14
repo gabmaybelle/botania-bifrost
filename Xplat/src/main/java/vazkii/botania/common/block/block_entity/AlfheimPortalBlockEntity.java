@@ -422,8 +422,8 @@ public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
 
 	@Override
 	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		ticksOpen = cmp.getInt(TAG_TICKS_OPEN);
-		ticksSinceLastItem = cmp.getInt(TAG_TICKS_SINCE_LAST_ITEM);
+		ticksOpen = cmp.getIntOr(TAG_TICKS_OPEN, 0);
+		ticksSinceLastItem = cmp.getIntOr(TAG_TICKS_SINCE_LAST_ITEM, 0);
 
 		ListTag stacksList = cmp.getList(TAG_PORTAL_STACKS, Tag.TAG_COMPOUND);
 		portalStacks.clear();

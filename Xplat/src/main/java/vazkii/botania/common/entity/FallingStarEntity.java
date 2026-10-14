@@ -131,6 +131,6 @@ public class FallingStarEntity extends LegallyDistinctThrowableProjectile {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.hasBeenInAir = tag.getBoolean(TAG_HAS_BEEN_IN_AIR);
+		this.hasBeenInAir = tag.getBooleanOr(TAG_HAS_BEEN_IN_AIR, false);
 	}
 }

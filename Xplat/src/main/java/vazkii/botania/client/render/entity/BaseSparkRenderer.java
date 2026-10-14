@@ -16,10 +16,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -40,7 +40,7 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 
 	protected BaseSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+		var atlas = Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS);
 		this.starSprite = Objects.requireNonNull(
 				atlas.apply(botaniaRL("item/spark_star"))
 		);
@@ -99,7 +99,7 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 
 	@Override
 	public Identifier getTextureLocation(SparkBaseEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
+		return AtlasIds.BLOCKS;
 	}
 
 	private void renderIcon(PoseStack ms, VertexConsumer buffer, TextureAtlasSprite icon, int color) {

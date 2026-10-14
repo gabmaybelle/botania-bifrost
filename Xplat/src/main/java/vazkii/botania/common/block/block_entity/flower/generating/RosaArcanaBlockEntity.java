@@ -100,9 +100,9 @@ public class RosaArcanaBlockEntity extends GeneratingFlowerBlockEntity {
 			return;
 		}
 		// pull XP from one random player
-		Player player = players.get(serverLevel.random.nextInt(players.size()));
+		Player player = players.get(serverLevel.getRandom().nextInt(players.size()));
 		// this effectively only happens every other tick, so average out the XP drain to 1 per tick
-		int drainAmount = player.experienceLevel > 0 && serverLevel.random.nextBoolean() ? 3 : 1;
+		int drainAmount = player.experienceLevel > 0 && serverLevel.getRandom().nextBoolean() ? 3 : 1;
 		player.giveExperiencePoints(-drainAmount);
 		ExperienceOrb.award(serverLevel, player.position().add(0, 0.5 * player.getEyeHeight(), 0), drainAmount);
 	}
@@ -145,7 +145,7 @@ public class RosaArcanaBlockEntity extends GeneratingFlowerBlockEntity {
 			serverLevel.addFreshEntity(newEntity);
 
 			serverLevel.playSound(null, getEffectivePos(), BotaniaSounds.ARCANE_ROSE_DISENCHANT,
-					SoundSource.BLOCKS, 1F, serverLevel.random.nextFloat() * 0.1F + 0.9F);
+					SoundSource.BLOCKS, 1F, serverLevel.getRandom().nextFloat() * 0.1F + 0.9F);
 			ExperienceOrb.award(serverLevel, entity.getEyePosition(), xp);
 			return true;
 		}

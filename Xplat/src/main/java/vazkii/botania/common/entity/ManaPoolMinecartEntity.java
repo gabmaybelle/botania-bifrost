@@ -190,7 +190,7 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag cmp) {
 		super.readAdditionalSaveData(cmp);
-		setMana(cmp.getInt(TAG_MANA));
+		setMana(cmp.getIntOr(TAG_MANA, 0));
 	}
 
 	@Override

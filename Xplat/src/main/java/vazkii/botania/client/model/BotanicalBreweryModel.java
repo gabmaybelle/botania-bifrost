@@ -73,10 +73,10 @@ public class BotanicalBreweryModel extends Model {
 		float polerot = -deg * 25F;
 
 		ms.translate(0F, offset, 0F);
-		ms.mulPose(VecHelper.rotateY(polerot));
+		ms.rotate(VecHelper.rotateY(polerot));
 		if (hasTile && !brewery.getItemHandler().getItem(0).isEmpty()) {
 			ms.pushPose();
-			ms.mulPose(VecHelper.rotateX(180));
+			ms.rotate(VecHelper.rotateX(180));
 			ms.translate(0, -0.45F, 0);
 			renderItemStack(brewery.getItemHandler().getItem(0), ms, buffers, brewery.getLevel(), light, overlay);
 			ms.popPose();
@@ -86,7 +86,7 @@ public class BotanicalBreweryModel extends Model {
 		pole.render(ms, buffers.getBuffer(layer), light, overlay);
 		top.render(ms, buffers.getBuffer(layer), light, overlay);
 		bottom.render(ms, buffers.getBuffer(layer), light, overlay);
-		ms.mulPose(VecHelper.rotateY(-polerot));
+		ms.rotate(VecHelper.rotateY(-polerot));
 
 		float degper = (float) (2F * Math.PI) / plates;
 		for (int i = 0; i < plates; i++) {
@@ -103,9 +103,9 @@ public class BotanicalBreweryModel extends Model {
 				float transY = 1.06F;
 				float transZ = 0.1245F;
 				ms.pushPose();
-				ms.mulPose(VecHelper.rotateY(rot));
+				ms.rotate(VecHelper.rotateY(rot));
 				ms.translate(transX, transY, transZ);
-				ms.mulPose(VecHelper.rotateX(-90F));
+				ms.rotate(VecHelper.rotateX(-90F));
 				ms.translate(0.125F, 0.125F, 0);
 				renderItemStack(brewery.getItemHandler().getItem(i + 1), ms, buffers, brewery.getLevel(), light, overlay);
 				ms.popPose();

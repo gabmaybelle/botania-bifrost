@@ -321,12 +321,12 @@ public final class RenderHelper extends RenderType {
 		ms.scale(xScale, yScale, zScale);
 
 		for (int i = 0; i < (f1 + f1 * f1) / 2F * 90F + 30F; i++) {
-			ms.mulPose(VecHelper.rotateX(random.nextFloat() * 360F));
-			ms.mulPose(VecHelper.rotateY(random.nextFloat() * 360F));
-			ms.mulPose(VecHelper.rotateZ(random.nextFloat() * 360F));
-			ms.mulPose(VecHelper.rotateX(random.nextFloat() * 360F));
-			ms.mulPose(VecHelper.rotateY(random.nextFloat() * 360F));
-			ms.mulPose(VecHelper.rotateZ(random.nextFloat() * 360F + f1 * 90F));
+			ms.rotate(VecHelper.rotateX(random.nextFloat() * 360F));
+			ms.rotate(VecHelper.rotateY(random.nextFloat() * 360F));
+			ms.rotate(VecHelper.rotateZ(random.nextFloat() * 360F));
+			ms.rotate(VecHelper.rotateX(random.nextFloat() * 360F));
+			ms.rotate(VecHelper.rotateY(random.nextFloat() * 360F));
+			ms.rotate(VecHelper.rotateZ(random.nextFloat() * 360F + f1 * 90F));
 			float f3 = random.nextFloat() * 20F + 5F + f2 * 10F;
 			float f4 = random.nextFloat() * 2F + 1F + f2 * 2F;
 			int alphaColor = ARGB.color(ARGB.as8BitChannel(f1), color);

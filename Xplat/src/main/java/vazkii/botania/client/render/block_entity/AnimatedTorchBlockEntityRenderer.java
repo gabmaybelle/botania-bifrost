@@ -52,7 +52,7 @@ public class AnimatedTorchBlockEntityRenderer implements BlockEntityRenderer<Ani
 						+ new Random(torch.getBlockState().getSeed(torch.getBlockPos())).nextDouble(ANIM_TICK_CYCLE);
 
 		ms.translate(0.5, 0.2, 0.5);
-		ms.mulPose(VecHelper.rotateX(90));
+		ms.rotate(VecHelper.rotateX(90));
 
 		if (level != null) {
 			float targetRotation = torch.getBlockState().getValue(AnimatedTorchBlock.FACING).toYRot();
@@ -78,7 +78,7 @@ public class AnimatedTorchBlockEntityRenderer implements BlockEntityRenderer<Ani
 					torch.rotation = torch.lastRotation + rotationProgress * rotationDiff;
 				}
 			}
-			ms.mulPose(VecHelper.rotateZ(torch.rotation));
+			ms.rotate(VecHelper.rotateZ(torch.rotation));
 		}
 
 		double xt = -0.5 + Math.cos(time * ANIM_HORIZONTAL_TICK_SCALE) * 0.025;

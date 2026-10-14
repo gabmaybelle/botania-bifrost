@@ -103,19 +103,19 @@ public class CellularBlockEntity extends BlockEntity {
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		generation = cmp.getInt(TAG_GENERATION);
-		ticked = cmp.getBoolean(TAG_TICKED);
+		generation = cmp.getIntOr(TAG_GENERATION, 0);
+		ticked = cmp.getBooleanOr(TAG_TICKED, false);
 		if (ticked) {
 			if (cmp.contains(TAG_FLOWER_X, Tag.TAG_INT)) {
 				flowerCoords = new BlockPos(
-						cmp.getInt(TAG_FLOWER_X),
+						cmp.getIntOr(TAG_FLOWER_X, 0),
 						cmp.getInt(TAG_FLOWER_Y),
 						cmp.getInt(TAG_FLOWER_Z)
 				);
 			}
 			if (cmp.contains(TAG_VALID_X, Tag.TAG_INT)) {
 				validCoords = new BlockPos(
-						cmp.getInt(TAG_VALID_X),
+						cmp.getIntOr(TAG_VALID_X, 0),
 						cmp.getInt(TAG_VALID_Y),
 						cmp.getInt(TAG_VALID_Z)
 				);

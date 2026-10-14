@@ -58,7 +58,7 @@ public class BenevolentGoddessCharmItem extends BaubleItem {
 		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(0.275, -0.4, 0);
-			ms.mulPose(VecHelper.rotateY(-90F));
+			ms.rotate(VecHelper.rotateY(-90F));
 			ms.scale(0.55F, -0.55F, -0.55F);
 			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
 					light, OverlayTexture.NO_OVERLAY, ms, buffers, living.level(), living.getId());

@@ -135,14 +135,14 @@ public class RafflowsiaBlockEntity extends GeneratingFlowerBlockEntity {
 		lastFlowers.clear();
 		ListTag flowerList = cmp.getList(TAG_LAST_FLOWERS, Tag.TAG_STRING);
 		for (int i = 0; i < flowerList.size(); i++) {
-			Identifier blockID = Identifier.tryParse(flowerList.getString(i));
+			Identifier blockID = Identifier.tryParse(flowerList.getStringOr(i, ""));
 			if (blockID == null) {
 				continue;
 			}
 			lastFlowers.add(blockID);
 		}
-		lastFlowerCount = cmp.getInt(TAG_LAST_FLOWER_TIMES);
-		streakLength = cmp.getInt(TAG_STREAK_LENGTH);
+		lastFlowerCount = cmp.getIntOr(TAG_LAST_FLOWER_TIMES, 0);
+		streakLength = cmp.getIntOr(TAG_STREAK_LENGTH, 0);
 	}
 
 	@Override

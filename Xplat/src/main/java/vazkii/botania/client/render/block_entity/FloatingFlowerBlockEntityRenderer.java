@@ -45,11 +45,11 @@ public class FloatingFlowerBlockEntityRenderer implements BlockEntityRenderer<Fl
 		}
 
 		ms.translate(0.5F, 0, 0.5F);
-		ms.mulPose(VecHelper.rotateY(-((float) worldTime * 0.5F)));
+		ms.rotate(VecHelper.rotateY(-((float) worldTime * 0.5F)));
 		ms.translate(-0.5, (float) Math.sin(worldTime * 0.05F) * 0.1F, 0.5);
 
-		ms.mulPose(VecHelper.rotateX(4F * (float) Math.sin(worldTime * 0.04F)));
-		ms.mulPose(VecHelper.rotateY(90.0F));
+		ms.rotate(VecHelper.rotateX(4F * (float) Math.sin(worldTime * 0.04F)));
+		ms.rotate(VecHelper.rotateY(90.0F));
 
 		ClientXplatAbstractions.INSTANCE.tessellateBlock(tile.getLevel(), tile.getBlockState(),
 				tile.getBlockPos(), ms, buffers, overlay);

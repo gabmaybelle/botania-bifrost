@@ -80,7 +80,7 @@ public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer
 					hourglass.rotation = hourglass.lastRotation + rotationProgress * rotationDiff;
 				}
 			}
-			ms.mulPose(VecHelper.rotateZ(hourglass.rotation));
+			ms.rotate(VecHelper.rotateZ(hourglass.rotation));
 		}
 
 		boolean active = state.getValue(HoveringHourglassBlock.ACTIVE);

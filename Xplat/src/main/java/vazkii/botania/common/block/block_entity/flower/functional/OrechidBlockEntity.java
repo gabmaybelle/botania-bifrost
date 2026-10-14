@@ -159,7 +159,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 
-		cooldown = cmp.getInt(TAG_COOLDOWN);
+		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 	}
 
 	@Override

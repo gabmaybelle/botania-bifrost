@@ -89,7 +89,7 @@ public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<P
 
 						v /= 2F;
 						ms.translate(v, v, v);
-						ms.mulPose(new Quaternionf().rotateAxis(rad, xRotate, yRotate, zRotate));
+						ms.rotate(new Quaternionf().rotateAxis(rad, xRotate, yRotate, zRotate));
 						ms.translate(-v, -v, -v);
 						v *= 2F;
 
@@ -109,7 +109,7 @@ public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<P
 			float alpha = lava ? 1F : 0.7F;
 
 			ms.translate(-8 / 16F, -0.3125F, -8 / 16F);
-			ms.mulPose(VecHelper.rotateX(90));
+			ms.rotate(VecHelper.rotateX(90));
 			ms.scale(1 / 16F, 1 / 16F, 1 / 16F);
 
 			TextureAtlasSprite sprite = lava ? this.blockRenderDispatcher.getBlockModel(Blocks.LAVA.defaultBlockState()).getParticleIcon()

@@ -105,7 +105,7 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 		super.loadAdditional(cmp, registries);
 		if (cmp.contains(TAG_BIND_X)) {
 			bindPos = new BlockPos(
-					cmp.getInt(TAG_BIND_X),
+					cmp.getIntOr(TAG_BIND_X, 0),
 					cmp.getInt(TAG_BIND_Y),
 					cmp.getInt(TAG_BIND_Z)
 			);

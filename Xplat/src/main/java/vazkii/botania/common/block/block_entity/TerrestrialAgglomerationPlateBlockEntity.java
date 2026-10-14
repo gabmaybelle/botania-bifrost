@@ -299,8 +299,8 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implem
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
-		manaToGet = cmp.getInt(TAG_MANA_TO_GET);
+		mana = cmp.getIntOr(TAG_MANA, 0);
+		manaToGet = cmp.getIntOr(TAG_MANA_TO_GET, 0);
 	}
 
 	@Override

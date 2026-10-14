@@ -149,7 +149,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			return;
 		}
 
-		Pair<Identifier, LootTable> randomPick = lootTables.get(world.random.nextInt(lootTables.size()));
+		Pair<Identifier, LootTable> randomPick = lootTables.get(world.getRandom().nextInt(lootTables.size()));
 		LooniumStructureConfiguration pickedConfig = structureConfigs.getOrDefault(randomPick.key(),
 				structureConfigs.get(LooniumStructureConfiguration.DEFAULT_CONFIG_ID));
 		LootTable pickedLootTable = randomPick.value();
@@ -345,7 +345,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 
 	private static ItemStack pickRandomLootItem(ServerLevel world, LootTable pickedLootTable) {
 		LootParams params = new LootParams.Builder(world).create(LootContextParamSets.EMPTY);
-		List<ItemStack> stacks = pickedLootTable.getRandomItems(params, world.random.nextLong());
+		List<ItemStack> stacks = pickedLootTable.getRandomItems(params, world.getRandom().nextLong());
 		stacks.removeIf(s -> s.isEmpty() || s.is(BotaniaTags.Items.LOONIUM_EXCLUDED));
 		if (stacks.isEmpty()) {
 			return ItemStack.EMPTY;
@@ -480,16 +480,16 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 	public void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 		if (cmp.contains(TAG_LOOT_TABLE)) {
-			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(cmp.getString(TAG_LOOT_TABLE)));
+			lootTableOverride = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(cmp.getStringOr(TAG_LOOT_TABLE, "")));
 		}
 		if (cmp.contains(TAG_CONFIG_OVERRIDE)) {
-			configOverride = Identifier.parse(cmp.getString(TAG_CONFIG_OVERRIDE));
+			configOverride = Identifier.parse(cmp.getStringOr(TAG_CONFIG_OVERRIDE, ""));
 		}
 		if (cmp.contains(TAG_ATTUNE_DISPLAY_OVERRIDE)) {
-			attuneDisplayOverride = cmp.getString(TAG_ATTUNE_DISPLAY_OVERRIDE);
+			attuneDisplayOverride = cmp.getStringOr(TAG_ATTUNE_DISPLAY_OVERRIDE, "");
 		}
 		if (cmp.contains(TAG_DETECTED_STRUCTURE)) {
-			String rawString = cmp.getString(TAG_DETECTED_STRUCTURE);
+			String rawString = cmp.getStringOr(TAG_DETECTED_STRUCTURE, "");
 			if (rawString.isEmpty()) {
 				detectedStructures = Object2BooleanMaps.emptyMap();
 			} else {
