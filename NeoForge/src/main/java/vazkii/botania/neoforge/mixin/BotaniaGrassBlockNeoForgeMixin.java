@@ -9,7 +9,7 @@
 
 package vazkii.botania.neoforge.mixin;
 
-import net.minecraft.world.item.HoeItem;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +27,9 @@ import vazkii.botania.common.block.BotaniaGrassBlock;
 public abstract class BotaniaGrassBlockNeoForgeMixin implements IBlockExtension {
 	@Override
 	public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
-		if (itemAbility == ItemAbilities.HOE_TILL && HoeItem.onlyIfAirAbove(context)) {
+		// PORT-26.3: HoeItem is gone; this is what its onlyIfAirAbove checked.
+		if (itemAbility == ItemAbilities.HOE_TILL && context.getClickedFace() != Direction.DOWN
+				&& context.getLevel().getBlockState(context.getClickedPos().above()).isAir()) {
 			return Blocks.FARMLAND.defaultBlockState();
 		} else if (itemAbility == ItemAbilities.SHOVEL_FLATTEN) {
 			return Blocks.DIRT_PATH.defaultBlockState();

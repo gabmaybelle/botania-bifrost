@@ -7,7 +7,6 @@
     "AbstractFurnaceBlockEntityFabricAccessor",
     "AbstractMinecartFabricMixin",
     "AnvilMenuFabricMixin",
-    "AxeItemFabricMixin",
     "BeaconBlockEntityFabricMixin",
     "CombatTrackerMixin",
     "EnchantmentMenuFabricMixin",

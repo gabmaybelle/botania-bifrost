@@ -11,9 +11,9 @@ package vazkii.botania.common.crafting.recipe;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
@@ -37,7 +37,7 @@ public class ArmorUpgradeRecipe extends ShapedRecipe {
 		ItemStack out = super.assemble(inv, registries);
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
-			if (stack.getItem() instanceof ArmorItem) {
+			if (stack.has(DataComponents.EQUIPPABLE)) { // PORT-26.3: ArmorItem is gone; armor is anything equippable
 				// TODO: verify this works as intended
 				out.applyComponents(stack.getComponentsPatch());
 				break;

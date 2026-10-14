@@ -8,10 +8,10 @@
  */
 package vazkii.botania.common.item.equipment.armor.manasteel;
 
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ import vazkii.botania.api.mana.ManaDiscountArmor;
 
 public class ManasteelHelmItem extends ManasteelArmorItem implements ManaDiscountArmor {
 
-	public ManasteelHelmItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
+	public ManasteelHelmItem(ArmorType type, ArmorMaterial material, Properties properties) {
 		super(type, material, properties);
 	}
 

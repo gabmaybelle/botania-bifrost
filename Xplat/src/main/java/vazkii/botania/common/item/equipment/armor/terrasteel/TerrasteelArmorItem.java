@@ -11,7 +11,6 @@ package vazkii.botania.common.item.equipment.armor.terrasteel;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -24,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.annotations.SoftImplement;
@@ -37,7 +37,7 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class TerrasteelArmorItem extends ManasteelArmorItem {
 
-	public TerrasteelArmorItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
+	public TerrasteelArmorItem(ArmorType type, ArmorMaterial material, Properties properties) {
 		super(type, material, properties);
 	}
 
@@ -46,12 +46,10 @@ public class TerrasteelArmorItem extends ManasteelArmorItem {
 		return Identifier.parse(ResourcesLib.MODEL_TERRASTEEL_NEW);
 	}
 
-	//TODO Very unsure if this works
-	@Override
-	public ItemAttributeModifiers getDefaultAttributeModifiers() {
-		int reduction = getMaterial().value().getDefense(getType());
-
-		return super.getDefaultAttributeModifiers().withModifierAdded(Attributes.KNOCKBACK_RESISTANCE,
+	// PORT-26.3: Item#getDefaultAttributeModifiers is gone (attributes are a component), so BotaniaItems puts these on.
+	public static ItemAttributeModifiers createAttributes(ArmorType type, ArmorMaterial material) {
+		int reduction = material.defense().getOrDefault(type, 0);
+		return material.createAttributes(type).withModifierAdded(Attributes.KNOCKBACK_RESISTANCE,
 				new AttributeModifier(botaniaRL("terrasteel_modifier." + type.getName()), (double) reduction / 20, AttributeModifier.Operation.ADD_VALUE), //TODO I changed the name here to fit mc's way of naming the modifier. Check if this is alr!
 				EquipmentSlotGroup.bySlot(type.getSlot()));
 	}

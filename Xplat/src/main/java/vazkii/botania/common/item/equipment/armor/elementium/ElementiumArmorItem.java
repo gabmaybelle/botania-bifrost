@@ -11,7 +11,6 @@ package vazkii.botania.common.item.equipment.armor.elementium;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -21,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import vazkii.botania.client.lib.ResourcesLib;
 import vazkii.botania.common.handler.PixieHandler;
@@ -33,14 +33,16 @@ import java.util.function.Supplier;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class ElementiumArmorItem extends ManasteelArmorItem {
-	private final Supplier<ItemAttributeModifiers> defaultModifiers;
-
-	public ElementiumArmorItem(Type type, Holder<ArmorMaterial> material, double pixieChance, Properties properties) {
+	public ElementiumArmorItem(ArmorType type, ArmorMaterial material, double pixieChance, Properties properties) {
 		super(type, material, properties);
-		this.defaultModifiers = Suppliers.memoize(() -> super.getDefaultAttributeModifiers()
+	}
+
+	// PORT-26.3: Item#getDefaultAttributeModifiers is gone (attributes are a component), so BotaniaItems puts these on.
+	public static ItemAttributeModifiers createAttributes(ArmorType type, ArmorMaterial material, double pixieChance) {
+		return material.createAttributes(type)
 				.withModifierAdded(PixieHandler.PIXIE_SPAWN_CHANCE, PixieHandler.makeModifier(
 						botaniaRL("armor." + type.getName()), pixieChance),
-						EquipmentSlotGroup.bySlot(type.getSlot())));
+						EquipmentSlotGroup.bySlot(type.getSlot()));
 	}
 
 	@Override
@@ -90,11 +92,6 @@ public class ElementiumArmorItem extends ManasteelArmorItem {
 	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
 		super.addArmorSetDescription(stack, list);
 		list.add(Component.translatable("botania.armorset.elementium.desc").withStyle(ChatFormatting.GRAY));
-	}
-
-	@Override
-	public ItemAttributeModifiers getDefaultAttributeModifiers() {
-		return this.defaultModifiers.get();
 	}
 
 }

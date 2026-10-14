@@ -12,21 +12,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
 
 import vazkii.botania.common.entity.EnderEssenceCloudEntity;
 import vazkii.botania.common.internal_caps.EnderEssenceCaptured;
 
-public class SoulscribeItem extends SwordItem {
+// PORT-26.3: SwordItem is gone; the sword properties come from Item.Properties#sword in BotaniaItems.
+public class SoulscribeItem extends Item {
 
-	public SoulscribeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public SoulscribeItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+	public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (!target.level().isClientSide()
 				&& target instanceof Enderman
 				&& attacker instanceof Player player) {
@@ -34,7 +34,6 @@ public class SoulscribeItem extends SwordItem {
 		}
 
 		stack.hurtAndBreak(1, attacker, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-		return true;
 	}
 
 	@Override

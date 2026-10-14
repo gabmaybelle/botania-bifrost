@@ -140,6 +140,8 @@ upstream parked CraftTweaker), so Phase 5 can move it back.
 
 | Data generators (temporarily) | `Xplat/.../data` (34 files), `Fabric/.../fabric/data` (26), `NeoForge/.../neoforge/data` (16), three Fabric `HashCache*` mixins; the Fabric `fabric-datagen` entrypoint | Parked during step 3 so the 1.21.4 datagen rewrite (about 1,200 of the compile errors, `BlockstateProvider` alone 599) doesn't hide gameplay errors; they only run at build time. Come back in step 4 (rerun datagen). The `normalizeLanguageFiles` Gradle task points at the parked `LangSortTool` until then. | None in the game; the generated JSON in `src/generated` is unchanged and still ships. |
 
+| Fabric axe stripping of Botania's own blocks | `Fabric/.../mixin/AxeItemFabricMixin` (now `Fabric/src/disabled/axe-stripping`) | `AxeItem` is gone; stripping is data-driven (`BlockTransformers`, 26.3), so the custom strippables from `AxeStrippingData` become data in step 4. | Botania's log-like blocks can't be stripped with an axe until then. |
+
 Kept as they are: `common/integration/corporea`, `InventorySorterIntegration` (NeoForge IMC only) and
 `integration/speedrunigt/BotaniaSpeedrunCategories` (plain data, no dependency).
 
@@ -160,7 +162,7 @@ Kept as they are: `common/integration/corporea`, `InventorySorterIntegration` (N
 The API package is kept verbatim except where 26.3 forces a change. So far, all of it is renames the
 whole codebase got: `ResourceLocation` -> `Identifier` (55 API files), `ResourceKey#location()` ->
 `identifier()`, `InteractionResultHolder`/`ItemInteractionResult` -> `InteractionResult`,
-`BlockPos#getCenter()` -> `Vec3.atCenterOf(pos)`. Still to come, recorded here when done: recipe
+`BlockPos#getCenter()` -> `Vec3.atCenterOf(pos)`. Tools and armour (step 3): `getManasteelItemTier()`, `getElementiumItemTier()` and `getTerrasteelItemTier()` return `ToolMaterial` (vanilla removed `Tier`), and the four `get...ArmorMaterial()` getters return `ArmorMaterial` instead of `Holder<ArmorMaterial>` (armor materials are no longer a registry). Still to come, recorded here when done: recipe
 interfaces (`getIngredients` is gone from vanilla's `Recipe`; `ElvenTradeRecipe` declares its own).
 
 ---

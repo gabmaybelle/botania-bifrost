@@ -9,17 +9,22 @@
 package vazkii.botania.common.item.equipment.tool;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.item.SpecialBlockBreakingHandler;
@@ -28,10 +33,29 @@ import vazkii.botania.common.item.BotaniaItemTiers;
 import vazkii.botania.common.item.equipment.tool.manasteel.ManasteelPickaxeItem;
 import vazkii.botania.common.lib.BotaniaTags;
 
+import java.util.List;
+
 public class VitreousPickaxeItem extends ManasteelPickaxeItem implements SpecialBlockBreakingHandler {
 
-	public VitreousPickaxeItem(BotaniaItemTiers tier, Properties properties) {
-		super(tier, properties);
+	public VitreousPickaxeItem(ToolMaterial material, Properties properties) {
+		super(material, properties);
+	}
+
+	/**
+	 * PORT-26.3: the mining rules that used to override {@code Tier#createToolProperties} on the VITREOUS tier;
+	 * BotaniaItems puts this on the item after the standard pickaxe properties.
+	 */
+	public static Tool createTool() {
+		HolderGetter<Block> blocks = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK);
+		return new Tool(
+				List.of(
+						// always correct tool for silktouched blocks, relevant e.g. for copper bulb
+						Tool.Rule.minesAndDrops(blocks.getOrThrow(BotaniaTags.Blocks.VITREOUS_PICKAXE_SILKTOUCHED), BotaniaItemTiers.VITREOUS.speed()),
+						Tool.Rule.deniesDrops(blocks.getOrThrow(BotaniaItemTiers.VITREOUS.incorrectBlocksForDrops())),
+						Tool.Rule.minesAndDrops(blocks.getOrThrow(BotaniaTags.Blocks.MINEABLE_WITH_VITREOUS_PICKAXE), BotaniaItemTiers.VITREOUS.speed())
+				),
+				1.0F, 1, true
+		);
 	}
 
 	/*

@@ -25,6 +25,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -68,8 +69,8 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 			10000 - 1, 1000000 - 1, 10000000 - 1, 100000000 - 1, 1000000000 - 1, MAX_MANA - 1
 	};
 
-	public TerraShattererItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public TerraShattererItem(ToolMaterial material, Properties properties) {
+		super(material, properties);
 	}
 
 	@Override

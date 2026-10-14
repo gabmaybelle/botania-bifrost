@@ -11,12 +11,12 @@ package vazkii.botania.common.impl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -74,37 +74,37 @@ public class BotaniaAPIImpl implements BotaniaAPI {
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getManasteelArmorMaterial() {
+	public ArmorMaterial getManasteelArmorMaterial() {
 		return BotaniaArmorMaterials.MANASTEEL;
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getElementiumArmorMaterial() {
+	public ArmorMaterial getElementiumArmorMaterial() {
 		return BotaniaArmorMaterials.ELEMENTIUM;
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getManaweaveArmorMaterial() {
+	public ArmorMaterial getManaweaveArmorMaterial() {
 		return BotaniaArmorMaterials.MANAWEAVE;
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getTerrasteelArmorMaterial() {
+	public ArmorMaterial getTerrasteelArmorMaterial() {
 		return BotaniaArmorMaterials.TERRASTEEL;
 	}
 
 	@Override
-	public Tier getManasteelItemTier() {
+	public ToolMaterial getManasteelItemTier() {
 		return BotaniaItemTiers.MANASTEEL;
 	}
 
 	@Override
-	public Tier getElementiumItemTier() {
+	public ToolMaterial getElementiumItemTier() {
 		return BotaniaItemTiers.ELEMENTIUM;
 	}
 
 	@Override
-	public Tier getTerrasteelItemTier() {
+	public ToolMaterial getTerrasteelItemTier() {
 		return BotaniaItemTiers.TERRASTEEL;
 	}
 

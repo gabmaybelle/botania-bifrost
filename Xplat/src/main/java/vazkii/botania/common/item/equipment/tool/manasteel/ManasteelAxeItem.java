@@ -12,19 +12,31 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.item.SortableTool;
 import vazkii.botania.client.gui.ItemsRemainingRenderHandler;
 import vazkii.botania.common.helper.PlayerHelper;
+import vazkii.botania.common.item.equipment.tool.BotaniaMaterialTool;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 import vazkii.botania.common.lib.BotaniaTags;
 
-public class ManasteelAxeItem extends AxeItem implements SortableTool {
+public class ManasteelAxeItem extends Item implements BotaniaMaterialTool, SortableTool {
+	// PORT-26.3: AxeItem is gone; the material and the tool behaviour come from the item properties
+	// (Item.Properties#axe), the material is remembered for ToolCommons.
+	private final ToolMaterial material;
 
-	public ManasteelAxeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ManasteelAxeItem(ToolMaterial material, Properties properties) {
+		super(properties);
+		this.material = material;
+	}
+
+	@Override
+	public ToolMaterial getToolMaterial() {
+		return material;
 	}
 
 	@Override

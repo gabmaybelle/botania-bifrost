@@ -19,10 +19,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -121,11 +120,11 @@ public final class ToolCommons {
 		}
 
 		Item item = stack.getItem();
-		if (!(item instanceof DiggerItem tool)) {
+		if (!(item instanceof BotaniaMaterialTool tool)) {
 			return 0;
 		}
 
-		Tier material = tool.getTier();
+		ToolMaterial material = tool.getToolMaterial();
 		int materialLevel = 0;
 		if (material == BotaniaItemTiers.MANASTEEL) {
 			materialLevel = 10;

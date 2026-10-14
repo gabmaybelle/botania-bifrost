@@ -14,7 +14,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -25,8 +25,8 @@ import java.util.Optional;
 
 public class ElementiumAxeItem extends ManasteelAxeItem {
 
-	public ElementiumAxeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ElementiumAxeItem(ToolMaterial material, Properties properties) {
+		super(material, properties);
 	}
 
 	@SoftImplement("IItemExtension")

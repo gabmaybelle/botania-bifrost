@@ -26,6 +26,8 @@ import static vazkii.botania.api.BotaniaAPI.gogRL;
 public class BotaniaTags {
 	public static class Items {
 		public static final TagKey<Item> BLOCKS_QUARTZ = tag("quartz_blocks");
+		// PORT-26.3: repairing is by tag; Manaweave armor repairs with Manaweave Cloth.
+		public static final TagKey<Item> MANAWEAVE_ARMOR_REPAIR = tag("manaweave_armor_repair");
 
 		public static final TagKey<Item> SMALL_MYSTICAL_FLOWERS = tag("small_mystical_flowers");
 		public static final TagKey<Item> GLIMMERING_FLOWERS = tag("glimmering_flowers");

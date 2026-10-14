@@ -8,17 +8,17 @@
  */
 package vazkii.botania.common.item.equipment.armor.elementium;
 
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.mana.ManaDiscountArmor;
 
 public class ElementiumHelmItem extends ElementiumArmorItem implements ManaDiscountArmor {
-	public ElementiumHelmItem(Type type, Holder<ArmorMaterial> material, double pixieChance, Properties properties) {
+	public ElementiumHelmItem(ArmorType type, ArmorMaterial material, double pixieChance, Properties properties) {
 		super(type, material, pixieChance, properties);
 	}
 

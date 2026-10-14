@@ -16,9 +16,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -38,12 +37,13 @@ import vazkii.botania.xplat.ClientXplatAbstractions;
 
 import java.util.List;
 
-public class TerraBladeItem extends SwordItem implements LensEffectItem {
+// PORT-26.3: SwordItem is gone; the sword properties come from Item.Properties#sword in BotaniaItems.
+public class TerraBladeItem extends Item implements LensEffectItem {
 
 	private static final int BURST_MANA = 100;
 
-	public TerraBladeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public TerraBladeItem(Properties properties) {
+		super(properties);
 	}
 
 	public static void leftClick(ItemStack stack) {
@@ -118,7 +118,7 @@ public class TerraBladeItem extends SwordItem implements LensEffectItem {
 				int mana = burst.getMana();
 				if (mana >= cost) {
 					burst.setMana(mana - cost);
-					float damage = 4F + BotaniaAPI.instance().getTerrasteelItemTier().getAttackDamageBonus();
+					float damage = 4F + BotaniaAPI.instance().getTerrasteelItemTier().attackDamageBonus();
 					if (!burst.isFake() && !entity.level().isClientSide()) {
 						DamageSource source = living.damageSources().magic();
 						if (thrower instanceof Player player) {

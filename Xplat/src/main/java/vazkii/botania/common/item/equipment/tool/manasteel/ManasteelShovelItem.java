@@ -8,18 +8,28 @@
  */
 package vazkii.botania.common.item.equipment.tool.manasteel;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.item.SortableTool;
+import vazkii.botania.common.item.equipment.tool.BotaniaMaterialTool;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 
-public class ManasteelShovelItem extends ShovelItem implements SortableTool {
+public class ManasteelShovelItem extends Item implements BotaniaMaterialTool, SortableTool {
+	// PORT-26.3: ShovelItem is gone; the material and the tool behaviour come from the item properties
+	// (Item.Properties#shovel), the material is remembered for ToolCommons.
+	private final ToolMaterial material;
 
-	public ManasteelShovelItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ManasteelShovelItem(ToolMaterial material, Properties properties) {
+		super(properties);
+		this.material = material;
+	}
+
+	@Override
+	public ToolMaterial getToolMaterial() {
+		return material;
 	}
 
 	@Override

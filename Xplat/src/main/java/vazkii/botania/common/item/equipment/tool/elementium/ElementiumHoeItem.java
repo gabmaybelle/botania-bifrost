@@ -10,7 +10,7 @@ package vazkii.botania.common.item.equipment.tool.elementium;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FarmlandBlock;
@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import vazkii.botania.common.item.equipment.tool.manasteel.ManasteelHoeItem;
 
 public class ElementiumHoeItem extends ManasteelHoeItem {
-	public ElementiumHoeItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ElementiumHoeItem(ToolMaterial material, Properties properties) {
+		super(material, properties);
 	}
 
 	@Override

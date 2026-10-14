@@ -11,7 +11,6 @@ package vazkii.botania.api;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
@@ -19,6 +18,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -117,19 +117,20 @@ public interface BotaniaAPI {
 
 	}
 
-	Holder<ArmorMaterial> getManasteelArmorMaterial();
+	// PORT-26.3: armor materials are plain values now, not registry entries, and Tier is ToolMaterial.
+	ArmorMaterial getManasteelArmorMaterial();
 
-	Holder<ArmorMaterial> getElementiumArmorMaterial();
+	ArmorMaterial getElementiumArmorMaterial();
 
-	Holder<ArmorMaterial> getManaweaveArmorMaterial();
+	ArmorMaterial getManaweaveArmorMaterial();
 
-	Holder<ArmorMaterial> getTerrasteelArmorMaterial();
+	ArmorMaterial getTerrasteelArmorMaterial();
 
-	Tier getManasteelItemTier();
+	ToolMaterial getManasteelItemTier();
 
-	Tier getElementiumItemTier();
+	ToolMaterial getElementiumItemTier();
 
-	Tier getTerrasteelItemTier();
+	ToolMaterial getTerrasteelItemTier();
 
 	default ManaNetwork getManaNetworkInstance() {
 		return DummyManaNetwork.instance;

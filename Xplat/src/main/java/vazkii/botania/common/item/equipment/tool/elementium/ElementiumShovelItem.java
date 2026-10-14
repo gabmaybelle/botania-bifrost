@@ -13,7 +13,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,8 +24,8 @@ import vazkii.botania.common.item.equipment.tool.manasteel.ManasteelShovelItem;
 
 public class ElementiumShovelItem extends ManasteelShovelItem implements SpecialBlockBreakingHandler {
 
-	public ElementiumShovelItem(Tier tier, Properties properties) {
-		super(tier, properties);
+	public ElementiumShovelItem(ToolMaterial material, Properties properties) {
+		super(material, properties);
 	}
 
 	@Override

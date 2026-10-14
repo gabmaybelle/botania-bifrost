@@ -5,106 +5,85 @@
  *
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
- *
  */
-
 package vazkii.botania.common.item;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import vazkii.botania.common.handler.BotaniaSounds;
-import vazkii.botania.common.helper.RegistryHelper;
+import vazkii.botania.common.lib.BotaniaTags;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
-public class BotaniaArmorMaterials {
-	private static final List<RegistryHelper.HolderProxy<ArmorMaterial>> ALL = new ArrayList<>();
-
-	public static final Holder<ArmorMaterial> MANASTEEL = create("manasteel",
+/**
+ * PORT-26.3: armor materials are no longer a registry, just values the item properties apply
+ * ({@code Item.Properties#humanoidArmor}). The numbers are upstream's: the per-piece durability factors
+ * that BotaniaItems used to pass to {@code ArmorItem.Type#getDurability}, the defense per piece,
+ * enchantability, equip sound and toughness. Repairing is by item tag now. Each material names an
+ * equipment asset ({@code assets/botania/equipment/<name>.json}); Botania's own armor models are drawn by
+ * its renderers, so those files are empty until the rendering port.
+ */
+public final class BotaniaArmorMaterials {
+	public static final ArmorMaterial MANASTEEL = create("manasteel", 18,
 			Map.of(
-					ArmorItem.Type.BOOTS, 2,
-					ArmorItem.Type.LEGGINGS, 5,
-					ArmorItem.Type.CHESTPLATE, 6,
-					ArmorItem.Type.HELMET, 2
+					ArmorType.BOOTS, 2,
+					ArmorType.LEGGINGS, 5,
+					ArmorType.CHESTPLATE, 6,
+					ArmorType.HELMET, 2
 			),
-			18, BotaniaSounds.EQUIP_MANASTEEL, () -> Ingredient.of(BotaniaItems.MANASTEEL_INGOT), 0);
-
-	public static final Holder<ArmorMaterial> MANAWEAVE = create("manaweave",
+			18, BotaniaSounds.EQUIP_MANASTEEL, 0, commonTag("ingots/manasteel"));
+	public static final ArmorMaterial MANAWEAVE = create("manaweave", 5,
 			Map.of(
-					ArmorItem.Type.BOOTS, 1,
-					ArmorItem.Type.LEGGINGS, 2,
-					ArmorItem.Type.CHESTPLATE, 3,
-					ArmorItem.Type.HELMET, 1
+					ArmorType.BOOTS, 1,
+					ArmorType.LEGGINGS, 2,
+					ArmorType.CHESTPLATE, 3,
+					ArmorType.HELMET, 1
 			),
-			18, BotaniaSounds.EQUIP_MANAWEAVE, () -> Ingredient.of(BotaniaItems.MANAWEAVE_CLOTH), 0);
-	public static final Holder<ArmorMaterial> ELEMENTIUM = create("elementium",
+			18, BotaniaSounds.EQUIP_MANAWEAVE, 0, BotaniaTags.Items.MANAWEAVE_ARMOR_REPAIR);
+	public static final ArmorMaterial ELEMENTIUM = create("elementium", 18,
 			Map.of(
-					ArmorItem.Type.BOOTS, 2,
-					ArmorItem.Type.LEGGINGS, 5,
-					ArmorItem.Type.CHESTPLATE, 6,
-					ArmorItem.Type.HELMET, 2
+					ArmorType.BOOTS, 2,
+					ArmorType.LEGGINGS, 5,
+					ArmorType.CHESTPLATE, 6,
+					ArmorType.HELMET, 2
 			),
-			18, BotaniaSounds.EQUIP_ELEMENTIUM, () -> Ingredient.of(BotaniaItems.ELEMENTIUM_INGOT), 0);
-	public static final Holder<ArmorMaterial> TERRASTEEL = create("terrasteel",
+			18, BotaniaSounds.EQUIP_ELEMENTIUM, 0, commonTag("ingots/elementium"));
+	public static final ArmorMaterial TERRASTEEL = create("terrasteel", 34,
 			Map.of(
-					ArmorItem.Type.BOOTS, 3,
-					ArmorItem.Type.LEGGINGS, 6,
-					ArmorItem.Type.CHESTPLATE, 8,
-					ArmorItem.Type.HELMET, 3
+					ArmorType.BOOTS, 3,
+					ArmorType.LEGGINGS, 6,
+					ArmorType.CHESTPLATE, 8,
+					ArmorType.HELMET, 3
 			),
-			26, BotaniaSounds.EQUIP_TERRASTEEL, () -> Ingredient.of(BotaniaItems.TERRASTEEL_INGOT), 3);
+			26, BotaniaSounds.EQUIP_TERRASTEEL, 3, commonTag("ingots/terrasteel"));
 
-	private static Supplier<Holder<SoundEvent>> getSoundEventHolder(SoundEvent soundEvent) {
-		return () -> BuiltInRegistries.SOUND_EVENT.getHolder(soundEvent.getLocation()).orElseThrow();
-	}
+	private BotaniaArmorMaterials() {}
 
-	private static Holder<ArmorMaterial> create(
+	private static ArmorMaterial create(
 			String name,
-			Map<ArmorItem.Type, Integer> defense,
-			int enchantmentValue,
-			Holder<SoundEvent> equipSound,
-			Supplier<Ingredient> repairIngredient,
-			float toughness) {
-		List<ArmorMaterial.Layer> list = List.of(new ArmorMaterial.Layer(botaniaRL(name)));
-		return create(name, defense, enchantmentValue, equipSound, toughness, repairIngredient, list);
-	}
-
-	private static Holder<ArmorMaterial> create(
-			String name,
-			Map<ArmorItem.Type, Integer> defense,
+			int durabilityFactor,
+			Map<ArmorType, Integer> defense,
 			int enchantmentValue,
 			Holder<SoundEvent> equipSound,
 			float toughness,
-			Supplier<Ingredient> repairIngredient,
-			List<ArmorMaterial.Layer> layers) {
-		EnumMap<ArmorItem.Type, Integer> enummap = new EnumMap<>(ArmorItem.Type.class);
-
-		for (ArmorItem.Type armoritem$type : ArmorItem.Type.values()) {
-			enummap.put(armoritem$type, defense.get(armoritem$type));
-		}
-
-		Identifier id = botaniaRL(name);
-		RegistryHelper.HolderProxy<ArmorMaterial> proxy = RegistryHelper.lazyHolderProxy(Registries.ARMOR_MATERIAL, id,
-				() -> new ArmorMaterial(enummap, enchantmentValue, equipSound, repairIngredient, layers, toughness, 0));
-		ALL.add(proxy);
-		return proxy;
+			TagKey<Item> repairIngredient) {
+		ResourceKey<EquipmentAsset> asset = ResourceKey.create(EquipmentAssets.ROOT_ID, botaniaRL(name));
+		return new ArmorMaterial(durabilityFactor, defense, enchantmentValue, equipSound, toughness, 0, repairIngredient, asset);
 	}
 
-	public static void registerArmorMaterials(Registry<ArmorMaterial> registry) {
-		ALL.forEach(proxy -> proxy.register(registry));
+	private static TagKey<Item> commonTag(String path) {
+		return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", path));
 	}
 }

@@ -11,7 +11,6 @@ package vazkii.botania.common.item.equipment.armor.manasteel;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -19,6 +18,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import vazkii.botania.api.item.PhantomInkable;
 import vazkii.botania.client.gui.TooltipHandler;
@@ -32,14 +33,33 @@ import vazkii.botania.common.proxy.Proxy;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
+// PORT-26.3: ArmorItem is gone; being armor is a matter of item properties (Item.Properties#humanoidArmor in
+// BotaniaItems). The piece and material are kept here for the set logic and the subclasses.
+public class ManasteelArmorItem extends Item implements PhantomInkable {
+	protected final ArmorType type;
+	protected final ArmorMaterial material;
 
-	public ManasteelArmorItem(Type type, Holder<ArmorMaterial> material, Properties properties) {
-		super(material, type, properties);
+	public ManasteelArmorItem(ArmorType type, ArmorMaterial material, Properties properties) {
+		super(properties);
+		this.type = type;
+		this.material = material;
+	}
+
+	public ArmorType getType() {
+		return type;
+	}
+
+	public ArmorMaterial getMaterial() {
+		return material;
+	}
+
+	public EquipmentSlot getEquipmentSlot() {
+		return type.getSlot();
 	}
 
 	@SoftImplement("IItemExtension")
-	public final Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
+	// PORT-26.3: ArmorMaterial.Layer is gone; the renderers ask for the texture directly once they are ported.
+	public final Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean innerModel) {
 		return hasPhantomInk(stack) ? Identifier.parse(ResourcesLib.MODEL_INVISIBLE_ARMOR) : getArmorTextureAfterInk(stack, slot);
 	}
 
@@ -58,7 +78,7 @@ public class ManasteelArmorItem extends ArmorItem implements PhantomInkable {
 		addArmorSetDescription(stack, list);
 		ItemStack[] stacks = getArmorSetStacks();
 		for (ItemStack armor : stacks) {
-			EquipmentSlot slot = ((ArmorItem) armor.getItem()).getEquipmentSlot();
+			EquipmentSlot slot = ((ManasteelArmorItem) armor.getItem()).getEquipmentSlot();
 			MutableComponent cmp = Component.translatable("botaniamisc.template.tooltip_list", armor.getHoverName())
 					.withStyle(hasArmorSetItem(player, slot) ? ChatFormatting.GREEN : ChatFormatting.GRAY);
 			list.add(cmp);

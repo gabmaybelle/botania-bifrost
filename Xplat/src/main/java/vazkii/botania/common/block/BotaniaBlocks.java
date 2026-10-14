@@ -10,12 +10,12 @@ package vazkii.botania.common.block;
 
 import net.minecraft.core.*;
 import net.minecraft.core.dispenser.*;
+import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.HangingSignItem;
@@ -3274,7 +3274,7 @@ public final class BotaniaBlocks {
 				GAIA_HEAD, new OptionalDispenseItemBehavior() {
 					@Override
 					protected ItemStack execute(BlockSource blockSource, ItemStack item) {
-						setSuccess(ArmorItem.dispenseArmor(blockSource, item));
+						setSuccess(EquipmentDispenseItemBehavior.dispenseEquipment(blockSource, item));
 						return item;
 					}
 				});

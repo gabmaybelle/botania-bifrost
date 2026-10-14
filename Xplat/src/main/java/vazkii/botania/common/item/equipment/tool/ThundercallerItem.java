@@ -15,9 +15,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.phys.AABB;
 
 import vazkii.botania.network.clientbound.ThundercallerEffectPacket;
@@ -26,13 +25,14 @@ import vazkii.botania.xplat.XplatAbstractions;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ThundercallerItem extends SwordItem {
-	public ThundercallerItem(Tier tier, Properties properties) {
-		super(tier, properties);
+// PORT-26.3: SwordItem is gone; the sword properties come from Item.Properties#sword in BotaniaItems.
+public class ThundercallerItem extends Item {
+	public ThundercallerItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public boolean hurtEnemy(ItemStack stack, LivingEntity entity, LivingEntity attacker) {
+	public void hurtEnemy(ItemStack stack, LivingEntity entity, LivingEntity attacker) {
 		double range = 8;
 		IntList alreadyTargetedEntities = new IntArrayList();
 
@@ -64,7 +64,7 @@ public class ThundercallerItem extends SwordItem {
 					new ThundercallerEffectPacket(attacker.getId(), alreadyTargetedEntities));
 		}
 
-		return super.hurtEnemy(stack, entity, attacker);
+		super.hurtEnemy(stack, entity, attacker);
 	}
 
 }
