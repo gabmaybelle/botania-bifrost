@@ -1,4 +1,5 @@
 {
+  "parent": "botania:block/manatide_bellows",
   "display": {
     "firstperson_righthand": {
       "rotation": [

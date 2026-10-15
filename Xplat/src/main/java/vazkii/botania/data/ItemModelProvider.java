@@ -717,7 +717,9 @@ public class ItemModelProvider implements DataProvider {
 		}
 		consumer.accept(ModelLocationUtils.getModelLocation(item), () -> {
 			JsonObject json = new JsonObject();
-			// PORT-26.3: builtin/entity is gone; a special-renderer item model only carries its display transforms
+			// PORT-26.3: builtin/entity is gone; a special-renderer item model only carries its display transforms,
+			// and its particle texture through the block's particle-only model (vanilla's chest item names one too)
+			json.addProperty("parent", ModelLocationUtils.getModelLocation(((BlockItem) item).getBlock()).toString());
 			json.add("display", display);
 			return json;
 		});

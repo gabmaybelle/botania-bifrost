@@ -34,9 +34,31 @@ import java.util.function.ToIntFunction;
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 public class OrechidManager implements ResourceManagerReloadListener {
-	private static final Map<RecipeType<? extends OrechidRecipe>, Map<BlockState, List<? extends OrechidRecipe>>> BY_TYPE = new IdentityHashMap<>();
-	private static final Map<RecipeType<? extends OrechidRecipe>, Object2IntOpenHashMap<BlockState>> TOTAL_WEIGHTS_WITHOUT_POSITION = new IdentityHashMap<>();
-	private static final Map<RecipeType<? extends OrechidRecipe>, IntIntPair> MANA_COST_RANGES = new IdentityHashMap<>();
+	// PORT-26.3: one set of caches per side, like BotaniaRecipeIngredientsCache. The client's recipes are a synced
+	// copy (SyncedRecipes) that arrives after the server's reload, and in singleplayer the two sides share this class
+	private static final Caches SERVER_CACHES = new Caches();
+	private static final Caches CLIENT_CACHES = new Caches();
+
+	private static class Caches {
+		private final Map<RecipeType<? extends OrechidRecipe>, Map<BlockState, List<? extends OrechidRecipe>>> BY_TYPE = new IdentityHashMap<>();
+		private final Map<RecipeType<? extends OrechidRecipe>, Object2IntOpenHashMap<BlockState>> TOTAL_WEIGHTS_WITHOUT_POSITION = new IdentityHashMap<>();
+		private final Map<RecipeType<? extends OrechidRecipe>, IntIntPair> MANA_COST_RANGES = new IdentityHashMap<>();
+
+		private void clear() {
+			BY_TYPE.clear();
+			TOTAL_WEIGHTS_WITHOUT_POSITION.clear();
+			MANA_COST_RANGES.clear();
+		}
+	}
+
+	private static Caches caches(Level level) {
+		return level.isClientSide() ? CLIENT_CACHES : SERVER_CACHES;
+	}
+
+	/** Called when the client receives a new copy of the recipes. */
+	public static void clearClientCache() {
+		CLIENT_CACHES.clear();
+	}
 
 	public static void registerListener() {
 		XplatAbstractions.INSTANCE.registerReloadListener(PackType.SERVER_DATA, botaniaRL("orechid"), new OrechidManager());
@@ -44,16 +66,14 @@ public class OrechidManager implements ResourceManagerReloadListener {
 
 	@Override
 	public void onResourceManagerReload(ResourceManager manager) {
-		BY_TYPE.clear();
-		TOTAL_WEIGHTS_WITHOUT_POSITION.clear();
-		MANA_COST_RANGES.clear();
+		SERVER_CACHES.clear();
 	}
 
 	public static <T extends OrechidRecipe> Collection<T> getMatchingRecipes(
 			Level level,
 			RecipeType<T> type,
 			BlockState state) {
-		final var byState = BY_TYPE.computeIfAbsent(type, t -> new IdentityHashMap<>());
+		final var byState = caches(level).BY_TYPE.computeIfAbsent(type, t -> new IdentityHashMap<>());
 		final var list = byState.computeIfAbsent(state, s -> {
 			var builder = ImmutableList.<T>builder();
 			for (var recipe : BotaniaRecipeTypes.getAllRecipesFor(level, type)) {
@@ -76,15 +96,15 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	public static int getMinManaCost(Level level, RecipeType<? extends OrechidRecipe> type) {
-		return MANA_COST_RANGES.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).firstInt();
+		return caches(level).MANA_COST_RANGES.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).firstInt();
 	}
 
 	public static int getMaxManaCost(Level level, RecipeType<? extends OrechidRecipe> type) {
-		return MANA_COST_RANGES.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).secondInt();
+		return caches(level).MANA_COST_RANGES.computeIfAbsent(type, t -> calculateManaCostRange(level, t)).secondInt();
 	}
 
 	private static int getCachedTotalDisplayWeightWithoutPosition(Level level, RecipeType<? extends OrechidRecipe> type, BlockState state) {
-		final var byState = TOTAL_WEIGHTS_WITHOUT_POSITION.computeIfAbsent(type, t -> new Object2IntOpenHashMap<>());
+		final var byState = caches(level).TOTAL_WEIGHTS_WITHOUT_POSITION.computeIfAbsent(type, t -> new Object2IntOpenHashMap<>());
 		return byState.computeIfAbsent(state, s -> calculateTotalDisplayWeightAtPosition(level, type, state, null));
 	}
 

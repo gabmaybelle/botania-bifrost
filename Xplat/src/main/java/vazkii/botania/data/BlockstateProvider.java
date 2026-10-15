@@ -479,8 +479,9 @@ public class BlockstateProvider implements DataProvider {
 		particleOnly(remainingBlocks, BotaniaBlocks.BOTANICAL_BREWERY, getBlockTexture(BotaniaBlocks.LIVINGROCK));
 		particleOnly(remainingBlocks, BotaniaBlocks.CORPOREA_INDEX, getBlockTexture(BotaniaBlocks.CORPOREA_BLOCK));
 		particleOnly(remainingBlocks, BotaniaBlocks.DETECTOR_LUMINIZER, getBlockTexture(BotaniaBlocks.DETECTOR_LUMINIZER));
-		singleVariantBlockState(BotaniaBlocks.FAKE_AIR, new ModelTemplate(Optional.empty(), Optional.empty())
-				.create(BotaniaBlocks.FAKE_AIR, new TextureMapping(), this.modelOutput));
+		// PORT-26.3: every model names a particle texture now; vanilla's air model uses missingno
+		singleVariantBlockState(BotaniaBlocks.FAKE_AIR, ModelTemplates.PARTICLE_ONLY.create(BotaniaBlocks.FAKE_AIR,
+				TextureMapping.particle(tex(Identifier.withDefaultNamespace("missingno"))), this.modelOutput));
 		remainingBlocks.remove(BotaniaBlocks.FAKE_AIR);
 		particleOnly(remainingBlocks, BotaniaBlocks.FORK_LUMINIZER, getBlockTexture(BotaniaBlocks.FORK_LUMINIZER));
 		particleOnly(remainingBlocks, BotaniaBlocks.GAIA_HEAD, getBlockTexture(Blocks.SOUL_SAND));

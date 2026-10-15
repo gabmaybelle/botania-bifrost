@@ -16,6 +16,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.common.handler.BotaniaRecipeIngredientsCache;
+import vazkii.botania.common.handler.OrechidManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,6 +53,7 @@ public final class SyncedRecipes {
 			BY_KEY.put(holder.id(), holder);
 		}
 		BotaniaRecipeIngredientsCache.clearClientCache();
+		OrechidManager.clearClientCache();
 	}
 
 	/** Replaces the copies of the given types with the matching recipes among {@code recipes}. */

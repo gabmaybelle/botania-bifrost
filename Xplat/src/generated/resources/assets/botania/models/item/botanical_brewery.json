@@ -1,4 +1,5 @@
 {
+  "parent": "botania:block/botanical_brewery",
   "display": {
     "firstperson_righthand": {
       "rotation": [

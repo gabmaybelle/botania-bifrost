@@ -1,4 +1,5 @@
 {
+  "parent": "botania:block/livingwood_avatar",
   "display": {
     "firstperson_righthand": {
       "rotation": [
