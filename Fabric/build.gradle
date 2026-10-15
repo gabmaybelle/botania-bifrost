@@ -119,8 +119,4 @@ dependencies {
     if (file("../garden_of_glass/gardenofglass-${gog_version}.jar").exists()) {
         localRuntime(files("../garden_of_glass/gardenofglass-${gog_version}.jar"))
     }
-
-    // for xplat data load condition generating
-    // PORT-26.3: a 1.21.1 jar; datagen is re-done in Phase 1 step 4, which decides what replaces it.
-    //modLocalRuntime(files("lib/forged-conditions-21.1.0.jar"))
 }

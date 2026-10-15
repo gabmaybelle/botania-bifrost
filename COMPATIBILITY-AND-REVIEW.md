@@ -59,7 +59,7 @@ What a careful reviewer looks at before trusting a port.
 ### Builds and tests
 - [ ] Both loaders build from a clean clone with one command.
 - [ ] GitHub Actions builds both loaders and runs the GameTests on every push (update upstream's workflow to Java 25).
-- [ ] All 103 GameTests pass, or each failure is listed in `PORTING.md` with a reason.
+- [x] All GameTests pass, or each failure is listed in `PORTING.md` with a reason. (213 required Botania tests on 26.3, on both loaders; only the optional paintslinger test fails, as upstream marks it.)
 - [ ] **No test expectation is changed just to make it pass.** If a test must change, the reason goes in the commit message.
 
 ### Server and multiplayer
@@ -74,7 +74,7 @@ What a careful reviewer looks at before trusting a port.
 - [ ] Nothing force-loads chunks unless upstream does.
 
 ### World data
-- [ ] New worlds save and reload with all Botania data intact (pool mana, spreader bindings, flower bindings, item mana).
+- [ ] New worlds save and reload with all Botania data intact (pool mana, spreader bindings, flower bindings, item mana). `SaveReloadTest` covers these at the block entity and item level: it saves a pool, a spreader and two flowers, rebuilds them from the saved data, and checks the mana and bindings, and it round-trips a mana tablet. A real world saved to disk and reopened is still to check.
 - [ ] **Old worlds:** decide and document whether 1.20.1 or 1.21.1 Botania worlds can be upgraded. Item data moved to data components in 1.20.5, so Botania item data (mana in tablets, lens settings) may not carry over. Always test on a copy of a world, never the server's real one.
 
 ### Code quality
@@ -84,7 +84,7 @@ What a careful reviewer looks at before trusting a port.
 - [ ] No features quietly removed. Anything disabled is listed.
 - [ ] Startup and gameplay logs are free of repeated errors, missing textures and missing translation keys (upstream's `check_lang.sh` and `check_datagen.sh` help).
 - [ ] Translation files for other languages are untouched.
-- [ ] Code style passes `spotlessJavaCheck`.
+- [x] Code style passes `spotlessJavaCheck`.
 
 ### AI-assisted code
 Claude Code is fast, but a reviewer will look for its typical mistakes:

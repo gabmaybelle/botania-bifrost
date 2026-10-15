@@ -66,6 +66,7 @@ public final class BotaniaGameTests {
 			MultiblockTest.class,
 			OpenCrateTest.class,
 			RannuncarpusTest.class,
+			SaveReloadTest.class,
 			TargetBlockTest.class,
 			AstrolabeTest.class,
 			CacophoniumTest.class,
