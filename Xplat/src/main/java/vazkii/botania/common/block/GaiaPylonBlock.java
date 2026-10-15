@@ -12,7 +12,6 @@ package vazkii.botania.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -38,7 +37,7 @@ public class GaiaPylonBlock extends PylonBlock {
 	}
 
 	@Override
-	public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+	public float getEnchantPowerBonus(BlockState state, BlockGetter world, BlockPos pos) {
 		return 15f;
 	}
 }

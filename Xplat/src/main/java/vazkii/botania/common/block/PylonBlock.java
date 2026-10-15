@@ -12,7 +12,6 @@ package vazkii.botania.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,5 +69,5 @@ public abstract class PylonBlock extends BotaniaWaterloggedBlock implements Enti
 	// Note: The enchantment power values are duplicated in the following file. Make sure to keep them in sync:
 	// Fabric/src/main/resources/data/quilt/attachments/minecraft/block/enchanting_boosters.json
 	@SoftImplement("IBlockExtension")
-	public abstract float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos);
+	public abstract float getEnchantPowerBonus(BlockState state, BlockGetter world, BlockPos pos);
 }

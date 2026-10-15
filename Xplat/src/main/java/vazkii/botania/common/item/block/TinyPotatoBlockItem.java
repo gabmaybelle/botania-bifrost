@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -97,7 +98,7 @@ public class TinyPotatoBlockItem extends BlockItem {
 	}
 
 	@SoftImplement("IItemExtension") // TODO implement on fabric
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity) {
+	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, LivingEntity entity) {
 		return armorType == getEquipmentSlot(stack) && entity instanceof Player player
 				&& ContributorList.hasFlower(player.getGameProfile().name().toLowerCase(Locale.ROOT));
 	}

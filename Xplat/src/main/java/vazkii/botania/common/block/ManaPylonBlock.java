@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -95,7 +95,7 @@ public class ManaPylonBlock extends PylonBlock {
 	}
 
 	@Override
-	public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+	public float getEnchantPowerBonus(BlockState state, BlockGetter world, BlockPos pos) {
 		return 8f;
 	}
 }
