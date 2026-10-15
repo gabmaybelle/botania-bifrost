@@ -46,37 +46,37 @@ import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.api.state.enums.TerraPlateState;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.common.block.BotaniaMultiblock;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.crafting.recipe.RecipeUtils;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.internal_caps.ItemSources;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.proxy.Proxy;
-import vazkii.patchouli.api.IMultiblock;
-import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TerrestrialAgglomerationPlateBlockEntity extends BlockEntity implements ManaSparkAttachable, ManaReceiver {
-	public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> PatchouliAPI.get().makeMultiblock(
-			new String[][] {
-					{
-							"___",
-							"_P_",
-							"___"
-					},
-					{
-							"RLR",
-							"L0L",
-							"RLR"
-					}
+	// PORT-26.3: checked with BotaniaMultiblock; the Patchouli version for the Lexica is in PatchouliMultiblocks
+	public static final String[][] PATTERN = new String[][] {
+			{
+					"___",
+					"_P_",
+					"___"
 			},
+			{
+					"RLR",
+					"L0L",
+					"RLR"
+			}
+	};
+	public static final Supplier<BotaniaMultiblock> MULTIBLOCK = Suppliers.memoize(() -> new BotaniaMultiblock(PATTERN,
 			'P', BotaniaBlocks.TERRESTRIAL_AGGLOMERATION_PLATE,
-			'R', PatchouliAPI.get().tagMatcher(BotaniaTags.Blocks.TERRA_PLATE_BASE),
-			'0', PatchouliAPI.get().tagMatcher(BotaniaTags.Blocks.TERRA_PLATE_BASE),
-			'L', PatchouliAPI.get().tagMatcher(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "storage_blocks/lapis")))
+			'R', BotaniaTags.Blocks.TERRA_PLATE_BASE,
+			'0', BotaniaTags.Blocks.TERRA_PLATE_BASE,
+			'L', TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "storage_blocks/lapis"))
 	));
 	public static final int BLOCK_EVENT_PROGRESS_UPDATE = 0;
 	public static final int BLOCK_EVENT_CRAFTING_EFFECT = 1;

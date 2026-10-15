@@ -63,6 +63,7 @@ public final class BotaniaGameTests {
 			IdleFlowerTickingTest.class,
 			InterceptorTest.class,
 			ManaSpreaderTest.class,
+			MultiblockTest.class,
 			OpenCrateTest.class,
 			RannuncarpusTest.class,
 			TargetBlockTest.class,
@@ -147,7 +148,8 @@ public final class BotaniaGameTests {
 	}
 
 	// Like vanilla's old scanner: a fresh instance of the test class for each call, and the test's own exception
-	// (usually a failed assertion) passed on unwrapped
+	// (usually a failed assertion) passed on unwrapped, so the test report shows it rather than the reflection wrapper
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	private static Object invoke(Class<?> testClass, Method method, Object... args) {
 		try {
 			return method.invoke(testClass.getConstructor().newInstance(), args);
@@ -155,7 +157,7 @@ public final class BotaniaGameTests {
 			if (e.getCause() instanceof RuntimeException runtime) {
 				throw runtime;
 			}
-			throw new RuntimeException(e.getCause());
+			throw new RuntimeException(e);
 		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException(e);
 		}

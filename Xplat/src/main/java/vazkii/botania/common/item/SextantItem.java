@@ -157,7 +157,7 @@ public class SextantItem extends Item {
 		};
 	}
 
-	private static void makeSphere(IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map) {
+	private static void makeSphere(Object matcher, double radius, Map<BlockPos, Object> map) {
 		// 3D version of Midpoint circle algorithm, based on https://stackoverflow.com/a/41666156/1331011
 		// This algorithm generates all combinations of X, Y, and Z components, where:
 		// - the X/Y/Z position is inside the sphere,
@@ -192,7 +192,7 @@ public class SextantItem extends Item {
 		}
 	}
 
-	private static void generateMirroredPositions(int x, int y, int z, Map<BlockPos, IStateMatcher> map, IStateMatcher matcher) {
+	private static void generateMirroredPositions(int x, int y, int z, Map<BlockPos, Object> map, Object matcher) {
 		Stream.of(
 				new BlockPos(x, y, z), new BlockPos(-x, y, z),
 				new BlockPos(x, -y, z), new BlockPos(-x, -y, z),
@@ -208,11 +208,12 @@ public class SextantItem extends Item {
 		}
 
 		double radius = calculateRadius(stack, living);
-		if (1 < radius && radius <= MAX_RADIUS) {
+		// PORT-26.3: the shape only feeds the multiblock preview; off (and Patchouli untouched) until Patchouli is back
+		if (1 < radius && radius <= MAX_RADIUS && PatchouliUtils.MULTIBLOCK_PREVIEW_AVAILABLE) {
 			IStateMatcher matcher = PatchouliAPI.get().predicateMatcher(Blocks.COBBLESTONE, s -> !s.isAir());
 			GlobalPos centerPos = stack.get(BotaniaDataComponents.BINDING_POS);
 			if (centerPos != null && centerPos.dimension() == world.dimension()) {
-				Map<BlockPos, IStateMatcher> map = new HashMap<>();
+				Map<BlockPos, Object> map = new HashMap<>();
 				getMode(stack).getCreator().create(matcher, radius + 0.5, map);
 				// PORT-26.3: disabled (Patchouli 1.21.1 API): the sparse multiblock preview
 				// IMultiblock sparse = PatchouliAPI.get().makeSparseMultiblock(map).setId(MULTIBLOCK_ID).setSymmetrical(true);
@@ -223,7 +224,7 @@ public class SextantItem extends Item {
 	}
 
 	private static ShapeCreator defineCircleShapeCreator(Direction axis1, Direction axis2) {
-		return (IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map) -> {
+		return (Object matcher, double radius, Map<BlockPos, Object> map) -> {
 			// 2D version of makeSphere, assuming y=0 at all times
 			final int maxR2 = (int) Math.floor(radius * radius);
 			int z = (int) Math.floor(radius);
@@ -241,7 +242,7 @@ public class SextantItem extends Item {
 	}
 
 	private static void generateMirroredPositions(Vec3i normal1, Vec3i normal2, int offset1, int offset2,
-			Map<BlockPos, IStateMatcher> map, IStateMatcher matcher) {
+			Map<BlockPos, Object> map, Object matcher) {
 		Stream.of(
 				BlockPos.ZERO.offset(normal1.multiply(offset1).offset(normal2.multiply(offset2))),
 				BlockPos.ZERO.offset(normal1.multiply(-offset1).offset(normal2.multiply(offset2))),
@@ -375,9 +376,11 @@ public class SextantItem extends Item {
 		}
 	}
 
+	// PORT-26.3: the shapes take any marker (a Patchouli IStateMatcher for the preview) so this enum's method
+	// references don't name Patchouli types, which are missing at runtime until Phase 5
 	@FunctionalInterface
 	public interface ShapeCreator {
-		void create(IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map);
+		void create(Object matcher, double radius, Map<BlockPos, Object> map);
 	}
 
 	@FunctionalInterface

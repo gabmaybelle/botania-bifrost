@@ -126,6 +126,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 		return input.getStackedContents().canCraft(RecipeUtils.wrapAllIngredients(this), null);
 	}
 
+	@Override
 	public NonNullList<ItemStack> getRemainingItems(ProcessingRecipeInput input) {
 		// PORT-26.3: the matcher reports item holders now, not item ids, and matches a list of ingredients
 		List<Holder<Item>> catalystItems = new ArrayList<>(catalysts.size());

@@ -172,7 +172,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		PlayerHelper.setFakePlayerClass(FakePlayer.class);
 
 		// PORT-26.3: disabled. Registering the multiblocks with Patchouli (for the Lexica's visualiser) waits for
-		// a 26.3 Patchouli in Phase 5. The multiblocks themselves still exist on their block entities.
+		// a 26.3 Patchouli in Phase 5. The Patchouli multiblocks are in PatchouliMultiblocks; gameplay uses BotaniaMultiblock.
 
 		OrechidManager.registerListener();
 		BotaniaRecipeIngredientsCache.registerListener();

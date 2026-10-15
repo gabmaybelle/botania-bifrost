@@ -63,20 +63,19 @@ import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.common.block.BotaniaMultiblock;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.network.clientbound.EnchanterDestroyEffectPacket;
 import vazkii.botania.xplat.BotaniaConfig;
 import vazkii.botania.xplat.XplatAbstractions;
-import vazkii.patchouli.api.IMultiblock;
-import vazkii.patchouli.api.IStateMatcher;
-import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -93,7 +92,7 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 	private static final int CRAFT_EFFECT_EVENT = 0;
 	private static final int IDLE_CHECK_INTERVAL_TICKS = 10;
 
-	private static final String[][] PATTERN = new String[][] {
+	public static final String[][] PATTERN = new String[][] {
 			{
 					"_P_______P_",
 					"___________",
@@ -123,27 +122,25 @@ public class ManaEnchanterBlockEntity extends BlockEntity implements ManaReceive
 			}
 	};
 
-	private static final Supplier<IStateMatcher> OBSIDIAN_MATCHER = Suppliers.memoize(() -> PatchouliAPI.get().predicateMatcher(
-			Blocks.OBSIDIAN,
-			state -> state.is(Blocks.OBSIDIAN) || state.is(Blocks.CRYING_OBSIDIAN)
-	));
+	// PORT-26.3: checked with BotaniaMultiblock; the Patchouli versions for the Lexica are in PatchouliMultiblocks
+	private static final Predicate<BlockState> OBSIDIAN_MATCHER = state -> state.is(Blocks.OBSIDIAN) || state.is(Blocks.CRYING_OBSIDIAN);
 
-	public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> PatchouliAPI.get().makeMultiblock(
+	public static final Supplier<BotaniaMultiblock> MULTIBLOCK = Suppliers.memoize(() -> new BotaniaMultiblock(
 			PATTERN,
 			'P', BotaniaBlocks.MANA_PYLON,
 			'L', Blocks.LAPIS_BLOCK,
-			'B', OBSIDIAN_MATCHER.get(),
-			'0', OBSIDIAN_MATCHER.get(),
-			'F', PatchouliAPI.get().tagMatcher(BotaniaTags.Blocks.ENCHANTER_FLOWERS)
+			'B', OBSIDIAN_MATCHER,
+			'0', OBSIDIAN_MATCHER,
+			'F', BotaniaTags.Blocks.ENCHANTER_FLOWERS
 	));
 
-	private static final Supplier<IMultiblock> FORMED_MULTIBLOCK = Suppliers.memoize(() -> PatchouliAPI.get().makeMultiblock(
+	private static final Supplier<BotaniaMultiblock> FORMED_MULTIBLOCK = Suppliers.memoize(() -> new BotaniaMultiblock(
 			PATTERN,
 			'P', BotaniaBlocks.MANA_PYLON,
 			'L', BotaniaBlocks.MANA_ENCHANTER,
-			'B', OBSIDIAN_MATCHER.get(),
-			'0', OBSIDIAN_MATCHER.get(),
-			'F', PatchouliAPI.get().predicateMatcher(BotaniaBlocks.WHITE_MYSTICAL_FLOWER, state -> state.is(BotaniaTags.Blocks.ENCHANTER_FLOWERS))
+			'B', OBSIDIAN_MATCHER,
+			'0', OBSIDIAN_MATCHER,
+			'F', BotaniaTags.Blocks.ENCHANTER_FLOWERS
 	));
 
 	public State stage = State.IDLE;

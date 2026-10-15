@@ -23,6 +23,7 @@ public interface RunicAltarRecipe extends RecipeWithReagent<ProcessingRecipeInpu
 	Identifier HEAD_TYPE_ID = botaniaRL("runic_altar_head");
 
 	/** The inputs, other than the reagent. (Vanilla recipes no longer list ingredients.) */
+	@Override
 	NonNullList<Ingredient> getIngredients();
 
 	int getMana();

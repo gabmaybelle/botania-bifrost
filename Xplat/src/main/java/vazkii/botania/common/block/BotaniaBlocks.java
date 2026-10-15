@@ -3190,7 +3190,9 @@ public final class BotaniaBlocks {
 	private static <T extends Item> void blockItem(BiConsumer<Item, Identifier> r, Block block, BiFunction<Block, Item.Properties, T> factory,
 			Supplier<Item.Properties> properties) {
 		Identifier id = BuiltInRegistries.BLOCK.getKey(block);
-		r.accept(factory.apply(block, properties.get().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, id))), id);
+		// PORT-26.3: a block item is named after its block, as BlockItem#getDescriptionId did in 1.21.1, so the blocks
+		// that borrow a name (overrideDescription, e.g. the dyed creative pools) pass it on to their items
+		r.accept(factory.apply(block, properties.get().overrideDescription(block.getDescriptionId()).setId(ResourceKey.create(Registries.ITEM, id))), id);
 	}
 
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(

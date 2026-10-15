@@ -67,6 +67,7 @@ public class ManaInfusionRecipe implements vazkii.botania.api.recipe.ManaInfusio
 		return mana;
 	}
 
+	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return output.create();
 	}

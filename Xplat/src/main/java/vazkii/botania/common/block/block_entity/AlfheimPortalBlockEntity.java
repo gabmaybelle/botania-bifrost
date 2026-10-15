@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
@@ -28,7 +27,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -36,15 +34,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -63,6 +57,7 @@ import vazkii.botania.common.BotaniaDamageTypes;
 import vazkii.botania.common.advancements.AlfheimPortalBreadTrigger;
 import vazkii.botania.common.advancements.AlfheimPortalTrigger;
 import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.common.block.BotaniaMultiblock;
 import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import vazkii.botania.common.block.mana.ManaPoolBlock;
 import vazkii.botania.common.crafting.recipe.RecipeUtils;
@@ -74,62 +69,27 @@ import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.world.BotaniaExplosionDamageCalculator;
 import vazkii.botania.xplat.BotaniaConfig;
 import vazkii.botania.xplat.XplatAbstractions;
-import vazkii.patchouli.api.IMultiblock;
-import vazkii.patchouli.api.IStateMatcher;
-import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.api.TriPredicate;
 
 import java.net.URI;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.StreamSupport;
 
 public class AlfheimPortalBlockEntity extends BlockEntity implements Wandable {
-	public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> {
-		record Matcher(TagKey<Block> tag, Direction.Axis displayedRotation, Block defaultBlock) implements IStateMatcher {
-			@Override
-			public BlockState getDisplayedState(long ticks) {
-				var blocks = StreamSupport.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(this.tag).spliterator(), false)
-						.map(Holder::value)
-						.toList();
-				if (blocks.isEmpty()) {
-					return Blocks.BEDROCK.defaultBlockState();
-				}
-
-				BlockState block = blocks.contains(defaultBlock)
-						? defaultBlock.defaultBlockState()
-						: blocks.get((int) ((ticks / 20) % blocks.size())).defaultBlockState();
-
-				return block.hasProperty(BlockStateProperties.AXIS)
-						? block.setValue(BlockStateProperties.AXIS, displayedRotation())
-						: block;
-			}
-
-			@Override
-			public TriPredicate<BlockGetter, BlockPos, BlockState> getStatePredicate() {
-				return (blockGetter, pos, state) -> state.is(tag());
-			}
-		}
-		var horizontal = new Matcher(BotaniaTags.Blocks.LIVINGWOOD_LOGS, Direction.Axis.X, BotaniaBlocks.LIVINGWOOD_LOG);
-		var vertical = new Matcher(BotaniaTags.Blocks.LIVINGWOOD_LOGS, Direction.Axis.Y, BotaniaBlocks.LIVINGWOOD_LOG);
-		var horizontalGlimmer = new Matcher(BotaniaTags.Blocks.LIVINGWOOD_LOGS_GLIMMERING, Direction.Axis.X, BotaniaBlocks.GLIMMERING_LIVINGWOOD_LOG);
-		var verticalGlimmer = new Matcher(BotaniaTags.Blocks.LIVINGWOOD_LOGS_GLIMMERING, Direction.Axis.Y, BotaniaBlocks.GLIMMERING_LIVINGWOOD_LOG);
-
-		return PatchouliAPI.get().makeMultiblock(
-				new String[][] {
-						{ "_", "w", "g", "w", "_" },
-						{ "W", " ", " ", " ", "W" },
-						{ "G", " ", " ", " ", "G" },
-						{ "W", " ", " ", " ", "W" },
-						{ "_", "w", "0", "w", "_" }
-				},
-				'W', vertical,
-				'w', horizontal,
-				'G', verticalGlimmer,
-				'g', horizontalGlimmer,
-				'0', BotaniaBlocks.ELVEN_GATEWAY_CORE
-		);
-	});
+	// PORT-26.3: checked with BotaniaMultiblock; the Patchouli version for the Lexica is in PatchouliMultiblocks
+	public static final String[][] PATTERN = new String[][] {
+			{ "_", "w", "g", "w", "_" },
+			{ "W", " ", " ", " ", "W" },
+			{ "G", " ", " ", " ", "G" },
+			{ "W", " ", " ", " ", "W" },
+			{ "_", "w", "0", "w", "_" }
+	};
+	public static final Supplier<BotaniaMultiblock> MULTIBLOCK = Suppliers.memoize(() -> new BotaniaMultiblock(PATTERN,
+			'W', BotaniaTags.Blocks.LIVINGWOOD_LOGS,
+			'w', BotaniaTags.Blocks.LIVINGWOOD_LOGS,
+			'G', BotaniaTags.Blocks.LIVINGWOOD_LOGS_GLIMMERING,
+			'g', BotaniaTags.Blocks.LIVINGWOOD_LOGS_GLIMMERING,
+			'0', BotaniaBlocks.ELVEN_GATEWAY_CORE
+	));
 
 	private static final ExplosionDamageCalculator EXPLOSION_DAMAGE_CALCULATOR = new BotaniaExplosionDamageCalculator(true, BotaniaTags.Entities.PORTAL_BREAD_IMMUNE);
 	private static final float EXPLOSION_RADIUS = 3f;
