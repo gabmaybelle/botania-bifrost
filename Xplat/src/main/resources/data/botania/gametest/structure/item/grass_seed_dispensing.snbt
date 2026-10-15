@@ -1,9 +1,9 @@
 {
     DataVersion: 3465,
-    size: [9, 9, 9],
+    size: [9, 10, 9],
     data: [
-        {pos: [3, 1, 4], state: "minecraft:dirt"},
-        {pos: [4, 1, 4], state: "minecraft:dispenser{facing:west,triggered:false}", nbt: {Items: [{Count: 1b, Slot: 4b, id: "botania:pasture_seeds"}], id: "minecraft:dispenser"}}
+        {pos: [3, 2, 4], state: "minecraft:dirt"},
+        {pos: [4, 2, 4], state: "minecraft:dispenser{facing:west,triggered:false}", nbt: {Items: [{Count: 1b, Slot: 4b, id: "botania:pasture_seeds"}], id: "minecraft:dispenser"}}
     ],
     entities: [],
     palette: [

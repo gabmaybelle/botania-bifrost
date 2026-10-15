@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.item.v1.BlockTransformerHelper;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
@@ -53,6 +54,8 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -127,6 +130,7 @@ import vazkii.botania.fabric.loot.LootHandler;
 import vazkii.botania.fabric.network.FabricPacketHandler;
 import vazkii.botania.fabric.network.UpdateRecipesPacket;
 import vazkii.botania.network.clientbound.ItemLifeTimePacket;
+import vazkii.botania.test.BotaniaGameTests;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.*;
@@ -178,6 +182,7 @@ public class FabricCommonInitializer implements ModInitializer {
 
 		registerCapabilities();
 		registerEvents();
+		registerGameTests();
 	}
 
 	private void coreInit() {
@@ -286,6 +291,18 @@ public class FabricCommonInitializer implements ModInitializer {
 		// restriction (and the AxeStrippingData fallback for the rest) is not needed here; the properties provider
 		// keeps the log axis like vanilla's own stripping entries do.
 		BlockTransformerHelper.registerStripping(input, new CopyPropertiesProvider(output));
+	}
+
+	// PORT-26.3: Fabric's game test entrypoint only finds its own annotation now, so Botania registers its tests
+	// itself (see BotaniaGameTests), and only when Fabric's game test server runs
+	private void registerGameTests() {
+		if (System.getProperty("fabric-api.gametest") == null) {
+			return;
+		}
+		BotaniaGameTests.registerEnvironmentType(BuiltInRegistries.TEST_ENVIRONMENT_DEFINITION_TYPE);
+		BotaniaGameTests.registerFunctions((key, function) -> Registry.register(BuiltInRegistries.TEST_FUNCTION, key, function));
+		DynamicRegistrySetupCallback.EVENT.register(view -> view.<GameTestInstance>getOptional(Registries.TEST_INSTANCE)
+				.ifPresent(BotaniaGameTests::registerInstances));
 	}
 
 	private void registerEvents() {

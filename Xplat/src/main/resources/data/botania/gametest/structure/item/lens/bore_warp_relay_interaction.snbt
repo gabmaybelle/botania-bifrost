@@ -1,17 +1,17 @@
 {
     DataVersion: 3465,
-    size: [6, 4, 6],
+    size: [6, 5, 6],
     data: [
-        {pos: [1, 0, 1], state: "minecraft:hopper{enabled:true,facing:north}"},
-        {pos: [3, 0, 4], state: "minecraft:hopper{enabled:true,facing:north}"},
-        {pos: [2, 1, 1], state: "botania:pulse_mana_spreader{has_scaffolding:false,waterlogged:false}"},
-        {pos: [2, 1, 2], state: "botania:creative_mana_pool{color:none,waterlogged:false}"},
-        {pos: [3, 1, 4], state: "minecraft:polished_andesite"},
-        {pos: [4, 1, 1], state: "botania:force_relay"},
-        {pos: [5, 1, 1], state: "botania:mana_void"},
-        {pos: [5, 1, 4], state: "botania:mana_void"},
-        {pos: [2, 2, 1], state: "minecraft:polished_andesite"},
-        {pos: [2, 2, 2], state: "minecraft:polished_blackstone_button{face:wall,facing:south,powered:false}"}
+        {pos: [1, 1, 1], state: "minecraft:hopper{enabled:true,facing:north}"},
+        {pos: [3, 1, 4], state: "minecraft:hopper{enabled:true,facing:north}"},
+        {pos: [2, 2, 1], state: "botania:pulse_mana_spreader{has_scaffolding:false,waterlogged:false}"},
+        {pos: [2, 2, 2], state: "botania:creative_mana_pool{color:none,waterlogged:false}"},
+        {pos: [3, 2, 4], state: "minecraft:polished_andesite"},
+        {pos: [4, 2, 1], state: "botania:force_relay"},
+        {pos: [5, 2, 1], state: "botania:mana_void"},
+        {pos: [5, 2, 4], state: "botania:mana_void"},
+        {pos: [2, 3, 1], state: "minecraft:polished_andesite"},
+        {pos: [2, 3, 2], state: "minecraft:polished_blackstone_button{face:wall,facing:south,powered:false}"}
     ],
     entities: [],
     palette: [
