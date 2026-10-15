@@ -16,6 +16,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.StructureUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -45,6 +46,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.*;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityEvent;
@@ -58,6 +60,7 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
@@ -118,8 +121,10 @@ import vazkii.botania.neoforge.internal_caps.RedStringContainerCapProvider;
 import vazkii.botania.neoforge.internal_caps.WaterBowlFluidHandler;
 import vazkii.botania.neoforge.network.NeoForgePacketHandler;
 import vazkii.botania.network.clientbound.ItemLifeTimePacket;
+import vazkii.botania.test.BotaniaGameTests;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -140,6 +145,25 @@ public class NeoForgeCommonInitializer {
 		modBus.register(this);
 		modBus.addListener(NeoForgePacketHandler::registerPayloadHandlers);
 		NeoForgeInternalEntityCapabilities.init(modBus);
+		registerGameTests(modBus);
+	}
+
+	// PORT-26.3: Botania registers its own game tests (see BotaniaGameTests), only when NeoForge runs game tests.
+	// Vanilla reads .snbt test scenes only from a folder on disk; the gameTestServer run copies Botania's there.
+	private static void registerGameTests(IEventBus modBus) {
+		if (!GameTestHooks.isGametestEnabled()) {
+			return;
+		}
+		String structures = System.getProperty("botania.gametest.structures");
+		if (structures != null) {
+			StructureUtils.testStructuresSourceDir = Path.of(structures);
+		}
+		modBus.addListener((RegisterEvent event) -> {
+			runRegistration(event, Registries.TEST_ENVIRONMENT_DEFINITION_TYPE, BotaniaGameTests::registerEnvironmentType);
+			runRegistration(event, Registries.TEST_FUNCTION,
+					registry -> BotaniaGameTests.registerFunctions((key, function) -> Registry.register(registry, key, function)));
+		});
+		modBus.addListener((RegisterGameTestsEvent event) -> BotaniaGameTests.registerInstances(event::registerTest));
 	}
 
 	@SubscribeEvent

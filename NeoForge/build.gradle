@@ -54,6 +54,13 @@ neoForge {
             systemProperty("neoforge.logging.console.level", "debug")
             programArgument("--nogui")
         }
+        // PORT-26.3: `./gradlew :NeoForge:runGameTestServer` runs Botania's game tests (see BotaniaGameTests).
+        // Vanilla reads .snbt test scenes only from a folder on disk, so the run copies Botania's there first.
+        gameTestServer {
+            type = "gameTestServer"
+            programArguments.addAll("--tests", "botania:*")
+            systemProperty("botania.gametest.structures", layout.buildDirectory.dir("gametest-structures").get().asFile.absolutePath)
+        }
     }
 
     mods {
@@ -95,3 +102,10 @@ dependencies {
         runtimeOnly(files("../garden_of_glass/gardenofglass-${gog_version}.jar"))
     }
 }
+
+// PORT-26.3: the test scenes in the layout vanilla's test structure folder expects (data/<namespace>/structure/...)
+tasks.register("copyGameTestStructures", Sync) {
+    from(project(":Xplat").file("src/main/resources/data/botania/gametest/structure"))
+    into(layout.buildDirectory.dir("gametest-structures/data/botania/structure"))
+}
+tasks.matching { it.name == "runGameTestServer" }.configureEach { dependsOn("copyGameTestStructures") }

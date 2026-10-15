@@ -38,8 +38,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class TestingUtil {
-	// Copied from FabricGameTest. Needs to be replaced if we ever run tests on both loaders
-	public static final String EMPTY_STRUCTURE = "fabric-gametest-api-v1:empty";
+	// PORT-26.3: vanilla ships an empty structure (data/minecraft/structure/empty.nbt), which both loaders can use
+	public static final String EMPTY_STRUCTURE = "minecraft:empty";
 
 	@Contract("_,_,_ -> fail")
 	public static void throwPositionedAssertion(GameTestHelper helper, BlockPos relativePos, Supplier<String> msg) {

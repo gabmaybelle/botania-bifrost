@@ -302,7 +302,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaGameTests.registerEnvironmentType(BuiltInRegistries.TEST_ENVIRONMENT_DEFINITION_TYPE);
 		BotaniaGameTests.registerFunctions((key, function) -> Registry.register(BuiltInRegistries.TEST_FUNCTION, key, function));
 		DynamicRegistrySetupCallback.EVENT.register(view -> view.<GameTestInstance>getOptional(Registries.TEST_INSTANCE)
-				.ifPresent(BotaniaGameTests::registerInstances));
+				.ifPresent(registry -> BotaniaGameTests.registerInstances((id, test) -> Registry.register(registry, id, test))));
 	}
 
 	private void registerEvents() {

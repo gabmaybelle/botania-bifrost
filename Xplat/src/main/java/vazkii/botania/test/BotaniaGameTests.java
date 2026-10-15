@@ -99,14 +99,14 @@ public final class BotaniaGameTests {
 		}
 	}
 
-	/** Registers a test instance for every test function into the test instance registry before it loads. */
-	public static void registerInstances(Registry<GameTestInstance> registry) {
+	/** Registers a test instance for every test function (the test instance registry is filled as a world loads). */
+	public static void registerInstances(BiConsumer<Identifier, GameTestInstance> register) {
 		for (BotaniaTestFunction function : FUNCTIONS.get()) {
 			Holder<TestEnvironmentDefinition<?>> environment = Holder.direct(new BotaniaTestEnvironment(function.batchName()));
 			TestData<Holder<TestEnvironmentDefinition<?>>> data = new TestData<>(environment, Level.OVERWORLD,
 					Identifier.parse(function.structureName()), function.maxTicks(), (int) function.setupTicks(),
 					function.required(), Rotation.NONE, false, 1, 1, false, 0);
-			Registry.register(registry, functionKey(function).identifier(), new FunctionGameTestInstance(functionKey(function), data));
+			register.accept(functionKey(function).identifier(), new FunctionGameTestInstance(functionKey(function), data));
 		}
 	}
 
