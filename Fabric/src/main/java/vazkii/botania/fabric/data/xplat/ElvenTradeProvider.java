@@ -15,7 +15,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -47,7 +47,7 @@ public class ElvenTradeProvider extends BotaniaRecipeProvider {
 		consumer.accept(id(BotaniaItems.ELEMENTIUM_INGOT, "_from_mixed_input"),
 				new ElvenTradeRecipe(
 						// ingot + block = 10 ingots, so resolve to a stack of 5 elementium ingots
-						new ItemStack[] { new ItemStack(BotaniaItems.ELEMENTIUM_INGOT, 5) },
+						new ItemStackTemplate[] { new ItemStackTemplate(BotaniaItems.ELEMENTIUM_INGOT, 5) },
 						tag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS),
 						tag(ConventionalBotaniaTags.Items.MANASTEEL_STORAGE_BLOCKS)
 				), null);
@@ -88,8 +88,8 @@ public class ElvenTradeProvider extends BotaniaRecipeProvider {
 				new ElvenTradeRecipe(singleOutput(item), Ingredient.of(item)), null);
 	}
 
-	private static ItemStack[] singleOutput(ItemLike output) {
-		return new ItemStack[] { new ItemStack(output) };
+	private static ItemStackTemplate[] singleOutput(ItemLike output) {
+		return new ItemStackTemplate[] { new ItemStackTemplate(output.asItem()) };
 	}
 
 	private static ResourceKey<Recipe<?>> id(ItemLike item) {

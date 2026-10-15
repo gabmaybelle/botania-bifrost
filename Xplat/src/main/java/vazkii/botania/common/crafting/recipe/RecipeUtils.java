@@ -203,7 +203,8 @@ public final class RecipeUtils {
 		try {
 			ingredient.items();
 			return true;
-		} catch (UnsupportedOperationException e) {
+		} catch (UnsupportedOperationException | IllegalStateException e) {
+			// the datagen registries throw the first, a real registry with unbound tags the second
 			return false;
 		}
 	}

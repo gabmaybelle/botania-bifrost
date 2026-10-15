@@ -1,4 +1,4 @@
-// 26.3	2026-10-14T22:11:40.3513495	Registries for Reloadable (botania[1]): [gardenofglass]
+// 26.3	2026-10-14T22:40:58.7489884	Registries for Reloadable (botania[1]): [gardenofglass]
 9cb68abf9c1aa0333f424bf16d7ce021d53c5c49 data/gardenofglass/advancement/recipes/brewing/blaze_powder.json
 4dab8b4397a81e2dfe115a812d998545fca741f8 data/gardenofglass/advancement/recipes/building_blocks/blaze_mesh.json
 055a14ce4127c3d9f02d4b4be84b884c2962a711 data/gardenofglass/advancement/recipes/building_blocks/cobblestone_from_pebble.json
@@ -18,10 +18,10 @@ bc463eec766b47011bd4d1086f8ad954de452db3 data/gardenofglass/recipe/cocoon_of_cap
 a333c2da3241f6a4fa6de4dc1930f1f05eeca48c data/gardenofglass/recipe/end_portal_frame.json
 72f1a9e126eb7a236a65603164deac934f7bf2f8 data/gardenofglass/recipe/floral_fertilizer_from_dye.json
 2f86a078233ab73dad6fc809f3d7c1c9bb36a4b7 data/gardenofglass/recipe/floral_fertilizer_from_living_root.json
-a9b498b040b7c8d16c616f52011df6b5f0d164da data/gardenofglass/recipe/mana_infusion/heart_of_the_sea.json
-0094e9a91762d395356a4e699271543c73bc49f4 data/gardenofglass/recipe/mana_infusion/prismarine_crystals.json
-de9ff9136e67e481d2b2dd5b19a04cf4dae13e2d data/gardenofglass/recipe/mana_infusion/prismarine_shard.json
-11494b2688c42fd1a4020fa6b59c01fec9f174a3 data/gardenofglass/recipe/mana_infusion/sugar_cane.json
+6ffb32cce3c36f7c8c4d8d1da17660c03edcc1b9 data/gardenofglass/recipe/mana_infusion/heart_of_the_sea.json
+0b1584736023f1b231ea228af14ebc9776f57d36 data/gardenofglass/recipe/mana_infusion/prismarine_crystals.json
+e32420b35d25513e909b4a617835dfd318de8423 data/gardenofglass/recipe/mana_infusion/prismarine_shard.json
+3bf706c58bacf5de3ff7b626fd057d0556804070 data/gardenofglass/recipe/mana_infusion/sugar_cane.json
 4ddcb5f1feacaa1f2b170caf7248ea458af03e1a data/gardenofglass/recipe/mana_spreader.json
 e4b37806623651c0e7f7faf5ea10f1ec98e35d15 data/gardenofglass/recipe/oak_sapling_from_living_root.json
 407e10a18346e08e03cb2062995e2501103e11f4 data/gardenofglass/recipe/orechid/coal_ore.json
@@ -32,5 +32,5 @@ f61b072a8b69802ace5032613f42f2884b74e663 data/gardenofglass/recipe/orechid/emera
 93686a77b62d6365aefd01239ca453c48235d63c data/gardenofglass/recipe/orechid/iron_ore.json
 ec6e692cd96d9d35bf0b754d9ef4cab6160b2045 data/gardenofglass/recipe/orechid/lapis_ore.json
 b5998fb7fa030e8f1b91c4e362230bf156b25a99 data/gardenofglass/recipe/orechid/redstone_ore.json
-6c98fa529359772c51f96bb0650700d981f7953e data/gardenofglass/recipe/petal_apothecary/orechid.json
+063d7c4e662a8564f64a5e38e719325af381471a data/gardenofglass/recipe/petal_apothecary/orechid.json
 df519d889a71b4d26e72d4cd49675d2e3ac3d3a1 data/gardenofglass/recipe/slime_ball_from_magma_cream.json

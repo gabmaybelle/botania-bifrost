@@ -1,14 +1,10 @@
 {
-  "__comment1": "the configured_feature to place",
   "feature": "botania:shimmering_mushrooms",
-  "__comment2": "PlacementModifiers. We start some set of input positions, and pass that collection through each modifier top to bottom",
   "placement": [
     {
-      "__comment": "For each position, offset XZ by rand(16)",
       "type": "minecraft:in_square"
     },
     {
-      "__comment": "Move the y value of each position into the given height range",
       "type": "minecraft:height_range",
       "height": {
         "type": "minecraft:uniform",
@@ -22,9 +18,39 @@
       "heightmap": "MOTION_BLOCKING_NO_LEAVES"
     },
     {
-      "__comment": "For each position, keep only if the biome at that position has this PlacedFeature enabled",
       "type": "minecraft:biome"
+    },
+    {
+      "type": "minecraft:count",
+      "count": 40
+    },
+    {
+      "type": "minecraft:offset",
+      "x": {
+        "type": "minecraft:trapezoid",
+        "min": -16,
+        "max": 16,
+        "plateau": 0
+      },
+      "y": {
+        "type": "minecraft:trapezoid",
+        "min": -4,
+        "max": 4,
+        "plateau": 0
+      },
+      "z": {
+        "type": "minecraft:trapezoid",
+        "min": -16,
+        "max": 16,
+        "plateau": 0
+      }
+    },
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:matching_blocks",
+        "blocks": "minecraft:air"
+      }
     }
-  ],
-  "__comment3": "Ok, now we call the configured feature once at each position in the result"
+  ]
 }

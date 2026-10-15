@@ -7,7 +7,6 @@
   "input": "minecraft:snow_block",
   "mana": 2250,
   "output": {
-    "count": 1,
     "id": "minecraft:ice"
   }
 }

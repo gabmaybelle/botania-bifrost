@@ -37,7 +37,8 @@ public class TiaraWingsRecipe extends CustomRecipe {
 
 	public TiaraWingsRecipe(Optional<Ingredient> material, int variant) {
 		// PORT-26.3: custom recipes have no category of their own any more (CustomRecipe answers "misc").
-		if (material.isPresent() && material.get().test(BotaniaItems.FLUGEL_TIARA.getDefaultInstance())) {
+		// PORT-26.3: recipes load before item components are bound, so no stack is built here: the ingredient is asked by holder
+		if (material.isPresent() && material.get().acceptsItem(BotaniaItems.FLUGEL_TIARA.builtInRegistryHolder())) {
 			throw new IllegalArgumentException("Material cannot be a Flügel Tiara");
 		}
 		this.material = material;

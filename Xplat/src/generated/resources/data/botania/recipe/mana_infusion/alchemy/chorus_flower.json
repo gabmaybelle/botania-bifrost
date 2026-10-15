@@ -7,7 +7,6 @@
   "input": "minecraft:popped_chorus_fruit",
   "mana": 10000,
   "output": {
-    "count": 1,
     "id": "minecraft:chorus_flower"
   }
 }

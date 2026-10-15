@@ -8,7 +8,6 @@
   "input": "minecraft:spruce_sapling",
   "mana": 12000,
   "output": {
-    "count": 1,
     "id": "minecraft:mangrove_propagule"
   }
 }

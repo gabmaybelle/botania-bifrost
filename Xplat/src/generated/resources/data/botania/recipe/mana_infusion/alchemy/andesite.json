@@ -7,7 +7,6 @@
   "input": "minecraft:stone",
   "mana": 200,
   "output": {
-    "count": 1,
     "id": "minecraft:andesite"
   }
 }

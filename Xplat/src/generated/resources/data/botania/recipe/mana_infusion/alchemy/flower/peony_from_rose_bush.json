@@ -8,7 +8,6 @@
   "input": "minecraft:rose_bush",
   "mana": 400,
   "output": {
-    "count": 1,
     "id": "minecraft:peony"
   }
 }

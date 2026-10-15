@@ -8,7 +8,6 @@
   "input": "minecraft:apple",
   "mana": 240,
   "output": {
-    "count": 1,
     "id": "minecraft:sweet_berries"
   }
 }

@@ -8,7 +8,6 @@
   "input": "minecraft:crimson_fungus",
   "mana": 120,
   "output": {
-    "count": 1,
     "id": "minecraft:warped_fungus"
   }
 }

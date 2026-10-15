@@ -14,7 +14,6 @@
     "#c:dusts/pixie"
   ],
   "output": {
-    "count": 1,
     "id": "botania:spectrolus"
   },
   "reagent": "#botania:seed_apothecary_reagent"

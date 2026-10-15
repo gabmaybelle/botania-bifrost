@@ -10,7 +10,6 @@
     "botania:rune_of_water"
   ],
   "output": {
-    "count": 1,
     "id": "botania:narslimmus"
   },
   "reagent": "#botania:seed_apothecary_reagent"

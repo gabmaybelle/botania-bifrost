@@ -8,7 +8,6 @@
   "input": "minecraft:flint",
   "mana": 200,
   "output": {
-    "count": 1,
     "id": "minecraft:gunpowder"
   }
 }

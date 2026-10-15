@@ -8,7 +8,6 @@
   "input": "minecraft:dead_bush",
   "mana": 500,
   "output": {
-    "count": 1,
     "id": "minecraft:short_grass"
   }
 }

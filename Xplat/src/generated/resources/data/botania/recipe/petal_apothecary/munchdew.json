@@ -9,7 +9,6 @@
     "botania:rune_of_gluttony"
   ],
   "output": {
-    "count": 1,
     "id": "botania:munchdew"
   },
   "reagent": "#botania:seed_apothecary_reagent"

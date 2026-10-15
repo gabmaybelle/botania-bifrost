@@ -8,7 +8,6 @@
   "input": "minecraft:tropical_fish",
   "mana": 200,
   "output": {
-    "count": 1,
     "id": "minecraft:pufferfish"
   }
 }

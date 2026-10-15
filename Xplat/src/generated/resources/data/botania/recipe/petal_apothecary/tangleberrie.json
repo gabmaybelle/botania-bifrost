@@ -9,7 +9,6 @@
     "botania:rune_of_earth"
   ],
   "output": {
-    "count": 1,
     "id": "botania:tangleberrie"
   },
   "reagent": "#botania:seed_apothecary_reagent"

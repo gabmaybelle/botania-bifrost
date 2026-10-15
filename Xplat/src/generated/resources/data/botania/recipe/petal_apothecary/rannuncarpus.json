@@ -8,7 +8,6 @@
     "botania:redstone_root"
   ],
   "output": {
-    "count": 1,
     "id": "botania:rannuncarpus"
   },
   "reagent": "#botania:seed_apothecary_reagent"

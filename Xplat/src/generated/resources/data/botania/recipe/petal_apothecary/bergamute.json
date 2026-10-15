@@ -7,7 +7,6 @@
     "botania:redstone_root"
   ],
   "output": {
-    "count": 1,
     "id": "botania:bergamute"
   },
   "reagent": "#botania:seed_apothecary_reagent"

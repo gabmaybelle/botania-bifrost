@@ -8,7 +8,6 @@
     "botania:rune_of_autumn"
   ],
   "output": {
-    "count": 1,
     "id": "botania:tigerseye"
   },
   "reagent": "#botania:seed_apothecary_reagent"

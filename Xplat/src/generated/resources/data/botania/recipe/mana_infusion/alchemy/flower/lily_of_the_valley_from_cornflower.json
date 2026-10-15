@@ -8,7 +8,6 @@
   "input": "minecraft:cornflower",
   "mana": 400,
   "output": {
-    "count": 1,
     "id": "minecraft:lily_of_the_valley"
   }
 }

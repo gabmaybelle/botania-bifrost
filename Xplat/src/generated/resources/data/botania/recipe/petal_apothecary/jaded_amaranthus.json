@@ -8,7 +8,6 @@
     "botania:redstone_root"
   ],
   "output": {
-    "count": 1,
     "id": "botania:jaded_amaranthus"
   },
   "reagent": "#botania:seed_apothecary_reagent"

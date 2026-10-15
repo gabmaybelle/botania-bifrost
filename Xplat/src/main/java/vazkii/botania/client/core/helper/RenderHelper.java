@@ -45,7 +45,6 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -371,7 +370,8 @@ public final class RenderHelper {
 
 	/** A block atlas sprite by its texture name, e.g. {@code botania:block/mana_water}. */
 	public static TextureAtlasSprite getBlockSprite(SpriteGetter sprites, Identifier texture) {
-		return sprites.get(new SpriteId(AtlasIds.BLOCKS, texture));
+		// PORT-26.3: a SpriteId names the atlas by its texture, not by its atlas id
+		return sprites.get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, texture));
 	}
 
 	private static RenderType blockRenderType(ChunkSectionLayer layer) {

@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import vazkii.botania.common.block.block_entity.flower.misc.BergamuteBlockEntity;
@@ -46,8 +45,9 @@ public class SoundEngineMixin {
 		tmpSound = sound;
 	}
 
+	// PORT-26.3: play returns a PlayResult now
 	@Inject(at = @At("HEAD"), method = "play")
-	private void captureSound2(SoundInstance sound, CallbackInfo ci) {
+	private void captureSound2(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
 		tmpSound = sound;
 	}
 
@@ -93,7 +93,7 @@ public class SoundEngineMixin {
 	}
 
 	@Inject(at = @At("RETURN"), method = "play")
-	private void clearSound2(SoundInstance sound, CallbackInfo ci) {
+	private void clearSound2(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
 		tmpSound = null;
 	}
 }

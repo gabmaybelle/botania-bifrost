@@ -14,6 +14,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -134,12 +135,12 @@ public class PetalApothecaryProvider extends ConditionalRecipeProvider {
 		Ingredient[] inputs = new Ingredient[16];
 		Arrays.fill(inputs, pink);
 		consumer.accept(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, "vazkii_head"),
-				new PetalApothecaryRecipe(vazkiiHead, defaultReagent, inputs), null);
+				new PetalApothecaryRecipe(ItemStackTemplate.fromNonEmptyStack(vazkiiHead), defaultReagent, inputs), null);
 	}
 
 	protected void make(RecipeOutput consumer, ItemLike output, Ingredient... ingredients) {
 		consumer.accept(BotaniaRecipeHelper.deriveRecipeId(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, output),
-				new PetalApothecaryRecipe(new ItemStack(output), defaultReagent, ingredients), null);
+				new PetalApothecaryRecipe(new ItemStackTemplate(output.asItem()), defaultReagent, ingredients), null);
 	}
 
 }

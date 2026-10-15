@@ -9,7 +9,6 @@
     "botania:rune_of_spring"
   ],
   "output": {
-    "count": 1,
     "id": "botania:fallen_kanade"
   },
   "reagent": "#botania:seed_apothecary_reagent"

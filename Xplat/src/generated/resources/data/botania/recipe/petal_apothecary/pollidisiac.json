@@ -10,7 +10,6 @@
     "botania:rune_of_fire"
   ],
   "output": {
-    "count": 1,
     "id": "botania:pollidisiac"
   },
   "reagent": "#botania:seed_apothecary_reagent"

@@ -3,7 +3,6 @@
   "input": "minecraft:string",
   "mana": 1250,
   "output": {
-    "count": 1,
     "id": "botania:mana_string"
   }
 }

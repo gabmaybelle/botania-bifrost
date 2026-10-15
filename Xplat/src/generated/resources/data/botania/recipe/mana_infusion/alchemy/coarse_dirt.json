@@ -7,7 +7,6 @@
   "input": "minecraft:dirt",
   "mana": 120,
   "output": {
-    "count": 1,
     "id": "minecraft:coarse_dirt"
   }
 }

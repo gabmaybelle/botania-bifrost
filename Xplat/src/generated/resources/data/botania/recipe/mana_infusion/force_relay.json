@@ -3,7 +3,6 @@
   "input": "minecraft:piston",
   "mana": 15000,
   "output": {
-    "count": 1,
     "id": "botania:force_relay"
   }
 }

@@ -17,6 +17,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -31,19 +32,20 @@ import java.util.List;
 
 public class PetalApothecaryRecipe implements vazkii.botania.api.recipe.PetalApothecaryRecipe {
 	public static final RecipeSerializer<PetalApothecaryRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
-	private final ItemStack output;
+	// PORT-26.3: a template, not a stack: recipes are a registry now and load before item components are bound
+	private final ItemStackTemplate output;
 	private final Ingredient reagent;
 	private final NonNullList<Ingredient> ingredients;
 	private final boolean requireSpecialMatching;
 
-	public PetalApothecaryRecipe(ItemStack output, Ingredient reagent, Ingredient... ingredients) {
+	public PetalApothecaryRecipe(ItemStackTemplate output, Ingredient reagent, Ingredient... ingredients) {
 		this.output = output;
 		this.reagent = reagent;
 		this.ingredients = RecipeUtils.nonNullList(ingredients);
 		this.requireSpecialMatching = Arrays.stream(ingredients).anyMatch(XplatAbstractions.instance()::requiresCustomTesting);
 	}
 
-	private static PetalApothecaryRecipe of(ItemStack output, Ingredient reagent, List<Ingredient> ingredients) {
+	private static PetalApothecaryRecipe of(ItemStackTemplate output, Ingredient reagent, List<Ingredient> ingredients) {
 		return new PetalApothecaryRecipe(output, reagent, ingredients.toArray(Ingredient[]::new));
 	}
 
@@ -53,7 +55,7 @@ public class PetalApothecaryRecipe implements vazkii.botania.api.recipe.PetalApo
 	}
 
 	public final ItemStack getResultItem(HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class PetalApothecaryRecipe implements vazkii.botania.api.recipe.PetalApo
 	}
 
 	public ItemStack getOutput() {
-		return output;
+		return output.create();
 	}
 
 	@Override
@@ -86,12 +88,12 @@ public class PetalApothecaryRecipe implements vazkii.botania.api.recipe.PetalApo
 
 	public static class Serializer {
 		public static final MapCodec<PetalApothecaryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ItemStack.CODEC.fieldOf("output").forGetter(PetalApothecaryRecipe::getOutput),
+				ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
 				Ingredient.CODEC.fieldOf("reagent").forGetter(PetalApothecaryRecipe::getReagent),
 				Ingredient.CODEC.listOf(1, 16).fieldOf("ingredients").forGetter(PetalApothecaryRecipe::getIngredients)
 		).apply(instance, PetalApothecaryRecipe::of));
 		public static final StreamCodec<RegistryFriendlyByteBuf, PetalApothecaryRecipe> STREAM_CODEC = StreamCodec.composite(
-				ItemStack.STREAM_CODEC, PetalApothecaryRecipe::getOutput,
+				ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
 				Ingredient.CONTENTS_STREAM_CODEC, PetalApothecaryRecipe::getReagent,
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), PetalApothecaryRecipe::getIngredients,
 				PetalApothecaryRecipe::of

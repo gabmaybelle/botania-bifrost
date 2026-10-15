@@ -16,7 +16,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -89,7 +89,7 @@ public class GogRecipeProvider extends BotaniaRecipeProvider {
 		Ingredient red = tag(BotaniaTags.Items.PETALS_RED);
 		recipeOutput.accept(
 				ResourceKey.create(Registries.RECIPE, gogRL("petal_apothecary/" + getItemName(BotaniaBlocks.ORECHID.asItem()))),
-				new PetalApothecaryRecipe(new ItemStack(BotaniaBlocks.ORECHID),
+				new PetalApothecaryRecipe(new ItemStackTemplate(BotaniaBlocks.ORECHID.asItem()),
 						tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT),
 						gray, gray, yellow, yellow, green, green, red, red),
 				null);
@@ -143,7 +143,7 @@ public class GogRecipeProvider extends BotaniaRecipeProvider {
 	private void manaInfusion(RecipeOutput recipeOutput, ItemLike resultItem, ItemLike ingredient, int mana,
 			@Nullable StateIngredient catalyst) {
 		recipeOutput.accept(ResourceKey.create(Registries.RECIPE, gogRL("mana_infusion/" + getItemName(resultItem))),
-				new ManaInfusionRecipe(new ItemStack(resultItem), Ingredient.of(ingredient), mana, null, catalyst),
+				new ManaInfusionRecipe(new ItemStackTemplate(resultItem.asItem()), Ingredient.of(ingredient), mana, null, catalyst),
 				null);
 	}
 

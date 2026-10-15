@@ -7,7 +7,6 @@
   "input": "minecraft:blaze_rod",
   "mana": 4000,
   "output": {
-    "count": 1,
     "id": "minecraft:nether_wart"
   }
 }

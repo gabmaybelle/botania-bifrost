@@ -7,7 +7,6 @@
   "input": "minecraft:quartz",
   "mana": 1000,
   "output": {
-    "count": 1,
     "id": "minecraft:prismarine_shard"
   }
 }

@@ -9,7 +9,6 @@
 package vazkii.botania.common.crafting.recipe;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -34,10 +33,11 @@ public class WaterBottleMatchingRecipe extends ShapedRecipe {
 	public static final RecipeSerializer<ShapedRecipe> SERIALIZER = WrappingRecipeSerializer.shaped(WaterBottleMatchingRecipe::new);
 
 	private static ShapedRecipePattern transformPattern(ShapedRecipePattern pattern) {
-		final var testPotion = new ItemStack(Items.POTION);
+		// PORT-26.3: recipes load before item components are bound, so no test stack is built: the ingredient is asked by holder
+		final var potion = Items.POTION.builtInRegistryHolder();
 		// PORT-26.3: a pattern's ingredients are optional (empty slots) now
 		final List<Optional<Ingredient>> ingredients = pattern.ingredients().stream()
-				.map(slot -> slot.map(i -> i.test(testPotion)
+				.map(slot -> slot.map(i -> i.acceptsItem(potion)
 						? Ingredient.of(Items.POTION) // PORT-26.3: ingredients are items only; matches() checks for water
 						: i))
 				.toList();

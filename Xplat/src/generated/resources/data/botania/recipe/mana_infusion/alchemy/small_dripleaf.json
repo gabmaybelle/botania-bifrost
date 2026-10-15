@@ -7,7 +7,6 @@
   "input": "minecraft:big_dripleaf",
   "mana": 500,
   "output": {
-    "count": 1,
     "id": "minecraft:small_dripleaf"
   }
 }

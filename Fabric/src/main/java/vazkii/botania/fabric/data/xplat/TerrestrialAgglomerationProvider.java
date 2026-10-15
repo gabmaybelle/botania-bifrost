@@ -12,7 +12,7 @@ package vazkii.botania.fabric.data.xplat;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 
 import vazkii.botania.common.block.mana.ManaPoolBlock;
@@ -34,7 +34,7 @@ public class TerrestrialAgglomerationProvider extends BotaniaRecipeProvider {
 				BotaniaItems.TERRASTEEL_INGOT),
 				new TerrestrialAgglomerationRecipe(
 						ManaPoolBlock.MAX_MANA / 2,
-						new ItemStack(BotaniaItems.TERRASTEEL_INGOT),
+						new ItemStackTemplate(BotaniaItems.TERRASTEEL_INGOT),
 						tag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS),
 						tag(ConventionalBotaniaTags.Items.MANA_PEARL_GEMS),
 						tag(ConventionalBotaniaTags.Items.MANA_DIAMOND_GEMS)

@@ -13,7 +13,6 @@
   ],
   "mana": 22500,
   "output": {
-    "count": 1,
     "id": "minecraft:player_head"
   },
   "reagent": "botania:livingrock"

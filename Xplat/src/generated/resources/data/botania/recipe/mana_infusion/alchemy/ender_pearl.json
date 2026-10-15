@@ -7,7 +7,6 @@
   "input": "minecraft:ghast_tear",
   "mana": 28000,
   "output": {
-    "count": 1,
     "id": "minecraft:ender_pearl"
   }
 }

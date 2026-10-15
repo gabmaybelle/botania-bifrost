@@ -12,7 +12,6 @@
     "#botania:ender_essences"
   ],
   "output": {
-    "count": 1,
     "id": "botania:spectranthemum"
   },
   "reagent": "#botania:seed_apothecary_reagent"

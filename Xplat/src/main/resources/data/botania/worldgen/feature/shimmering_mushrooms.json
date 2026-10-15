@@ -1,0 +1,72 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": "botania:white_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:orange_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:magenta_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:light_blue_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:yellow_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:lime_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:pink_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:gray_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:light_gray_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:cyan_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:purple_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:blue_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:brown_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:green_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:red_shimmering_mushroom",
+        "weight": 1
+      },
+      {
+        "data": "botania:black_shimmering_mushroom",
+        "weight": 1
+      }
+    ]
+  }
+}

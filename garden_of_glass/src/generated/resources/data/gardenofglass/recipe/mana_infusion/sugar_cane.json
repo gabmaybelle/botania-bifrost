@@ -3,7 +3,6 @@
   "input": "minecraft:hay_block",
   "mana": 2000,
   "output": {
-    "count": 1,
     "id": "minecraft:sugar_cane"
   }
 }

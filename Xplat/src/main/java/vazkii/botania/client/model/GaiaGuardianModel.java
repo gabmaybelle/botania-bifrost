@@ -30,11 +30,12 @@ public class GaiaGuardianModel extends HumanoidModel<GaiaGuardianRenderState> {
 
 	public GaiaGuardianModel(ModelPart root, boolean slim) {
 		super(root, RenderHelper::getGaiaNoiseDynamicLayer);
-		this.leftSleeve = root.getChild("left_sleeve");
-		this.rightSleeve = root.getChild("right_sleeve");
-		this.leftPants = root.getChild("left_pants");
-		this.rightPants = root.getChild("right_pants");
-		this.jacket = root.getChild("jacket");
+		// PORT-26.3: the overlay parts hang off the limbs now (PlayerModel.createMesh), not off the root
+		this.leftSleeve = this.leftArm.getChild("left_sleeve");
+		this.rightSleeve = this.rightArm.getChild("right_sleeve");
+		this.leftPants = this.leftLeg.getChild("left_pants");
+		this.rightPants = this.rightLeg.getChild("right_pants");
+		this.jacket = this.body.getChild("jacket");
 		this.slim = slim;
 	}
 

@@ -12,7 +12,6 @@
     "#c:dusts/pixie"
   ],
   "output": {
-    "count": 1,
     "id": "botania:orechid_ignem"
   },
   "reagent": "#botania:seed_apothecary_reagent"

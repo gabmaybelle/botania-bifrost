@@ -9,7 +9,6 @@
     "botania:rune_of_mana"
   ],
   "output": {
-    "count": 1,
     "id": "botania:rosa_arcana"
   },
   "reagent": "#botania:seed_apothecary_reagent"

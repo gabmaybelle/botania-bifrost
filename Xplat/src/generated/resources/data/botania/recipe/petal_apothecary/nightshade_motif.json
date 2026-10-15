@@ -7,7 +7,6 @@
     "#botania:petals/gray"
   ],
   "output": {
-    "count": 1,
     "id": "botania:nightshade_motif"
   },
   "reagent": "#botania:seed_apothecary_reagent"

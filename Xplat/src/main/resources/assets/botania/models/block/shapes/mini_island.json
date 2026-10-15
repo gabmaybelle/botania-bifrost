@@ -9,6 +9,7 @@
 		}
 	},
 	"textures": {
+	   "particle": "#top",
 	   "bottom": "block/dirt"
 	},
     "elements": [

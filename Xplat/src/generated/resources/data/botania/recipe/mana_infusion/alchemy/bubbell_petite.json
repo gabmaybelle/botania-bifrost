@@ -8,7 +8,6 @@
   "input": "botania:bubbell",
   "mana": 2500,
   "output": {
-    "count": 1,
     "id": "botania:bubbell_petite"
   }
 }

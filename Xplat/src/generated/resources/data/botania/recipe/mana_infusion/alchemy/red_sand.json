@@ -7,7 +7,6 @@
   "input": "minecraft:terracotta",
   "mana": 50,
   "output": {
-    "count": 1,
     "id": "minecraft:red_sand"
   }
 }

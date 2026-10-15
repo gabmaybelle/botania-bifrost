@@ -24,6 +24,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -39,13 +40,14 @@ import java.util.stream.Stream;
 
 public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRecipe {
 	public static final RecipeSerializer<RunicAltarRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
-	private final ItemStack output;
+	// PORT-26.3: a template, not a stack: recipes are a registry now and load before item components are bound
+	private final ItemStackTemplate output;
 	private final Ingredient reagent;
 	private final NonNullList<Ingredient> ingredients;
 	private final NonNullList<Ingredient> catalysts;
 	private final int mana;
 
-	public RunicAltarRecipe(ItemStack output, Ingredient reagent, int mana, Ingredient[] ingredients, Ingredient[] catalysts) {
+	public RunicAltarRecipe(ItemStackTemplate output, Ingredient reagent, int mana, Ingredient[] ingredients, Ingredient[] catalysts) {
 		int numIngredients = ingredients.length;
 		int numCatalysts = catalysts.length;
 		Preconditions.checkArgument(numIngredients + numCatalysts > 0, "Must have at least one ingredient or catalyst");
@@ -112,7 +114,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 
 	}
 
-	private static RunicAltarRecipe of(List<Ingredient> ingredients, List<Ingredient> catalysts, Ingredient reagent, int mana, ItemStack output) {
+	private static RunicAltarRecipe of(List<Ingredient> ingredients, List<Ingredient> catalysts, Ingredient reagent, int mana, ItemStackTemplate output) {
 		return new RunicAltarRecipe(output, reagent, mana, ingredients.toArray(Ingredient[]::new), catalysts.toArray(Ingredient[]::new));
 	}
 
@@ -148,7 +150,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 	}
 
 	public final ItemStack getResultItem(HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@Override
@@ -181,6 +183,10 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 	}
 
 	public ItemStack getOutput() {
+		return output.create();
+	}
+
+	public ItemStackTemplate getOutputTemplate() {
 		return output;
 	}
 
@@ -195,7 +201,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 				Ingredient.CODEC.listOf().fieldOf("catalysts").forGetter(RunicAltarRecipe::getCatalysts),
 				Ingredient.CODEC.fieldOf("reagent").forGetter(RunicAltarRecipe::getReagent),
 				ExtraCodecs.POSITIVE_INT.fieldOf("mana").forGetter(RunicAltarRecipe::getMana),
-				ItemStack.CODEC.fieldOf("output").forGetter(RunicAltarRecipe::getOutput)
+				ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> recipe.output)
 		).apply(instance, RunicAltarRecipe::of));
 		public static final MapCodec<RunicAltarRecipe> CODEC = RAW_CODEC.validate(recipe -> {
 			if (recipe.getIngredients().size() + recipe.getCatalysts().size() == 0) {
@@ -211,7 +217,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), RunicAltarRecipe::getCatalysts,
 				Ingredient.CONTENTS_STREAM_CODEC, RunicAltarRecipe::getReagent,
 				ByteBufCodecs.VAR_INT, RunicAltarRecipe::getMana,
-				ItemStack.STREAM_CODEC, RunicAltarRecipe::getOutput,
+				ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
 				RunicAltarRecipe::of
 		);
 

@@ -1,0 +1,7 @@
+{
+  "type": "botania:mystical_flower",
+  "tall_chance": 0.05,
+  "to_place": {
+    "id": "botania:green_mystical_flower"
+  }
+}

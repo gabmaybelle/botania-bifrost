@@ -8,7 +8,6 @@
   "input": "minecraft:redstone",
   "mana": 300,
   "output": {
-    "count": 1,
     "id": "minecraft:glowstone_dust"
   }
 }

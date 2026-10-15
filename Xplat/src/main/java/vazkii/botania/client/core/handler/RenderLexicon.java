@@ -15,10 +15,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
@@ -39,8 +39,8 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 // and the text is submitted to the collector.
 public class RenderLexicon {
 	private static final boolean SHOULD_MISSPELL = Math.random() < 0.004;
-	public static final SpriteId TEXTURE = new SpriteId(AtlasIds.BLOCKS, botaniaRL("item/lexica_botania_3d"));
-	public static final SpriteId ELVEN_TEXTURE = new SpriteId(AtlasIds.BLOCKS, botaniaRL("item/lexica_botania_elven_3d"));
+	public static final SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("item/lexica_botania_3d"));
+	public static final SpriteId ELVEN_TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("item/lexica_botania_elven_3d"));
 
 	private static final String[] QUOTES = new String[] {
 			"\"Neat!\" - Direwolf20",

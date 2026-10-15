@@ -9,7 +9,6 @@
     "botania:rune_of_summer"
   ],
   "output": {
-    "count": 1,
     "id": "botania:exoflame"
   },
   "reagent": "#botania:seed_apothecary_reagent"

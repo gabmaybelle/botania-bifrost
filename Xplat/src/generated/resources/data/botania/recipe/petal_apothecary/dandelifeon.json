@@ -13,7 +13,6 @@
     "botania:gaia_spirit"
   ],
   "output": {
-    "count": 1,
     "id": "botania:dandelifeon"
   },
   "reagent": "#botania:seed_apothecary_reagent"

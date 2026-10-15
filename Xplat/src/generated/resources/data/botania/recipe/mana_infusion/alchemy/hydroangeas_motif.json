@@ -7,7 +7,6 @@
   "input": "botania:hydroangeas",
   "mana": 2500,
   "output": {
-    "count": 1,
     "id": "botania:hydroangeas_motif"
   }
 }

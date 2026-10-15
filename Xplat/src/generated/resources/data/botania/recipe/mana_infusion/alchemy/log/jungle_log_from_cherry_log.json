@@ -8,7 +8,6 @@
   "input": "minecraft:cherry_log",
   "mana": 40,
   "output": {
-    "count": 1,
     "id": "minecraft:jungle_log"
   }
 }

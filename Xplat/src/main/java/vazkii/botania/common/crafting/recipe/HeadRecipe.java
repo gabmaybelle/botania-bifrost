@@ -28,6 +28,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -69,12 +70,12 @@ public class HeadRecipe extends RunicAltarRecipe {
 						}
 					});
 
-	public HeadRecipe(ItemStack output, Ingredient reagent, int mana, Ingredient... inputs) {
+	public HeadRecipe(ItemStackTemplate output, Ingredient reagent, int mana, Ingredient... inputs) {
 		super(output, reagent, mana, inputs, new Ingredient[0]);
 	}
 
 	private HeadRecipe(RunicAltarRecipe recipe) {
-		super(recipe.getOutput(), recipe.getReagent(), recipe.getMana(),
+		super(recipe.getOutputTemplate(), recipe.getReagent(), recipe.getMana(),
 				recipe.getIngredients().toArray(Ingredient[]::new), recipe.getCatalysts().toArray(Ingredient[]::new));
 	}
 

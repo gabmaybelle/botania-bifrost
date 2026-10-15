@@ -8,7 +8,6 @@
   "input": "minecraft:crimson_stem",
   "mana": 40,
   "output": {
-    "count": 1,
     "id": "minecraft:warped_stem"
   }
 }

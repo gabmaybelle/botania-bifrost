@@ -8,7 +8,6 @@
   "input": "minecraft:birch_sapling",
   "mana": 12000,
   "output": {
-    "count": 1,
     "id": "minecraft:cherry_sapling"
   }
 }

@@ -13,7 +13,6 @@
     "#c:dusts/pixie"
   ],
   "output": {
-    "count": 1,
     "id": "botania:loonium"
   },
   "reagent": "#botania:seed_apothecary_reagent"

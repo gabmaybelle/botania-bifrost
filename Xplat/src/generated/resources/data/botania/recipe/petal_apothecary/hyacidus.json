@@ -11,7 +11,6 @@
     "botania:redstone_root"
   ],
   "output": {
-    "count": 1,
     "id": "botania:hyacidus"
   },
   "reagent": "#botania:seed_apothecary_reagent"

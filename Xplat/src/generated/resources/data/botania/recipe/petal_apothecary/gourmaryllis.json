@@ -10,7 +10,6 @@
     "botania:rune_of_summer"
   ],
   "output": {
-    "count": 1,
     "id": "botania:gourmaryllis"
   },
   "reagent": "#botania:seed_apothecary_reagent"

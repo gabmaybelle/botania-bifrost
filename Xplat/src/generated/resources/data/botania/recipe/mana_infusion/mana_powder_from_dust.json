@@ -4,7 +4,6 @@
   "input": "#botania:mana_powder_source_dusts",
   "mana": 500,
   "output": {
-    "count": 1,
     "id": "botania:mana_powder"
   }
 }

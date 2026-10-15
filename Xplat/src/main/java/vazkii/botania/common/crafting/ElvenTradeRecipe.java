@@ -24,6 +24,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -38,16 +39,17 @@ import java.util.Optional;
 
 public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRecipe {
 	public static final RecipeSerializer<ElvenTradeRecipe> SERIALIZER = new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
-	private final ImmutableList<ItemStack> outputs;
+	// PORT-26.3: a template, not a stack: recipes are a registry now and load before item components are bound
+	private final ImmutableList<ItemStackTemplate> outputs;
 	private final NonNullList<Ingredient> ingredients;
 
-	public ElvenTradeRecipe(ItemStack[] outputs, Ingredient... ingredients) {
+	public ElvenTradeRecipe(ItemStackTemplate[] outputs, Ingredient... ingredients) {
 		this.outputs = ImmutableList.copyOf(outputs);
 		this.ingredients = RecipeUtils.nonNullList(ingredients);
 		validateIngredients();
 	}
 
-	public ElvenTradeRecipe(List<ItemStack> outputs, List<Ingredient> ingredients) {
+	public ElvenTradeRecipe(List<ItemStackTemplate> outputs, List<Ingredient> ingredients) {
 		this.outputs = ImmutableList.copyOf(outputs);
 		this.ingredients = RecipeUtils.nonNullList(ingredients.toArray(Ingredient[]::new));
 		validateIngredients();
@@ -81,7 +83,7 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 
 	@Override
 	public List<ItemStack> getOutputs() {
-		return outputs;
+		return outputs.stream().map(ItemStackTemplate::create).toList();
 	}
 
 	@Override
@@ -119,14 +121,14 @@ public class ElvenTradeRecipe implements vazkii.botania.api.recipe.ElvenTradeRec
 	}
 
 	public static class Serializer {
-		// PORT-26.3: ItemStack's strict codecs are gone; CODEC writes a count only when it isn't 1, which is what this did.
-		private static final Codec<ItemStack> ITEM_STACK_COMPACT_CODEC = ItemStack.CODEC;
+		// PORT-26.3: templates (see the field); the template codec writes a count only when it isn't 1, as the strict codec did
+		private static final Codec<ItemStackTemplate> ITEM_STACK_COMPACT_CODEC = ItemStackTemplate.CODEC;
 		public static final MapCodec<ElvenTradeRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ExtraCodecs.nonEmptyList(ITEM_STACK_COMPACT_CODEC.listOf()).fieldOf("output").forGetter(ElvenTradeRecipe::getOutputs),
+				ExtraCodecs.nonEmptyList(ITEM_STACK_COMPACT_CODEC.listOf()).fieldOf("output").forGetter(recipe -> recipe.outputs),
 				ExtraCodecs.nonEmptyList(Ingredient.CODEC.listOf()).fieldOf("ingredients").forGetter(ElvenTradeRecipe::getIngredients)
 		).apply(instance, ElvenTradeRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ElvenTradeRecipe> STREAM_CODEC = StreamCodec.composite(
-				ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), ElvenTradeRecipe::getOutputs,
+				ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()), recipe -> recipe.outputs,
 				Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), ElvenTradeRecipe::getIngredients,
 				ElvenTradeRecipe::new
 		);

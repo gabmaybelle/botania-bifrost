@@ -7,7 +7,6 @@
   "input": "minecraft:poisonous_potato",
   "mana": 1200,
   "output": {
-    "count": 1,
     "id": "minecraft:potato"
   }
 }

@@ -8,7 +8,6 @@
   "input": "minecraft:blue_orchid",
   "mana": 400,
   "output": {
-    "count": 1,
     "id": "minecraft:allium"
   }
 }
