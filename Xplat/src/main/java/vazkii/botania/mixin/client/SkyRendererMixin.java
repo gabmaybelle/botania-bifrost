@@ -47,6 +47,14 @@ public class SkyRendererMixin {
 		return SkyblockSkyRenderer.isGogSky() ? scale * 1.5F : scale;
 	}
 
+	/** Write the extras' vertex buffers before vanilla opens its sky render pass */
+	@Inject(method = "render", at = @At("HEAD"))
+	private void botania_prepareExtras(CallbackInfo ci) {
+		if (SkyblockSkyRenderer.isGogSky()) {
+			SkyblockSkyRenderer.prepare(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+		}
+	}
+
 	/** Render planets and other extras, then lots of extra stars, once vanilla's sun, moon and stars are in */
 	@Inject(method = "renderSunMoonAndStars", at = @At("TAIL"), require = 0)
 	private void botania_renderExtras(CallbackInfo ci, @Local(argsOnly = true) RenderPass renderPass,

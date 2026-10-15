@@ -145,7 +145,8 @@ public final class SkyblockWorldEvents {
 		BlockPos offset;
 		//noinspection DataFlowIssue (null NBT was already filtered above)
 		var infoOptional = structureBlockInfos.stream()
-				.filter(info -> "spawn_point".equals(info.nbt().getString("metadata")))
+				// PORT-26.3: getString returns an Optional now; equals on it was always false
+				.filter(info -> "spawn_point".equals(info.nbt().getStringOr("metadata", "")))
 				.findFirst();
 		if (infoOptional.isPresent()) {
 			offset = infoOptional.get().pos();
@@ -164,7 +165,7 @@ public final class SkyblockWorldEvents {
 				Block.UPDATE_ALL);
 		for (var info : structureBlockInfos) {
 			//noinspection DataFlowIssue (null NBT was already filtered above)
-			if ("light".equals(info.nbt().getString("metadata"))) {
+			if ("light".equals(info.nbt().getStringOr("metadata", ""))) {
 				BlockPos lightPos = startPoint.offset(info.pos());
 				if (level.setBlockAndUpdate(lightPos, BotaniaBlocks.MANA_FLAME.defaultBlockState())
 						&& level.getBlockEntity(lightPos) instanceof ManaFlameBlockEntity flame) {

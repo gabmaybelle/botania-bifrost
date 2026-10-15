@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
@@ -81,20 +82,56 @@ public class SkyblockSkyRenderer {
 		return RenderSystem.getDevice().createBuffer(() -> label, GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, (long) vertices * VERTEX_SIZE);
 	}
 
-	/** A unit quad at height 100; the planets scale it through the transform. */
-	private static GpuBuffer planetBuffer() {
+	private static final float[] RAY_ROT_SPEEDS = { 1F, 0.2F, 2F };
+	private static final double[] RAY_FUZZ = { Math.PI * 10 / ANGLES, Math.PI * 14 / ANGLES, Math.PI * 6 / ANGLES };
+
+	/**
+	 * PORT-26.3: buffers can't be written while a render pass is open, and the extras draw inside vanilla's sky pass.
+	 * {@code SkyRendererMixin} calls this before the pass opens: the planet quad (at height 100, scaled by the
+	 * transform) and the rainbow ring are made once, the three ray rings (they move with time) every frame. The
+	 * textures are fetched here too, since the first fetch uploads them.
+	 */
+	public static void prepare(float partialTicks) {
+		TextureManager textures = Minecraft.getInstance().getTextureManager();
+		textures.getTexture(textureSkybox);
+		textures.getTexture(textureRainbow);
+		for (Identifier planet : planetTextures) {
+			textures.getTexture(planet);
+		}
 		if (planetBuffer == null) {
-			planetBuffer = vertexBuffer("Botania planet", 4);
 			try (ByteBufferBuilder bytes = ByteBufferBuilder.exactlySized(4 * VERTEX_SIZE)) {
 				BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
 				builder.addVertex(-1, 100, -1).setUv(0.0F, 0.0F);
 				builder.addVertex(1, 100, -1).setUv(1.0F, 0.0F);
 				builder.addVertex(1, 100, 1).setUv(1.0F, 1.0F);
 				builder.addVertex(-1, 100, 1).setUv(0.0F, 1.0F);
-				upload(planetBuffer, builder);
+				planetBuffer = staticBuffer("Botania planet", builder);
 			}
 		}
-		return planetBuffer;
+		if (rainbowBuffer == null) {
+			try (ByteBufferBuilder bytes = ByteBufferBuilder.exactlySized(RING_VERTICES * VERTEX_SIZE)) {
+				BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
+				buildRing(builder, 10F, 2F, 0F, 0, 0, 0);
+				rainbowBuffer = staticBuffer("Botania rainbow", builder);
+			}
+		}
+		if (rayBuffer == null) {
+			rayBuffer = vertexBuffer("Botania sky rays", RING_VERTICES * RAY_ROT_SPEEDS.length);
+		}
+		float time = ClientTickHandler.getEntityTicksInGame() + partialTicks;
+		try (ByteBufferBuilder bytes = ByteBufferBuilder.exactlySized(RING_VERTICES * RAY_ROT_SPEEDS.length * VERTEX_SIZE)) {
+			BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
+			for (int p = 0; p < RAY_ROT_SPEEDS.length; p++) {
+				buildRing(builder, 20F, 2F, 0F, RAY_ROT_SPEEDS[p] * 0.4F * time, RAY_FUZZ[p], 1);
+			}
+			upload(rayBuffer, builder);
+		}
+	}
+
+	private static GpuBuffer staticBuffer(String label, BufferBuilder builder) {
+		try (MeshData mesh = builder.buildOrThrow()) {
+			return RenderSystem.getDevice().createBuffer(() -> label, GpuBuffer.USAGE_VERTEX, mesh.vertexBuffer());
+		}
 	}
 
 	private static void upload(GpuBuffer target, BufferBuilder builder) {
@@ -167,7 +204,10 @@ public class SkyblockSkyRenderer {
 		ms.pushPose();
 		Vector4f planetColor = new Vector4f(1F, 1F, 1F, a * 4 * (1F - insideVoid));
 		ms.rotate(new Quaternionf().rotateAxis(VecHelper.toRadians(90), 0.5F, 0.5F, 0F));
-		GpuBuffer planet = planetBuffer();
+		if (planetBuffer == null || rayBuffer == null || rainbowBuffer == null) {
+			return; // prepare hasn't run for this frame's sky
+		}
+		GpuBuffer planet = planetBuffer;
 		for (int p = 0; p < planetTextures.length; p++) {
 			Matrix4f mat = modelView(ms).scale(scale, 1F, scale);
 			drawQuads(renderPass, "Botania planet", CoreShaders.SKY_TEXTURED_TRANSLUCENT, planetTextures[p], planet.slice(), 4, mat, planetColor);
@@ -204,38 +244,26 @@ public class SkyblockSkyRenderer {
 		ms.translate(0, -1, 0);
 		ms.rotate(VecHelper.rotateX(220));
 		Vector4f rayColor = new Vector4f(1F, 1F, 1F, a);
-		float y = 2F;
-		float y0 = 0F;
-		double fuzzPer = Math.PI * 10 / ANGLES;
 		float rotSpeed = 1F;
 		float rotSpeedMod = 0.4F;
 
-		if (rayBuffer == null) {
-			rayBuffer = vertexBuffer("Botania sky rays", RING_VERTICES);
-		}
 		for (int p = 0; p < 3; p++) {
 			float time = ClientTickHandler.getEntityTicksInGame() + partialTicks;
-			float baseAngle = rotSpeed * rotSpeedMod * time;
 			ms.rotate(VecHelper.rotateY(time * 0.25F * rotSpeed * rotSpeedMod));
 
-			try (ByteBufferBuilder bytes = ByteBufferBuilder.exactlySized(RING_VERTICES * VERTEX_SIZE)) {
-				BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
-				buildRing(builder, scale, y, y0, baseAngle, fuzzPer, 1);
-				upload(rayBuffer, builder);
-			}
-			drawQuads(renderPass, "Botania sky rays", RenderPipelines.CELESTIAL, textureSkybox, rayBuffer.slice(), RING_VERTICES, modelView(ms), rayColor);
+			// ring p was built by prepare with this ring's speed and fuzz
+			GpuBufferSlice ring = rayBuffer.slice((long) p * RING_VERTICES * VERTEX_SIZE, (long) RING_VERTICES * VERTEX_SIZE);
+			drawQuads(renderPass, "Botania sky rays", RenderPipelines.CELESTIAL, textureSkybox, ring, RING_VERTICES, modelView(ms), rayColor);
 
 			switch (p) {
 				case 0 -> {
 					ms.rotate(VecHelper.rotateX(20));
 					rayColor = new Vector4f(1F, 0.4F, 0.4F, a);
-					fuzzPer = Math.PI * 14 / ANGLES;
 					rotSpeed = 0.2F;
 				}
 				case 1 -> {
 					ms.rotate(VecHelper.rotateX(50));
 					rayColor = new Vector4f(0.4F, 1F, 0.7F, a);
-					fuzzPer = Math.PI * 6 / ANGLES;
 					rotSpeed = 2F;
 				}
 			}
@@ -260,14 +288,6 @@ public class SkyblockSkyRenderer {
 		ms.rotate(VecHelper.rotateY(angle1));
 		ms.rotate(VecHelper.rotateZ(angle2));
 
-		if (rainbowBuffer == null) {
-			rainbowBuffer = vertexBuffer("Botania rainbow", RING_VERTICES);
-		}
-		try (ByteBufferBuilder bytes = ByteBufferBuilder.exactlySized(RING_VERTICES * VERTEX_SIZE)) {
-			BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
-			buildRing(builder, scale, y, y0, 0, 0, 0);
-			upload(rainbowBuffer, builder);
-		}
 		drawQuads(renderPass, "Botania rainbow", CoreShaders.SKY_TEXTURED_TRANSLUCENT, textureRainbow, rainbowBuffer.slice(), RING_VERTICES, modelView(ms), rainbowColor);
 		ms.popPose();
 	}

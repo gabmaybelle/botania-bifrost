@@ -60,7 +60,7 @@ public class ManasteelArmorItem extends Item implements PhantomInkable {
 	}
 
 	@SoftImplement("IItemExtension")
-	// PORT-26.3: ArmorMaterial.Layer is gone; the renderers ask for the texture directly once they are ported.
+	// PORT-26.3: ArmorMaterial.Layer is gone; the loaders' armour renderers ask for the texture here directly.
 	public final Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean innerModel) {
 		return hasPhantomInk(stack) ? Identifier.parse(ResourcesLib.MODEL_INVISIBLE_ARMOR) : getArmorTextureAfterInk(stack, slot);
 	}
