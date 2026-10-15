@@ -383,12 +383,13 @@ public class NeoForgeXplatImpl implements XplatAbstractions {
 
 	@Override
 	public void registerReloadListener(PackType type, Identifier id, PreparableReloadListener listener) {
-		// PORT-26.3: the reload listener events are keyed by id and live on the mod bus now
+		// PORT-26.3: the reload listener events are keyed by id; the client one is a mod bus event, the server one
+		// (AddServerReloadListenersEvent) is fired on the game bus (found by the first NeoForge server start)
 		var modBus = ModList.get().getModContainerById(BotaniaAPI.MODID).orElseThrow().getEventBus();
 		switch (type) {
 			case CLIENT_RESOURCES -> modBus.addListener(
 					(AddClientReloadListenersEvent e) -> e.addListener(id, listener));
-			case SERVER_DATA -> modBus.addListener(
+			case SERVER_DATA -> NeoForge.EVENT_BUS.addListener(
 					(AddServerReloadListenersEvent e) -> e.addListener(id, listener));
 		}
 	}

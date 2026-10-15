@@ -25,9 +25,10 @@ public class CorporeaSparkRenderer extends BaseSparkRenderer<CorporeaSparkEntity
 
 	public CorporeaSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		this.corporeaWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/corporea_spark")));
-		this.corporeaMasterWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/master_corporea_spark")));
-		this.corporeaCreativeWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/creative_corporea_spark")));
+		// PORT-26.3: the spark sprites are drawn from the block atlas; items have their own atlas now, so these are copies under textures/block
+		this.corporeaWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("block/corporea_spark")));
+		this.corporeaMasterWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("block/master_corporea_spark")));
+		this.corporeaCreativeWorldSprite = Objects.requireNonNull(RenderHelper.getBlockSprite(this.sprites, botaniaRL("block/creative_corporea_spark")));
 	}
 
 	@Override

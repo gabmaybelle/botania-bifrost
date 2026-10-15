@@ -26,7 +26,10 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.LaputaShardItem;
 
 public class LaputaShardUpgradeRecipe extends CustomRecipe {
-	public static final RecipeSerializer<LaputaShardUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(LaputaShardUpgradeRecipe::new), StreamCodec.unit(new LaputaShardUpgradeRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final LaputaShardUpgradeRecipe INSTANCE = new LaputaShardUpgradeRecipe();
+	public static final RecipeSerializer<LaputaShardUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public LaputaShardUpgradeRecipe() {}
 

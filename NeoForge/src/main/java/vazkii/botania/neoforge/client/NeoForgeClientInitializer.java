@@ -65,7 +65,7 @@ import vazkii.botania.client.render.item.BotaniaSpecialModelRenderers;
 import vazkii.botania.common.block.PlatformBlock;
 import vazkii.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
 import vazkii.botania.common.block.flower.FloatingFlowerBaseBlock;
-import vazkii.botania.common.handler.BotaniaRecipeIngredientsCache;
+import vazkii.botania.common.crafting.SyncedRecipes;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.common.item.equipment.bauble.RingOfDexterousMotionItem;
@@ -112,7 +112,9 @@ public class NeoForgeClientInitializer {
 				e.setCanceled(true);
 			}
 		});
-		bus.addListener((RecipesReceivedEvent e) -> BotaniaRecipeIngredientsCache.clearClientCache());
+		// PORT-26.3: the recipe types asked for in OnDatapackSyncEvent arrive here (the ingredient cache is cleared
+		// by the store)
+		bus.addListener((RecipesReceivedEvent e) -> SyncedRecipes.replace(e.getRecipeTypes(), e.getRecipeMap().values()));
 		bus.addListener((CustomizeGuiOverlayEvent.BossEventProgress e) -> {
 			var result = BossBarHandler.onBarRender(e.getGuiGraphics(), e.getX(), e.getY(),
 					e.getBossEvent(), true);

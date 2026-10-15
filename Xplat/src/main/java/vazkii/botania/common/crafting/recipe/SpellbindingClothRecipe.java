@@ -23,7 +23,10 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.common.item.BotaniaItems;
 
 public class SpellbindingClothRecipe extends CustomRecipe {
-	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(SpellbindingClothRecipe::new), StreamCodec.unit(new SpellbindingClothRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final SpellbindingClothRecipe INSTANCE = new SpellbindingClothRecipe();
+	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public SpellbindingClothRecipe() {}
 

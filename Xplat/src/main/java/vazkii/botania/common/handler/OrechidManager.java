@@ -18,7 +18,6 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,13 +50,13 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	public static <T extends OrechidRecipe> Collection<T> getMatchingRecipes(
-			RecipeManager manager,
+			Level level,
 			RecipeType<T> type,
 			BlockState state) {
 		final var byState = BY_TYPE.computeIfAbsent(type, t -> new IdentityHashMap<>());
 		final var list = byState.computeIfAbsent(state, s -> {
 			var builder = ImmutableList.<T>builder();
-			for (var recipe : BotaniaRecipeTypes.getAllRecipesFor(manager, type)) {
+			for (var recipe : BotaniaRecipeTypes.getAllRecipesFor(level, type)) {
 				if (recipe.value().getInput().test(state)) {
 					builder.add(recipe.value());
 				}
@@ -90,7 +89,7 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	private static int calculateTotalDisplayWeightAtPosition(Level level, RecipeType<? extends OrechidRecipe> type, BlockState state, @Nullable BlockPos pos) {
-		final var recipeList = getMatchingRecipes(BotaniaRecipeTypes.recipeManager(level), type, state);
+		final var recipeList = getMatchingRecipes(level, type, state);
 		if (recipeList.isEmpty()) {
 			return 0;
 		}

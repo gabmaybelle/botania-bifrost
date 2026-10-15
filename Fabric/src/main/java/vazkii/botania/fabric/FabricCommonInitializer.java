@@ -125,6 +125,7 @@ import vazkii.botania.fabric.internal_caps.FabricInternalEntityAttachments;
 import vazkii.botania.fabric.internal_caps.RedStringContainerStorage;
 import vazkii.botania.fabric.loot.LootHandler;
 import vazkii.botania.fabric.network.FabricPacketHandler;
+import vazkii.botania.fabric.network.UpdateRecipesPacket;
 import vazkii.botania.network.clientbound.ItemLifeTimePacket;
 import vazkii.botania.xplat.XplatAbstractions;
 
@@ -307,6 +308,7 @@ public class FabricCommonInitializer implements ModInitializer {
 		ServerEntityEvents.ENTITY_LOAD.register(TigerseyeBlockEntity::pacifyAfterLoad);
 		ServerLifecycleEvents.SERVER_STARTED.register(this::serverAboutToStart);
 		ServerLifecycleEvents.SERVER_STOPPING.register(this::serverStopping);
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> UpdateRecipesPacket.sendAll(player));
 		ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> FlugelTiaraItem.playerLoggedOut(handler.player)));
 		ServerPlayerEvents.AFTER_RESPAWN.register(ResoluteIvyItem::onPlayerRespawn);
 		ServerTickEvents.END_LEVEL_TICK.register(CommonTickHandler::onTick);

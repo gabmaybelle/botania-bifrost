@@ -78,7 +78,7 @@ public class MoltenCoreRodItem extends Item {
 			BlockState state = world.getBlockState(pos.getBlockPos());
 
 			SingleRecipeInput input = new SingleRecipeInput(new ItemStack(state.getBlock()));
-			BotaniaRecipeTypes.recipeManager(world).getRecipeFor(RecipeType.SMELTING, input, p.level())
+			BotaniaRecipeTypes.getRecipeFor(world, RecipeType.SMELTING, input)
 					.map(r -> r.value().assemble(input))
 					.filter(r -> !r.isEmpty() && r.getItem() instanceof BlockItem)
 					.ifPresent(result -> {

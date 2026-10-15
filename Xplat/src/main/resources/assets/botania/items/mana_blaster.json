@@ -16,7 +16,7 @@
       "base": "botania:item/mana_blaster",
       "model": {
         "type": "botania:mana_blaster",
-        "gun": "botania:item/mana_blaster"
+        "gun": "botania:item/mana_blaster_noclip"
       }
     }
   }

@@ -44,6 +44,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.*;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityEvent;
@@ -293,6 +294,8 @@ public class NeoForgeCommonInitializer {
 			}
 		});
 		bus.addListener((PlayerEvent.StartTracking e) -> ItemLifeTimePacket.onItemTrack(e.getTarget(), (ServerPlayer) e.getEntity()));
+		// PORT-26.3: the client keeps a copy of these recipe types, see SyncedRecipes
+		bus.addListener((OnDatapackSyncEvent e) -> e.sendRecipes(BotaniaRecipeTypes.SYNCED_TYPES));
 		bus.addListener((ManaNetworkEvent e) -> ManaNetworkHandler.instance.onNetworkEvent(e.getReceiver(), e.getType(), e.getAction()));
 		bus.addListener((EntityJoinLevelEvent e) -> {
 			if (!e.getLevel().isClientSide()) {

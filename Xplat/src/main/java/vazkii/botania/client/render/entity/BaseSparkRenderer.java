@@ -39,12 +39,13 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 
 	protected BaseSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
+		// PORT-26.3: the spark sprites are drawn from the block atlas; items have their own atlas now, so these are copies under textures/block
 		this.sprites = ctx.getSprites();
 		this.starSprite = Objects.requireNonNull(
-				RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/spark_star"))
+				RenderHelper.getBlockSprite(this.sprites, botaniaRL("block/spark_star"))
 		);
 		this.worldSprite = Objects.requireNonNull(
-				RenderHelper.getBlockSprite(this.sprites, botaniaRL("item/mana_spark"))
+				RenderHelper.getBlockSprite(this.sprites, botaniaRL("block/mana_spark"))
 		);
 	}
 

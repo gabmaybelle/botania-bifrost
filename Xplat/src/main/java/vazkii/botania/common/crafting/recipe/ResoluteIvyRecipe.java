@@ -22,7 +22,10 @@ import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.item.BotaniaItems;
 
 public class ResoluteIvyRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ResoluteIvyRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(ResoluteIvyRecipe::new), StreamCodec.unit(new ResoluteIvyRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final ResoluteIvyRecipe INSTANCE = new ResoluteIvyRecipe();
+	public static final RecipeSerializer<ResoluteIvyRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public ResoluteIvyRecipe() {}
 

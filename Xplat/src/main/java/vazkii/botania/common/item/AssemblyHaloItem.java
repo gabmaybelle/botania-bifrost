@@ -333,7 +333,7 @@ public class AssemblyHaloItem extends Item {
 
 	@SuppressWarnings("unchecked")
 	private static @Nullable RecipeHolder<CraftingRecipe> getRecipeHolder(Level world, Identifier id) {
-		Optional<RecipeHolder<?>> recipeHolder = BotaniaRecipeTypes.recipeManager(world).byKey(ResourceKey.create(Registries.RECIPE, id));
+		Optional<RecipeHolder<?>> recipeHolder = BotaniaRecipeTypes.byKey(world, ResourceKey.create(Registries.RECIPE, id));
 		return recipeHolder.isPresent() && recipeHolder.get().value().getType() == RecipeType.CRAFTING
 				? (RecipeHolder<CraftingRecipe>) recipeHolder.get()
 				: null;

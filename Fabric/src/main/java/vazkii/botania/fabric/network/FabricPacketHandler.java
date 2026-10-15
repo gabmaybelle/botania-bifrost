@@ -74,6 +74,7 @@ public final class FabricPacketHandler {
 		PayloadTypeRegistry.clientboundPlay().register(SparkNetIndicatorEffectPacket.ID, SparkNetIndicatorEffectPacket.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(ThundercallerEffectPacket.ID, ThundercallerEffectPacket.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(UpdateItemsRemainingPacket.ID, UpdateItemsRemainingPacket.STREAM_CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(UpdateRecipesPacket.ID, UpdateRecipesPacket.STREAM_CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(DodgePacket.ID, makeServerBoundHandler(DodgePacket::handle));
 		ServerPlayNetworking.registerGlobalReceiver(IndexKeybindRequestPacket.ID, makeServerBoundHandler(IndexKeybindRequestPacket::handle));
@@ -110,6 +111,7 @@ public final class FabricPacketHandler {
 		ClientPlayNetworking.registerGlobalReceiver(SparkNetIndicatorEffectPacket.ID, makeClientBoundHandler(SparkNetIndicatorEffectPacket.Handler::handle));
 		ClientPlayNetworking.registerGlobalReceiver(ThundercallerEffectPacket.ID, makeClientBoundHandler(ThundercallerEffectPacket.Handler::handle));
 		ClientPlayNetworking.registerGlobalReceiver(UpdateItemsRemainingPacket.ID, makeClientBoundHandler(UpdateItemsRemainingPacket.Handler::handle));
+		ClientPlayNetworking.registerGlobalReceiver(UpdateRecipesPacket.ID, makeClientBoundHandler(UpdateRecipesPacket.Handler::handle));
 	}
 
 	private static <T extends CustomPacketPayload> ClientPlayNetworking.PlayPayloadHandler<T> makeClientBoundHandler(BiConsumer<T, Player> handler) {

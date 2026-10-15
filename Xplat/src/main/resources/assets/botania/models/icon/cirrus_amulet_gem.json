@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "botania:item/cirrus_amulet_gem"
+    "layer0": "botania:block/icon/cirrus_amulet_gem"
   }
 }

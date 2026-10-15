@@ -25,7 +25,10 @@ import vazkii.botania.common.item.AncientWillItem;
 import java.util.Objects;
 
 public class AncientWillRecipe extends CustomRecipe {
-	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(AncientWillRecipe::new), StreamCodec.unit(new AncientWillRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final AncientWillRecipe INSTANCE = new AncientWillRecipe();
+	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public AncientWillRecipe() {}
 

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "botania:item/pyroclast_pendant_gem"
+    "layer0": "botania:block/icon/pyroclast_pendant_gem"
   }
 }

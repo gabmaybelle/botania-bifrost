@@ -39,8 +39,9 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 // and the text is submitted to the collector.
 public class RenderLexicon {
 	private static final boolean SHOULD_MISSPELL = Math.random() < 0.004;
-	public static final SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("item/lexica_botania_3d"));
-	public static final SpriteId ELVEN_TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("item/lexica_botania_elven_3d"));
+	// PORT-26.3: the 3D book textures sit in the block atlas now that items have their own atlas
+	public static final SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("block/lexica_botania_3d"));
+	public static final SpriteId ELVEN_TEXTURE = new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("block/lexica_botania_elven_3d"));
 
 	private static final String[] QUOTES = new String[] {
 			"\"Neat!\" - Direwolf20",

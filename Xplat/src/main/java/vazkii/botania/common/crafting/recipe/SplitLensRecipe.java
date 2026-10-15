@@ -22,7 +22,10 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.api.mana.BasicLensItem;
 
 public class SplitLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<SplitLensRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(SplitLensRecipe::new), StreamCodec.unit(new SplitLensRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final SplitLensRecipe INSTANCE = new SplitLensRecipe();
+	public static final RecipeSerializer<SplitLensRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public SplitLensRecipe() {}
 

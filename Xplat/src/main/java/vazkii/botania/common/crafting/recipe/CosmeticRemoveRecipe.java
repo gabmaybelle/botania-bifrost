@@ -23,7 +23,10 @@ import vazkii.botania.api.item.CosmeticBauble;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
 public class CosmeticRemoveRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(CosmeticRemoveRecipe::new), StreamCodec.unit(new CosmeticRemoveRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final CosmeticRemoveRecipe INSTANCE = new CosmeticRemoveRecipe();
+	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public CosmeticRemoveRecipe() {}
 

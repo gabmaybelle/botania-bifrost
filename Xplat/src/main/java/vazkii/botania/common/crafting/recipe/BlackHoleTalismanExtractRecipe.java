@@ -24,7 +24,10 @@ import vazkii.botania.common.item.BlackHoleTalismanItem;
 import vazkii.botania.common.item.BotaniaItems;
 
 public class BlackHoleTalismanExtractRecipe extends CustomRecipe {
-	public static final RecipeSerializer<BlackHoleTalismanExtractRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(BlackHoleTalismanExtractRecipe::new), StreamCodec.unit(new BlackHoleTalismanExtractRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final BlackHoleTalismanExtractRecipe INSTANCE = new BlackHoleTalismanExtractRecipe();
+	public static final RecipeSerializer<BlackHoleTalismanExtractRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public BlackHoleTalismanExtractRecipe() {}
 

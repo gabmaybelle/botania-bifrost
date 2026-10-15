@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
@@ -54,6 +55,13 @@ public class BotaniaRecipeTypes {
 			vazkii.botania.api.recipe.OrechidRecipe.IGNEM_TYPE_ID);
 	public static final RecipeType<vazkii.botania.api.recipe.OrechidRecipe> MARIMORPHOSIS_TYPE = register(
 			vazkii.botania.api.recipe.OrechidRecipe.MARIMORPHOSIS_TYPE_ID);
+
+	/**
+	 * PORT-26.3: the recipe types the client keeps a copy of (see {@link SyncedRecipes}): Botania's own, plus crafting
+	 * for the assembly halo and smelting for the rod of the molten core.
+	 */
+	public static final List<RecipeType<?>> SYNCED_TYPES = Stream.concat(TYPES.values().stream(),
+			Stream.of(RecipeType.CRAFTING, RecipeType.SMELTING)).toList();
 
 	private static <T extends Recipe<?>> RecipeType<T> register(Identifier id) {
 		RecipeType<T> type = new BotaniaRecipeType<>(id.getPath());
@@ -97,8 +105,34 @@ public class BotaniaRecipeTypes {
 		return result;
 	}
 
+	/** PORT-26.3: a client level answers from its synced copy. */
+	@SuppressWarnings("unchecked")
 	public static <T extends Recipe<?>> List<RecipeHolder<T>> getAllRecipesFor(Level level, RecipeType<T> type) {
+		if (level.isClientSide()) {
+			return (List<RecipeHolder<T>>) (List<?>) SyncedRecipes.byType(type);
+		}
 		return getAllRecipesFor(recipeManager(level), type);
+	}
+
+	/** PORT-26.3: RecipeManager#getRecipeFor for either side; a client level searches its synced copy. */
+	public static <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getRecipeFor(Level level, RecipeType<T> type, I input) {
+		if (!level.isClientSide()) {
+			return recipeManager(level).getRecipeFor(type, input, level);
+		}
+		for (RecipeHolder<T> holder : getAllRecipesFor(level, type)) {
+			if (holder.value().matches(input, level)) {
+				return Optional.of(holder);
+			}
+		}
+		return Optional.empty();
+	}
+
+	/** PORT-26.3: RecipeManager#byKey for either side; a client level answers from its synced copy. */
+	public static Optional<RecipeHolder<?>> byKey(Level level, ResourceKey<Recipe<?>> key) {
+		if (level.isClientSide()) {
+			return Optional.ofNullable(SyncedRecipes.byKey(key));
+		}
+		return recipeManager(level).byKey(key);
 	}
 
 	public static void submitRecipeTypes(BiConsumer<RecipeType<?>, Identifier> r) {
@@ -149,7 +183,7 @@ public class BotaniaRecipeTypes {
 
 	@SuppressWarnings("unchecked")
 	public static <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(Level world, Identifier id, RecipeType<T> expectedType) {
-		var holder = recipeManager(world).byKey(ResourceKey.create(Registries.RECIPE, id));
+		var holder = byKey(world, ResourceKey.create(Registries.RECIPE, id));
 		return holder.isPresent() && holder.get().value().getType() == expectedType
 				? holder.map(h -> (RecipeHolder<T>) h)
 				: Optional.empty();

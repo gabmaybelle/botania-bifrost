@@ -24,7 +24,10 @@ import vazkii.botania.common.item.brew.BaseBrewItem;
 import java.util.Objects;
 
 public class MergeVialRecipe extends CustomRecipe {
-	public static final RecipeSerializer<MergeVialRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(MergeVialRecipe::new), StreamCodec.unit(new MergeVialRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final MergeVialRecipe INSTANCE = new MergeVialRecipe();
+	public static final RecipeSerializer<MergeVialRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public MergeVialRecipe() {}
 

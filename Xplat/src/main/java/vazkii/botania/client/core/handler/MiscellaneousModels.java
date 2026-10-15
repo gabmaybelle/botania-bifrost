@@ -85,6 +85,9 @@ public class MiscellaneousModels {
 		registerSpreaderComponents(consumer);
 		consumer.accept(CorporeaCrystalCubeBlockEntityRenderer.CUBE_MODEL_ID);
 		consumer.accept(ManaPumpBlockEntityRenderer.PUMP_HEAD_ID);
+		// PORT-26.3: the mana blaster's gun models, drawn by its special renderer (the loader that composed them is gone)
+		consumer.accept(botaniaRL("item/mana_blaster_clip"));
+		consumer.accept(botaniaRL("item/mana_blaster_noclip"));
 
 		if (!registeredModels) {
 			registeredModels = true;

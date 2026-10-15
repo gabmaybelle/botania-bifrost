@@ -21,7 +21,10 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.ManaBlasterItem;
 
 public class ManaBlasterClipRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ManaBlasterClipRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(ManaBlasterClipRecipe::new), StreamCodec.unit(new ManaBlasterClipRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final ManaBlasterClipRecipe INSTANCE = new ManaBlasterClipRecipe();
+	public static final RecipeSerializer<ManaBlasterClipRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public ManaBlasterClipRecipe() {}
 

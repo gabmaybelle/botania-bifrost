@@ -106,8 +106,8 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			return true;
 		}
 
-		Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.recipeManager(level)
-				.getRecipeFor(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, getRecipeInput(), level);
+		Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.getRecipeFor(level,
+				BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, getRecipeInput());
 		if (maybeRecipe.isPresent()) {
 			var recipe = maybeRecipe.get();
 			if (recipe.value().getReagent().test(item.getItem())) {
@@ -343,8 +343,8 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			if (amt > 0) {
 				float anglePer = 360F / amt;
 
-				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.recipeManager(altar.level)
-						.getRecipeFor(BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, altar.getRecipeInput(), altar.level);
+				Optional<RecipeHolder<PetalApothecaryRecipe>> maybeRecipe = BotaniaRecipeTypes.getRecipeFor(altar.level,
+						BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, altar.getRecipeInput());
 				maybeRecipe.ifPresent(recipe -> {
 					RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, xc + radius + 9, yc - 8, 0, 8, 22, 15);
 

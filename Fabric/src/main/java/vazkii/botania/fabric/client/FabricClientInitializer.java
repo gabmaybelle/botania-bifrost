@@ -25,7 +25,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
@@ -182,8 +181,11 @@ public class FabricClientInitializer implements ClientModInitializer {
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::loadComplete);
 		ClientTickEvents.END_CLIENT_TICK.register(ClientTickHandler::clientTickEnd);
 		ClientTickEvents.END_CLIENT_TICK.register(KonamiHandler::clientTick);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.EXPERIENCE_LEVEL, botaniaRL("mana_hud"), HUDHandler::onDrawExperienceBarPost);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.AIR_BAR, botaniaRL("air_level_hud"), HUDHandler::onDrawAirLevelPost);
+		// PORT-26.3: a layer attached after a vanilla element inherits that element's render condition (the experience
+		// level only draws at level 1 and up), so the main HUD goes last, as HudRenderCallback drew it; it checks the
+		// hidden-HUD state itself
+		HudElementRegistry.addLast(botaniaRL("mana_hud"), HUDHandler::onDrawExperienceBarPost);
+		HudElementRegistry.addLast(botaniaRL("air_level_hud"), HUDHandler::onDrawAirLevelPost);
 		ItemTooltipCallback.EVENT.register(TooltipHandler::onTooltipEvent);
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ScreenKeyboardEvents.beforeKeyPress(screen)
 				.register((screen2, event) -> CorporeaInputHandler.buttonPressed(event)));

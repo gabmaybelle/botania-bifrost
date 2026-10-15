@@ -21,7 +21,10 @@ import vazkii.botania.api.mana.CompositableLensItem;
 import vazkii.botania.common.lib.BotaniaTags;
 
 public class CompositeLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CompositeLensRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(CompositeLensRecipe::new), StreamCodec.unit(new CompositeLensRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final CompositeLensRecipe INSTANCE = new CompositeLensRecipe();
+	public static final RecipeSerializer<CompositeLensRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public CompositeLensRecipe() {}
 

@@ -24,7 +24,10 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.lens.LensItem;
 
 public class LensDyeingRecipe extends CustomRecipe {
-	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(LensDyeingRecipe::new), StreamCodec.unit(new LensDyeingRecipe()));
+	// PORT-26.3: one shared instance for both codecs, as vanilla's stateless custom recipes do: StreamCodec.unit refuses to
+	// encode any other instance, and the recipes are synced to the client now
+	public static final LensDyeingRecipe INSTANCE = new LensDyeingRecipe();
+	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
 	public LensDyeingRecipe() {}
 
