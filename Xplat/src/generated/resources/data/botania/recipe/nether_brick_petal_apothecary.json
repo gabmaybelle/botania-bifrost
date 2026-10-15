@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "C": {
-      "item": "minecraft:nether_bricks"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "C": "minecraft:nether_bricks",
+    "P": "#botania:petals"
   },
   "pattern": [
     "CPC",
@@ -15,7 +10,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "botania:nether_brick_petal_apothecary"
   }
 }

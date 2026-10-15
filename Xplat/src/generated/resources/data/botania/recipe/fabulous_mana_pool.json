@@ -1,17 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "R": {
-      "item": "botania:shimmerrock"
-    }
+    "R": "botania:shimmerrock"
   },
   "pattern": [
     "R R",
     "RRR"
   ],
   "result": {
-    "count": 1,
     "id": "botania:fabulous_mana_pool"
   }
 }

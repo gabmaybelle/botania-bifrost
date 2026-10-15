@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:rune_of_air"
-    },
-    "T": {
-      "item": "botania:livingwood_twig"
-    }
+    "A": "botania:rune_of_air",
+    "T": "botania:livingwood_twig"
   },
   "pattern": [
     " TA",
@@ -15,7 +11,6 @@
     "T  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:livingwood_slingshot"
   }
 }

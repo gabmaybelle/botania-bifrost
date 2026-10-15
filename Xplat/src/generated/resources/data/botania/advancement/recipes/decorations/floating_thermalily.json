@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_thermalily"
+        "recipes": "botania:floating_thermalily"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

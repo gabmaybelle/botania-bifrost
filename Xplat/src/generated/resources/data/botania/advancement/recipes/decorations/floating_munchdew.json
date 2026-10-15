@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_munchdew"
+        "recipes": "botania:floating_munchdew"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "M": {
-      "item": "botania:mana_spreader"
-    },
-    "R": {
-      "item": "botania:livingrock"
-    },
-    "S": {
-      "item": "botania:red_string"
-    }
+    "M": "botania:mana_spreader",
+    "R": "botania:livingrock",
+    "S": "botania:red_string"
   },
   "pattern": [
     "RRR",
@@ -18,7 +12,6 @@
     "RRR"
   ],
   "result": {
-    "count": 1,
     "id": "botania:red_stringed_spoofer"
   }
 }

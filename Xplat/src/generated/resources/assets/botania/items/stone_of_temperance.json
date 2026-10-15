@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/stone_of_temperance"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/stone_of_temperance_active"
+    },
+    "property": "botania:test",
+    "test": "active"
+  }
+}

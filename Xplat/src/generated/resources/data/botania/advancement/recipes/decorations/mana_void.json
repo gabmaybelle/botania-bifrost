@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_void"
+        "recipes": "botania:mana_void"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

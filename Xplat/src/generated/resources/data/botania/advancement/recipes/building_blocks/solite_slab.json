@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:solite_slab"
+        "recipes": "botania:solite_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_dandelifeon"
+        "recipes": "botania:floating_dandelifeon"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

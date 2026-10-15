@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:messenger_lens"
+        "recipes": "botania:messenger_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:dragonstone_from_dragonstone_block"
+        "recipes": "botania:dragonstone_from_dragonstone_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

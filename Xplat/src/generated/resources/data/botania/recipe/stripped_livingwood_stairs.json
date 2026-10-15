@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:stripped_livingwood"
-    }
+    "Q": "botania:stripped_livingwood"
   },
   "pattern": [
     "Q  ",

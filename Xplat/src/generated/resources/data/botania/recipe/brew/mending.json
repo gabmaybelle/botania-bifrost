@@ -2,14 +2,8 @@
   "type": "botania:brew",
   "brew": "botania:mending",
   "ingredients": [
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:glistering_melon_slice"
-    },
-    {
-      "item": "minecraft:potato"
-    }
+    "minecraft:nether_wart",
+    "minecraft:glistering_melon_slice",
+    "minecraft:potato"
   ]
 }

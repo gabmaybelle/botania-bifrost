@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_mirror"
+        "recipes": "botania:mana_mirror"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

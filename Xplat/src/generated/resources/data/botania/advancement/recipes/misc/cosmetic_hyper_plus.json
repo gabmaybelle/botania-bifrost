@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_hyper_plus"
+        "recipes": "botania:cosmetic_hyper_plus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:third_eye"
+        "recipes": "botania:third_eye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

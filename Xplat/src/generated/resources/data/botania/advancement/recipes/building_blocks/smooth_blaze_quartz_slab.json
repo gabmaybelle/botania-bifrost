@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smooth_blaze_quartz_slab"
+        "recipes": "botania:smooth_blaze_quartz_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

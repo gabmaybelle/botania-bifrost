@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/bore_lens",
+    "tints": [
+      {
+        "type": "botania:lens"
+      }
+    ]
+  }
+}

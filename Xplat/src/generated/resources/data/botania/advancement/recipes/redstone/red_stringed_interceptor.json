@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:red_stringed_interceptor"
+        "recipes": "botania:red_stringed_interceptor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,15 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "botania:shimmerrock"
-    }
+    "#": "botania:shimmerrock"
   },
   "pattern": [
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "botania:shimmerrock_pressure_plate"
   }
 }

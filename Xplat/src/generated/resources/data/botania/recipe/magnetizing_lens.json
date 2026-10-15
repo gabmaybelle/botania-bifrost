@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "tag": "c:ingots/iron"
-    },
-    {
-      "tag": "c:ingots/gold"
-    }
+    "botania:mana_lens",
+    "#c:ingots/iron",
+    "#c:ingots/gold"
   ],
   "result": {
-    "count": 1,
     "id": "botania:magnetizing_lens"
   }
 }

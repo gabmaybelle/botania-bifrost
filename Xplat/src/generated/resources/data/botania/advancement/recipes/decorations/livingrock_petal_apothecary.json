@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingrock_petal_apothecary"
+        "recipes": "botania:livingrock_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

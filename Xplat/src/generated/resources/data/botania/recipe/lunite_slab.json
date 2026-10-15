@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_stone_slab",
   "key": {
-    "Q": {
-      "item": "botania:lunite"
-    }
+    "Q": "botania:lunite"
   },
   "pattern": [
     "QQQ"

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rosy_talc_pressure_plate"
+        "recipes": "botania:rosy_talc_pressure_plate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

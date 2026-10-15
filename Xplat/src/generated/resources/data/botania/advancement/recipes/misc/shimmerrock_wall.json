@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:shimmerrock_wall"
+        "recipes": "botania:shimmerrock_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

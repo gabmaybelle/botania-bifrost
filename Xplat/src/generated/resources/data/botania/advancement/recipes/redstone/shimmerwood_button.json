@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:shimmerwood_button"
+        "recipes": "botania:shimmerwood_button"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

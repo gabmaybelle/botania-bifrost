@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/mycelite"
+        "recipes": "botania:smelting/mycelite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

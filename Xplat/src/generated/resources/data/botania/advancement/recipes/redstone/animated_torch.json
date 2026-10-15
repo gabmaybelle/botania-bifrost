@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:animated_torch"
+        "recipes": "botania:animated_torch"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

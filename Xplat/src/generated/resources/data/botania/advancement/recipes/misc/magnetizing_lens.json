@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:magnetizing_lens"
+        "recipes": "botania:magnetizing_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

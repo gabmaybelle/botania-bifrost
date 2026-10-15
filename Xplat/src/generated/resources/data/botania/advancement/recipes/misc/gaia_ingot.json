@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gaia_ingot"
+        "recipes": "botania:gaia_ingot"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

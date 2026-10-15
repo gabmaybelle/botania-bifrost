@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:velocity_lens"
+        "recipes": "botania:velocity_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

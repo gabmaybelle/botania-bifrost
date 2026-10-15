@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:conjuration_catalyst"
   },
-  "input": {
-    "item": "minecraft:jungle_leaves"
-  },
+  "input": "minecraft:jungle_leaves",
   "mana": 2000,
   "output": {
     "count": 2,

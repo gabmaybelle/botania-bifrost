@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:teru_teru_bozu"
+        "recipes": "botania:teru_teru_bozu"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

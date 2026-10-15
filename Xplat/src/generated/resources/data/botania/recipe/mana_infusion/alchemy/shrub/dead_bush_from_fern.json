@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:shrub_cycle",
-  "input": {
-    "item": "minecraft:fern"
-  },
+  "input": "minecraft:fern",
   "mana": 500,
   "output": {
     "count": 1,

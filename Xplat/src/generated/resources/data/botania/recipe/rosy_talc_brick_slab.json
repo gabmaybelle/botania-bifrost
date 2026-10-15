@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_brick_slab",
   "key": {
-    "Q": {
-      "item": "botania:rosy_talc_bricks"
-    }
+    "Q": "botania:rosy_talc_bricks"
   },
   "pattern": [
     "QQQ"

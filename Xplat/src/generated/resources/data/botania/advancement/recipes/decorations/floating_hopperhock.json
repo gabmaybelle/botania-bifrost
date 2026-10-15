@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_hopperhock"
+        "recipes": "botania:floating_hopperhock"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

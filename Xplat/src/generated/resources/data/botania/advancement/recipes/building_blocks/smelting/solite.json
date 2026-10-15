@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/solite"
+        "recipes": "botania:smelting/solite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

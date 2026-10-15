@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:azulejo_13"
+        "recipes": "botania:azulejo_13"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,0 +1,21 @@
+// 26.3	-999999999-01-01T00:00:00	Botania Bifrost/Botania Brew recipes
+f47060c6127ef842cb3beca1284cc1ede3349c7d data/botania/recipe/brew/absolution.json
+59f266510c138c9ad6defaae43633a9b70eb0aa5 data/botania/recipe/brew/adrenaline.json
+d2e83f2d46ba19e09c5290a1d37e037d03ccae47 data/botania/recipe/brew/cloaking.json
+7f6a3ec9972209bb29c07b975c9a61e949e73101 data/botania/recipe/brew/crimson_shade.json
+c6a52a42de292c5aec8ec754727152a0a2da3c27 data/botania/recipe/brew/crossed_souls.json
+e8067b389b9324dc7d62fbbcdd3dce074a8cce52 data/botania/recipe/brew/feather_feet.json
+200cd438366fced5aa15d642de0db5b5638d0285 data/botania/recipe/brew/fleetfeet.json
+dda2cee28e904f497bb41886cb9ab0f34582c62b data/botania/recipe/brew/fortitude.json
+6d739ca1db4aa9148253bdd5d984f6e69abf2cc9 data/botania/recipe/brew/gills.json
+9255c4e6eb598a2c15248d748437f8cbb93acee8 data/botania/recipe/brew/magmaskin.json
+0a713d101c24ef5928d6191b76d7611d12afcc91 data/botania/recipe/brew/marine_allure.json
+25022f3f688cf4127af1fe3780a5a65bb778f2ab data/botania/recipe/brew/mending.json
+97e0b4dd096e6ff402a0dce05540bae51a6e5ab3 data/botania/recipe/brew/overload.json
+c48e325aed4459289d2bd126b99b24a09edea8f4 data/botania/recipe/brew/owlsight.json
+b1ddb3a5788343ead07fea76d1af592890ac6bff data/botania/recipe/brew/restoration.json
+064bcda3ace0d1f3631b283dee912ed2c18b262e data/botania/recipe/brew/revitalization.json
+749023a3ca6aa7bed3e01fb0895b39f080ba8bfc data/botania/recipe/brew/shielding.json
+e9e05dd5f475d7ba1365f72cea909f24fdf35e0f data/botania/recipe/brew/upsurging.json
+15a091df9868319e8d870932381192c8a567c8a4 data/botania/recipe/brew/vanitys_emptiness.json
+b99ad2542275f144bd4905df19eef0ff227157ed data/botania/recipe/brew/vigor.json

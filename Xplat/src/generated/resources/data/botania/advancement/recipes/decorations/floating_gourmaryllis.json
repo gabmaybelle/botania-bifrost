@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_gourmaryllis"
+        "recipes": "botania:floating_gourmaryllis"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

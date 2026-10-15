@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:talc_wall"
+        "recipes": "botania:talc_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

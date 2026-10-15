@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:ingots/manasteel"
-    },
-    "F": {
-      "item": "botania:rune_of_air"
-    },
-    "M": {
-      "item": "botania:rune_of_autumn"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "D": "#c:ingots/manasteel",
+    "F": "botania:rune_of_air",
+    "M": "botania:rune_of_autumn",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "MS ",
@@ -21,7 +13,6 @@
     "DSF"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cirrus_amulet"
   }
 }

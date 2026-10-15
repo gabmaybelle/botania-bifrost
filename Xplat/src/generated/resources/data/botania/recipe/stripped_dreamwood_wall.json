@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:stripped_dreamwood"
-    }
+    "B": "botania:stripped_dreamwood"
   },
   "pattern": [
     "BBB",

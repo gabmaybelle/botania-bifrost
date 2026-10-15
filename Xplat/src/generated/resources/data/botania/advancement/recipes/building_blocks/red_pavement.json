@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:red_pavement"
+        "recipes": "botania:red_pavement"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

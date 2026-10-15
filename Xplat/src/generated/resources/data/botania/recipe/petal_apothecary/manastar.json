@@ -1,24 +1,14 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/light_blue"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/cyan"
-    }
+    "#botania:petals/light_blue",
+    "#botania:petals/green",
+    "#botania:petals/red",
+    "#botania:petals/cyan"
   ],
   "output": {
     "count": 1,
     "id": "botania:manastar"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

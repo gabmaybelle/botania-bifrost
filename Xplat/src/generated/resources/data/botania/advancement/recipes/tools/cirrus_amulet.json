@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cirrus_amulet"
+        "recipes": "botania:cirrus_amulet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

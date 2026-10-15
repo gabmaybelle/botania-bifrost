@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cataclasite_petal_apothecary"
+        "recipes": "botania:cataclasite_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

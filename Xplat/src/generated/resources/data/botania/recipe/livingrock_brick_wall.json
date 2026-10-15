@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:livingrock_bricks"
-    }
+    "B": "botania:livingrock_bricks"
   },
   "pattern": [
     "BBB",

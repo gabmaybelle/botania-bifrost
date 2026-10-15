@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_bergamute"
+        "recipes": "botania:floating_bergamute"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

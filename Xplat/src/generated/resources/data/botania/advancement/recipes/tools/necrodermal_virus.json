@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:necrodermal_virus"
+        "recipes": "botania:necrodermal_virus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

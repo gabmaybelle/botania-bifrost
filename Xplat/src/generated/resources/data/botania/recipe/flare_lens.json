@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "item": "botania:alfglass"
-    },
-    {
-      "tag": "c:ingots/elementium"
-    }
+    "botania:mana_lens",
+    "botania:alfglass",
+    "#c:ingots/elementium"
   ],
   "result": {
-    "count": 1,
     "id": "botania:flare_lens"
   }
 }

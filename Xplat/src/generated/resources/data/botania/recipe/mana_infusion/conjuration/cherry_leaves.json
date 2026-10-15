@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:conjuration_catalyst"
   },
-  "input": {
-    "item": "minecraft:cherry_leaves"
-  },
+  "input": "minecraft:cherry_leaves",
   "mana": 2000,
   "output": {
     "count": 2,

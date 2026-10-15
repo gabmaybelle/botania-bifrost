@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gneiss_pressure_plate"
+        "recipes": "botania:gneiss_pressure_plate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

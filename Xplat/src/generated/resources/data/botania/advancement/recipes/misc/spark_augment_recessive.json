@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spark_augment_recessive"
+        "recipes": "botania:spark_augment_recessive"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

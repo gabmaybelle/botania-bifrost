@@ -1,0 +1,13 @@
+// 26.3	-999999999-01-01T00:00:00	Botania Bifrost/minecraft:entity Loot Table
+5e6117e1dde50394444b395b52fd1873ddfd4683 data/botania/loot_table/entities/fel_blaze.json
+cfb36d1993b2fb5e7c4c6f0ae1b91b7cc9f5d944 data/botania/loot_table/entities/gaia_guardian.json
+9750408e769e8a209146354bf1672fc1587db1e8 data/botania/loot_table/gaia_guardian/reward.json
+238d3c70a08acacab26c0096fa1fcfca077ba6b5 data/botania/loot_table/gaia_guardian/reward_hard.json
+2375f8b3c7967b8870183fd32ff6e97942af9000 data/botania/loot_table/gameplay/ghast_ender_essence_crying.json
+a9feb1e2bcc785407b3c4bca574ccce8dcde4bff data/botania/loot_table/injected/minecraft/entities/creeper.json
+55c29a4595b50ae58800e7731c55831f74b9226f data/botania/loot_table/injected/minecraft/entities/ender_dragon.json
+fae0dd2a7336e128e7b6703e6524b7c337ff2a92 data/botania/loot_table/injected/minecraft/entities/piglin.json
+598e04634ad524b63fe74f34cbbd0e6abcae8d2b data/botania/loot_table/injected/minecraft/entities/player.json
+c09ee22e8b23c2eeec822c2b10d2b95d419a719c data/botania/loot_table/injected/minecraft/entities/skeleton.json
+7fc48f0507673c53c3f37e2d847b99235c49ec8d data/botania/loot_table/injected/minecraft/entities/wither_skeleton.json
+bf3b82e921b53104ce9f48c2a71ba986cbfbb376 data/botania/loot_table/injected/minecraft/entities/zombie.json

@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:fungus_cycle",
-  "input": {
-    "item": "minecraft:crimson_fungus"
-  },
+  "input": "minecraft:crimson_fungus",
   "mana": 120,
   "output": {
     "count": 1,

@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:nether_stone_cycle",
-  "input": {
-    "item": "minecraft:blackstone"
-  },
+  "input": "minecraft:blackstone",
   "mana": 200,
   "output": {
     "count": 1,

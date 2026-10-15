@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_lusitanic_shield"
+        "recipes": "botania:cosmetic_lusitanic_shield"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

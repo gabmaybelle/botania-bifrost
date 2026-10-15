@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "type": "botania:orechid",
   "biome_bonus_tag": "botania:orechid_stone_copper_bonus",
   "biome_bonus_weight": 2500,

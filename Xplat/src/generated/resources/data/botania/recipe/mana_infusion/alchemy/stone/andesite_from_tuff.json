@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:stone_cycle",
-  "input": {
-    "item": "minecraft:tuff"
-  },
+  "input": "minecraft:tuff",
   "mana": 200,
   "output": {
     "count": 1,

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:worldshapers_astrolabe"
+        "recipes": "botania:worldshapers_astrolabe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

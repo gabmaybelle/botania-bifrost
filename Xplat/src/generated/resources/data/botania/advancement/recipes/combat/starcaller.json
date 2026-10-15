@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:starcaller"
+        "recipes": "botania:starcaller"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

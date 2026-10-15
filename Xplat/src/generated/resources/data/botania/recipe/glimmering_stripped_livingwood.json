@@ -3,15 +3,10 @@
   "category": "building",
   "group": "botania:glimmering_livingwood",
   "ingredients": [
-    {
-      "item": "botania:stripped_livingwood"
-    },
-    {
-      "tag": "c:dusts/glowstone"
-    }
+    "botania:stripped_livingwood",
+    "#c:dusts/glowstone"
   ],
   "result": {
-    "count": 1,
     "id": "botania:glimmering_stripped_livingwood"
   }
 }

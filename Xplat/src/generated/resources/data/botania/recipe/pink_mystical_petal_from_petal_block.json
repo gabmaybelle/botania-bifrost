@@ -1,11 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "group": "botania:petal",
   "ingredients": [
-    {
-      "item": "botania:pink_petal_block"
-    }
+    "botania:pink_petal_block"
   ],
   "result": {
     "count": 9,

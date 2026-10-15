@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:livingrock_bricks"
-    }
+    "Q": "botania:livingrock_bricks"
   },
   "pattern": [
     "QQQ"

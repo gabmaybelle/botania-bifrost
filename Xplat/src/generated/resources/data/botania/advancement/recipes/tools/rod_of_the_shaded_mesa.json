@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rod_of_the_shaded_mesa"
+        "recipes": "botania:rod_of_the_shaded_mesa"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

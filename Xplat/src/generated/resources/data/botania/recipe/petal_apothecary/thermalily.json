@@ -1,27 +1,15 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "item": "botania:rune_of_earth"
-    },
-    {
-      "item": "botania:rune_of_fire"
-    }
+    "#botania:petals/red",
+    "#botania:petals/orange",
+    "#botania:petals/orange",
+    "botania:rune_of_earth",
+    "botania:rune_of_fire"
   ],
   "output": {
     "count": 1,
     "id": "botania:thermalily"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

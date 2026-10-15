@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manatide_bellows"
+        "recipes": "botania:manatide_bellows"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

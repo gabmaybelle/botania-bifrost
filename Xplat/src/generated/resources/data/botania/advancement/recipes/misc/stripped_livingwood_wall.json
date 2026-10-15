@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:stripped_livingwood_wall"
+        "recipes": "botania:stripped_livingwood_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,34 +2,30 @@
   "type": "minecraft:equipment",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:loot_table",
           "value": {
             "pools": [
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
+                    "modifier": [
                       {
+                        "type": "minecraft:set_components",
                         "components": {
                           "minecraft:trim": {
                             "material": "minecraft:copper",
                             "pattern": "minecraft:tide"
                           }
-                        },
-                        "function": "minecraft:set_components"
+                        }
                       },
                       {
+                        "type": "minecraft:set_components",
                         "components": {
-                          "minecraft:dyed_color": {
-                            "rgb": 1481884
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                          "minecraft:dyed_color": 1481884
+                        }
                       }
                     ],
                     "name": "minecraft:leather_helmet"
@@ -37,32 +33,29 @@
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
+                    "modifier": [
                       {
+                        "type": "minecraft:set_components",
                         "components": {
                           "minecraft:trim": {
                             "material": "minecraft:copper",
                             "pattern": "minecraft:tide"
                           }
-                        },
-                        "function": "minecraft:set_components"
+                        }
                       },
                       {
+                        "type": "minecraft:set_components",
                         "components": {
-                          "minecraft:dyed_color": {
-                            "rgb": 1481884
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                          "minecraft:dyed_color": 1481884
+                        }
                       }
                     ],
                     "name": "minecraft:leather_chestplate"
@@ -70,32 +63,29 @@
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
+                    "modifier": [
                       {
+                        "type": "minecraft:set_components",
                         "components": {
                           "minecraft:trim": {
                             "material": "minecraft:copper",
                             "pattern": "minecraft:tide"
                           }
-                        },
-                        "function": "minecraft:set_components"
+                        }
                       },
                       {
+                        "type": "minecraft:set_components",
                         "components": {
-                          "minecraft:dyed_color": {
-                            "rgb": 1481884
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                          "minecraft:dyed_color": 1481884
+                        }
                       }
                     ],
                     "name": "minecraft:leather_leggings"
@@ -103,32 +93,29 @@
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
+                    "modifier": [
                       {
+                        "type": "minecraft:set_components",
                         "components": {
                           "minecraft:trim": {
                             "material": "minecraft:copper",
                             "pattern": "minecraft:tide"
                           }
-                        },
-                        "function": "minecraft:set_components"
+                        }
                       },
                       {
+                        "type": "minecraft:set_components",
                         "components": {
-                          "minecraft:dyed_color": {
-                            "rgb": 1481884
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                          "minecraft:dyed_color": 1481884
+                        }
                       }
                     ],
                     "name": "minecraft:leather_boots"
@@ -136,8 +123,8 @@
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               }
             ]
@@ -149,103 +136,91 @@
           "value": {
             "pools": [
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:diamond",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:diamond",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_helmet"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:diamond",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:diamond",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_chestplate"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:diamond",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:diamond",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_leggings"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:diamond",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:diamond",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_boots"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               }
             ]
@@ -257,110 +232,98 @@
           "value": {
             "pools": [
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:gold",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:gold",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_helmet"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:gold",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:gold",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_chestplate"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:gold",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:gold",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_leggings"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:gold",
-                            "pattern": "minecraft:tide"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:gold",
+                          "pattern": "minecraft:tide"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_boots"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               }
             ]
           }
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

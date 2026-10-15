@@ -14,7 +14,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.*;
 import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -64,6 +66,7 @@ import vazkii.botania.xplat.XplatAbstractions;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -393,664 +396,768 @@ public final class BotaniaBlocks {
 
 	// special flowers (regular, floating, and potted; potentially each with petite variants)
 	public static final Block PURE_DAISY = make(LibBlockNames.SUBTILE_PUREDAISY,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					BotaniaMobEffects.ABSOLUTION,
 					1,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.PURE_DAISY));
+					props,
+					() -> BotaniaBlockEntities.PURE_DAISY),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_PURE_DAISY = make(floating(LibBlockNames.SUBTILE_PUREDAISY),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.PURE_DAISY));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.PURE_DAISY),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_PURE_DAISY = make(potted(LibBlockNames.SUBTILE_PUREDAISY),
-			flowerPot(PURE_DAISY, 0));
+			flowerPot(PURE_DAISY, 0), flowerPotProperties());
 
 	public static final Block MANASTAR = make(LibBlockNames.SUBTILE_MANASTAR,
-			new ManastarBlock(
+			props -> new ManastarBlock(
 					MobEffects.GLOWING,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.MANASTAR));
+					props,
+					() -> BotaniaBlockEntities.MANASTAR),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_MANASTAR = make(floating(LibBlockNames.SUBTILE_MANASTAR),
-			new FloatingManastarBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.MANASTAR));
+			props -> new FloatingManastarBlock(
+					props,
+					() -> BotaniaBlockEntities.MANASTAR),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_MANASTAR = make(potted(LibBlockNames.SUBTILE_MANASTAR),
-			flowerPot(MANASTAR, 0));
+			flowerPot(MANASTAR, 0), flowerPotProperties());
 
 	public static final Block HYDROANGEAS = make(LibBlockNames.SUBTILE_HYDROANGEAS,
-			new SlowGeneratingFlowerWithCooldownBlock(
+			props -> new SlowGeneratingFlowerWithCooldownBlock(
 					MobEffects.UNLUCK,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.HYDROANGEAS));
+					props,
+					() -> BotaniaBlockEntities.HYDROANGEAS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_HYDROANGEAS = make(floating(LibBlockNames.SUBTILE_HYDROANGEAS),
-			new FloatingSlowGeneratingFlowerWithCooldownBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.HYDROANGEAS));
+			props -> new FloatingSlowGeneratingFlowerWithCooldownBlock(
+					props,
+					() -> BotaniaBlockEntities.HYDROANGEAS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_HYDROANGEAS = make(potted(LibBlockNames.SUBTILE_HYDROANGEAS),
-			flowerPot(HYDROANGEAS, 0));
+			flowerPot(HYDROANGEAS, 0), flowerPotProperties());
 
 	public static final Block ENDOFLAME = make(LibBlockNames.SUBTILE_ENDOFLAME,
-			new SlowGeneratingFlowerWithCooldownBlock(
+			props -> new SlowGeneratingFlowerWithCooldownBlock(
 					MobEffects.SLOWNESS,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.ENDOFLAME));
+					props,
+					() -> BotaniaBlockEntities.ENDOFLAME),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_ENDOFLAME = make(floating(LibBlockNames.SUBTILE_ENDOFLAME),
-			new FloatingSlowGeneratingFlowerWithCooldownBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.ENDOFLAME));
+			props -> new FloatingSlowGeneratingFlowerWithCooldownBlock(
+					props,
+					() -> BotaniaBlockEntities.ENDOFLAME),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_ENDOFLAME = make(potted(LibBlockNames.SUBTILE_ENDOFLAME),
-			flowerPot(ENDOFLAME, 0));
+			flowerPot(ENDOFLAME, 0), flowerPotProperties());
 
 	public static final Block THERMALILY = make(LibBlockNames.SUBTILE_THERMALILY,
-			new SlowGeneratingFlowerWithCooldownBlock(
+			props -> new SlowGeneratingFlowerWithCooldownBlock(
 					MobEffects.FIRE_RESISTANCE,
 					120,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.THERMALILY));
+					props,
+					() -> BotaniaBlockEntities.THERMALILY),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_THERMALILY = make(floating(LibBlockNames.SUBTILE_THERMALILY),
-			new FloatingSlowGeneratingFlowerWithCooldownBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.THERMALILY));
+			props -> new FloatingSlowGeneratingFlowerWithCooldownBlock(
+					props,
+					() -> BotaniaBlockEntities.THERMALILY),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_THERMALILY = make(potted(LibBlockNames.SUBTILE_THERMALILY),
-			flowerPot(THERMALILY, 0));
+			flowerPot(THERMALILY, 0), flowerPotProperties());
 
 	public static final Block ROSA_ARCANA = make(LibBlockNames.SUBTILE_ARCANE_ROSE,
-			new SpecialFlowerBlock(MobEffects.LUCK,
+			props -> new SpecialFlowerBlock(MobEffects.LUCK,
 					64,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.ROSA_ARCANA));
+					props,
+					() -> BotaniaBlockEntities.ROSA_ARCANA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_ROSA_ARCANA = make(floating(LibBlockNames.SUBTILE_ARCANE_ROSE),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.ROSA_ARCANA));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.ROSA_ARCANA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_ROSA_ARCANA = make(potted(LibBlockNames.SUBTILE_ARCANE_ROSE),
-			flowerPot(ROSA_ARCANA, 0));
+			flowerPot(ROSA_ARCANA, 0), flowerPotProperties());
 
 	public static final Block MUNCHDEW = make(LibBlockNames.SUBTILE_MUNCHDEW,
-			new SlowGeneratingFlowerWithCooldownBlock(
+			props -> new SlowGeneratingFlowerWithCooldownBlock(
 					MobEffects.SLOW_FALLING,
 					300,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.MUNCHDEW));
+					props,
+					() -> BotaniaBlockEntities.MUNCHDEW),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_MUNCHDEW = make(floating(LibBlockNames.SUBTILE_MUNCHDEW),
-			new FloatingSlowGeneratingFlowerWithCooldownBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.MUNCHDEW));
+			props -> new FloatingSlowGeneratingFlowerWithCooldownBlock(
+					props,
+					() -> BotaniaBlockEntities.MUNCHDEW),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_MUNCHDEW = make(potted(LibBlockNames.SUBTILE_MUNCHDEW),
-			flowerPot(MUNCHDEW, 0));
+			flowerPot(MUNCHDEW, 0), flowerPotProperties());
 
 	public static final Block ENTROPINNYUM = make(LibBlockNames.SUBTILE_ENTROPINNYUM,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.RESISTANCE,
 					72,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.ENTROPINNYUM));
+					props,
+					() -> BotaniaBlockEntities.ENTROPINNYUM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_ENTROPINNYUM = make(floating(LibBlockNames.SUBTILE_ENTROPINNYUM),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.ENTROPINNYUM));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.ENTROPINNYUM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_ENTROPINNYUM = make(potted(LibBlockNames.SUBTILE_ENTROPINNYUM),
-			flowerPot(ENTROPINNYUM, 0));
+			flowerPot(ENTROPINNYUM, 0), flowerPotProperties());
 
 	public static final Block KEKIMURUS = make(LibBlockNames.SUBTILE_KEKIMURUS,
-			new SpecialFlowerBlock(MobEffects.SATURATION,
+			props -> new SpecialFlowerBlock(MobEffects.SATURATION,
 					15,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.KEKIMURUS));
+					props,
+					() -> BotaniaBlockEntities.KEKIMURUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_KEKIMURUS = make(floating(LibBlockNames.SUBTILE_KEKIMURUS),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.KEKIMURUS));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.KEKIMURUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_KEKIMURUS = make(potted(LibBlockNames.SUBTILE_KEKIMURUS),
-			flowerPot(KEKIMURUS, 0));
+			flowerPot(KEKIMURUS, 0), flowerPotProperties());
 
 	public static final Block GOURMARYLLIS = make(LibBlockNames.SUBTILE_GOURMARYLLIS,
-			new SlowGeneratingFlowerBlock(
+			props -> new SlowGeneratingFlowerBlock(
 					MobEffects.HUNGER,
 					180,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.GOURMARYLLIS));
+					props,
+					() -> BotaniaBlockEntities.GOURMARYLLIS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_GOURMARYLLIS = make(floating(LibBlockNames.SUBTILE_GOURMARYLLIS),
-			new FloatingSlowGeneratingFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.GOURMARYLLIS));
+			props -> new FloatingSlowGeneratingFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.GOURMARYLLIS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_GOURMARYLLIS = make(potted(LibBlockNames.SUBTILE_GOURMARYLLIS),
-			flowerPot(GOURMARYLLIS, 0));
+			flowerPot(GOURMARYLLIS, 0), flowerPotProperties());
 
 	public static final Block NARSLIMMUS = make(LibBlockNames.SUBTILE_NARSLIMMUS,
-			new SpecialFlowerBlock(BotaniaMobEffects.FEATHER_FEET,
+			props -> new SpecialFlowerBlock(BotaniaMobEffects.FEATHER_FEET,
 					240,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.NARSLIMMUS));
+					props,
+					() -> BotaniaBlockEntities.NARSLIMMUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_NARSLIMMUS = make(floating(LibBlockNames.SUBTILE_NARSLIMMUS),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.NARSLIMMUS));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.NARSLIMMUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_NARSLIMMUS = make(potted(LibBlockNames.SUBTILE_NARSLIMMUS),
-			flowerPot(NARSLIMMUS, 0));
+			flowerPot(NARSLIMMUS, 0), flowerPotProperties());
 
 	public static final Block SPECTROLUS = make(LibBlockNames.SUBTILE_SPECTROLUS,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.BLINDNESS,
 					240,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.SPECTROLUS));
+					props,
+					() -> BotaniaBlockEntities.SPECTROLUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_SPECTROLUS = make(floating(LibBlockNames.SUBTILE_SPECTROLUS),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.SPECTROLUS));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.SPECTROLUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_SPECTROLUS = make(potted(LibBlockNames.SUBTILE_SPECTROLUS),
-			flowerPot(SPECTROLUS, 0));
+			flowerPot(SPECTROLUS, 0), flowerPotProperties());
 
 	public static final Block DANDELIFEON = make(LibBlockNames.SUBTILE_DANDELIFEON,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.NAUSEA,
 					240,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.DANDELIFEON));
+					props,
+					() -> BotaniaBlockEntities.DANDELIFEON),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_DANDELIFEON = make(floating(LibBlockNames.SUBTILE_DANDELIFEON),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.DANDELIFEON));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.DANDELIFEON),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_DANDELIFEON = make(potted(LibBlockNames.SUBTILE_DANDELIFEON),
-			flowerPot(DANDELIFEON, 0));
+			flowerPot(DANDELIFEON, 0), flowerPotProperties());
 
 	public static final Block RAFFLOWSIA = make(LibBlockNames.SUBTILE_RAFFLOWSIA,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.HEALTH_BOOST,
 					18,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.RAFFLOWSIA));
+					props,
+					() -> BotaniaBlockEntities.RAFFLOWSIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_RAFFLOWSIA = make(floating(LibBlockNames.SUBTILE_RAFFLOWSIA),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.RAFFLOWSIA));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.RAFFLOWSIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_RAFFLOWSIA = make(potted(LibBlockNames.SUBTILE_RAFFLOWSIA),
-			flowerPot(RAFFLOWSIA, 0));
+			flowerPot(RAFFLOWSIA, 0), flowerPotProperties());
 
 	public static final Block SHULK_ME_NOT = make(LibBlockNames.SUBTILE_SHULK_ME_NOT,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.LEVITATION,
 					72,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.SHULK_ME_NOT));
+					props,
+					() -> BotaniaBlockEntities.SHULK_ME_NOT),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_SHULK_ME_NOT = make(floating(LibBlockNames.SUBTILE_SHULK_ME_NOT),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.SHULK_ME_NOT));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.SHULK_ME_NOT),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_SHULK_ME_NOT = make(potted(LibBlockNames.SUBTILE_SHULK_ME_NOT),
-			flowerPot(SHULK_ME_NOT, 0));
+			flowerPot(SHULK_ME_NOT, 0), flowerPotProperties());
 
 	public static final Block BELLETHORNE = make(LibBlockNames.SUBTILE_BELLETHORN,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.WITHER,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.BELLETHORNE));
+					props,
+					() -> BotaniaBlockEntities.BELLETHORNE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block BELLETHORNE_PETITE = make(petite(LibBlockNames.SUBTILE_BELLETHORN),
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.WITHER,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.BELLETHORNE_PETITE));
+					props,
+					() -> BotaniaBlockEntities.BELLETHORNE_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_BELLETHORNE = make(floating(LibBlockNames.SUBTILE_BELLETHORN),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.BELLETHORNE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.BELLETHORNE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_BELLETHORNE_PETITE = make(petite(floating(LibBlockNames.SUBTILE_BELLETHORN)),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.BELLETHORNE_PETITE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.BELLETHORNE_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_BELLETHORNE = make(potted(LibBlockNames.SUBTILE_BELLETHORN),
-			flowerPot(BELLETHORNE, 0));
+			flowerPot(BELLETHORNE, 0), flowerPotProperties());
 	public static final Block POTTED_BELLETHORNE_PETITE = make(petite(potted(LibBlockNames.SUBTILE_BELLETHORN)),
-			flowerPot(BELLETHORNE_PETITE, 0));
+			flowerPot(BELLETHORNE_PETITE, 0), flowerPotProperties());
 
 	public static final Block BERGAMUTE = make(LibBlockNames.SUBTILE_BERGAMUTE,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.BLINDNESS,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.BERGAMUTE));
+					props,
+					() -> BotaniaBlockEntities.BERGAMUTE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_BERGAMUTE = make(floating(LibBlockNames.SUBTILE_BERGAMUTE),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.BERGAMUTE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.BERGAMUTE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_BERGAMUTE = make(potted(LibBlockNames.SUBTILE_BERGAMUTE),
-			flowerPot(BERGAMUTE, 0));
+			flowerPot(BERGAMUTE, 0), flowerPotProperties());
 
 	public static final Block DREADTHORNE = make(LibBlockNames.SUBTILE_DREADTHORN,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.WITHER,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.DREADTHORN));
+					props,
+					() -> BotaniaBlockEntities.DREADTHORN),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_DREADTHORNE = make(floating(LibBlockNames.SUBTILE_DREADTHORN),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.DREADTHORN));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.DREADTHORN),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_DREADTHORNE = make(potted(LibBlockNames.SUBTILE_DREADTHORN),
-			flowerPot(DREADTHORNE, 0));
+			flowerPot(DREADTHORNE, 0), flowerPotProperties());
 
 	public static final Block HEISEI_DREAM = make(LibBlockNames.SUBTILE_HEISEI_DREAM,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					BotaniaMobEffects.SOUL_CROSS,
 					300,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.HEISEI_DREAM));
+					props,
+					() -> BotaniaBlockEntities.HEISEI_DREAM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_HEISEI_DREAM = make(floating(LibBlockNames.SUBTILE_HEISEI_DREAM),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.HEISEI_DREAM));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.HEISEI_DREAM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_HEISEI_DREAM = make(potted(LibBlockNames.SUBTILE_HEISEI_DREAM),
-			flowerPot(HEISEI_DREAM, 0));
+			flowerPot(HEISEI_DREAM, 0), flowerPotProperties());
 
 	public static final Block TIGERSEYE = make(LibBlockNames.SUBTILE_TIGERSEYE,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.STRENGTH,
 					90,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.TIGERSEYE));
+					props,
+					() -> BotaniaBlockEntities.TIGERSEYE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_TIGERSEYE = make(floating(LibBlockNames.SUBTILE_TIGERSEYE),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.TIGERSEYE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.TIGERSEYE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_TIGERSEYE = make(potted(LibBlockNames.SUBTILE_TIGERSEYE),
-			flowerPot(TIGERSEYE, 0));
+			flowerPot(TIGERSEYE, 0), flowerPotProperties());
 
 	public static final Block JADED_AMARANTHUS = make(LibBlockNames.SUBTILE_JADED_AMARANTHUS,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.INSTANT_HEALTH,
 					1,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.JADED_AMARANTHUS));
+					props,
+					() -> BotaniaBlockEntities.JADED_AMARANTHUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_JADED_AMARANTHUS = make(floating(LibBlockNames.SUBTILE_JADED_AMARANTHUS),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.JADED_AMARANTHUS));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.JADED_AMARANTHUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_JADED_AMARANTHUS = make(potted(LibBlockNames.SUBTILE_JADED_AMARANTHUS),
-			flowerPot(JADED_AMARANTHUS, 0));
+			flowerPot(JADED_AMARANTHUS, 0), flowerPotProperties());
 
 	public static final Block ORECHID = make(LibBlockNames.SUBTILE_ORECHID,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.HASTE,
 					10,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.ORECHID));
+					props,
+					() -> BotaniaBlockEntities.ORECHID),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_ORECHID = make(floating(LibBlockNames.SUBTILE_ORECHID),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.ORECHID));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.ORECHID),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_ORECHID = make(potted(LibBlockNames.SUBTILE_ORECHID),
-			flowerPot(ORECHID, 0));
+			flowerPot(ORECHID, 0), flowerPotProperties());
 
 	public static final Block FALLEN_KANADE = make(LibBlockNames.SUBTILE_FALLEN_KANADE,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.REGENERATION,
 					90,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.FALLEN_KANADE));
+					props,
+					() -> BotaniaBlockEntities.FALLEN_KANADE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_FALLEN_KANADE = make(floating(LibBlockNames.SUBTILE_FALLEN_KANADE),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.FALLEN_KANADE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.FALLEN_KANADE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_FALLEN_KANADE = make(potted(LibBlockNames.SUBTILE_FALLEN_KANADE),
-			flowerPot(FALLEN_KANADE, 0));
+			flowerPot(FALLEN_KANADE, 0), flowerPotProperties());
 
 	public static final Block EXOFLAME = make(LibBlockNames.SUBTILE_EXOFLAME,
-			new SpecialFlowerBlock(MobEffects.SPEED,
+			props -> new SpecialFlowerBlock(MobEffects.SPEED,
 					240,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.EXOFLAME));
+					props,
+					() -> BotaniaBlockEntities.EXOFLAME),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_EXOFLAME = make(floating(LibBlockNames.SUBTILE_EXOFLAME),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.EXOFLAME));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.EXOFLAME),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_EXOFLAME = make(potted(LibBlockNames.SUBTILE_EXOFLAME),
-			flowerPot(EXOFLAME, 0));
+			flowerPot(EXOFLAME, 0), flowerPotProperties());
 
 	public static final Block AGRICARNATION = make(LibBlockNames.SUBTILE_AGRICARNATION,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.ABSORPTION,
 					48,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.AGRICARNATION));
+					props,
+					() -> BotaniaBlockEntities.AGRICARNATION),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block AGRICARNATION_PETITE = make(petite(LibBlockNames.SUBTILE_AGRICARNATION),
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.ABSORPTION,
 					48,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.AGRICARNATION_PETITE));
+					props,
+					() -> BotaniaBlockEntities.AGRICARNATION_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_AGRICARNATION = make(floating(LibBlockNames.SUBTILE_AGRICARNATION),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.AGRICARNATION));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.AGRICARNATION),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_AGRICARNATION_PETITE = make(petite(floating(LibBlockNames.SUBTILE_AGRICARNATION)),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.AGRICARNATION_PETITE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.AGRICARNATION_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_AGRICARNATION = make(potted(LibBlockNames.SUBTILE_AGRICARNATION),
-			flowerPot(AGRICARNATION, 0));
+			flowerPot(AGRICARNATION, 0), flowerPotProperties());
 	public static final Block POTTED_AGRICARNATION_PETITE = make(petite(potted(LibBlockNames.SUBTILE_AGRICARNATION)),
-			flowerPot(AGRICARNATION_PETITE, 0));
+			flowerPot(AGRICARNATION_PETITE, 0), flowerPotProperties());
 
 	public static final Block HOPPERHOCK = make(LibBlockNames.SUBTILE_HOPPERHOCK,
-			new HopperhockBlock(MobEffects.SPEED,
+			props -> new HopperhockBlock(MobEffects.SPEED,
 					30,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.HOPPERHOCK));
+					props,
+					() -> BotaniaBlockEntities.HOPPERHOCK),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block HOPPERHOCK_PETITE = make(petite(LibBlockNames.SUBTILE_HOPPERHOCK),
-			new HopperhockBlock(
+			props -> new HopperhockBlock(
 					MobEffects.SPEED,
 					30,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.HOPPERHOCK_PETITE));
+					props,
+					() -> BotaniaBlockEntities.HOPPERHOCK_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_HOPPERHOCK = make(floating(LibBlockNames.SUBTILE_HOPPERHOCK),
-			new FloatingHopperhockBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.HOPPERHOCK));
+			props -> new FloatingHopperhockBlock(
+					props,
+					() -> BotaniaBlockEntities.HOPPERHOCK),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_HOPPERHOCK_PETITE = make(petite(floating(LibBlockNames.SUBTILE_HOPPERHOCK)),
-			new FloatingHopperhockBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.HOPPERHOCK_PETITE));
+			props -> new FloatingHopperhockBlock(
+					props,
+					() -> BotaniaBlockEntities.HOPPERHOCK_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_HOPPERHOCK = make(potted(LibBlockNames.SUBTILE_HOPPERHOCK),
-			flowerPot(HOPPERHOCK, 0));
+			flowerPot(HOPPERHOCK, 0), flowerPotProperties());
 	public static final Block POTTED_HOPPERHOCK_PETITE = make(petite(potted(LibBlockNames.SUBTILE_HOPPERHOCK)),
-			flowerPot(HOPPERHOCK_PETITE, 0));
+			flowerPot(HOPPERHOCK_PETITE, 0), flowerPotProperties());
 
 	public static final Block TANGLEBERRIE = make(LibBlockNames.SUBTILE_TANGLEBERRIE,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					BotaniaMobEffects.BLOODTHIRST,
 					120,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.TANGLEBERRIE));
+					props,
+					() -> BotaniaBlockEntities.TANGLEBERRIE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block TANGLEBERRIE_PETITE = make(petite(LibBlockNames.SUBTILE_TANGLEBERRIE),
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					BotaniaMobEffects.BLOODTHIRST,
 					120,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.TANGLEBERRIE_PETITE));
+					props,
+					() -> BotaniaBlockEntities.TANGLEBERRIE_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_TANGLEBERRIE = make(floating(LibBlockNames.SUBTILE_TANGLEBERRIE),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.TANGLEBERRIE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.TANGLEBERRIE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_TANGLEBERRIE_PETITE = make(petite(floating(LibBlockNames.SUBTILE_TANGLEBERRIE)),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.TANGLEBERRIE_PETITE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.TANGLEBERRIE_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_TANGLEBERRIE = make(potted(LibBlockNames.SUBTILE_TANGLEBERRIE),
-			flowerPot(TANGLEBERRIE, 0));
+			flowerPot(TANGLEBERRIE, 0), flowerPotProperties());
 	public static final Block POTTED_TANGLEBERRIE_PETITE = make(petite(potted(LibBlockNames.SUBTILE_TANGLEBERRIE)),
-			flowerPot(TANGLEBERRIE_PETITE, 0));
+			flowerPot(TANGLEBERRIE_PETITE, 0), flowerPotProperties());
 
 	public static final Block JIYUULIA = make(LibBlockNames.SUBTILE_JIYUULIA,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					BotaniaMobEffects.EMPTINESS,
 					120,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.JIYUULIA));
+					props,
+					() -> BotaniaBlockEntities.JIYUULIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block JIYUULIA_PETITE = make(petite(LibBlockNames.SUBTILE_JIYUULIA),
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					BotaniaMobEffects.EMPTINESS,
 					120,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.JIYUULIA_PETITE));
+					props,
+					() -> BotaniaBlockEntities.JIYUULIA_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_JIYUULIA = make(floating(LibBlockNames.SUBTILE_JIYUULIA),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.JIYUULIA));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.JIYUULIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_JIYUULIA_PETITE = make(petite(floating(LibBlockNames.SUBTILE_JIYUULIA)),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.JIYUULIA_PETITE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.JIYUULIA_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_JIYULLIA = make(potted(LibBlockNames.SUBTILE_JIYUULIA),
-			flowerPot(JIYUULIA, 0));
+			flowerPot(JIYUULIA, 0), flowerPotProperties());
 	public static final Block POTTED_JIYUULIA_PETITE = make(petite(potted(LibBlockNames.SUBTILE_JIYUULIA)),
-			flowerPot(JIYUULIA_PETITE, 0));
+			flowerPot(JIYUULIA_PETITE, 0), flowerPotProperties());
 
 	public static final Block RANNUNCARPUS = make(LibBlockNames.SUBTILE_RANNUNCARPUS,
-			new RannuncarpusBlock(
+			props -> new RannuncarpusBlock(
 					MobEffects.JUMP_BOOST,
 					30,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.RANNUNCARPUS));
+					props,
+					() -> BotaniaBlockEntities.RANNUNCARPUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block RANNUNCARPUS_PETITE = make(petite(LibBlockNames.SUBTILE_RANNUNCARPUS),
-			new RannuncarpusBlock(
+			props -> new RannuncarpusBlock(
 					MobEffects.JUMP_BOOST,
 					30,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.RANNUNCARPUS_PETITE));
+					props,
+					() -> BotaniaBlockEntities.RANNUNCARPUS_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_RANNUNCARPUS = make(floating(LibBlockNames.SUBTILE_RANNUNCARPUS),
-			new FloatingRannuncarpusBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.RANNUNCARPUS));
+			props -> new FloatingRannuncarpusBlock(
+					props,
+					() -> BotaniaBlockEntities.RANNUNCARPUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_RANNUNCARPUS_PETITE = make(petite(floating(LibBlockNames.SUBTILE_RANNUNCARPUS)),
-			new FloatingRannuncarpusBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.RANNUNCARPUS_PETITE));
+			props -> new FloatingRannuncarpusBlock(
+					props,
+					() -> BotaniaBlockEntities.RANNUNCARPUS_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_RANNUNCARPUS = make(potted(LibBlockNames.SUBTILE_RANNUNCARPUS),
-			flowerPot(RANNUNCARPUS, 0));
+			flowerPot(RANNUNCARPUS, 0), flowerPotProperties());
 	public static final Block POTTED_RANNUNCARPUS_PETITE = make(petite(potted(LibBlockNames.SUBTILE_RANNUNCARPUS)),
-			flowerPot(RANNUNCARPUS_PETITE, 0));
+			flowerPot(RANNUNCARPUS_PETITE, 0), flowerPotProperties());
 
 	public static final Block HYACIDUS = make(LibBlockNames.SUBTILE_HYACIDUS,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.POISON,
 					48,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.HYACIDUS));
+					props,
+					() -> BotaniaBlockEntities.HYACIDUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_HYACIDUS = make(floating(LibBlockNames.SUBTILE_HYACIDUS),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.HYACIDUS));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.HYACIDUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_HYACIDUS = make(potted(LibBlockNames.SUBTILE_HYACIDUS),
-			flowerPot(HYACIDUS, 0));
+			flowerPot(HYACIDUS, 0), flowerPotProperties());
 
 	public static final Block POLLIDISIAC = make(LibBlockNames.SUBTILE_POLLIDISIAC,
-			new PollidisiacBlock(
+			props -> new PollidisiacBlock(
 					MobEffects.HASTE,
 					369,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.POLLIDISIAC));
+					props,
+					() -> BotaniaBlockEntities.POLLIDISIAC),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_POLLIDISIAC = make(floating(LibBlockNames.SUBTILE_POLLIDISIAC),
-			new FloatingPollidisiacBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.POLLIDISIAC));
+			props -> new FloatingPollidisiacBlock(
+					props,
+					() -> BotaniaBlockEntities.POLLIDISIAC),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_POLLIDISIAC = make(potted(LibBlockNames.SUBTILE_POLLIDISIAC),
-			flowerPot(POLLIDISIAC, 0));
+			flowerPot(POLLIDISIAC, 0), flowerPotProperties());
 
 	public static final Block CLAYCONIA = make(LibBlockNames.SUBTILE_CLAYCONIA,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.WEAKNESS,
 					30,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.CLAYCONIA));
+					props,
+					() -> BotaniaBlockEntities.CLAYCONIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block CLAYCONIA_PETITE = make(petite(LibBlockNames.SUBTILE_CLAYCONIA),
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.WEAKNESS,
 					30,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.CLAYCONIA_PETITE));
+					props,
+					() -> BotaniaBlockEntities.CLAYCONIA_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_CLAYCONIA = make(floating(LibBlockNames.SUBTILE_CLAYCONIA),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.CLAYCONIA));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.CLAYCONIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_CLAYCONIA_PETITE = make(petite(floating(LibBlockNames.SUBTILE_CLAYCONIA)),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.CLAYCONIA_PETITE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.CLAYCONIA_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_CLAYCONIA = make(potted(LibBlockNames.SUBTILE_CLAYCONIA),
-			flowerPot(CLAYCONIA, 0));
+			flowerPot(CLAYCONIA, 0), flowerPotProperties());
 	public static final Block POTTED_CLAYCONIA_PETITE = make(petite(potted(LibBlockNames.SUBTILE_CLAYCONIA)),
-			flowerPot(CLAYCONIA_PETITE, 0));
+			flowerPot(CLAYCONIA_PETITE, 0), flowerPotProperties());
 
 	public static final Block LOONIUM = make(LibBlockNames.SUBTILE_LOONIUM,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					BotaniaMobEffects.ALLURE,
 					900,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.LOONIUM));
+					props,
+					() -> BotaniaBlockEntities.LOONIUM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_LOONIUM = make(floating(LibBlockNames.SUBTILE_LOONIUM),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.LOONIUM));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.LOONIUM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_LOONIUM = make(potted(LibBlockNames.SUBTILE_LOONIUM),
-			flowerPot(LOONIUM, 0));
+			flowerPot(LOONIUM, 0), flowerPotProperties());
 
 	public static final Block DAFFOMILL = make(LibBlockNames.SUBTILE_DAFFOMILL,
-			new DaffomillBlock(
+			props -> new DaffomillBlock(
 					MobEffects.LEVITATION,
 					6,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.DAFFOMILL));
+					props,
+					() -> BotaniaBlockEntities.DAFFOMILL),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_DAFFOMILL = make(floating(LibBlockNames.SUBTILE_DAFFOMILL),
-			new FloatingDaffomillBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.DAFFOMILL));
+			props -> new FloatingDaffomillBlock(
+					props,
+					() -> BotaniaBlockEntities.DAFFOMILL),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_DAFFOMILL = make(potted(LibBlockNames.SUBTILE_DAFFOMILL),
-			flowerPot(DAFFOMILL, 0));
+			flowerPot(DAFFOMILL, 0), flowerPotProperties());
 
 	public static final Block VINCULOTUS = make(LibBlockNames.SUBTILE_VINCULOTUS,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.NIGHT_VISION,
 					900,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.VINCULOTUS));
+					props,
+					() -> BotaniaBlockEntities.VINCULOTUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_VINCULOTUS = make(floating(LibBlockNames.SUBTILE_VINCULOTUS),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.VINCULOTUS));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.VINCULOTUS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_VINCULOTUS = make(potted(LibBlockNames.SUBTILE_VINCULOTUS),
-			flowerPot(VINCULOTUS, 0));
+			flowerPot(VINCULOTUS, 0), flowerPotProperties());
 
 	public static final Block SPECTRANTHEMUM = make(LibBlockNames.SUBTILE_SPECTRANTHEMUM,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.INVISIBILITY,
 					360,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.SPECTRANTHEMUM));
+					props,
+					() -> BotaniaBlockEntities.SPECTRANTHEMUM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_SPECTRANTHEMUM = make(floating(LibBlockNames.SUBTILE_SPECTRANTHEMUM),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.SPECTRANTHEMUM));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.SPECTRANTHEMUM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_SPECTRANTHEMUM = make(potted(LibBlockNames.SUBTILE_SPECTRANTHEMUM),
-			flowerPot(SPECTRANTHEMUM, 0));
+			flowerPot(SPECTRANTHEMUM, 0), flowerPotProperties());
 
 	public static final Block MEDUMONE = make(LibBlockNames.SUBTILE_MEDUMONE,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.SLOWNESS,
 					3600,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.MEDUMONE));
+					props,
+					() -> BotaniaBlockEntities.MEDUMONE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_MEDUMONE = make(floating(LibBlockNames.SUBTILE_MEDUMONE),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.MEDUMONE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.MEDUMONE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_MEDUMONE = make(potted(LibBlockNames.SUBTILE_MEDUMONE),
-			flowerPot(MEDUMONE, 0));
+			flowerPot(MEDUMONE, 0), flowerPotProperties());
 
 	public static final Block MARIMORPHOSIS = make(LibBlockNames.SUBTILE_MARIMORPHOSIS,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.MINING_FATIGUE,
 					60,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.MARIMORPHOSIS));
+					props,
+					() -> BotaniaBlockEntities.MARIMORPHOSIS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block MARIMORPHOSIS_PETITE = make(petite(LibBlockNames.SUBTILE_MARIMORPHOSIS),
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.MINING_FATIGUE,
 					60,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.MARIMORPHOSIS_PETITE));
+					props,
+					() -> BotaniaBlockEntities.MARIMORPHOSIS_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_MARIMORPHOSIS = make(floating(LibBlockNames.SUBTILE_MARIMORPHOSIS),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.MARIMORPHOSIS));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.MARIMORPHOSIS),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_MARIMORPHOSIS_PETITE = make(petite(floating(LibBlockNames.SUBTILE_MARIMORPHOSIS)),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.MARIMORPHOSIS_PETITE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.MARIMORPHOSIS_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_MARIMORPHOSIS = make(potted(LibBlockNames.SUBTILE_MARIMORPHOSIS),
-			flowerPot(MARIMORPHOSIS, 0));
+			flowerPot(MARIMORPHOSIS, 0), flowerPotProperties());
 	public static final Block POTTED_MARIMORPHOSIS_PETITE = make(petite(potted(LibBlockNames.SUBTILE_MARIMORPHOSIS)),
-			flowerPot(MARIMORPHOSIS_PETITE, 0));
+			flowerPot(MARIMORPHOSIS_PETITE, 0), flowerPotProperties());
 
 	public static final Block BUBBELL = make(LibBlockNames.SUBTILE_BUBBELL,
-			new SpecialFlowerBlock(
+			props -> new SpecialFlowerBlock(
 					MobEffects.WATER_BREATHING,
 					240,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.BUBBELL));
+					props,
+					() -> BotaniaBlockEntities.BUBBELL),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block BUBBELL_PETITE = make(petite(LibBlockNames.SUBTILE_BUBBELL),
-			new SpecialFlowerBlock(MobEffects.WATER_BREATHING,
+			props -> new SpecialFlowerBlock(MobEffects.WATER_BREATHING,
 					240,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.BUBBELL_PETITE));
+					props,
+					() -> BotaniaBlockEntities.BUBBELL_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_BUBBELL = make(floating(LibBlockNames.SUBTILE_BUBBELL),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.BUBBELL));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.BUBBELL),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_BUBBELL_PETITE = make(petite(floating(LibBlockNames.SUBTILE_BUBBELL)),
-			new FloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.BUBBELL_PETITE));
+			props -> new FloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.BUBBELL_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_BUBBELL = make(potted(LibBlockNames.SUBTILE_BUBBELL),
-			flowerPot(BUBBELL, 0));
+			flowerPot(BUBBELL, 0), flowerPotProperties());
 	public static final Block POTTED_BUBBELL_PETITE = make(petite(potted(LibBlockNames.SUBTILE_BUBBELL)),
-			flowerPot(BUBBELL_PETITE, 0));
+			flowerPot(BUBBELL_PETITE, 0), flowerPotProperties());
 
 	public static final Block SOLEGNOLIA = make(LibBlockNames.SUBTILE_SOLEGNOLIA,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.INSTANT_DAMAGE,
 					1,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.SOLEGNOLIA));
+					props,
+					() -> BotaniaBlockEntities.SOLEGNOLIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block SOLEGNOLIA_PETITE = make(petite(LibBlockNames.SUBTILE_SOLEGNOLIA),
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.INSTANT_DAMAGE,
 					1,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.SOLEGNOLIA_PETITE));
+					props,
+					() -> BotaniaBlockEntities.SOLEGNOLIA_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_SOLEGNOLIA = make(floating(LibBlockNames.SUBTILE_SOLEGNOLIA),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.SOLEGNOLIA));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.SOLEGNOLIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block FLOATING_SOLEGNOLIA_PETITE = make(petite(floating(LibBlockNames.SUBTILE_SOLEGNOLIA)),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.SOLEGNOLIA_PETITE));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.SOLEGNOLIA_PETITE),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_SOLEGNOLIA = make(potted(LibBlockNames.SUBTILE_SOLEGNOLIA),
-			flowerPot(SOLEGNOLIA, 0));
+			flowerPot(SOLEGNOLIA, 0), flowerPotProperties());
 	public static final Block POTTED_SOLEGNOLIA_PETITE = make(petite(potted(LibBlockNames.SUBTILE_SOLEGNOLIA)),
-			flowerPot(SOLEGNOLIA_PETITE, 0));
+			flowerPot(SOLEGNOLIA_PETITE, 0), flowerPotProperties());
 
 	public static final Block ORECHID_IGNEM = make(LibBlockNames.SUBTILE_ORECHID_IGNEM,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.FIRE_RESISTANCE,
 					600,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.ORECHID_IGNEM));
+					props,
+					() -> BotaniaBlockEntities.ORECHID_IGNEM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_ORECHID_IGNEM = make(floating(LibBlockNames.SUBTILE_ORECHID_IGNEM),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.ORECHID_IGNEM));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.ORECHID_IGNEM),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_ORECHID_IGNEM = make(potted(LibBlockNames.SUBTILE_ORECHID_IGNEM),
-			flowerPot(ORECHID_IGNEM, 0));
+			flowerPot(ORECHID_IGNEM, 0), flowerPotProperties());
 
 	public static final Block LABELLIA = make(LibBlockNames.SUBTILE_LABELLIA,
-			new PoweredSpecialFlowerBlock(
+			props -> new PoweredSpecialFlowerBlock(
 					MobEffects.FIRE_RESISTANCE,
 					600,
-					BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER),
-					() -> BotaniaBlockEntities.LABELLIA));
+					props,
+					() -> BotaniaBlockEntities.LABELLIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_MYSTICAL_FLOWER));
 	public static final Block FLOATING_LABELLIA = make(floating(LibBlockNames.SUBTILE_LABELLIA),
-			new PoweredFloatingSpecialFlowerBlock(
-					BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER),
-					() -> BotaniaBlockEntities.LABELLIA));
+			props -> new PoweredFloatingSpecialFlowerBlock(
+					props,
+					() -> BotaniaBlockEntities.LABELLIA),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_FLOATING_FLOWER));
 	public static final Block POTTED_LABELLIA = make(potted(LibBlockNames.SUBTILE_LABELLIA),
-			flowerPot(LABELLIA, 0));
+			flowerPot(LABELLIA, 0), flowerPotProperties());
 
 	// petal apothecary variants
 	public static final Block PETAL_APOTHECARY = makePetalApothecary(LibBlockNames.PETAL_APOTHECARY,
@@ -1091,303 +1198,330 @@ public final class BotaniaBlocks {
 
 	// livingrock blocks
 	public static final Block LIVINGROCK = make(LibBlockNames.LIVINGROCK,
-			new Block(BlockBehaviour.Properties.of()
+			Block::new, BlockBehaviour.Properties.of()
 					.strength(2, 10)
 					.sound(SoundType.STONE)
 					.instrument(NoteBlockInstrument.BASEDRUM)
 					.mapColor(MapColor.TERRACOTTA_WHITE)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block LIVINGROCK_STAIRS = make(LibBlockNames.LIVINGROCK + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LIVINGROCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			props -> new StairBlock(LIVINGROCK.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block LIVINGROCK_SLAB = make(LibBlockNames.LIVINGROCK + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block LIVINGROCK_WALL = make(LibBlockNames.LIVINGROCK + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block LIVINGROCK_BUTTON = make(LibBlockNames.LIVINGROCK + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.LIVINGROCK_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.TERRACOTTA_WHITE)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.LIVINGROCK_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block LIVINGROCK_PRESSURE_PLATE = make(LibBlockNames.LIVINGROCK + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.LIVINGROCK_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.TERRACOTTA_WHITE)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.LIVINGROCK_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block POLISHED_LIVINGROCK = make(LibBlockNames.POLISHED_PREFIX + LibBlockNames.LIVINGROCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block POLISHED_LIVINGROCK_STAIRS = make(LibBlockNames.POLISHED_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LIVINGROCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(POLISHED_LIVINGROCK)));
+			props -> new StairBlock(LIVINGROCK.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(POLISHED_LIVINGROCK));
 	public static final Block POLISHED_LIVINGROCK_SLAB = make(LibBlockNames.POLISHED_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(POLISHED_LIVINGROCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(POLISHED_LIVINGROCK));
 	public static final Block POLISHED_LIVINGROCK_WALL = make(LibBlockNames.POLISHED_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(POLISHED_LIVINGROCK)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(POLISHED_LIVINGROCK));
 	public static final Block LIVINGROCK_SLATE = make(LibBlockNames.LIVINGROCK + LibBlockNames.SLATE_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block LIVINGROCK_BRICKS = make(LibBlockNames.LIVINGROCK + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block LIVINGROCK_BRICK_STAIRS = make(LibBlockNames.LIVINGROCK + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LIVINGROCK_BRICKS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LIVINGROCK_BRICKS)));
+			props -> new StairBlock(LIVINGROCK_BRICKS.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LIVINGROCK_BRICKS));
 	public static final Block LIVINGROCK_BRICK_SLAB = make(LibBlockNames.LIVINGROCK + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK_BRICKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK_BRICKS));
 	public static final Block LIVINGROCK_BRICK_WALL = make(LibBlockNames.LIVINGROCK + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK_BRICKS)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK_BRICKS));
 	public static final Block MOSSY_LIVINGROCK_BRICKS = make(LibBlockNames.MOSSY_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block MOSSY_LIVINGROCK_BRICK_STAIRS = make(LibBlockNames.MOSSY_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(MOSSY_LIVINGROCK_BRICKS.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(MOSSY_LIVINGROCK_BRICKS)));
+			props -> new StairBlock(MOSSY_LIVINGROCK_BRICKS.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(MOSSY_LIVINGROCK_BRICKS));
 	public static final Block MOSSY_LIVINGROCK_BRICK_SLAB = make(LibBlockNames.MOSSY_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(MOSSY_LIVINGROCK_BRICKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(MOSSY_LIVINGROCK_BRICKS));
 	public static final Block MOSSY_LIVINGROCK_BRICK_WALL = make(LibBlockNames.MOSSY_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(MOSSY_LIVINGROCK_BRICKS)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(MOSSY_LIVINGROCK_BRICKS));
 	public static final Block CRACKED_LIVINGROCK_BRICKS = make(LibBlockNames.CRACKED_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block CHISELED_LIVINGROCK_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.LIVINGROCK + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 
 	// livingwood blocks
 	public static final Block LIVINGWOOD_LOG = make(LibBlockNames.LIVINGWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.of()
+			RotatedPillarBlock::new, BlockBehaviour.Properties.of()
 					.strength(2)
 					.sound(SoundType.WOOD)
 					.instrument(NoteBlockInstrument.BASS)
 					.mapColor(state -> state.getValue(BlockStateProperties.AXIS) == Direction.Axis.Y
 							? MapColor.TERRACOTTA_RED
-							: MapColor.TERRACOTTA_BROWN)));
+							: MapColor.TERRACOTTA_BROWN));
 	public static final Block LIVINGWOOD = make(LibBlockNames.LIVINGWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
-					.mapColor(MapColor.TERRACOTTA_BROWN)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
+					.mapColor(MapColor.TERRACOTTA_BROWN));
 	public static final Block LIVINGWOOD_STAIRS = make(LibBlockNames.LIVINGWOOD + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LIVINGWOOD.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			props -> new StairBlock(LIVINGWOOD.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block LIVINGWOOD_SLAB = make(LibBlockNames.LIVINGWOOD + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block LIVINGWOOD_WALL = make(LibBlockNames.LIVINGWOOD + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block STRIPPED_LIVINGWOOD_LOG = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
-					.mapColor(MapColor.TERRACOTTA_RED)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
+					.mapColor(MapColor.TERRACOTTA_RED));
 	public static final Block STRIPPED_LIVINGWOOD = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(STRIPPED_LIVINGWOOD_LOG)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(STRIPPED_LIVINGWOOD_LOG));
 	public static final Block STRIPPED_LIVINGWOOD_STAIRS = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(STRIPPED_LIVINGWOOD.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			props -> new StairBlock(STRIPPED_LIVINGWOOD.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block STRIPPED_LIVINGWOOD_SLAB = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block STRIPPED_LIVINGWOOD_WALL = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block GLIMMERING_LIVINGWOOD_LOG = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
-					.lightLevel(constInt(12))));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
+					.lightLevel(constInt(12)));
 	public static final Block GLIMMERING_LIVINGWOOD = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.LIVINGWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(GLIMMERING_LIVINGWOOD_LOG)
-					.mapColor(MapColor.TERRACOTTA_BROWN)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(GLIMMERING_LIVINGWOOD_LOG)
+					.mapColor(MapColor.TERRACOTTA_BROWN));
 	public static final Block STRIPPED_GLIMMERING_LIVINGWOOD_LOG = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(STRIPPED_LIVINGWOOD_LOG)
-					.lightLevel(b -> 8)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(STRIPPED_LIVINGWOOD_LOG)
+					.lightLevel(b -> 8));
 	public static final Block STRIPPED_GLIMMERING_LIVINGWOOD = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.STRIPPED_PREFIX + LibBlockNames.LIVINGWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(STRIPPED_GLIMMERING_LIVINGWOOD_LOG)
-					.mapColor(MapColor.TERRACOTTA_BROWN)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(STRIPPED_GLIMMERING_LIVINGWOOD_LOG)
+					.mapColor(MapColor.TERRACOTTA_BROWN));
 	public static final Block LIVINGWOOD_PLANKS = make(LibBlockNames.LIVINGWOOD + LibBlockNames.PLANKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
-					.mapColor(MapColor.TERRACOTTA_RED)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
+					.mapColor(MapColor.TERRACOTTA_RED));
 	public static final Block LIVINGWOOD_PLANK_STAIRS = make(LibBlockNames.LIVINGWOOD + LibBlockNames.PLANK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LIVINGWOOD_PLANKS.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)));
+			props -> new StairBlock(LIVINGWOOD_PLANKS.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS));
 	public static final Block LIVINGWOOD_PLANK_SLAB = make(LibBlockNames.LIVINGWOOD + LibBlockNames.PLANK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS));
 	public static final Block LIVINGWOOD_FENCE = make(LibBlockNames.LIVINGWOOD + LibBlockNames.FENCE_SUFFIX,
-			new FenceBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			FenceBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block LIVINGWOOD_FENCE_GATE = make(LibBlockNames.LIVINGWOOD + LibBlockNames.FENCE_GATE_SUFFIX,
-			new FenceGateBlock(BotaniaBlockSetTypes.LIVINGWOOD, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			props -> new FenceGateBlock(BotaniaBlockSetTypes.LIVINGWOOD, props), BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block LIVINGWOOD_DOOR = make(LibBlockNames.LIVINGWOOD + LibBlockNames.DOOR_SUFFIX,
-			new DoorBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noOcclusion()
-							.pushReaction(PushReaction.POPPED)));
+			props -> new DoorBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
+					.noOcclusion()
+					.pushReaction(PushReaction.POPPED));
 	public static final Block LIVINGWOOD_TRAPDOOR = make(LibBlockNames.LIVINGWOOD + LibBlockNames.TRAPDOOR_SUFFIX,
-			new TrapDoorBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noOcclusion()
-							.isValidSpawn(NO_SPAWN)));
+			props -> new TrapDoorBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
+					.noOcclusion()
+					.isValidSpawn(NO_SPAWN));
 	public static final Block LIVINGWOOD_PRESSURE_PLATE = make(LibBlockNames.LIVINGWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollision()
-							.strength(0.5F)
-							.forceSolidOn()
-							.pushReaction(PushReaction.POPPED)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
+					.noCollision()
+					.strength(0.5F)
+					.forceSolidOn()
+					.pushReaction(PushReaction.POPPED));
 	public static final Block LIVINGWOOD_BUTTON = make(LibBlockNames.LIVINGWOOD + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET, 30,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollision()
-							.strength(0.5F)
-							.pushReaction(PushReaction.POPPED)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.LIVINGWOOD_BLOCK_SET, 30,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
+					.noCollision()
+					.strength(0.5F)
+					.pushReaction(PushReaction.POPPED));
 	public static final Block LIVINGWOOD_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.SIGN_SUFFIX,
-			new StandingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
-							.noCollision()
-							.strength(1.0f)
-							.forceSolidOn()));
+			props -> new StandingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)
+					.noCollision()
+					.strength(1.0f)
+					.forceSolidOn());
 	public static final Block LIVINGWOOD_WALL_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.SIGN_SUFFIX,
-			new WallSignBlock(BotaniaBlockSetTypes.LIVINGWOOD, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_SIGN)));
+			props -> new WallSignBlock(BotaniaBlockSetTypes.LIVINGWOOD, props), BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_SIGN));
 	public static final Block LIVINGWOOD_HANGING_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.HANGING_SIGN_SUFFIX,
-			new CeilingHangingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_SIGN)));
+			props -> new CeilingHangingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_SIGN));
 	public static final Block LIVINGWOOD_WALL_HANGING_SIGN = make(LibBlockNames.LIVINGWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.HANGING_SIGN_SUFFIX,
-			new WallHangingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_SIGN)));
+			props -> new WallHangingSignBlock(BotaniaBlockSetTypes.LIVINGWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_SIGN));
 	public static final Block MOSSY_LIVINGWOOD_PLANKS = make(LibBlockNames.MOSSY_PREFIX + LibBlockNames.LIVINGWOOD + LibBlockNames.PLANKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS));
 	public static final Block FRAMED_LIVINGWOOD = make(LibBlockNames.FRAMED_PREFIX + LibBlockNames.LIVINGWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS));
 	public static final Block PATTERN_FRAMED_LIVINGWOOD = make(LibBlockNames.PATTERN_FRAMED_PREFIX + LibBlockNames.LIVINGWOOD,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_PLANKS));
 
 	// dreamwood blocks
 	public static final Block DREAMWOOD_LOG = make(LibBlockNames.DREAMWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
-					.mapColor(MapColor.QUARTZ)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD_LOG)
+					.mapColor(MapColor.QUARTZ));
 	public static final Block DREAMWOOD = make(LibBlockNames.DREAMWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG));
 	public static final Block DREAMWOOD_STAIRS = make(LibBlockNames.DREAMWOOD + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(DREAMWOOD.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(DREAMWOOD)));
+			props -> new StairBlock(DREAMWOOD.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(DREAMWOOD));
 	public static final Block DREAMWOOD_SLAB = make(LibBlockNames.DREAMWOOD + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD));
 	public static final Block DREAMWOOD_WALL = make(LibBlockNames.DREAMWOOD + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD));
 	public static final Block STRIPPED_DREAMWOOD_LOG = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG));
 	public static final Block STRIPPED_DREAMWOOD = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG));
 	public static final Block STRIPPED_DREAMWOOD_STAIRS = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(STRIPPED_DREAMWOOD.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(DREAMWOOD)));
+			props -> new StairBlock(STRIPPED_DREAMWOOD.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(DREAMWOOD));
 	public static final Block STRIPPED_DREAMWOOD_SLAB = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD));
 	public static final Block STRIPPED_DREAMWOOD_WALL = make(LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD));
 	public static final Block GLIMMERING_DREAMWOOD_LOG = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(GLIMMERING_LIVINGWOOD_LOG).mapColor(MapColor.QUARTZ)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(GLIMMERING_LIVINGWOOD_LOG).mapColor(MapColor.QUARTZ));
 	public static final Block GLIMMERING_DREAMWOOD = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.DREAMWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(GLIMMERING_DREAMWOOD_LOG)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(GLIMMERING_DREAMWOOD_LOG));
 	public static final Block STRIPPED_GLIMMERING_DREAMWOOD_LOG = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.LOG_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(STRIPPED_GLIMMERING_LIVINGWOOD_LOG)
-					.mapColor(MapColor.QUARTZ)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(STRIPPED_GLIMMERING_LIVINGWOOD_LOG)
+					.mapColor(MapColor.QUARTZ));
 	public static final Block STRIPPED_GLIMMERING_DREAMWOOD = make(LibBlockNames.GLIMMERING_PREFIX + LibBlockNames.STRIPPED_PREFIX + LibBlockNames.DREAMWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(STRIPPED_GLIMMERING_DREAMWOOD_LOG)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(STRIPPED_GLIMMERING_DREAMWOOD_LOG));
 	public static final Block DREAMWOOD_PLANKS = make(LibBlockNames.DREAMWOOD + LibBlockNames.PLANKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_LOG));
 	public static final Block DREAMWOOD_PLANK_STAIRS = make(LibBlockNames.DREAMWOOD + LibBlockNames.PLANK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(DREAMWOOD_PLANKS.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			props -> new StairBlock(DREAMWOOD_PLANKS.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 	public static final Block DREAMWOOD_PLANK_SLAB = make(LibBlockNames.DREAMWOOD + LibBlockNames.PLANK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 	public static final Block DREAMWOOD_FENCE = make(LibBlockNames.DREAMWOOD + LibBlockNames.FENCE_SUFFIX,
-			new FenceBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			FenceBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 	public static final Block DREAMWOOD_FENCE_GATE = make(LibBlockNames.DREAMWOOD + LibBlockNames.FENCE_GATE_SUFFIX,
-			new FenceGateBlock(BotaniaBlockSetTypes.DREAMWOOD, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			props -> new FenceGateBlock(BotaniaBlockSetTypes.DREAMWOOD, props), BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 	public static final Block DREAMWOOD_DOOR = make(LibBlockNames.DREAMWOOD + LibBlockNames.DOOR_SUFFIX,
-			new DoorBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noOcclusion()
-							.pushReaction(PushReaction.POPPED)));
+			props -> new DoorBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
+					.noOcclusion()
+					.pushReaction(PushReaction.POPPED));
 	public static final Block DREAMWOOD_TRAPDOOR = make(LibBlockNames.DREAMWOOD + LibBlockNames.TRAPDOOR_SUFFIX,
-			new TrapDoorBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noOcclusion()
-							.isValidSpawn(NO_SPAWN)));
+			props -> new TrapDoorBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
+					.noOcclusion()
+					.isValidSpawn(NO_SPAWN));
 	public static final Block DREAMWOOD_PRESSURE_PLATE = make(LibBlockNames.DREAMWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollision()
-							.strength(0.5F)
-							.forceSolidOn()
-							.pushReaction(PushReaction.POPPED)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
+					.noCollision()
+					.strength(0.5F)
+					.forceSolidOn()
+					.pushReaction(PushReaction.POPPED));
 	public static final Block DREAMWOOD_BUTTON = make(LibBlockNames.DREAMWOOD + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET, 30,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollision()
-							.strength(0.5F)
-							.pushReaction(PushReaction.POPPED)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.DREAMWOOD_BLOCK_SET, 30,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
+					.noCollision()
+					.strength(0.5F)
+					.pushReaction(PushReaction.POPPED));
 	public static final Block DREAMWOOD_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.SIGN_SUFFIX,
-			new StandingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
-							.noCollision()
-							.strength(1.0f)
-							.forceSolidOn()));
+			props -> new StandingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)
+					.noCollision()
+					.strength(1.0f)
+					.forceSolidOn());
 	public static final Block DREAMWOOD_WALL_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.SIGN_SUFFIX,
-			new WallSignBlock(BotaniaBlockSetTypes.DREAMWOOD, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_SIGN)));
+			props -> new WallSignBlock(BotaniaBlockSetTypes.DREAMWOOD, props), BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_SIGN));
 	public static final Block DREAMWOOD_HANGING_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.HANGING_SIGN_SUFFIX,
-			new CeilingHangingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_SIGN)));
+			props -> new CeilingHangingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_SIGN));
 	public static final Block DREAMWOOD_WALL_HANGING_SIGN = make(LibBlockNames.DREAMWOOD + LibBlockNames.WALL_INFIX + LibBlockNames.HANGING_SIGN_SUFFIX,
-			new WallHangingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_SIGN)));
+			props -> new WallHangingSignBlock(BotaniaBlockSetTypes.DREAMWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_SIGN));
 	public static final Block MOSSY_DREAMWOOD_PLANKS = make(LibBlockNames.MOSSY_PREFIX + LibBlockNames.DREAMWOOD + LibBlockNames.PLANKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 	public static final Block FRAMED_DREAMWOOD = make(LibBlockNames.FRAMED_PREFIX + LibBlockNames.DREAMWOOD,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 	public static final Block PATTERN_FRAMED_DREAMWOOD = make(LibBlockNames.PATTERN_FRAMED_PREFIX + LibBlockNames.DREAMWOOD,
-			new Block(BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(DREAMWOOD_PLANKS));
 
 	// mana spreaders
 	public static final ManaSpreaderBlock MANA_SPREADER = makeBlockWithColoredVariants(LibBlockNames.MANA_SPREADER,
-			color -> new ManaSpreaderBlock(ManaSpreaderBlock.DEFAULT_SPREADER_PARAMETERS, color,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER)),
+			(color, props) -> new ManaSpreaderBlock(ManaSpreaderBlock.DEFAULT_SPREADER_PARAMETERS, color,
+					props),
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER),
 			LibBlockNames.COVERED_INFIX);
 	public static final ManaSpreaderBlock PULSE_MANA_SPREADER = makeBlockWithColoredVariants(LibBlockNames.PULSE_MANA_SPREADER,
-			color -> new ManaSpreaderBlock(ManaSpreaderBlock.PULSE_SPREADER_PARAMETERS, color,
-					BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER)),
+			(color, props) -> new ManaSpreaderBlock(ManaSpreaderBlock.PULSE_SPREADER_PARAMETERS, color,
+					props),
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER),
 			LibBlockNames.COVERED_INFIX);
 	public static final ManaSpreaderBlock ELVEN_MANA_SPREADER = makeBlockWithColoredVariants(LibBlockNames.ELVEN_MANA_SPREADER,
-			color -> new ManaSpreaderBlock(ManaSpreaderBlock.ELVEN_SPREADER_PARAMETERS, color,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER)),
+			(color, props) -> new ManaSpreaderBlock(ManaSpreaderBlock.ELVEN_SPREADER_PARAMETERS, color,
+					props),
+			() -> BlockBehaviour.Properties.ofFullCopy(DREAMWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER),
 			LibBlockNames.COVERED_INFIX);
 	public static final ManaSpreaderBlock GAIA_MANA_SPREADER = makeBlockWithColoredVariants(LibBlockNames.GAIA_MANA_SPREADER,
-			color -> new ManaSpreaderBlock(ManaSpreaderBlock.GAIA_SPREADER_PARAMETERS, color,
-					BlockBehaviour.Properties.ofFullCopy(DREAMWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER)),
+			(color, props) -> new ManaSpreaderBlock(ManaSpreaderBlock.GAIA_SPREADER_PARAMETERS, color,
+					props),
+			() -> BlockBehaviour.Properties.ofFullCopy(DREAMWOOD).isValidSpawn(NO_SPAWN).isRedstoneConductor(NEVER),
 			LibBlockNames.COVERED_INFIX);
 
 	// mana pools
 	public static final ManaPoolBlock MANA_POOL = makeBlockWithColoredVariants(LibBlockNames.MANA_POOL,
-			color -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, false, false,
-					ManaPoolBlock.NORMAL_SHAPE_VARIANT, color, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, false, false,
+					ManaPoolBlock.NORMAL_SHAPE_VARIANT, color, props),
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final ManaPoolBlock CREATIVE_MANA_POOL = makeBlockWithColoredVariants(LibBlockNames.CREATIVE_MANA_POOL,
-			color -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, false, true,
-					ManaPoolBlock.BIG_SHAPE_VARIANT, color, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, false, true,
+					ManaPoolBlock.BIG_SHAPE_VARIANT, color, props),
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final ManaPoolBlock DILUTED_MANA_POOL = makeBlockWithColoredVariants(LibBlockNames.DILUTED_MANA_POOL,
-			color -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA_DILUTED, false, false,
-					ManaPoolBlock.SMALL_SHAPE_VARIANT, color, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA_DILUTED, false, false,
+					ManaPoolBlock.SMALL_SHAPE_VARIANT, color, props),
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final ManaPoolBlock FABULOUS_MANA_POOL = makeBlockWithColoredVariants(LibBlockNames.FABULOUS_MANA_POOL,
-			color -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, true, false,
-					ManaPoolBlock.NORMAL_SHAPE_VARIANT, color, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, true, false,
+					ManaPoolBlock.NORMAL_SHAPE_VARIANT, color, props),
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block ALCHEMY_CATALYST = make(LibBlockNames.ALCHEMY_CATALYST,
-			new AlchemyCatalystBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			AlchemyCatalystBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block CONJURATION_CATALYST = make(LibBlockNames.CONJURATION_CATALYST,
-			new ConjurationCatalystBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			ConjurationCatalystBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 
 	// resource blocks
 	public static final Block MANASTEEL_BLOCK = make(LibBlockNames.MANASTEEL_BLOCK,
-			new Block(BlockBehaviour.Properties.of()
+			Block::new, BlockBehaviour.Properties.of()
 					.strength(3, 10)
 					.mapColor(MapColor.LAPIS)
 					.sound(SoundType.METAL)
 					.instrument(NoteBlockInstrument.IRON_XYLOPHONE)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block TERRASTEEL_BLOCK = make(LibBlockNames.TERRASTEEL_BLOCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
-					.mapColor(MapColor.EMERALD)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
+					.mapColor(MapColor.EMERALD));
 	public static final Block ELEMENTIUM_BLOCK = make(LibBlockNames.ELEMENTIUM_BLOCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
-					.mapColor(MapColor.COLOR_PINK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
+					.mapColor(MapColor.COLOR_PINK));
 	public static final Block MANA_DIAMOND_BLOCK = make(LibBlockNames.MANA_DIAMOND_BLOCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
 					.instrument(NoteBlockInstrument.HARP)
-					.mapColor(MapColor.DIAMOND)));
+					.mapColor(MapColor.DIAMOND));
 	public static final Block DRAGONSTONE_BLOCK = make(LibBlockNames.DRAGONSTONE_BLOCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANA_DIAMOND_BLOCK)
-					.mapColor(MapColor.COLOR_PINK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANA_DIAMOND_BLOCK)
+					.mapColor(MapColor.COLOR_PINK));
 
 	// glass blocks
 	public static final Block MANAGLASS = make(LibBlockNames.MANAGLASS,
 			// [VanillaCopy] Blocks.GLASS
-			new TransparentBlock(BlockBehaviour.Properties.of()
+			TransparentBlock::new, BlockBehaviour.Properties.of()
 					.instrument(NoteBlockInstrument.HAT)
 					.strength(0.3F)
 					.sound(SoundType.GLASS)
@@ -1397,953 +1531,1001 @@ public final class BotaniaBlocks {
 					.isSuffocating(NEVER)
 					.isViewBlocking((state, level, pos, aabb) -> false)
 					// Botania: mana glasses emit a lot of light
-					.lightLevel(constInt(15))));
+					.lightLevel(constInt(15)));
 	public static final Block ALFGLASS = make(LibBlockNames.ALFGLASS,
-			new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(MANAGLASS)));
+			TransparentBlock::new, BlockBehaviour.Properties.ofFullCopy(MANAGLASS));
 	public static final Block BIFROST_BRIDGE = make(LibBlockNames.BIFROST_BRIDGE,
-			new BifrostBridgeBlock(BlockBehaviour.Properties.ofFullCopy(MANAGLASS)
-					.destroyTime(-1)));
+			BifrostBridgeBlock::new, BlockBehaviour.Properties.ofFullCopy(MANAGLASS)
+					.destroyTime(-1));
 	public static final Block BIFROST = make(LibBlockNames.BIFROST,
-			new BifrostBlock(BlockBehaviour.Properties.ofFullCopy(MANAGLASS)));
+			BifrostBlock::new, BlockBehaviour.Properties.ofFullCopy(MANAGLASS));
 
 	// recipe blocks
 	public static final Block RUNIC_ALTAR = make(LibBlockNames.RUNIC_ALTAR,
-			new RunicAltarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
-					.requiresCorrectToolForDrops()));
+			RunicAltarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
+					.requiresCorrectToolForDrops());
 	public static final Block MANA_ENCHANTER = make(LibBlockNames.MANA_ENCHANTER,
-			new ManaEnchanterBlock(BlockBehaviour.Properties.of()
+			ManaEnchanterBlock::new, BlockBehaviour.Properties.of()
 					.mapColor(MapColor.LAPIS)
 					.strength(3, 5)
 					.lightLevel(constInt(15))
-					.sound(SoundType.STONE)));
+					.sound(SoundType.STONE));
 	public static final Block BOTANICAL_BREWERY = make(LibBlockNames.BOTANICAL_BREWERY,
-			new BotanicalBreweryBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			BotanicalBreweryBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block TERRESTRIAL_AGGLOMERATION_PLATE = make(LibBlockNames.TERRESTRIAL_AGGLOMERATION_PLATE,
-			new TerrestrialAgglomerationPlateBlock(BlockBehaviour.Properties.of()
+			TerrestrialAgglomerationPlateBlock::new, BlockBehaviour.Properties.of()
 					.mapColor(MapColor.LAPIS)
 					.strength(3, 10)
 					.sound(SoundType.METAL)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block ELVEN_GATEWAY_CORE = make(LibBlockNames.ELVEN_GATEWAY_CORE,
-			new AlfheimPortalBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
+			AlfheimPortalBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
 					.strength(10)
 					.sound(SoundType.WOOD)
 					.lightLevel(state -> state.getValue(
-							BotaniaStateProperties.ALFPORTAL_STATE) != AlfheimPortalState.OFF ? 15 : 0)));
+							BotaniaStateProperties.ALFPORTAL_STATE) != AlfheimPortalState.OFF ? 15 : 0));
 
 	// pylons
 	public static final Block MANA_PYLON = make(LibBlockNames.MANA_PYLON,
-			new ManaPylonBlock(BlockBehaviour.Properties.of()
+			ManaPylonBlock::new, BlockBehaviour.Properties.of()
 					.mapColor(DyeColor.LIGHT_BLUE)
 					.noOcclusion()
 					.strength(5.5F)
 					.sound(SoundType.METAL)
 					.lightLevel(constInt(7))
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block NATURA_PYLON = make(LibBlockNames.NATURA_PYLON,
-			new NaturaPylonBlock(BlockBehaviour.Properties.ofFullCopy(MANA_PYLON)
-					.mapColor(MapColor.EMERALD)));
+			NaturaPylonBlock::new, BlockBehaviour.Properties.ofFullCopy(MANA_PYLON)
+					.mapColor(MapColor.EMERALD));
 	public static final Block GAIA_PYLON = make(LibBlockNames.GAIA_PYLON,
-			new GaiaPylonBlock(BlockBehaviour.Properties.ofFullCopy(MANA_PYLON)
-					.mapColor(DyeColor.PINK)));
+			GaiaPylonBlock::new, BlockBehaviour.Properties.ofFullCopy(MANA_PYLON)
+					.mapColor(DyeColor.PINK));
 
 	public static final Block MANA_SPLITTER = make(LibBlockNames.MANA_SPLITTER,
-			new ManaSplitterBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			ManaSplitterBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block MANA_VOID = make(LibBlockNames.MANA_VOID,
-			new ManaVoidBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
-					.strength(2, 2000)));
+			ManaVoidBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
+					.strength(2, 2000));
 	public static final Block MANA_DETECTOR = make(LibBlockNames.MANA_DETECTOR,
-			new ManaDetectorBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			ManaDetectorBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block FORCE_RELAY = make(LibBlockNames.FORCE_RELAY,
-			new ForceRelayBlock(BlockBehaviour.Properties.of()
+			ForceRelayBlock::new, BlockBehaviour.Properties.of()
 					.strength(2, 10)
 					.sound(SoundType.METAL)
 					.mapColor(MapColor.COLOR_PURPLE)
-					.isValidSpawn(NO_SPAWN)));
+					.isValidSpawn(NO_SPAWN));
 	public static final Block SPREADER_TURNTABLE = make(LibBlockNames.TURNTABLE,
-			new SpreaderTurntableBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			SpreaderTurntableBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block TINY_PLANET = make(LibBlockNames.TINY_PLANET,
-			new TinyPlanetBlock(BlockBehaviour.Properties.of()
+			TinyPlanetBlock::new, BlockBehaviour.Properties.of()
 					.mapColor(MapColor.DEEPSLATE)
 					.strength(20, 100)
 					.sound(SoundType.DEEPSLATE)
 					.instrument(NoteBlockInstrument.BASEDRUM)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block DRUM_OF_THE_WILD = make(LibBlockNames.DRUM_OF_THE_WILD,
-			new DrumOfTheWildBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
+			DrumOfTheWildBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
 					.instrument(NoteBlockInstrument.BASEDRUM)
-					.mapColor(MapColor.TERRACOTTA_WHITE)));
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block DRUM_OF_THE_GATHERING = make(LibBlockNames.DRUM_OF_THE_GATHERING,
-			new DrumOfTheGatheringBlock(BlockBehaviour.Properties.ofFullCopy(DRUM_OF_THE_WILD)));
+			DrumOfTheGatheringBlock::new, BlockBehaviour.Properties.ofFullCopy(DRUM_OF_THE_WILD));
 	public static final Block DRUM_OF_THE_CANOPY = make(LibBlockNames.DRUM_OF_THE_CANOPY,
-			new DrumOfTheCanopyBlock(BlockBehaviour.Properties.ofFullCopy(DRUM_OF_THE_WILD)));
+			DrumOfTheCanopyBlock::new, BlockBehaviour.Properties.ofFullCopy(DRUM_OF_THE_WILD));
 	public static final Block LIFE_IMBUER = make(LibBlockNames.LIFE_IMBUER,
-			new LifeImbuerBlock(BlockBehaviour.Properties.of()
+			LifeImbuerBlock::new, BlockBehaviour.Properties.of()
 					.sound(SoundType.METAL)
 					.strength(3)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block MANA_FLUXFIELD = make(LibBlockNames.MANA_FLUXFIELD,
-			new PowerGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			PowerGeneratorBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block MANA_PRISM = make(LibBlockNames.MANA_PRISM,
-			new ManaPrismBlock(BlockBehaviour.Properties.ofFullCopy(ALFGLASS)
-					.noCollision()));
+			ManaPrismBlock::new, BlockBehaviour.Properties.ofFullCopy(ALFGLASS)
+					.noCollision());
 	public static final Block MANA_PUMP = make(LibBlockNames.MANA_PUMP,
-			new ManaPumpBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			ManaPumpBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block SPARK_TINKERER = make(LibBlockNames.SPARK_TINKERER,
-			new SparkTinkererBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			SparkTinkererBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block MANASTORM_CHARGE = make(LibBlockNames.MANASTORM_CHARGE,
-			new ManastormChargeBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
-					.strength(12)));
+			ManastormChargeBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
+					.strength(12));
 	public static final Block MANATIDE_BELLOWS = make(LibBlockNames.MANATIDE_BELLOWS,
-			new BellowsBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			BellowsBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 
 	public static final Block OPEN_CRATE = make(LibBlockNames.OPEN_CRATE,
-			new OpenCrateBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			OpenCrateBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block CRAFTY_CRATE = make(LibBlockNames.CRAFT_CRATE,
-			new CraftyCrateBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			CraftyCrateBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block EYE_OF_THE_ANCIENTS = make(LibBlockNames.EYE_OF_THE_ANCIENTS,
-			new EyeOfTheAncientsBlock(BlockBehaviour.Properties.of()
+			EyeOfTheAncientsBlock::new, BlockBehaviour.Properties.of()
 					.strength(5, 10)
 					.sound(SoundType.METAL)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block SOLID_VINE = make(LibBlockNames.SOLID_VINE,
-			new SolidVineBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VINE)));
+			SolidVineBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.VINE));
 	public static final Block ABSTRUSE_PLATFORM = make(LibBlockNames.PLATFORM_ABSTRUSE,
-			new AbstrusePlatformBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
+			AbstrusePlatformBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
 					.strength(2, 5)
 					.isValidSpawn(NO_SPAWN)
 					.noOcclusion()
 					.isViewBlocking((state, level, pos, aabb) -> false)
-					.isSuffocating(NEVER)));
+					.isSuffocating(NEVER));
 	public static final Block SPECTRAL_PLATFORM = make(LibBlockNames.PLATFORM_SPECTRAL,
-			new SpectralPlatformBlock(BlockBehaviour.Properties.ofFullCopy(ABSTRUSE_PLATFORM)));
+			SpectralPlatformBlock::new, BlockBehaviour.Properties.ofFullCopy(ABSTRUSE_PLATFORM));
 	public static final Block INFRANGIBLE_PLATFORM = make(LibBlockNames.PLATFORM_INFRANGIBLE,
-			new InfrangiblePlatformBlock(BlockBehaviour.Properties.ofFullCopy(ABSTRUSE_PLATFORM)
+			InfrangiblePlatformBlock::new, BlockBehaviour.Properties.ofFullCopy(ABSTRUSE_PLATFORM)
 					.strength(-1, Float.MAX_VALUE)
 					.isValidSpawn(NO_SPAWN)
-					.noOcclusion()));
+					.noOcclusion());
 	public static final Block TINY_POTATO = make(LibBlockNames.TINY_POTATO,
-			new TinyPotatoBlock(BlockBehaviour.Properties.of()
+			TinyPotatoBlock::new, BlockBehaviour.Properties.of()
 					.strength(0.25F)
-					.mapColor(DyeColor.PINK)));
+					.mapColor(DyeColor.PINK));
 	public static final Block ENDER_OVERSEER = make(LibBlockNames.ENDER_OVERSEER,
-			new EnderOverseerBlock(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)));
+			EnderOverseerBlock::new, BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK));
 	public static final Block RED_STRINGED_CONTAINER = make(LibBlockNames.RED_STRINGED_CONTAINER,
-			new RedStringContainerBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			RedStringContainerBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block RED_STRINGED_DISPENSER = make(LibBlockNames.RED_STRINGED_DISPENSER,
-			new RedStringDispenserBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			RedStringDispenserBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block RED_STRINGED_NUTRIFIER = make(LibBlockNames.RED_STRINGED_NUTRIFIER,
-			new RedStringNutrifierBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			RedStringNutrifierBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block RED_STRINGED_COMPARATOR = make(LibBlockNames.RED_STRINGED_COMPARATOR,
-			new RedStringComparatorBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			RedStringComparatorBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block RED_STRINGED_SPOOFER = make(LibBlockNames.RED_STRINGED_SPOOFER,
-			new RedStringSpooferBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			RedStringSpooferBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block RED_STRINGED_INTERCEPTOR = make(LibBlockNames.RED_STRINGED_INTERCEPTOR,
-			new RedStringInterceptorBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			RedStringInterceptorBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 
 	public static final Block CORPOREA_FUNNEL = make(LibBlockNames.CORPOREA_FUNNEL,
-			new CorporeaFunnelBlock(BlockBehaviour.Properties.of()
+			CorporeaFunnelBlock::new, BlockBehaviour.Properties.of()
 					.strength(5.5F)
 					.mapColor(DyeColor.PURPLE)
 					.sound(SoundType.METAL)
 					.instrument(NoteBlockInstrument.BASEDRUM)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block CORPOREA_INTERCEPTOR = make(LibBlockNames.CORPOREA_INTERCEPTOR,
-			new CorporeaInterceptorBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL)));
+			CorporeaInterceptorBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL));
 	public static final Block CORPOREA_INDEX = make(LibBlockNames.CORPOREA_INDEX,
-			new CorporeaIndexBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL)
-					.noOcclusion()));
+			CorporeaIndexBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL)
+					.noOcclusion());
 	public static final Block CORPOREA_CRYSTAL_CUBE = make(LibBlockNames.CORPOREA_CRYSTAL_CUBE,
-			new CorporeaCrystalCubeBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL)));
+			CorporeaCrystalCubeBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL));
 	public static final Block CORPOREA_RETAINER = make(LibBlockNames.CORPOREA_RETAINER,
-			new CorporeaRetainerBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL)));
+			CorporeaRetainerBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL));
 
 	public static final Block CORPOREA_BLOCK = make(LibBlockNames.CORPOREA_BLOCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_FUNNEL));
 	public static final Block CORPOREA_STAIRS = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(CORPOREA_BLOCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK)));
+			props -> new StairBlock(CORPOREA_BLOCK.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK));
 	public static final Block CORPOREA_SLAB = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK));
 	public static final Block CORPOREA_WALL = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK));
 	public static final Block CORPOREA_BUTTON = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.CORPOREA_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(DyeColor.PURPLE)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.CORPOREA_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(DyeColor.PURPLE));
 	public static final Block CORPOREA_PRESSURE_PLATE = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.CORPOREA_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(DyeColor.PURPLE)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.CORPOREA_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(DyeColor.PURPLE));
 	public static final Block CORPOREA_BRICKS = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_BLOCK));
 	public static final Block CORPOREA_BRICK_STAIRS = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(CORPOREA_BRICKS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(CORPOREA_BRICKS)));
+			props -> new StairBlock(CORPOREA_BRICKS.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(CORPOREA_BRICKS));
 	public static final Block CORPOREA_BRICK_SLAB = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_BRICKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_BRICKS));
 	public static final Block CORPOREA_BRICK_WALL = make(LibBlockNames.CORPOREA_PREFIX + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(CORPOREA_BRICKS)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(CORPOREA_BRICKS));
 
 	public static final Block INCENSE_PLATE = make(LibBlockNames.INCENSE_PLATE,
-			new IncensePlateBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
-					.lightLevel(state -> state.getValue(BlockStateProperties.LIT) ? 2 : 0)));
+			IncensePlateBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
+					.lightLevel(state -> state.getValue(BlockStateProperties.LIT) ? 2 : 0));
 	public static final Block HOVERING_HOURGLASS = make(LibBlockNames.HOVERING_HOURGLASS,
-			new HoveringHourglassBlock(BlockBehaviour.Properties.of()
+			HoveringHourglassBlock::new, BlockBehaviour.Properties.of()
 					.mapColor(MapColor.GOLD)
 					.strength(2)
-					.sound(SoundType.METAL)));
+					.sound(SoundType.METAL));
 	public static final Block SPECTRAL_RAIL = make(LibBlockNames.SPECTRAL_RAIL,
-			new SpectralRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL)));
+			SpectralRailBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL));
 	public static final Block LUMINIZER = make(LibBlockNames.LUMINIZER,
-			new LuminizerBlock(BlockBehaviour.Properties.of()
-					.noCollision()));
+			LuminizerBlock::new, BlockBehaviour.Properties.of()
+					.noCollision());
 	public static final Block DETECTOR_LUMINIZER = make("detector" + LibBlockNames.LUMINIZER_SUFFIX,
-			new LuminizerDetectorBlock(BlockBehaviour.Properties.ofFullCopy(LUMINIZER)));
+			LuminizerDetectorBlock::new, BlockBehaviour.Properties.ofFullCopy(LUMINIZER));
 	public static final Block FORK_LUMINIZER = make("fork" + LibBlockNames.LUMINIZER_SUFFIX,
-			new LuminizerForkBlock(BlockBehaviour.Properties.ofFullCopy(LUMINIZER)));
+			LuminizerForkBlock::new, BlockBehaviour.Properties.ofFullCopy(LUMINIZER));
 	public static final Block TOGGLE_LUMINIZER = make("toggle" + LibBlockNames.LUMINIZER_SUFFIX,
-			new LuminizerToggleBlock(BlockBehaviour.Properties.ofFullCopy(LUMINIZER)));
+			LuminizerToggleBlock::new, BlockBehaviour.Properties.ofFullCopy(LUMINIZER));
 	public static final Block LUMINIZER_LAUNCHER = make(LibBlockNames.LUMINIZER_LAUNCHER,
-			new LuminizerLauncherBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			LuminizerLauncherBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block CACOPHONIUM_BLOCK = make(LibBlockNames.CACOPHONIUM,
-			new CacophoniumBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NOTE_BLOCK)
-					.strength(0.8F)));
+			CacophoniumBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.NOTE_BLOCK)
+					.strength(0.8F));
 	public static final Block CELLULAR_BLOCK = make(LibBlockNames.CELLULAR_BLOCK,
-			new CellularBlock(BlockBehaviour.Properties.of()
+			CellularBlock::new, BlockBehaviour.Properties.of()
 					.pushReaction(PushReaction.POPPED)
-					.sound(SoundType.WOOL)));
+					.sound(SoundType.WOOL));
 	public static final Block TERU_TERU_BOZU = make(LibBlockNames.TERU_TERU_BOZU,
-			new TeruTeruBozuBlock(BlockBehaviour.Properties.of().sound(SoundType.WOOL)
+			TeruTeruBozuBlock::new, BlockBehaviour.Properties.of().sound(SoundType.WOOL)
 					.instrument(NoteBlockInstrument.GUITAR)
-					.mapColor(DyeColor.WHITE)));
+					.mapColor(DyeColor.WHITE));
 	public static final Block LIVINGWOOD_AVATAR = make(LibBlockNames.LIVINGWOOD_AVATAR,
-			new AvatarBlock(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			AvatarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block FAKE_AIR = make(LibBlockNames.FAKE_AIR,
-			new FakeAirBlock(BlockBehaviour.Properties.of()
+			FakeAirBlock::new, BlockBehaviour.Properties.of()
 					.replaceable()
 					.noCollision()
 					.noLootTable()
 					.air()
-					.randomTicks()));
+					.randomTicks());
 	public static final Block LIVING_ROOT = make(LibBlockNames.LIVING_ROOTS,
-			new LivingRootBlock(BlockBehaviour.Properties.of()
+			LivingRootBlock::new, BlockBehaviour.Properties.of()
 					.strength(1.2F)
-					.sound(SoundType.WOOD)));
+					.sound(SoundType.WOOD));
 	public static final Block FEL_PUMPKIN = make(LibBlockNames.FEL_PUMPKIN,
-			new FelPumpkinBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CARVED_PUMPKIN)));
+			FelPumpkinBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CARVED_PUMPKIN));
 	public static final Block COCOON_OF_CAPRICE = make(LibBlockNames.COCOON_OF_CAPRICE,
-			new CocoonBlock(BlockBehaviour.Properties.of()
+			CocoonBlock::new, BlockBehaviour.Properties.of()
 					.strength(3, 60)
-					.sound(SoundType.WOOL)));
+					.sound(SoundType.WOOL));
 	public static final Block ANIMATED_TORCH = make(LibBlockNames.ANIMATED_TORCH,
-			new AnimatedTorchBlock(BlockBehaviour.Properties.of()
+			AnimatedTorchBlock::new, BlockBehaviour.Properties.of()
 					.noCollision()
 					.instabreak()
 					.lightLevel(state -> state.getValue(AnimatedTorchBlock.TRIGGERED) ? 0 : 7)
 					.sound(SoundType.WOOD)
-					.pushReaction(PushReaction.POPPED)));
+					.pushReaction(PushReaction.POPPED));
 	public static final Block STARFIELD_CREATOR = make(LibBlockNames.STARFIELD_CREATOR,
-			new StarfieldCreatorBlock(BlockBehaviour.Properties.of()
+			StarfieldCreatorBlock::new, BlockBehaviour.Properties.of()
 					.mapColor(DyeColor.PINK)
 					.strength(5, 2000)
-					.sound(SoundType.METAL)));
+					.sound(SoundType.METAL));
 
 	public static final Block AZULEJO_0 = make(LibBlockNames.AZULEJO_PREFIX + 0,
-			new Block(BlockBehaviour.Properties.of()
+			Block::new, BlockBehaviour.Properties.of()
 					.mapColor(MapColor.LAPIS)
 					.strength(2, 5)
 					.sound(SoundType.STONE)
 					.instrument(NoteBlockInstrument.BASEDRUM)
-					.requiresCorrectToolForDrops()));
+					.requiresCorrectToolForDrops());
 	public static final Block AZULEJO_1 = make(LibBlockNames.AZULEJO_PREFIX + 1,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_2 = make(LibBlockNames.AZULEJO_PREFIX + 2,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_3 = make(LibBlockNames.AZULEJO_PREFIX + 3,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_4 = make(LibBlockNames.AZULEJO_PREFIX + 4,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_5 = make(LibBlockNames.AZULEJO_PREFIX + 5,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_6 = make(LibBlockNames.AZULEJO_PREFIX + 6,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_7 = make(LibBlockNames.AZULEJO_PREFIX + 7,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_8 = make(LibBlockNames.AZULEJO_PREFIX + 8,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_9 = make(LibBlockNames.AZULEJO_PREFIX + 9,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_10 = make(LibBlockNames.AZULEJO_PREFIX + 10,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_11 = make(LibBlockNames.AZULEJO_PREFIX + 11,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_12 = make(LibBlockNames.AZULEJO_PREFIX + 12,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_13 = make(LibBlockNames.AZULEJO_PREFIX + 13,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_14 = make(LibBlockNames.AZULEJO_PREFIX + 14,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 	public static final Block AZULEJO_15 = make(LibBlockNames.AZULEJO_PREFIX + 15,
-			new Block(BlockBehaviour.Properties.ofFullCopy(AZULEJO_0)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(AZULEJO_0));
 
 	public static final Block MANA_FLAME = make(LibBlockNames.MANA_FLAME,
-			new ManaFlameBlock(BlockBehaviour.Properties.of()
+			ManaFlameBlock::new, BlockBehaviour.Properties.of()
 					.pushReaction(PushReaction.POPPED)
 					.sound(SoundType.WOOL)
 					.lightLevel(constInt(15))
-					.noCollision()));
+					.noCollision());
 	public static final Block BLAZE_MESH = make(LibBlockNames.BLAZE_BLOCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANASTEEL_BLOCK)
 					.instrument(NoteBlockInstrument.PLING)
 					.lightLevel(constInt(15))
-					.mapColor(MapColor.GOLD)));
+					.mapColor(MapColor.GOLD));
 	public static final Block GAIA_HEAD = make(LibBlockNames.GAIA_HEAD,
-			new GaiaHeadBlock(BlockBehaviour.Properties.of()
+			GaiaHeadBlock::new, BlockBehaviour.Properties.of()
 					.pushReaction(PushReaction.POPPED)
-					.strength(1)));
+					.strength(1));
 	public static final Block GAIA_WALL_HEAD_BLOCK = make(LibBlockNames.GAIA_WALL_HEAD,
-			new GaiaWallHeadBlock(BlockBehaviour.Properties.ofFullCopy(GAIA_HEAD)));
+			GaiaWallHeadBlock::new, BlockBehaviour.Properties.ofFullCopy(GAIA_HEAD));
 
 	public static final Block SHIMMERROCK = make(LibBlockNames.SHIMMERROCK,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
 	public static final Block SHIMMERROCK_STAIRS = make(LibBlockNames.SHIMMERROCK + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SHIMMERROCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(SHIMMERROCK)));
+			props -> new StairBlock(SHIMMERROCK.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(SHIMMERROCK));
 	public static final Block SHIMMERROCK_SLAB = make(LibBlockNames.SHIMMERROCK + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SHIMMERROCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SHIMMERROCK));
 	public static final Block SHIMMERROCK_WALL = make(LibBlockNames.SHIMMERROCK + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(SHIMMERROCK)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(SHIMMERROCK));
 	public static final Block SHIMMERROCK_BUTTON = make(LibBlockNames.SHIMMERROCK + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.SHIMMERROCK_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.TERRACOTTA_WHITE)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.SHIMMERROCK_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block SHIMMERROCK_PRESSURE_PLATE = make(LibBlockNames.SHIMMERROCK + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.SHIMMERROCK_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.TERRACOTTA_WHITE)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.SHIMMERROCK_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block SHIMMERWOOD_PLANKS = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.PLANKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block SHIMMERWOOD_PLANK_STAIRS = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.PLANK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SHIMMERWOOD_PLANKS.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)));
+			props -> new StairBlock(SHIMMERWOOD_PLANKS.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS));
 	public static final Block SHIMMERWOOD_PLANK_SLAB = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.PLANK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS));
 	public static final Block SHIMMERWOOD_FENCE = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.FENCE_SUFFIX,
-			new FenceBlock(BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)));
+			FenceBlock::new, BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS));
 	public static final Block SHIMMERWOOD_FENCE_GATE = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.FENCE_GATE_SUFFIX,
-			new FenceGateBlock(BotaniaBlockSetTypes.SHIMMERWOOD,
-					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)));
+			props -> new FenceGateBlock(BotaniaBlockSetTypes.SHIMMERWOOD,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS));
 	public static final Block SHIMMERWOOD_PRESSURE_PLATE = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
-							.noCollision()
-							.strength(0.5F)
-							.forceSolidOn()
-							.pushReaction(PushReaction.POPPED)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
+					.noCollision()
+					.strength(0.5F)
+					.forceSolidOn()
+					.pushReaction(PushReaction.POPPED));
 	public static final Block SHIMMERWOOD_BUTTON = make(LibBlockNames.SHIMMERWOOD + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET, 30,
-					BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
-							.noCollision()
-							.strength(0.5F)
-							.pushReaction(PushReaction.POPPED)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.SHIMMERWOOD_BLOCK_SET, 30,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SHIMMERWOOD_PLANKS)
+					.noCollision()
+					.strength(0.5F)
+					.pushReaction(PushReaction.POPPED));
 
 	// grass blocks
 	public static final Block DRY_GRASS_BLOCK = make("dry" + LibBlockNames.ALT_GRASS_SUFFIX,
-			new BotaniaGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
-					.mapColor(MapColor.TERRACOTTA_LIGHT_GREEN)));
+			BotaniaGrassBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+					.mapColor(MapColor.TERRACOTTA_LIGHT_GREEN));
 	public static final Block GOLDEN_GRASS_BLOCK = make("golden" + LibBlockNames.ALT_GRASS_SUFFIX,
-			new BotaniaGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
-					.mapColor(MapColor.GOLD)));
+			BotaniaGrassBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+					.mapColor(MapColor.GOLD));
 	public static final Block VIVID_GRASS_BLOCK = make("vivid" + LibBlockNames.ALT_GRASS_SUFFIX,
-			new BotaniaGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
-					.mapColor(MapColor.PLANT)));
+			BotaniaGrassBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+					.mapColor(MapColor.PLANT));
 	public static final Block SCORCHED_GRASS_BLOCK = make("scorched" + LibBlockNames.ALT_GRASS_SUFFIX,
-			new BotaniaScorchedGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
-					.mapColor(MapColor.NETHER)));
+			BotaniaScorchedGrassBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+					.mapColor(MapColor.NETHER));
 	public static final Block INFUSED_GRASS_BLOCK = make("infused" + LibBlockNames.ALT_GRASS_SUFFIX,
-			new BotaniaInfusedGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
-					.mapColor(MapColor.COLOR_CYAN)));
+			BotaniaInfusedGrassBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+					.mapColor(MapColor.COLOR_CYAN));
 	public static final Block MUTATED_GRASS_BLOCK = make("mutated" + LibBlockNames.ALT_GRASS_SUFFIX,
-			new BotaniaMutatedGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
-					.mapColor(MapColor.WARPED_HYPHAE)));
+			BotaniaMutatedGrassBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+					.mapColor(MapColor.WARPED_HYPHAE));
 
 	public static final Block DAYBLOOM_MOTIF = make(LibBlockNames.MOTIF_DAYBLOOM,
-			new FlowerMotifBlock(MobEffects.BLINDNESS, 15, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY), true));
+			props -> new FlowerMotifBlock(MobEffects.BLINDNESS, 15, props, true), BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY));
 	public static final Block NIGHTSHADE_MOTIF = make(LibBlockNames.MOTIF_NIGHTSHADE,
-			new FlowerMotifBlock(MobEffects.POISON, 20, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY), true));
+			props -> new FlowerMotifBlock(MobEffects.POISON, 20, props, true), BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY));
 	public static final Block HYDROANGEAS_MOTIF = make(LibBlockNames.MOTIF_HYDROANGEAS,
-			new FlowerMotifBlock(MobEffects.UNLUCK, 10, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY), false));
+			props -> new FlowerMotifBlock(MobEffects.UNLUCK, 10, props, false), BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY));
 
 	public static final Block POTTED_DAYBLOOM_MOTIF = make(LibBlockNames.POTTED_PREFIX + LibBlockNames.MOTIF_DAYBLOOM,
-			flowerPot(DAYBLOOM_MOTIF, 0));
+			flowerPot(DAYBLOOM_MOTIF, 0), flowerPotProperties());
 	public static final Block POTTED_NIGHTSHADE_MOTIF = make(LibBlockNames.POTTED_PREFIX + LibBlockNames.MOTIF_NIGHTSHADE,
-			flowerPot(NIGHTSHADE_MOTIF, 0));
+			flowerPot(NIGHTSHADE_MOTIF, 0), flowerPotProperties());
 	public static final Block POTTED_HYDROANGEAS_MOTIF = make(LibBlockNames.POTTED_PREFIX + LibBlockNames.MOTIF_HYDROANGEAS,
-			flowerPot(HYDROANGEAS_MOTIF, 0));
+			flowerPot(HYDROANGEAS_MOTIF, 0), flowerPotProperties());
 
 	// quartz variants
 	public static final Block SMOKEY_QUARTZ_BLOCK = make(LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.COLOR_BLACK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.COLOR_BLACK));
 	public static final Block SMOKEY_QUARTZ_STAIRS = make(LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOKEY_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOKEY_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK));
 	public static final Block SMOKEY_QUARTZ_SLAB = make(LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK));
 	public static final Block CHISELED_SMOKEY_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK));
 	public static final Block SMOKEY_QUARTZ_BRICKS = make(LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK));
 	public static final Block SMOKEY_QUARTZ_PILLAR = make(LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK));
 	public static final Block SMOOTH_SMOKEY_QUARTZ_BLOCK = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.COLOR_BLACK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.COLOR_BLACK));
 	public static final Block SMOOTH_SMOKEY_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_SMOKEY_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_SMOKEY_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOOTH_SMOKEY_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_SMOKEY_QUARTZ_BLOCK));
 	public static final Block SMOOTH_SMOKEY_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.SMOKEY_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_SMOKEY_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_SMOKEY_QUARTZ_BLOCK));
 
 	public static final Block MANA_QUARTZ_BLOCK = make(LibBlockNames.MANA_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.DIAMOND)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.DIAMOND));
 	public static final Block MANA_QUARTZ_STAIRS = make(LibBlockNames.MANA_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(MANA_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK)));
+			props -> new StairBlock(MANA_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOKEY_QUARTZ_BLOCK));
 	public static final Block MANA_QUARTZ_SLAB = make(LibBlockNames.MANA_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK));
 	public static final Block CHISELED_MANA_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.MANA_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK));
 	public static final Block MANA_QUARTZ_BRICKS = make(LibBlockNames.MANA_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK));
 	public static final Block MANA_QUARTZ_PILLAR = make(LibBlockNames.MANA_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(MANA_QUARTZ_BLOCK));
 	public static final Block SMOOTH_MANA_QUARTZ_BLOCK = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.MANA_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.DIAMOND)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.DIAMOND));
 	public static final Block SMOOTH_MANA_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.MANA_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_MANA_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_MANA_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOOTH_MANA_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_MANA_QUARTZ_BLOCK));
 	public static final Block SMOOTH_MANA_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.MANA_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_MANA_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_MANA_QUARTZ_BLOCK));
 
 	public static final Block BLAZE_QUARTZ_BLOCK = make(LibBlockNames.BLAZE_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.SAND)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.SAND));
 	public static final Block BLAZE_QUARTZ_STAIRS = make(LibBlockNames.BLAZE_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(BLAZE_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK)));
+			props -> new StairBlock(BLAZE_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK));
 	public static final Block BLAZE_QUARTZ_SLAB = make(LibBlockNames.BLAZE_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK));
 	public static final Block CHISELED_BLAZE_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.BLAZE_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK));
 	public static final Block BLAZE_QUARTZ_BRICKS = make(LibBlockNames.BLAZE_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK));
 	public static final Block BLAZE_QUARTZ_PILLAR = make(LibBlockNames.BLAZE_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(BLAZE_QUARTZ_BLOCK));
 	public static final Block SMOOTH_BLAZE_QUARTZ_BLOCKS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.BLAZE_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.SAND)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.SAND));
 	public static final Block SMOOTH_BLAZE_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.BLAZE_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_BLAZE_QUARTZ_BLOCKS.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_BLAZE_QUARTZ_BLOCKS)));
+			props -> new StairBlock(SMOOTH_BLAZE_QUARTZ_BLOCKS.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_BLAZE_QUARTZ_BLOCKS));
 	public static final Block SMOOTH_BLAZE_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.BLAZE_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_BLAZE_QUARTZ_BLOCKS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_BLAZE_QUARTZ_BLOCKS));
 
 	public static final Block LAVENDER_QUARTZ_BLOCK = make(LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.COLOR_PINK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.COLOR_PINK));
 	public static final Block LAVENDER_QUARTZ_STAIRS = make(LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LAVENDER_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK)));
+			props -> new StairBlock(LAVENDER_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK));
 	public static final Block LAVENDER_QUARTZ_SLAB = make(LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK));
 	public static final Block CHISELED_LAVENDER_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK));
 	public static final Block LAVENDER_QUARTZ_BRICKS = make(LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK));
 	public static final Block LAVENDER_QUARTZ_PILLAR = make(LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(LAVENDER_QUARTZ_BLOCK));
 	public static final Block SMOOTH_LAVENDER_QUARTZ_BLOCK = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.COLOR_PINK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.COLOR_PINK));
 	public static final Block SMOOTH_LAVENDER_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_LAVENDER_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_LAVENDER_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOOTH_LAVENDER_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_LAVENDER_QUARTZ_BLOCK));
 	public static final Block SMOOTH_LAVENDER_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.LAVENDER_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_LAVENDER_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_LAVENDER_QUARTZ_BLOCK));
 
 	public static final Block RED_QUARTZ_BLOCK = make(LibBlockNames.RED_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.TERRACOTTA_WHITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block RED_QUARTZ_STAIRS = make(LibBlockNames.RED_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(RED_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK)));
+			props -> new StairBlock(RED_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK));
 	public static final Block RED_QUARTZ_SLAB = make(LibBlockNames.RED_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK));
 	public static final Block CHISELED_RED_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.RED_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK));
 	public static final Block RED_QUARTZ_BRICKS = make(LibBlockNames.RED_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK));
 	public static final Block RED_QUARTZ_PILLAR = make(LibBlockNames.RED_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(RED_QUARTZ_BLOCK));
 	public static final Block SMOOTH_RED_QUARTZ_BLOCK = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.RED_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.TERRACOTTA_WHITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block SMOOTH_RED_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.RED_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_RED_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_RED_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOOTH_RED_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_RED_QUARTZ_BLOCK));
 	public static final Block SMOOTH_RED_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.RED_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_RED_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_RED_QUARTZ_BLOCK));
 
 	public static final Block ELVEN_QUARTZ_BLOCK = make(LibBlockNames.ELVEN_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.COLOR_LIGHT_GREEN)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.COLOR_LIGHT_GREEN));
 	public static final Block ELVEN_QUARTZ_STAIRS = make(LibBlockNames.ELVEN_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(ELVEN_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK)));
+			props -> new StairBlock(ELVEN_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK));
 	public static final Block ELVEN_QUARTZ_SLAB = make(LibBlockNames.ELVEN_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK));
 	public static final Block CHISELED_ELVEN_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.ELVEN_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK));
 	public static final Block ELVEN_QUARTZ_BRICKS = make(LibBlockNames.ELVEN_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK));
 	public static final Block ELVEN_QUARTZ_PILLAR = make(LibBlockNames.ELVEN_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(ELVEN_QUARTZ_BLOCK));
 	public static final Block SMOOTH_ELVEN_QUARTZ_BLOCK = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.ELVEN_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.COLOR_LIGHT_GREEN)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.COLOR_LIGHT_GREEN));
 	public static final Block SMOOTH_ELVEN_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.ELVEN_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_ELVEN_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_ELVEN_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOOTH_ELVEN_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_ELVEN_QUARTZ_BLOCK));
 	public static final Block SMOOTH_ELVEN_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.ELVEN_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_ELVEN_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_ELVEN_QUARTZ_BLOCK));
 
 	public static final Block SUNNY_QUART_BLOCK = make(LibBlockNames.SUNNY_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
-					.mapColor(MapColor.COLOR_YELLOW)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+					.mapColor(MapColor.COLOR_YELLOW));
 	public static final Block SUNNY_QUARTZ_STAIRS = make(LibBlockNames.SUNNY_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SUNNY_QUART_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK)));
+			props -> new StairBlock(SUNNY_QUART_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK));
 	public static final Block SUNNY_QUARTZ_SLAB = make(LibBlockNames.SUNNY_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK));
 	public static final Block CHISELED_SUNNY_QUARTZ_BLOCK = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.SUNNY_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK));
 	public static final Block SUNNY_QUARTZ_BRICKS = make(LibBlockNames.SUNNY_QUARTZ + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK));
 	public static final Block SUNNY_QUARTZ_PILLAR = make(LibBlockNames.SUNNY_QUARTZ + LibBlockNames.PILLAR_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(SUNNY_QUART_BLOCK));
 	public static final Block SMOOTH_SUNNY_QUARTZ_BLOCK = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.SUNNY_QUARTZ + LibBlockNames.BLOCK_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
-					.mapColor(MapColor.COLOR_YELLOW)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.SMOOTH_QUARTZ)
+					.mapColor(MapColor.COLOR_YELLOW));
 	public static final Block SMOOTH_SUNNY_QUARTZ_STAIRS = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.SUNNY_QUARTZ + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SMOOTH_SUNNY_QUARTZ_BLOCK.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(SMOOTH_SUNNY_QUARTZ_BLOCK)));
+			props -> new StairBlock(SMOOTH_SUNNY_QUARTZ_BLOCK.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(SMOOTH_SUNNY_QUARTZ_BLOCK));
 	public static final Block SMOOTH_SUNNY_QUARTZ_SLAB = make(LibBlockNames.SMOOTH_PREFIX + LibBlockNames.SUNNY_QUARTZ + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SMOOTH_SUNNY_QUARTZ_BLOCK)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SMOOTH_SUNNY_QUARTZ_BLOCK));
 
 	// metamorphic biome blocks
 	public static final Block FUCHSITE = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE,
-			new Block(BlockBehaviour.Properties.of()
+			Block::new, BlockBehaviour.Properties.of()
 					.strength(1.5F, 10)
 					.sound(SoundType.TUFF)
 					.instrument(NoteBlockInstrument.BASEDRUM)
 					.requiresCorrectToolForDrops()
-					.mapColor(MapColor.WARPED_NYLIUM)));
+					.mapColor(MapColor.WARPED_NYLIUM));
 	public static final Block FUCHSITE_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(FUCHSITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			props -> new StairBlock(FUCHSITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_FOREST_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.WARPED_NYLIUM)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_FOREST_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.WARPED_NYLIUM));
 	public static final Block FUCHSITE_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_FOREST_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.WARPED_NYLIUM)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_FOREST_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.WARPED_NYLIUM));
 	public static final Block COBBLED_FUCHSITE = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block COBBLED_FUCHSITE_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(FUCHSITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			props -> new StairBlock(FUCHSITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block COBBLED_FUCHSITE_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block COBBLED_FUCHSITE_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(FUCHSITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			props -> new StairBlock(FUCHSITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block FUCHSITE_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 	public static final Block CHISELED_FUCHSITE_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_FUCHSITE
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE));
 
 	public static final Block TALC = make(LibBlockNames.METAMORPHIC_VARIANT_TALC,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.CALCITE)
-					.mapColor(MapColor.QUARTZ)));
+					.mapColor(MapColor.QUARTZ));
 	public static final Block TALC_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(TALC.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(TALC)));
+			props -> new StairBlock(TALC.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_PLAINS_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.QUARTZ)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_PLAINS_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.QUARTZ));
 	public static final Block TALC_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_PLAINS_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.QUARTZ)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_PLAINS_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.QUARTZ));
 	public static final Block COBBLED_TALC = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_TALC,
-			new Block(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block COBBLED_TALC_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_TALC
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(TALC.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(TALC)));
+			props -> new StairBlock(TALC.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block COBBLED_TALC_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_TALC
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block COBBLED_TALC_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_TALC
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.BRICKS_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(TALC.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(TALC)));
+			props -> new StairBlock(TALC.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block TALC_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_TALC + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 	public static final Block CHISELED_TALC_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_TALC
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(TALC)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(TALC));
 
 	public static final Block GNEISS = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.DEEPSLATE_TILES)
-					.mapColor(MapColor.GLOW_LICHEN)));
+					.mapColor(MapColor.GLOW_LICHEN));
 	public static final Block GNEISS_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(GNEISS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			props -> new StairBlock(GNEISS.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_MOUNTAIN_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.GLOW_LICHEN)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_MOUNTAIN_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.GLOW_LICHEN));
 	public static final Block GNEISS_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_MOUNTAIN_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.GLOW_LICHEN)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_MOUNTAIN_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.GLOW_LICHEN));
 	public static final Block COBBLED_GNEISS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_GNEISS,
-			new Block(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block COBBLED_GNEISS_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_GNEISS
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(GNEISS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			props -> new StairBlock(GNEISS.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block COBBLED_GNEISS_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_GNEISS
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block COBBLED_GNEISS_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_GNEISS
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(GNEISS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			props -> new StairBlock(GNEISS.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block GNEISS_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_GNEISS + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 	public static final Block CHISELED_GNEISS_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_GNEISS
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(GNEISS)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(GNEISS));
 
 	public static final Block MYCELITE = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.DEEPSLATE_BRICKS)
-					.mapColor(MapColor.TERRACOTTA_PURPLE)));
+					.mapColor(MapColor.TERRACOTTA_PURPLE));
 	public static final Block MYCELITE_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(MYCELITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			props -> new StairBlock(MYCELITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_FUNGAL_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.TERRACOTTA_PURPLE)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_FUNGAL_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.TERRACOTTA_PURPLE));
 	public static final Block MYCELITE_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_FUNGAL_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.TERRACOTTA_PURPLE)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_FUNGAL_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.TERRACOTTA_PURPLE));
 	public static final Block COBBLED_MYCELITE = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_MYCELITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block COBBLED_MYCELITE_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_MYCELITE
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(MYCELITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			props -> new StairBlock(MYCELITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block COBBLED_MYCELITE_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_MYCELITE
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block COBBLED_MYCELITE_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_MYCELITE
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(MYCELITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			props -> new StairBlock(MYCELITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block MYCELITE_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_MYCELITE + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 	public static final Block CHISELED_MYCELITE_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_MYCELITE
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(MYCELITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(MYCELITE));
 
 	public static final Block CATACLASITE = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.DEEPSLATE_TILES)
-					.mapColor(MapColor.TERRACOTTA_LIGHT_GRAY)));
+					.mapColor(MapColor.TERRACOTTA_LIGHT_GRAY));
 	public static final Block CATACLASITE_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(CATACLASITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			props -> new StairBlock(CATACLASITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_SWAMP_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.TERRACOTTA_LIGHT_GRAY)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_SWAMP_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.TERRACOTTA_LIGHT_GRAY));
 	public static final Block CATACLASITE_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_SWAMP_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.TERRACOTTA_LIGHT_GRAY)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_SWAMP_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.TERRACOTTA_LIGHT_GRAY));
 	public static final Block COBBLED_CATACLASITE = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block COBBLED_CATACLASITE_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(CATACLASITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			props -> new StairBlock(CATACLASITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block COBBLED_CATACLASITE_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block COBBLED_CATACLASITE_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.BRICKS_SUFFIX,
-			new BotaniaDirectionalBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			BotaniaDirectionalBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(CATACLASITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			props -> new StairBlock(CATACLASITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CATACLASITE_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 	public static final Block CHISELED_CATACLASITE_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_CATACLASITE
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new BotaniaDirectionalBlock(BlockBehaviour.Properties.ofFullCopy(CATACLASITE)));
+			BotaniaDirectionalBlock::new, BlockBehaviour.Properties.ofFullCopy(CATACLASITE));
 
 	public static final Block SOLITE = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.DEEPSLATE)
-					.mapColor(MapColor.DIRT)));
+					.mapColor(MapColor.DIRT));
 	public static final Block SOLITE_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SOLITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			props -> new StairBlock(SOLITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_DESERT_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.DIRT)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_DESERT_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.DIRT));
 	public static final Block SOLITE_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_DESERT_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.DIRT)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_DESERT_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.DIRT));
 	public static final Block COBBLED_SOLITE = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_SOLITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block COBBLED_SOLITE_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_SOLITE
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SOLITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			props -> new StairBlock(SOLITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block COBBLED_SOLITE_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_SOLITE
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block COBBLED_SOLITE_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_SOLITE
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(SOLITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			props -> new StairBlock(SOLITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block SOLITE_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_SOLITE + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 	public static final Block CHISELED_SOLITE_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_SOLITE
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(SOLITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(SOLITE));
 
 	public static final Block LUNITE = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.DEEPSLATE)
-					.mapColor(MapColor.TERRACOTTA_BLUE)));
+					.mapColor(MapColor.TERRACOTTA_BLUE));
 	public static final Block LUNITE_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LUNITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			props -> new StairBlock(LUNITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_TAIGA_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.TERRACOTTA_BLUE)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_TAIGA_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.TERRACOTTA_BLUE));
 	public static final Block LUNITE_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_TAIGA_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.TERRACOTTA_BLUE)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_TAIGA_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.TERRACOTTA_BLUE));
 	public static final Block COBBLED_LUNITE = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_LUNITE,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block COBBLED_LUNITE_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_LUNITE
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LUNITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			props -> new StairBlock(LUNITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block COBBLED_LUNITE_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_LUNITE
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block COBBLED_LUNITE_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_LUNITE
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(LUNITE.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			props -> new StairBlock(LUNITE.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block LUNITE_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_LUNITE + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 	public static final Block CHISELED_LUNITE_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_LUNITE
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LUNITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LUNITE));
 
 	public static final Block ROSY_TALC = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC,
-			new Block(BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
+			Block::new, BlockBehaviour.Properties.ofFullCopy(FUCHSITE)
 					.sound(SoundType.CALCITE)
-					.mapColor(MapColor.TERRACOTTA_WHITE)));
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block ROSY_TALC_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(ROSY_TALC.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			props -> new StairBlock(ROSY_TALC.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_BUTTON = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.BUTTON_SUFFIX,
-			new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_MESA_BLOCK_SET, 20,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
-							.mapColor(MapColor.TERRACOTTA_WHITE)));
+			props -> new ButtonBlock(BotaniaBlockSetTypes.METAMORPHIC_MESA_BLOCK_SET, 20,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BUTTON)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block ROSY_TALC_PRESSURE_PLATE = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.PRESSURE_PLATE_SUFFIX,
-			new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_MESA_BLOCK_SET,
-					BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
-							.mapColor(MapColor.TERRACOTTA_WHITE)));
+			props -> new PressurePlateBlock(BotaniaBlockSetTypes.METAMORPHIC_MESA_BLOCK_SET,
+					props),
+			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_PRESSURE_PLATE)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block COBBLED_ROSY_TALC = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC,
-			new Block(BlockBehaviour.Properties.ofFullCopy(
-					ROSY_TALC)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(
+					ROSY_TALC));
 	public static final Block COBBLED_ROSY_TALC_STAIRS = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC
 			+ LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(ROSY_TALC.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			props -> new StairBlock(ROSY_TALC.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block COBBLED_ROSY_TALC_SLAB = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC
 			+ LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block COBBLED_ROSY_TALC_WALL = make(LibBlockNames.COBBLED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC
 			+ LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_BRICKS = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.BRICKS_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_BRICK_STAIRS = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.BRICK_INFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(ROSY_TALC.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			props -> new StairBlock(ROSY_TALC.defaultBlockState(), props), BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_BRICK_SLAB = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.BRICK_INFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block ROSY_TALC_BRICK_WALL = make(LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC + LibBlockNames.BRICK_INFIX + LibBlockNames.WALL_SUFFIX,
-			new WallBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			WallBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 	public static final Block CHISELED_ROSY_TALC_BRICKS = make(LibBlockNames.CHISELED_PREFIX + LibBlockNames.METAMORPHIC_VARIANT_ROSY_TALC
 			+ LibBlockNames.BRICKS_SUFFIX,
-			new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(ROSY_TALC)));
+			RotatedPillarBlock::new, BlockBehaviour.Properties.ofFullCopy(ROSY_TALC));
 
 	// pavements
 	public static final Block WHITE_PORTUGUESE_PAVEMENT = make(LibBlockNames.PAVEMENT_VARIANT_WHITE + LibBlockNames.PAVEMENT_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
-					.mapColor(MapColor.TERRACOTTA_WHITE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
+					.mapColor(MapColor.TERRACOTTA_WHITE));
 	public static final Block WHITE_PORTUGUESE_PAVEMENT_STAIRS = make(LibBlockNames.PAVEMENT_VARIANT_WHITE + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(WHITE_PORTUGUESE_PAVEMENT.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)));
+			props -> new StairBlock(WHITE_PORTUGUESE_PAVEMENT.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT));
 	public static final Block WHITE_PORTUGUESE_PAVEMENT_SLAB = make(LibBlockNames.PAVEMENT_VARIANT_WHITE + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT));
 
 	public static final Block BLACK_PORTUGUESE_PAVEMENT = make(LibBlockNames.PAVEMENT_VARIANT_BLACK + LibBlockNames.PAVEMENT_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
-					.mapColor(MapColor.COLOR_GRAY)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
+					.mapColor(MapColor.COLOR_GRAY));
 	public static final Block BLACK_PORTUGUESE_PAVEMENT_STAIRS = make(LibBlockNames.PAVEMENT_VARIANT_BLACK + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(BLACK_PORTUGUESE_PAVEMENT.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(BLACK_PORTUGUESE_PAVEMENT)));
+			props -> new StairBlock(BLACK_PORTUGUESE_PAVEMENT.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(BLACK_PORTUGUESE_PAVEMENT));
 	public static final Block BLACK_PORTUGUESE_PAVEMENT_SLAB = make(LibBlockNames.PAVEMENT_VARIANT_BLACK + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(BLACK_PORTUGUESE_PAVEMENT)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(BLACK_PORTUGUESE_PAVEMENT));
 
 	public static final Block BLUE_PORTUGUESE_PAVEMENT = make(LibBlockNames.PAVEMENT_VARIANT_BLUE + LibBlockNames.PAVEMENT_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
-					.mapColor(MapColor.COLOR_BLUE)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
+					.mapColor(MapColor.COLOR_BLUE));
 	public static final Block BLUE_PORTUGUESE_PAVEMENT_STAIRS = make(LibBlockNames.PAVEMENT_VARIANT_BLUE + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(BLUE_PORTUGUESE_PAVEMENT.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(BLUE_PORTUGUESE_PAVEMENT)));
+			props -> new StairBlock(BLUE_PORTUGUESE_PAVEMENT.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(BLUE_PORTUGUESE_PAVEMENT));
 	public static final Block BLUE_PORTUGUESE_PAVEMENT_SLAB = make(LibBlockNames.PAVEMENT_VARIANT_BLUE + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(BLUE_PORTUGUESE_PAVEMENT)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(BLUE_PORTUGUESE_PAVEMENT));
 
 	public static final Block YELLOW_PORTUGUESE_PAVEMENT = make(LibBlockNames.PAVEMENT_VARIANT_YELLOW + LibBlockNames.PAVEMENT_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
-					.mapColor(MapColor.TERRACOTTA_YELLOW)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
+					.mapColor(MapColor.TERRACOTTA_YELLOW));
 	public static final Block YELLOW_PORTUGUESE_PAVEMENT_STAIRS = make(LibBlockNames.PAVEMENT_VARIANT_YELLOW + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(YELLOW_PORTUGUESE_PAVEMENT.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(YELLOW_PORTUGUESE_PAVEMENT)));
+			props -> new StairBlock(YELLOW_PORTUGUESE_PAVEMENT.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(YELLOW_PORTUGUESE_PAVEMENT));
 	public static final Block YELLOW_PORTUGUESE_PAVEMENT_SLAB = make(LibBlockNames.PAVEMENT_VARIANT_YELLOW + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(YELLOW_PORTUGUESE_PAVEMENT)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(YELLOW_PORTUGUESE_PAVEMENT));
 
 	public static final Block RED_PORTUGUESE_PAVEMENT = make(LibBlockNames.PAVEMENT_VARIANT_RED + LibBlockNames.PAVEMENT_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
-					.mapColor(MapColor.TERRACOTTA_RED)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
+					.mapColor(MapColor.TERRACOTTA_RED));
 	public static final Block RED_PORTUGUESE_PAVEMENT_STAIRS = make(LibBlockNames.PAVEMENT_VARIANT_RED + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(RED_PORTUGUESE_PAVEMENT.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(RED_PORTUGUESE_PAVEMENT)));
+			props -> new StairBlock(RED_PORTUGUESE_PAVEMENT.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(RED_PORTUGUESE_PAVEMENT));
 	public static final Block RED_PORTUGUESE_PAVEMENT_SLAB = make(LibBlockNames.PAVEMENT_VARIANT_RED + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(RED_PORTUGUESE_PAVEMENT)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(RED_PORTUGUESE_PAVEMENT));
 
 	public static final Block GREEN_PORTUGUESE_PAVEMENT = make(LibBlockNames.PAVEMENT_VARIANT_GREEN + LibBlockNames.PAVEMENT_SUFFIX,
-			new Block(BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
-					.mapColor(MapColor.TERRACOTTA_GREEN)));
+			Block::new, BlockBehaviour.Properties.ofFullCopy(WHITE_PORTUGUESE_PAVEMENT)
+					.mapColor(MapColor.TERRACOTTA_GREEN));
 	public static final Block GREEN_PORTUGUESE_PAVEMENT_STAIRS = make(LibBlockNames.PAVEMENT_VARIANT_GREEN + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIRS_SUFFIX,
-			new StairBlock(GREEN_PORTUGUESE_PAVEMENT.defaultBlockState(),
-					BlockBehaviour.Properties.ofFullCopy(GREEN_PORTUGUESE_PAVEMENT)));
+			props -> new StairBlock(GREEN_PORTUGUESE_PAVEMENT.defaultBlockState(),
+					props),
+			BlockBehaviour.Properties.ofFullCopy(GREEN_PORTUGUESE_PAVEMENT));
 	public static final Block GREEN_PORTUGUESE_PAVEMENT_SLAB = make(LibBlockNames.PAVEMENT_VARIANT_GREEN + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX,
-			new SlabBlock(BlockBehaviour.Properties.ofFullCopy(GREEN_PORTUGUESE_PAVEMENT)));
+			SlabBlock::new, BlockBehaviour.Properties.ofFullCopy(GREEN_PORTUGUESE_PAVEMENT));
 
 	public static final Block MANAGLASS_PANE = make(LibBlockNames.MANAGLASS + "_pane",
-			new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(MANAGLASS)));
+			IronBarsBlock::new, BlockBehaviour.Properties.ofFullCopy(MANAGLASS));
 	public static final Block ALFGLASS_PANE = make(LibBlockNames.ALFGLASS + "_pane",
-			new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(ALFGLASS)));
+			IronBarsBlock::new, BlockBehaviour.Properties.ofFullCopy(ALFGLASS));
 	public static final Block BIFROST_PANE = make(LibBlockNames.BIFROST + "_pane",
-			new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(BIFROST)));
+			IronBarsBlock::new, BlockBehaviour.Properties.ofFullCopy(BIFROST));
 
-	static FlowerPotBlock flowerPot(Block block, int lightLevel) {
-		BlockBehaviour.Properties properties = BlockBehaviour.Properties.of()
+	// PORT-26.3: the pot's id has to be in its properties before it is built, so this hands out a factory for make
+	static Function<BlockBehaviour.Properties, FlowerPotBlock> flowerPot(Block block, int lightLevel) {
+		return properties -> new FlowerPotBlock(block, lightLevel > 0
+				? properties.lightLevel(blockState -> lightLevel)
+				: properties);
+	}
+
+	static BlockBehaviour.Properties flowerPotProperties() {
+		return BlockBehaviour.Properties.of()
 				.instabreak()
 				.noOcclusion()
 				.pushReaction(PushReaction.POPPED);
-		return new FlowerPotBlock(block, lightLevel > 0
-				? properties.lightLevel(blockState -> lightLevel)
-				: properties);
 	}
 
 	private static String floating(String orig) {
@@ -2374,13 +2556,14 @@ public final class BotaniaBlocks {
 	}
 
 	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
-		Item.Properties props = BotaniaItems.defaultBuilder();
-		Item.Properties woodenWallProps = BotaniaItems.defaultBuilder().component(DataComponents.COOKING_FUEL, cookingFuel(300));
-		Item.Properties blazeMeshProps = BotaniaItems.defaultBuilder().component(DataComponents.COOKING_FUEL,
+		// PORT-26.3: every item needs its own properties carrying its id, so these are suppliers now
+		Supplier<Item.Properties> props = BotaniaItems::defaultBuilder;
+		Supplier<Item.Properties> woodenWallProps = () -> BotaniaItems.defaultBuilder().component(DataComponents.COOKING_FUEL, cookingFuel(300));
+		Supplier<Item.Properties> blazeMeshProps = () -> BotaniaItems.defaultBuilder().component(DataComponents.COOKING_FUEL,
 				cookingFuel(2400 * (XplatAbstractions.INSTANCE.gogLoaded() ? 5 : 10)));
-		Item.Properties uncommonProps = BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON);
-		Item.Properties rareProps = BotaniaItems.defaultBuilder().rarity(Rarity.RARE);
-		Item.Properties epicProps = BotaniaItems.defaultBuilder().rarity(Rarity.EPIC);
+		Supplier<Item.Properties> uncommonProps = () -> BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON);
+		Supplier<Item.Properties> rareProps = () -> BotaniaItems.defaultBuilder().rarity(Rarity.RARE);
+		Supplier<Item.Properties> epicProps = () -> BotaniaItems.defaultBuilder().rarity(Rarity.EPIC);
 		Stream.<Function<DyeColor, Block>>of(
 				BotaniaBlocks::getMysticalFlower,
 				BotaniaBlocks::getGlimmeringFlower,
@@ -2390,825 +2573,694 @@ public final class BotaniaBlocks {
 				BotaniaBlocks::getTallMysticalFlower
 		).forEach(
 				blockGetter -> ColorHelper.supportedColors().map(blockGetter).forEach(
-						block -> r.accept(new ColoredBlockItem(block, ((Colored) block).getColor(), props), BuiltInRegistries.BLOCK.getKey(block))
+						block -> blockItem(r, block, (b, properties) -> new ColoredBlockItem(b, ((Colored) b).getColor(), properties), props)
 				)
 		);
 
-		r.accept(new SpecialFlowerBlockItem(PURE_DAISY, props), BuiltInRegistries.BLOCK.getKey(PURE_DAISY));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_PURE_DAISY, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_PURE_DAISY));
+		blockItem(r, PURE_DAISY, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_PURE_DAISY, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(MANASTAR, props), BuiltInRegistries.BLOCK.getKey(MANASTAR));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MANASTAR, props), BuiltInRegistries.BLOCK.getKey(FLOATING_MANASTAR));
+		blockItem(r, MANASTAR, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_MANASTAR, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new DecayableSpecialFlowerBlockItem(HYDROANGEAS, HydroangeasBlockEntity.DECAY_TIME, props), BuiltInRegistries.BLOCK.getKey(
-				HYDROANGEAS));
-		r.accept(new DecayableSpecialFlowerBlockItem(FLOATING_HYDROANGEAS, HydroangeasBlockEntity.DECAY_TIME, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HYDROANGEAS));
+		blockItem(r, HYDROANGEAS, (block, properties) -> new DecayableSpecialFlowerBlockItem(block, HydroangeasBlockEntity.DECAY_TIME, properties), props);
+		blockItem(r, FLOATING_HYDROANGEAS, (block, properties) -> new DecayableSpecialFlowerBlockItem(block, HydroangeasBlockEntity.DECAY_TIME, properties), props);
 
-		r.accept(new SpecialFlowerBlockItem(ENDOFLAME, props), BuiltInRegistries.BLOCK.getKey(ENDOFLAME));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ENDOFLAME, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ENDOFLAME));
+		blockItem(r, ENDOFLAME, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_ENDOFLAME, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(THERMALILY, props), BuiltInRegistries.BLOCK.getKey(THERMALILY));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_THERMALILY, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_THERMALILY));
+		blockItem(r, THERMALILY, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_THERMALILY, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(ROSA_ARCANA, props), BuiltInRegistries.BLOCK.getKey(ROSA_ARCANA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ROSA_ARCANA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ROSA_ARCANA));
+		blockItem(r, ROSA_ARCANA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_ROSA_ARCANA, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(MUNCHDEW, props), BuiltInRegistries.BLOCK.getKey(MUNCHDEW));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MUNCHDEW, props), BuiltInRegistries.BLOCK.getKey(FLOATING_MUNCHDEW));
+		blockItem(r, MUNCHDEW, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_MUNCHDEW, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(ENTROPINNYUM, props), BuiltInRegistries.BLOCK.getKey(ENTROPINNYUM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ENTROPINNYUM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ENTROPINNYUM));
+		blockItem(r, ENTROPINNYUM, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_ENTROPINNYUM, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(KEKIMURUS, props), BuiltInRegistries.BLOCK.getKey(KEKIMURUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_KEKIMURUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_KEKIMURUS));
+		blockItem(r, KEKIMURUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_KEKIMURUS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(GOURMARYLLIS, props), BuiltInRegistries.BLOCK.getKey(GOURMARYLLIS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_GOURMARYLLIS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_GOURMARYLLIS));
+		blockItem(r, GOURMARYLLIS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_GOURMARYLLIS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(NARSLIMMUS, props), BuiltInRegistries.BLOCK.getKey(NARSLIMMUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_NARSLIMMUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_NARSLIMMUS));
+		blockItem(r, NARSLIMMUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_NARSLIMMUS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(SPECTROLUS, props), BuiltInRegistries.BLOCK.getKey(SPECTROLUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SPECTROLUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SPECTROLUS));
+		blockItem(r, SPECTROLUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_SPECTROLUS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(DANDELIFEON, rareProps), BuiltInRegistries.BLOCK.getKey(DANDELIFEON));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_DANDELIFEON, rareProps), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_DANDELIFEON));
+		blockItem(r, DANDELIFEON, SpecialFlowerBlockItem::new, rareProps);
+		blockItem(r, FLOATING_DANDELIFEON, SpecialFlowerBlockItem::new, rareProps);
 
-		r.accept(new SpecialFlowerBlockItem(RAFFLOWSIA, props), BuiltInRegistries.BLOCK.getKey(RAFFLOWSIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_RAFFLOWSIA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_RAFFLOWSIA));
+		blockItem(r, RAFFLOWSIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_RAFFLOWSIA, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(SHULK_ME_NOT, rareProps), BuiltInRegistries.BLOCK.getKey(SHULK_ME_NOT));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SHULK_ME_NOT, rareProps), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SHULK_ME_NOT));
+		blockItem(r, SHULK_ME_NOT, SpecialFlowerBlockItem::new, rareProps);
+		blockItem(r, FLOATING_SHULK_ME_NOT, SpecialFlowerBlockItem::new, rareProps);
 
-		r.accept(new SpecialFlowerBlockItem(BELLETHORNE, props), BuiltInRegistries.BLOCK.getKey(BELLETHORNE));
-		r.accept(new SpecialFlowerBlockItem(BELLETHORNE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				BELLETHORNE_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BELLETHORNE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BELLETHORNE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BELLETHORNE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BELLETHORNE_PETITE));
+		blockItem(r, BELLETHORNE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, BELLETHORNE_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_BELLETHORNE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_BELLETHORNE_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(BERGAMUTE, props), BuiltInRegistries.BLOCK.getKey(BERGAMUTE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BERGAMUTE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BERGAMUTE));
+		blockItem(r, BERGAMUTE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_BERGAMUTE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(DREADTHORNE, props), BuiltInRegistries.BLOCK.getKey(DREADTHORNE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_DREADTHORNE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_DREADTHORNE));
+		blockItem(r, DREADTHORNE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_DREADTHORNE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(HEISEI_DREAM, props), BuiltInRegistries.BLOCK.getKey(HEISEI_DREAM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HEISEI_DREAM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HEISEI_DREAM));
+		blockItem(r, HEISEI_DREAM, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_HEISEI_DREAM, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(TIGERSEYE, props), BuiltInRegistries.BLOCK.getKey(TIGERSEYE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_TIGERSEYE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_TIGERSEYE));
+		blockItem(r, TIGERSEYE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_TIGERSEYE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(JADED_AMARANTHUS, props), BuiltInRegistries.BLOCK.getKey(JADED_AMARANTHUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_JADED_AMARANTHUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_JADED_AMARANTHUS));
+		blockItem(r, JADED_AMARANTHUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_JADED_AMARANTHUS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(ORECHID, props), BuiltInRegistries.BLOCK.getKey(ORECHID));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ORECHID, props), BuiltInRegistries.BLOCK.getKey(FLOATING_ORECHID));
+		blockItem(r, ORECHID, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_ORECHID, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(FALLEN_KANADE, props), BuiltInRegistries.BLOCK.getKey(FALLEN_KANADE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_FALLEN_KANADE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_FALLEN_KANADE));
+		blockItem(r, FALLEN_KANADE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_FALLEN_KANADE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(EXOFLAME, props), BuiltInRegistries.BLOCK.getKey(EXOFLAME));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_EXOFLAME, props), BuiltInRegistries.BLOCK.getKey(FLOATING_EXOFLAME));
+		blockItem(r, EXOFLAME, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_EXOFLAME, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(AGRICARNATION, props), BuiltInRegistries.BLOCK.getKey(AGRICARNATION));
-		r.accept(new SpecialFlowerBlockItem(AGRICARNATION_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				AGRICARNATION_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_AGRICARNATION, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_AGRICARNATION));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_AGRICARNATION_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_AGRICARNATION_PETITE));
+		blockItem(r, AGRICARNATION, SpecialFlowerBlockItem::new, props);
+		blockItem(r, AGRICARNATION_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_AGRICARNATION, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_AGRICARNATION_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(HOPPERHOCK, props), BuiltInRegistries.BLOCK.getKey(HOPPERHOCK));
-		r.accept(new SpecialFlowerBlockItem(HOPPERHOCK_PETITE, props), BuiltInRegistries.BLOCK.getKey(HOPPERHOCK_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HOPPERHOCK, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HOPPERHOCK));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HOPPERHOCK_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_HOPPERHOCK_PETITE));
+		blockItem(r, HOPPERHOCK, SpecialFlowerBlockItem::new, props);
+		blockItem(r, HOPPERHOCK_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_HOPPERHOCK, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_HOPPERHOCK_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(TANGLEBERRIE, props), BuiltInRegistries.BLOCK.getKey(TANGLEBERRIE));
-		r.accept(new SpecialFlowerBlockItem(TANGLEBERRIE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				TANGLEBERRIE_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_TANGLEBERRIE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_TANGLEBERRIE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_TANGLEBERRIE_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_TANGLEBERRIE_PETITE));
+		blockItem(r, TANGLEBERRIE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, TANGLEBERRIE_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_TANGLEBERRIE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_TANGLEBERRIE_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(JIYUULIA, props), BuiltInRegistries.BLOCK.getKey(JIYUULIA));
-		r.accept(new SpecialFlowerBlockItem(JIYUULIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(JIYUULIA_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_JIYUULIA, props), BuiltInRegistries.BLOCK.getKey(FLOATING_JIYUULIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_JIYUULIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_JIYUULIA_PETITE));
+		blockItem(r, JIYUULIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, JIYUULIA_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_JIYUULIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_JIYUULIA_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(RANNUNCARPUS, props), BuiltInRegistries.BLOCK.getKey(RANNUNCARPUS));
-		r.accept(new SpecialFlowerBlockItem(RANNUNCARPUS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				RANNUNCARPUS_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_RANNUNCARPUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_RANNUNCARPUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_RANNUNCARPUS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_RANNUNCARPUS_PETITE));
+		blockItem(r, RANNUNCARPUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, RANNUNCARPUS_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_RANNUNCARPUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_RANNUNCARPUS_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(HYACIDUS, props), BuiltInRegistries.BLOCK.getKey(HYACIDUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_HYACIDUS, props), BuiltInRegistries.BLOCK.getKey(FLOATING_HYACIDUS));
+		blockItem(r, HYACIDUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_HYACIDUS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(POLLIDISIAC, props), BuiltInRegistries.BLOCK.getKey(POLLIDISIAC));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_POLLIDISIAC, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_POLLIDISIAC));
+		blockItem(r, POLLIDISIAC, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_POLLIDISIAC, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(CLAYCONIA, props), BuiltInRegistries.BLOCK.getKey(CLAYCONIA));
-		r.accept(new SpecialFlowerBlockItem(CLAYCONIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(CLAYCONIA_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_CLAYCONIA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_CLAYCONIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_CLAYCONIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_CLAYCONIA_PETITE));
+		blockItem(r, CLAYCONIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, CLAYCONIA_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_CLAYCONIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_CLAYCONIA_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(LOONIUM, props), BuiltInRegistries.BLOCK.getKey(LOONIUM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_LOONIUM, props), BuiltInRegistries.BLOCK.getKey(FLOATING_LOONIUM));
+		blockItem(r, LOONIUM, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_LOONIUM, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(DAFFOMILL, props), BuiltInRegistries.BLOCK.getKey(DAFFOMILL));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_DAFFOMILL, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_DAFFOMILL));
+		blockItem(r, DAFFOMILL, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_DAFFOMILL, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(VINCULOTUS, props), BuiltInRegistries.BLOCK.getKey(VINCULOTUS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_VINCULOTUS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_VINCULOTUS));
+		blockItem(r, VINCULOTUS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_VINCULOTUS, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(SPECTRANTHEMUM, props), BuiltInRegistries.BLOCK.getKey(SPECTRANTHEMUM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SPECTRANTHEMUM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SPECTRANTHEMUM));
+		blockItem(r, SPECTRANTHEMUM, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_SPECTRANTHEMUM, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(MEDUMONE, props), BuiltInRegistries.BLOCK.getKey(MEDUMONE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MEDUMONE, props), BuiltInRegistries.BLOCK.getKey(FLOATING_MEDUMONE));
+		blockItem(r, MEDUMONE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_MEDUMONE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(MARIMORPHOSIS, props), BuiltInRegistries.BLOCK.getKey(MARIMORPHOSIS));
-		r.accept(new SpecialFlowerBlockItem(MARIMORPHOSIS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				MARIMORPHOSIS_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MARIMORPHOSIS, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_MARIMORPHOSIS));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_MARIMORPHOSIS_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_MARIMORPHOSIS_PETITE));
+		blockItem(r, MARIMORPHOSIS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, MARIMORPHOSIS_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_MARIMORPHOSIS, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_MARIMORPHOSIS_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(BUBBELL, props), BuiltInRegistries.BLOCK.getKey(BUBBELL));
-		r.accept(new SpecialFlowerBlockItem(BUBBELL_PETITE, props), BuiltInRegistries.BLOCK.getKey(BUBBELL_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BUBBELL, props), BuiltInRegistries.BLOCK.getKey(FLOATING_BUBBELL));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_BUBBELL_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_BUBBELL_PETITE));
+		blockItem(r, BUBBELL, SpecialFlowerBlockItem::new, props);
+		blockItem(r, BUBBELL_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_BUBBELL, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_BUBBELL_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(SOLEGNOLIA, props), BuiltInRegistries.BLOCK.getKey(SOLEGNOLIA));
-		r.accept(new SpecialFlowerBlockItem(SOLEGNOLIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(SOLEGNOLIA_PETITE));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SOLEGNOLIA, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SOLEGNOLIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_SOLEGNOLIA_PETITE, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_SOLEGNOLIA_PETITE));
+		blockItem(r, SOLEGNOLIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, SOLEGNOLIA_PETITE, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_SOLEGNOLIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_SOLEGNOLIA_PETITE, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(ORECHID_IGNEM, props), BuiltInRegistries.BLOCK.getKey(ORECHID_IGNEM));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_ORECHID_IGNEM, props), BuiltInRegistries.BLOCK.getKey(
-				FLOATING_ORECHID_IGNEM));
+		blockItem(r, ORECHID_IGNEM, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_ORECHID_IGNEM, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new SpecialFlowerBlockItem(LABELLIA, props), BuiltInRegistries.BLOCK.getKey(LABELLIA));
-		r.accept(new SpecialFlowerBlockItem(FLOATING_LABELLIA, props), BuiltInRegistries.BLOCK.getKey(FLOATING_LABELLIA));
+		blockItem(r, LABELLIA, SpecialFlowerBlockItem::new, props);
+		blockItem(r, FLOATING_LABELLIA, SpecialFlowerBlockItem::new, props);
 
-		r.accept(new BlockItem(PETAL_APOTHECARY, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY));
-		r.accept(new BlockItem(PETAL_APOTHECARY_DEEPSLATE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_DEEPSLATE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_LIVINGROCK, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_LIVINGROCK));
-		r.accept(new BlockItem(PETAL_APOTHECARY_BLACKSTONE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_BLACKSTONE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_NETHER_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_NETHER_BRICKS));
-		r.accept(new BlockItem(PETAL_APOTHECARY_RED_NETHER_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_RED_NETHER_BRICKS));
-		r.accept(new BlockItem(PETAL_APOTHECARY_MOSSY, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_MOSSY));
-		r.accept(new BlockItem(PETAL_APOTHECARY_FUCHSITE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_FUCHSITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_TALC, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_TALC));
-		r.accept(new BlockItem(PETAL_APOTHECARY_GNEISS, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_GNEISS));
-		r.accept(new BlockItem(PETAL_APOTHECARY_MYCELITE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_MYCELITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_CATACLASITE, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_CATACLASITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_SOLITE, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_SOLITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_LUNITE, props), BuiltInRegistries.BLOCK.getKey(PETAL_APOTHECARY_LUNITE));
-		r.accept(new BlockItem(PETAL_APOTHECARY_ROSY_TALC, props), BuiltInRegistries.BLOCK.getKey(
-				PETAL_APOTHECARY_ROSY_TALC));
+		blockItem(r, PETAL_APOTHECARY, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_DEEPSLATE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_LIVINGROCK, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_BLACKSTONE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_NETHER_BRICKS, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_RED_NETHER_BRICKS, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_MOSSY, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_FUCHSITE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_TALC, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_GNEISS, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_MYCELITE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_CATACLASITE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_SOLITE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_LUNITE, BlockItem::new, props);
+		blockItem(r, PETAL_APOTHECARY_ROSY_TALC, BlockItem::new, props);
 
-		r.accept(new BlockItem(LIVINGROCK, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK));
-		r.accept(new BlockItem(LIVINGROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_STAIRS));
-		r.accept(new BlockItem(LIVINGROCK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_SLAB));
-		r.accept(new BlockItem(LIVINGROCK_WALL, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_WALL));
-		r.accept(new BlockItem(LIVINGROCK_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BUTTON));
-		r.accept(new BlockItem(LIVINGROCK_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				LIVINGROCK_PRESSURE_PLATE));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK, props), BuiltInRegistries.BLOCK.getKey(POLISHED_LIVINGROCK));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				POLISHED_LIVINGROCK_STAIRS));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				POLISHED_LIVINGROCK_SLAB));
-		r.accept(new BlockItem(POLISHED_LIVINGROCK_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				POLISHED_LIVINGROCK_WALL));
-		r.accept(new BlockItem(LIVINGROCK_SLATE, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_SLATE));
-		r.accept(new BlockItem(LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICKS));
-		r.accept(new BlockItem(LIVINGROCK_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICK_STAIRS));
-		r.accept(new BlockItem(LIVINGROCK_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICK_SLAB));
-		r.accept(new BlockItem(LIVINGROCK_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(LIVINGROCK_BRICK_WALL));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(MOSSY_LIVINGROCK_BRICKS));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				MOSSY_LIVINGROCK_BRICK_STAIRS));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				MOSSY_LIVINGROCK_BRICK_SLAB));
-		r.accept(new BlockItem(MOSSY_LIVINGROCK_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				MOSSY_LIVINGROCK_BRICK_WALL));
-		r.accept(new BlockItem(CRACKED_LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CRACKED_LIVINGROCK_BRICKS));
-		r.accept(new BlockItem(CHISELED_LIVINGROCK_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_LIVINGROCK_BRICKS));
+		blockItem(r, LIVINGROCK, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_STAIRS, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_SLAB, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_WALL, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_BUTTON, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, POLISHED_LIVINGROCK, BlockItem::new, props);
+		blockItem(r, POLISHED_LIVINGROCK_STAIRS, BlockItem::new, props);
+		blockItem(r, POLISHED_LIVINGROCK_SLAB, BlockItem::new, props);
+		blockItem(r, POLISHED_LIVINGROCK_WALL, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_SLATE, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_BRICKS, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, LIVINGROCK_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, MOSSY_LIVINGROCK_BRICKS, BlockItem::new, props);
+		blockItem(r, MOSSY_LIVINGROCK_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, MOSSY_LIVINGROCK_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, MOSSY_LIVINGROCK_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, CRACKED_LIVINGROCK_BRICKS, BlockItem::new, props);
+		blockItem(r, CHISELED_LIVINGROCK_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_LOG));
-		r.accept(new BlockItem(LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD));
-		r.accept(new BlockItem(LIVINGWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_STAIRS));
-		r.accept(new BlockItem(LIVINGWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SLAB));
-		r.accept(new BlockItem(LIVINGWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_WALL));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_LIVINGWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_LIVINGWOOD));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_LIVINGWOOD_STAIRS));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_LIVINGWOOD_SLAB));
-		r.accept(new BlockItem(STRIPPED_LIVINGWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_LIVINGWOOD_WALL));
-		r.accept(new BlockItem(GLIMMERING_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				GLIMMERING_LIVINGWOOD_LOG));
-		r.accept(new BlockItem(GLIMMERING_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(GLIMMERING_LIVINGWOOD));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_LIVINGWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_LIVINGWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_LIVINGWOOD));
-		r.accept(new BlockItem(LIVINGWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_PLANKS));
-		r.accept(new BlockItem(LIVINGWOOD_PLANK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_PLANK_STAIRS));
-		r.accept(new BlockItem(LIVINGWOOD_PLANK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_PLANK_SLAB));
-		r.accept(new BlockItem(LIVINGWOOD_FENCE, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_FENCE));
-		r.accept(new BlockItem(LIVINGWOOD_FENCE_GATE, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_FENCE_GATE));
-		r.accept(new BlockItem(LIVINGWOOD_DOOR, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_DOOR));
-		r.accept(new BlockItem(LIVINGWOOD_TRAPDOOR, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_TRAPDOOR));
-		r.accept(new BlockItem(LIVINGWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				LIVINGWOOD_PRESSURE_PLATE));
-		r.accept(new BlockItem(LIVINGWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_BUTTON));
-		r.accept(new StandingAndWallBlockItem(LIVINGWOOD_SIGN, LIVINGWOOD_WALL_SIGN, Direction.DOWN, BotaniaItems.defaultBuilder().stacksTo(16).signText()), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_SIGN));
-		r.accept(new HangingSignItem(
-				LIVINGWOOD_HANGING_SIGN, LIVINGWOOD_WALL_HANGING_SIGN,
-				BotaniaItems.defaultBuilder().stacksTo(16)), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_HANGING_SIGN));
-		r.accept(new BlockItem(MOSSY_LIVINGWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(MOSSY_LIVINGWOOD_PLANKS));
-		r.accept(new BlockItem(FRAMED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(FRAMED_LIVINGWOOD));
-		r.accept(new BlockItem(PATTERN_FRAMED_LIVINGWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				PATTERN_FRAMED_LIVINGWOOD));
+		blockItem(r, LIVINGWOOD_LOG, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_STAIRS, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_SLAB, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_WALL, BlockItem::new, woodenWallProps);
+		blockItem(r, STRIPPED_LIVINGWOOD_LOG, BlockItem::new, props);
+		blockItem(r, STRIPPED_LIVINGWOOD, BlockItem::new, props);
+		blockItem(r, STRIPPED_LIVINGWOOD_STAIRS, BlockItem::new, props);
+		blockItem(r, STRIPPED_LIVINGWOOD_SLAB, BlockItem::new, props);
+		blockItem(r, STRIPPED_LIVINGWOOD_WALL, BlockItem::new, woodenWallProps);
+		blockItem(r, GLIMMERING_LIVINGWOOD_LOG, BlockItem::new, props);
+		blockItem(r, GLIMMERING_LIVINGWOOD, BlockItem::new, props);
+		blockItem(r, STRIPPED_GLIMMERING_LIVINGWOOD_LOG, BlockItem::new, props);
+		blockItem(r, STRIPPED_GLIMMERING_LIVINGWOOD, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_PLANKS, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_PLANK_STAIRS, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_PLANK_SLAB, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_FENCE, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_FENCE_GATE, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_DOOR, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_TRAPDOOR, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_BUTTON, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_SIGN, (block, properties) -> new StandingAndWallBlockItem(block, LIVINGWOOD_WALL_SIGN, Direction.DOWN, properties), () -> BotaniaItems.defaultBuilder().stacksTo(16).signText());
+		blockItem(r, LIVINGWOOD_HANGING_SIGN, (block, properties) -> new HangingSignItem(
+				block, LIVINGWOOD_WALL_HANGING_SIGN,
+				properties), () -> BotaniaItems.defaultBuilder().stacksTo(16));
+		blockItem(r, MOSSY_LIVINGWOOD_PLANKS, BlockItem::new, props);
+		blockItem(r, FRAMED_LIVINGWOOD, BlockItem::new, props);
+		blockItem(r, PATTERN_FRAMED_LIVINGWOOD, BlockItem::new, props);
 
-		r.accept(new BlockItem(DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_LOG));
-		r.accept(new BlockItem(DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD));
-		r.accept(new BlockItem(DREAMWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_STAIRS));
-		r.accept(new BlockItem(DREAMWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SLAB));
-		r.accept(new BlockItem(DREAMWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_WALL));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_DREAMWOOD_STAIRS));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_SLAB, props), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_SLAB));
-		r.accept(new BlockItem(STRIPPED_DREAMWOOD_WALL, woodenWallProps), BuiltInRegistries.BLOCK.getKey(STRIPPED_DREAMWOOD_WALL));
-		r.accept(new BlockItem(GLIMMERING_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				GLIMMERING_DREAMWOOD_LOG));
-		r.accept(new BlockItem(GLIMMERING_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(GLIMMERING_DREAMWOOD));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_DREAMWOOD_LOG, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_DREAMWOOD_LOG));
-		r.accept(new BlockItem(STRIPPED_GLIMMERING_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				STRIPPED_GLIMMERING_DREAMWOOD));
-		r.accept(new BlockItem(DREAMWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_PLANKS));
-		r.accept(new BlockItem(DREAMWOOD_PLANK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_PLANK_STAIRS));
-		r.accept(new BlockItem(DREAMWOOD_PLANK_SLAB, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_PLANK_SLAB));
-		r.accept(new BlockItem(DREAMWOOD_FENCE, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_FENCE));
-		r.accept(new BlockItem(DREAMWOOD_FENCE_GATE, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_FENCE_GATE));
-		r.accept(new BlockItem(DREAMWOOD_DOOR, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_DOOR));
-		r.accept(new BlockItem(DREAMWOOD_TRAPDOOR, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_TRAPDOOR));
-		r.accept(new BlockItem(DREAMWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				DREAMWOOD_PRESSURE_PLATE));
-		r.accept(new BlockItem(DREAMWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_BUTTON));
-		r.accept(new StandingAndWallBlockItem(DREAMWOOD_SIGN, DREAMWOOD_WALL_SIGN, Direction.DOWN, BotaniaItems.defaultBuilder().stacksTo(16).signText()), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_SIGN));
-		r.accept(new HangingSignItem(
-				DREAMWOOD_HANGING_SIGN, DREAMWOOD_WALL_HANGING_SIGN,
-				BotaniaItems.defaultBuilder().stacksTo(16)), BuiltInRegistries.BLOCK.getKey(DREAMWOOD_HANGING_SIGN));
-		r.accept(new BlockItem(MOSSY_DREAMWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(MOSSY_DREAMWOOD_PLANKS));
-		r.accept(new BlockItem(FRAMED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(FRAMED_DREAMWOOD));
-		r.accept(new BlockItem(PATTERN_FRAMED_DREAMWOOD, props), BuiltInRegistries.BLOCK.getKey(
-				PATTERN_FRAMED_DREAMWOOD));
+		blockItem(r, DREAMWOOD_LOG, BlockItem::new, props);
+		blockItem(r, DREAMWOOD, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_STAIRS, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_SLAB, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_WALL, BlockItem::new, woodenWallProps);
+		blockItem(r, STRIPPED_DREAMWOOD_LOG, BlockItem::new, props);
+		blockItem(r, STRIPPED_DREAMWOOD, BlockItem::new, props);
+		blockItem(r, STRIPPED_DREAMWOOD_STAIRS, BlockItem::new, props);
+		blockItem(r, STRIPPED_DREAMWOOD_SLAB, BlockItem::new, props);
+		blockItem(r, STRIPPED_DREAMWOOD_WALL, BlockItem::new, woodenWallProps);
+		blockItem(r, GLIMMERING_DREAMWOOD_LOG, BlockItem::new, props);
+		blockItem(r, GLIMMERING_DREAMWOOD, BlockItem::new, props);
+		blockItem(r, STRIPPED_GLIMMERING_DREAMWOOD_LOG, BlockItem::new, props);
+		blockItem(r, STRIPPED_GLIMMERING_DREAMWOOD, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_PLANKS, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_PLANK_STAIRS, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_PLANK_SLAB, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_FENCE, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_FENCE_GATE, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_DOOR, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_TRAPDOOR, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_BUTTON, BlockItem::new, props);
+		blockItem(r, DREAMWOOD_SIGN, (block, properties) -> new StandingAndWallBlockItem(block, DREAMWOOD_WALL_SIGN, Direction.DOWN, properties), () -> BotaniaItems.defaultBuilder().stacksTo(16).signText());
+		blockItem(r, DREAMWOOD_HANGING_SIGN, (block, properties) -> new HangingSignItem(
+				block, DREAMWOOD_WALL_HANGING_SIGN,
+				properties), () -> BotaniaItems.defaultBuilder().stacksTo(16));
+		blockItem(r, MOSSY_DREAMWOOD_PLANKS, BlockItem::new, props);
+		blockItem(r, FRAMED_DREAMWOOD, BlockItem::new, props);
+		blockItem(r, PATTERN_FRAMED_DREAMWOOD, BlockItem::new, props);
 
-		r.accept(new BlockItem(MANA_SPREADER, props), BuiltInRegistries.BLOCK.getKey(MANA_SPREADER));
-		r.accept(new BlockItem(PULSE_MANA_SPREADER, props), BuiltInRegistries.BLOCK.getKey(PULSE_MANA_SPREADER));
-		r.accept(new BlockItem(ELVEN_MANA_SPREADER, props), BuiltInRegistries.BLOCK.getKey(ELVEN_MANA_SPREADER));
-		r.accept(new BlockItem(GAIA_MANA_SPREADER, rareProps), BuiltInRegistries.BLOCK.getKey(GAIA_MANA_SPREADER));
+		blockItem(r, MANA_SPREADER, BlockItem::new, props);
+		blockItem(r, PULSE_MANA_SPREADER, BlockItem::new, props);
+		blockItem(r, ELVEN_MANA_SPREADER, BlockItem::new, props);
+		blockItem(r, GAIA_MANA_SPREADER, BlockItem::new, rareProps);
 		registerBlockItemWithColoredVariants(r, MANA_POOL, props);
 		registerBlockItemWithColoredVariants(r, CREATIVE_MANA_POOL, epicProps);
 		registerBlockItemWithColoredVariants(r, DILUTED_MANA_POOL, props);
 		registerBlockItemWithColoredVariants(r, FABULOUS_MANA_POOL, props);
-		r.accept(new BlockItem(ALCHEMY_CATALYST, props), BuiltInRegistries.BLOCK.getKey(ALCHEMY_CATALYST));
-		r.accept(new BlockItem(CONJURATION_CATALYST, props), BuiltInRegistries.BLOCK.getKey(CONJURATION_CATALYST));
-		r.accept(new BlockItem(MANASTEEL_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MANASTEEL_BLOCK));
-		r.accept(new BlockItem(TERRASTEEL_BLOCK, uncommonProps), BuiltInRegistries.BLOCK.getKey(TERRASTEEL_BLOCK));
-		r.accept(new BlockItem(ELEMENTIUM_BLOCK, props), BuiltInRegistries.BLOCK.getKey(ELEMENTIUM_BLOCK));
-		r.accept(new BlockItem(MANA_DIAMOND_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MANA_DIAMOND_BLOCK));
-		r.accept(new BlockItem(DRAGONSTONE_BLOCK, props), BuiltInRegistries.BLOCK.getKey(DRAGONSTONE_BLOCK));
-		r.accept(new BlockItem(MANAGLASS, props), BuiltInRegistries.BLOCK.getKey(MANAGLASS));
-		r.accept(new BlockItem(ALFGLASS, props), BuiltInRegistries.BLOCK.getKey(ALFGLASS));
-		r.accept(new BlockItem(BIFROST, props), BuiltInRegistries.BLOCK.getKey(BIFROST));
-		r.accept(new BlockItem(RUNIC_ALTAR, props), BuiltInRegistries.BLOCK.getKey(RUNIC_ALTAR));
-		r.accept(new BlockItem(MANA_ENCHANTER, props), BuiltInRegistries.BLOCK.getKey(MANA_ENCHANTER));
-		r.accept(new BlockItem(BOTANICAL_BREWERY, props), BuiltInRegistries.BLOCK.getKey(BOTANICAL_BREWERY));
-		r.accept(new BlockItem(TERRESTRIAL_AGGLOMERATION_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				TERRESTRIAL_AGGLOMERATION_PLATE));
-		r.accept(new BlockItem(ELVEN_GATEWAY_CORE, uncommonProps), BuiltInRegistries.BLOCK.getKey(ELVEN_GATEWAY_CORE));
+		blockItem(r, ALCHEMY_CATALYST, BlockItem::new, props);
+		blockItem(r, CONJURATION_CATALYST, BlockItem::new, props);
+		blockItem(r, MANASTEEL_BLOCK, BlockItem::new, props);
+		blockItem(r, TERRASTEEL_BLOCK, BlockItem::new, uncommonProps);
+		blockItem(r, ELEMENTIUM_BLOCK, BlockItem::new, props);
+		blockItem(r, MANA_DIAMOND_BLOCK, BlockItem::new, props);
+		blockItem(r, DRAGONSTONE_BLOCK, BlockItem::new, props);
+		blockItem(r, MANAGLASS, BlockItem::new, props);
+		blockItem(r, ALFGLASS, BlockItem::new, props);
+		blockItem(r, BIFROST, BlockItem::new, props);
+		blockItem(r, RUNIC_ALTAR, BlockItem::new, props);
+		blockItem(r, MANA_ENCHANTER, BlockItem::new, props);
+		blockItem(r, BOTANICAL_BREWERY, BlockItem::new, props);
+		blockItem(r, TERRESTRIAL_AGGLOMERATION_PLATE, BlockItem::new, props);
+		blockItem(r, ELVEN_GATEWAY_CORE, BlockItem::new, uncommonProps);
 
-		r.accept(new BlockItem(MANA_PYLON, props), BuiltInRegistries.BLOCK.getKey(MANA_PYLON));
-		r.accept(new BlockItem(NATURA_PYLON, uncommonProps), BuiltInRegistries.BLOCK.getKey(NATURA_PYLON));
-		r.accept(new BlockItem(GAIA_PYLON, props), BuiltInRegistries.BLOCK.getKey(GAIA_PYLON));
-		r.accept(new BlockItem(MANA_SPLITTER, props), BuiltInRegistries.BLOCK.getKey(MANA_SPLITTER));
-		r.accept(new BlockItem(MANA_VOID, props), BuiltInRegistries.BLOCK.getKey(MANA_VOID));
-		r.accept(new BlockItem(MANA_DETECTOR, props), BuiltInRegistries.BLOCK.getKey(MANA_DETECTOR));
-		r.accept(new BlockItem(FORCE_RELAY, props), BuiltInRegistries.BLOCK.getKey(FORCE_RELAY));
-		r.accept(new BlockItem(SPREADER_TURNTABLE, props), BuiltInRegistries.BLOCK.getKey(SPREADER_TURNTABLE));
-		r.accept(new BlockItem(TINY_PLANET, props), BuiltInRegistries.BLOCK.getKey(TINY_PLANET));
-		r.accept(new BlockItem(DRUM_OF_THE_WILD, props), BuiltInRegistries.BLOCK.getKey(DRUM_OF_THE_WILD));
-		r.accept(new BlockItem(DRUM_OF_THE_GATHERING, props), BuiltInRegistries.BLOCK.getKey(DRUM_OF_THE_GATHERING));
-		r.accept(new BlockItem(DRUM_OF_THE_CANOPY, props), BuiltInRegistries.BLOCK.getKey(DRUM_OF_THE_CANOPY));
-		r.accept(new BlockItem(LIFE_IMBUER, props), BuiltInRegistries.BLOCK.getKey(LIFE_IMBUER));
-		r.accept(new BlockItem(MANA_FLUXFIELD, props), BuiltInRegistries.BLOCK.getKey(MANA_FLUXFIELD));
-		r.accept(new BlockItem(MANA_PRISM, props), BuiltInRegistries.BLOCK.getKey(MANA_PRISM));
-		r.accept(new BlockItem(MANA_PUMP, props), BuiltInRegistries.BLOCK.getKey(MANA_PUMP));
-		r.accept(new BlockItem(SPARK_TINKERER, props), BuiltInRegistries.BLOCK.getKey(SPARK_TINKERER));
-		r.accept(new BlockItem(MANASTORM_CHARGE, rareProps), BuiltInRegistries.BLOCK.getKey(MANASTORM_CHARGE));
-		r.accept(new BlockItem(MANATIDE_BELLOWS, props), BuiltInRegistries.BLOCK.getKey(MANATIDE_BELLOWS));
-		r.accept(new BlockItem(OPEN_CRATE, props), BuiltInRegistries.BLOCK.getKey(OPEN_CRATE));
-		r.accept(new BlockItem(CRAFTY_CRATE, props), BuiltInRegistries.BLOCK.getKey(CRAFTY_CRATE));
-		r.accept(new BlockItem(EYE_OF_THE_ANCIENTS, props), BuiltInRegistries.BLOCK.getKey(EYE_OF_THE_ANCIENTS));
-		r.accept(new TooltipBlockItem(ABSTRUSE_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(ABSTRUSE_PLATFORM));
-		r.accept(new TooltipBlockItem(SPECTRAL_PLATFORM, props), BuiltInRegistries.BLOCK.getKey(SPECTRAL_PLATFORM));
-		r.accept(new TooltipBlockItem(INFRANGIBLE_PLATFORM, epicProps), BuiltInRegistries.BLOCK.getKey(INFRANGIBLE_PLATFORM));
-		r.accept(new TinyPotatoBlockItem(TINY_POTATO, props), BuiltInRegistries.BLOCK.getKey(TINY_POTATO));
-		r.accept(new BlockItem(ENDER_OVERSEER, props), BuiltInRegistries.BLOCK.getKey(ENDER_OVERSEER));
-		r.accept(new BlockItem(RED_STRINGED_CONTAINER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_CONTAINER));
-		r.accept(new BlockItem(RED_STRINGED_DISPENSER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_DISPENSER));
-		r.accept(new BlockItem(RED_STRINGED_NUTRIFIER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_NUTRIFIER));
-		r.accept(new BlockItem(RED_STRINGED_COMPARATOR, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_COMPARATOR));
-		r.accept(new BlockItem(RED_STRINGED_SPOOFER, props), BuiltInRegistries.BLOCK.getKey(RED_STRINGED_SPOOFER));
-		r.accept(new BlockItem(RED_STRINGED_INTERCEPTOR, props), BuiltInRegistries.BLOCK.getKey(
-				RED_STRINGED_INTERCEPTOR));
-		r.accept(new BlockItem(CORPOREA_FUNNEL, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_FUNNEL));
-		r.accept(new BlockItem(CORPOREA_INTERCEPTOR, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_INTERCEPTOR));
-		r.accept(new BlockItem(CORPOREA_INDEX, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_INDEX));
-		r.accept(new BlockItem(CORPOREA_CRYSTAL_CUBE, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_CRYSTAL_CUBE));
-		r.accept(new BlockItem(CORPOREA_RETAINER, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_RETAINER));
-		r.accept(new BlockItem(CORPOREA_BLOCK, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BLOCK));
-		r.accept(new BlockItem(CORPOREA_STAIRS, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_STAIRS));
-		r.accept(new BlockItem(CORPOREA_SLAB, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_SLAB));
-		r.accept(new BlockItem(CORPOREA_WALL, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_WALL));
-		r.accept(new BlockItem(CORPOREA_BUTTON, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BUTTON));
-		r.accept(new BlockItem(CORPOREA_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_PRESSURE_PLATE));
-		r.accept(new BlockItem(CORPOREA_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICKS));
-		r.accept(new BlockItem(CORPOREA_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICK_STAIRS));
-		r.accept(new BlockItem(CORPOREA_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICK_SLAB));
-		r.accept(new BlockItem(CORPOREA_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(CORPOREA_BRICK_WALL));
-		r.accept(new BlockItem(INCENSE_PLATE, props), BuiltInRegistries.BLOCK.getKey(INCENSE_PLATE));
-		r.accept(new BlockItem(HOVERING_HOURGLASS, props), BuiltInRegistries.BLOCK.getKey(HOVERING_HOURGLASS));
-		r.accept(new BlockItem(SPECTRAL_RAIL, props), BuiltInRegistries.BLOCK.getKey(SPECTRAL_RAIL));
-		r.accept(new BlockItem(LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(LUMINIZER));
-		r.accept(new BlockItem(DETECTOR_LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(DETECTOR_LUMINIZER));
-		r.accept(new BlockItem(FORK_LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(FORK_LUMINIZER));
-		r.accept(new BlockItem(TOGGLE_LUMINIZER, props), BuiltInRegistries.BLOCK.getKey(TOGGLE_LUMINIZER));
-		r.accept(new BlockItem(LUMINIZER_LAUNCHER, props), BuiltInRegistries.BLOCK.getKey(LUMINIZER_LAUNCHER));
-		r.accept(new BlockItem(CACOPHONIUM_BLOCK, props), BuiltInRegistries.BLOCK.getKey(CACOPHONIUM_BLOCK));
-		r.accept(new BlockItem(CELLULAR_BLOCK, props), BuiltInRegistries.BLOCK.getKey(CELLULAR_BLOCK));
-		r.accept(new BlockItem(TERU_TERU_BOZU, props), BuiltInRegistries.BLOCK.getKey(TERU_TERU_BOZU));
-		r.accept(new BlockItem(LIVINGWOOD_AVATAR, props), BuiltInRegistries.BLOCK.getKey(LIVINGWOOD_AVATAR));
-		r.accept(new BlockItem(LIVING_ROOT, props), BuiltInRegistries.BLOCK.getKey(LIVING_ROOT));
-		r.accept(new BlockItem(FEL_PUMPKIN, props), BuiltInRegistries.BLOCK.getKey(FEL_PUMPKIN));
-		r.accept(new BlockItem(COCOON_OF_CAPRICE, props), BuiltInRegistries.BLOCK.getKey(COCOON_OF_CAPRICE));
-		r.accept(new BlockItem(ANIMATED_TORCH, props), BuiltInRegistries.BLOCK.getKey(ANIMATED_TORCH));
-		r.accept(new BlockItem(STARFIELD_CREATOR, props), BuiltInRegistries.BLOCK.getKey(STARFIELD_CREATOR));
-		r.accept(new BlockItem(AZULEJO_0, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_0));
-		r.accept(new BlockItem(AZULEJO_1, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_1));
-		r.accept(new BlockItem(AZULEJO_2, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_2));
-		r.accept(new BlockItem(AZULEJO_3, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_3));
-		r.accept(new BlockItem(AZULEJO_4, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_4));
-		r.accept(new BlockItem(AZULEJO_5, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_5));
-		r.accept(new BlockItem(AZULEJO_6, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_6));
-		r.accept(new BlockItem(AZULEJO_7, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_7));
-		r.accept(new BlockItem(AZULEJO_8, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_8));
-		r.accept(new BlockItem(AZULEJO_9, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_9));
-		r.accept(new BlockItem(AZULEJO_10, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_10));
-		r.accept(new BlockItem(AZULEJO_11, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_11));
-		r.accept(new BlockItem(AZULEJO_12, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_12));
-		r.accept(new BlockItem(AZULEJO_13, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_13));
-		r.accept(new BlockItem(AZULEJO_14, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_14));
-		r.accept(new BlockItem(AZULEJO_15, props), BuiltInRegistries.BLOCK.getKey(AZULEJO_15));
-		r.accept(new BlockItem(BLAZE_MESH, blazeMeshProps), BuiltInRegistries.BLOCK.getKey(BLAZE_MESH));
-		r.accept(new StandingAndWallBlockItem(GAIA_HEAD, GAIA_WALL_HEAD_BLOCK, Direction.DOWN, rareProps), BuiltInRegistries.BLOCK.getKey(
-				GAIA_HEAD));
-		r.accept(new BlockItem(SHIMMERROCK, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK));
-		r.accept(new BlockItem(SHIMMERROCK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_STAIRS));
-		r.accept(new BlockItem(SHIMMERROCK_SLAB, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_SLAB));
-		r.accept(new BlockItem(SHIMMERROCK_WALL, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_WALL));
-		r.accept(new BlockItem(SHIMMERROCK_BUTTON, props), BuiltInRegistries.BLOCK.getKey(SHIMMERROCK_BUTTON));
-		r.accept(new BlockItem(SHIMMERROCK_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				SHIMMERROCK_PRESSURE_PLATE));
-		r.accept(new BlockItem(SHIMMERWOOD_PLANKS, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_PLANKS));
-		r.accept(new BlockItem(SHIMMERWOOD_PLANK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SHIMMERWOOD_PLANK_STAIRS));
-		r.accept(new BlockItem(SHIMMERWOOD_PLANK_SLAB, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_PLANK_SLAB));
-		r.accept(new BlockItem(SHIMMERWOOD_FENCE, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_FENCE));
-		r.accept(new BlockItem(SHIMMERWOOD_FENCE_GATE, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_FENCE_GATE));
-		r.accept(new BlockItem(SHIMMERWOOD_BUTTON, props), BuiltInRegistries.BLOCK.getKey(SHIMMERWOOD_BUTTON));
-		r.accept(new BlockItem(SHIMMERWOOD_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				SHIMMERWOOD_PRESSURE_PLATE));
-		r.accept(new BlockItem(DRY_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(DRY_GRASS_BLOCK));
-		r.accept(new BlockItem(GOLDEN_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(GOLDEN_GRASS_BLOCK));
-		r.accept(new BlockItem(VIVID_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(VIVID_GRASS_BLOCK));
-		r.accept(new BlockItem(SCORCHED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SCORCHED_GRASS_BLOCK));
-		r.accept(new BlockItem(INFUSED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(INFUSED_GRASS_BLOCK));
-		r.accept(new BlockItem(MUTATED_GRASS_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MUTATED_GRASS_BLOCK));
-		r.accept(new TooltipBlockItem(DAYBLOOM_MOTIF, props), BuiltInRegistries.BLOCK.getKey(DAYBLOOM_MOTIF));
-		r.accept(new TooltipBlockItem(NIGHTSHADE_MOTIF, props), BuiltInRegistries.BLOCK.getKey(NIGHTSHADE_MOTIF));
-		r.accept(new BlockItem(HYDROANGEAS_MOTIF, props), BuiltInRegistries.BLOCK.getKey(HYDROANGEAS_MOTIF));
+		blockItem(r, MANA_PYLON, BlockItem::new, props);
+		blockItem(r, NATURA_PYLON, BlockItem::new, uncommonProps);
+		blockItem(r, GAIA_PYLON, BlockItem::new, props);
+		blockItem(r, MANA_SPLITTER, BlockItem::new, props);
+		blockItem(r, MANA_VOID, BlockItem::new, props);
+		blockItem(r, MANA_DETECTOR, BlockItem::new, props);
+		blockItem(r, FORCE_RELAY, BlockItem::new, props);
+		blockItem(r, SPREADER_TURNTABLE, BlockItem::new, props);
+		blockItem(r, TINY_PLANET, BlockItem::new, props);
+		blockItem(r, DRUM_OF_THE_WILD, BlockItem::new, props);
+		blockItem(r, DRUM_OF_THE_GATHERING, BlockItem::new, props);
+		blockItem(r, DRUM_OF_THE_CANOPY, BlockItem::new, props);
+		blockItem(r, LIFE_IMBUER, BlockItem::new, props);
+		blockItem(r, MANA_FLUXFIELD, BlockItem::new, props);
+		blockItem(r, MANA_PRISM, BlockItem::new, props);
+		blockItem(r, MANA_PUMP, BlockItem::new, props);
+		blockItem(r, SPARK_TINKERER, BlockItem::new, props);
+		blockItem(r, MANASTORM_CHARGE, BlockItem::new, rareProps);
+		blockItem(r, MANATIDE_BELLOWS, BlockItem::new, props);
+		blockItem(r, OPEN_CRATE, BlockItem::new, props);
+		blockItem(r, CRAFTY_CRATE, BlockItem::new, props);
+		blockItem(r, EYE_OF_THE_ANCIENTS, BlockItem::new, props);
+		blockItem(r, ABSTRUSE_PLATFORM, TooltipBlockItem::new, props);
+		blockItem(r, SPECTRAL_PLATFORM, TooltipBlockItem::new, props);
+		blockItem(r, INFRANGIBLE_PLATFORM, TooltipBlockItem::new, epicProps);
+		blockItem(r, TINY_POTATO, TinyPotatoBlockItem::new, props);
+		blockItem(r, ENDER_OVERSEER, BlockItem::new, props);
+		blockItem(r, RED_STRINGED_CONTAINER, BlockItem::new, props);
+		blockItem(r, RED_STRINGED_DISPENSER, BlockItem::new, props);
+		blockItem(r, RED_STRINGED_NUTRIFIER, BlockItem::new, props);
+		blockItem(r, RED_STRINGED_COMPARATOR, BlockItem::new, props);
+		blockItem(r, RED_STRINGED_SPOOFER, BlockItem::new, props);
+		blockItem(r, RED_STRINGED_INTERCEPTOR, BlockItem::new, props);
+		blockItem(r, CORPOREA_FUNNEL, BlockItem::new, props);
+		blockItem(r, CORPOREA_INTERCEPTOR, BlockItem::new, props);
+		blockItem(r, CORPOREA_INDEX, BlockItem::new, props);
+		blockItem(r, CORPOREA_CRYSTAL_CUBE, BlockItem::new, props);
+		blockItem(r, CORPOREA_RETAINER, BlockItem::new, props);
+		blockItem(r, CORPOREA_BLOCK, BlockItem::new, props);
+		blockItem(r, CORPOREA_STAIRS, BlockItem::new, props);
+		blockItem(r, CORPOREA_SLAB, BlockItem::new, props);
+		blockItem(r, CORPOREA_WALL, BlockItem::new, props);
+		blockItem(r, CORPOREA_BUTTON, BlockItem::new, props);
+		blockItem(r, CORPOREA_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, CORPOREA_BRICKS, BlockItem::new, props);
+		blockItem(r, CORPOREA_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, CORPOREA_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, CORPOREA_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, INCENSE_PLATE, BlockItem::new, props);
+		blockItem(r, HOVERING_HOURGLASS, BlockItem::new, props);
+		blockItem(r, SPECTRAL_RAIL, BlockItem::new, props);
+		blockItem(r, LUMINIZER, BlockItem::new, props);
+		blockItem(r, DETECTOR_LUMINIZER, BlockItem::new, props);
+		blockItem(r, FORK_LUMINIZER, BlockItem::new, props);
+		blockItem(r, TOGGLE_LUMINIZER, BlockItem::new, props);
+		blockItem(r, LUMINIZER_LAUNCHER, BlockItem::new, props);
+		blockItem(r, CACOPHONIUM_BLOCK, BlockItem::new, props);
+		blockItem(r, CELLULAR_BLOCK, BlockItem::new, props);
+		blockItem(r, TERU_TERU_BOZU, BlockItem::new, props);
+		blockItem(r, LIVINGWOOD_AVATAR, BlockItem::new, props);
+		blockItem(r, LIVING_ROOT, BlockItem::new, props);
+		blockItem(r, FEL_PUMPKIN, BlockItem::new, props);
+		blockItem(r, COCOON_OF_CAPRICE, BlockItem::new, props);
+		blockItem(r, ANIMATED_TORCH, BlockItem::new, props);
+		blockItem(r, STARFIELD_CREATOR, BlockItem::new, props);
+		blockItem(r, AZULEJO_0, BlockItem::new, props);
+		blockItem(r, AZULEJO_1, BlockItem::new, props);
+		blockItem(r, AZULEJO_2, BlockItem::new, props);
+		blockItem(r, AZULEJO_3, BlockItem::new, props);
+		blockItem(r, AZULEJO_4, BlockItem::new, props);
+		blockItem(r, AZULEJO_5, BlockItem::new, props);
+		blockItem(r, AZULEJO_6, BlockItem::new, props);
+		blockItem(r, AZULEJO_7, BlockItem::new, props);
+		blockItem(r, AZULEJO_8, BlockItem::new, props);
+		blockItem(r, AZULEJO_9, BlockItem::new, props);
+		blockItem(r, AZULEJO_10, BlockItem::new, props);
+		blockItem(r, AZULEJO_11, BlockItem::new, props);
+		blockItem(r, AZULEJO_12, BlockItem::new, props);
+		blockItem(r, AZULEJO_13, BlockItem::new, props);
+		blockItem(r, AZULEJO_14, BlockItem::new, props);
+		blockItem(r, AZULEJO_15, BlockItem::new, props);
+		blockItem(r, BLAZE_MESH, BlockItem::new, blazeMeshProps);
+		blockItem(r, GAIA_HEAD, (block, properties) -> new StandingAndWallBlockItem(block, GAIA_WALL_HEAD_BLOCK, Direction.DOWN, properties), rareProps);
+		blockItem(r, SHIMMERROCK, BlockItem::new, props);
+		blockItem(r, SHIMMERROCK_STAIRS, BlockItem::new, props);
+		blockItem(r, SHIMMERROCK_SLAB, BlockItem::new, props);
+		blockItem(r, SHIMMERROCK_WALL, BlockItem::new, props);
+		blockItem(r, SHIMMERROCK_BUTTON, BlockItem::new, props);
+		blockItem(r, SHIMMERROCK_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_PLANKS, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_PLANK_STAIRS, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_PLANK_SLAB, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_FENCE, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_FENCE_GATE, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_BUTTON, BlockItem::new, props);
+		blockItem(r, SHIMMERWOOD_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, DRY_GRASS_BLOCK, BlockItem::new, props);
+		blockItem(r, GOLDEN_GRASS_BLOCK, BlockItem::new, props);
+		blockItem(r, VIVID_GRASS_BLOCK, BlockItem::new, props);
+		blockItem(r, SCORCHED_GRASS_BLOCK, BlockItem::new, props);
+		blockItem(r, INFUSED_GRASS_BLOCK, BlockItem::new, props);
+		blockItem(r, MUTATED_GRASS_BLOCK, BlockItem::new, props);
+		blockItem(r, DAYBLOOM_MOTIF, TooltipBlockItem::new, props);
+		blockItem(r, NIGHTSHADE_MOTIF, TooltipBlockItem::new, props);
+		blockItem(r, HYDROANGEAS_MOTIF, BlockItem::new, props);
 
-		r.accept(new BlockItem(SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_SMOKEY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_BRICKS));
-		r.accept(new BlockItem(SMOKEY_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(SMOKEY_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_SMOKEY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SMOKEY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_SMOKEY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SMOKEY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_SMOKEY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SMOKEY_QUARTZ_SLAB));
+		blockItem(r, SMOKEY_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOKEY_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOKEY_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_SMOKEY_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOKEY_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, SMOKEY_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_SMOKEY_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOOTH_SMOKEY_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_SMOKEY_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(MANA_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_BLOCK));
-		r.accept(new BlockItem(MANA_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_STAIRS));
-		r.accept(new BlockItem(MANA_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_MANA_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_MANA_QUARTZ_BLOCK));
-		r.accept(new BlockItem(MANA_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_BRICKS));
-		r.accept(new BlockItem(MANA_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(MANA_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_MANA_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_MANA_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_MANA_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_MANA_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_MANA_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SMOOTH_MANA_QUARTZ_SLAB));
+		blockItem(r, MANA_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, MANA_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, MANA_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_MANA_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, MANA_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, MANA_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_MANA_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOOTH_MANA_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_MANA_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(BLAZE_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_BLOCK));
-		r.accept(new BlockItem(BLAZE_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_STAIRS));
-		r.accept(new BlockItem(BLAZE_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_BLAZE_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_BLAZE_QUARTZ_BLOCK));
-		r.accept(new BlockItem(BLAZE_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_BRICKS));
-		r.accept(new BlockItem(BLAZE_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(BLAZE_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_BLAZE_QUARTZ_BLOCKS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_BLAZE_QUARTZ_BLOCKS));
-		r.accept(new BlockItem(SMOOTH_BLAZE_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_BLAZE_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_BLAZE_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_BLAZE_QUARTZ_SLAB));
+		blockItem(r, BLAZE_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, BLAZE_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, BLAZE_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_BLAZE_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, BLAZE_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, BLAZE_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_BLAZE_QUARTZ_BLOCKS, BlockItem::new, props);
+		blockItem(r, SMOOTH_BLAZE_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_BLAZE_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(LAVENDER_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_BLOCK));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_STAIRS));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_LAVENDER_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_LAVENDER_QUARTZ_BLOCK));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_BRICKS));
-		r.accept(new BlockItem(LAVENDER_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(LAVENDER_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_LAVENDER_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_LAVENDER_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_LAVENDER_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_LAVENDER_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_LAVENDER_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_LAVENDER_QUARTZ_SLAB));
+		blockItem(r, LAVENDER_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, LAVENDER_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, LAVENDER_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_LAVENDER_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, LAVENDER_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, LAVENDER_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_LAVENDER_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOOTH_LAVENDER_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_LAVENDER_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(RED_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_BLOCK));
-		r.accept(new BlockItem(RED_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_STAIRS));
-		r.accept(new BlockItem(RED_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_RED_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_RED_QUARTZ_BLOCK));
-		r.accept(new BlockItem(RED_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_BRICKS));
-		r.accept(new BlockItem(RED_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(RED_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_RED_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SMOOTH_RED_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_RED_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_RED_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_RED_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SMOOTH_RED_QUARTZ_SLAB));
+		blockItem(r, RED_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, RED_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, RED_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_RED_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, RED_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, RED_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_RED_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOOTH_RED_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_RED_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(ELVEN_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_BLOCK));
-		r.accept(new BlockItem(ELVEN_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_STAIRS));
-		r.accept(new BlockItem(ELVEN_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_ELVEN_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_ELVEN_QUARTZ_BLOCK));
-		r.accept(new BlockItem(ELVEN_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_BRICKS));
-		r.accept(new BlockItem(ELVEN_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(ELVEN_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_ELVEN_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_ELVEN_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_ELVEN_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_ELVEN_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_ELVEN_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_ELVEN_QUARTZ_SLAB));
+		blockItem(r, ELVEN_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, ELVEN_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, ELVEN_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_ELVEN_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, ELVEN_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, ELVEN_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_ELVEN_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOOTH_ELVEN_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_ELVEN_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(SUNNY_QUART_BLOCK, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUART_BLOCK));
-		r.accept(new BlockItem(SUNNY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SUNNY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_SLAB));
-		r.accept(new BlockItem(CHISELED_SUNNY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_SUNNY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SUNNY_QUARTZ_BRICKS, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_BRICKS));
-		r.accept(new BlockItem(SUNNY_QUARTZ_PILLAR, props), BuiltInRegistries.BLOCK.getKey(SUNNY_QUARTZ_PILLAR));
-		r.accept(new BlockItem(SMOOTH_SUNNY_QUARTZ_BLOCK, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SUNNY_QUARTZ_BLOCK));
-		r.accept(new BlockItem(SMOOTH_SUNNY_QUARTZ_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SUNNY_QUARTZ_STAIRS));
-		r.accept(new BlockItem(SMOOTH_SUNNY_QUARTZ_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				SMOOTH_SUNNY_QUARTZ_SLAB));
+		blockItem(r, SUNNY_QUART_BLOCK, BlockItem::new, props);
+		blockItem(r, SUNNY_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SUNNY_QUARTZ_SLAB, BlockItem::new, props);
+		blockItem(r, CHISELED_SUNNY_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SUNNY_QUARTZ_BRICKS, BlockItem::new, props);
+		blockItem(r, SUNNY_QUARTZ_PILLAR, BlockItem::new, props);
+		blockItem(r, SMOOTH_SUNNY_QUARTZ_BLOCK, BlockItem::new, props);
+		blockItem(r, SMOOTH_SUNNY_QUARTZ_STAIRS, BlockItem::new, props);
+		blockItem(r, SMOOTH_SUNNY_QUARTZ_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(FUCHSITE, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE));
-		r.accept(new BlockItem(FUCHSITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_STAIRS));
-		r.accept(new BlockItem(FUCHSITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_SLAB));
-		r.accept(new BlockItem(FUCHSITE_WALL, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_WALL));
-		r.accept(new BlockItem(FUCHSITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BUTTON));
-		r.accept(new BlockItem(FUCHSITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(FUCHSITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICKS));
-		r.accept(new BlockItem(FUCHSITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICK_STAIRS));
-		r.accept(new BlockItem(FUCHSITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICK_SLAB));
-		r.accept(new BlockItem(FUCHSITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(FUCHSITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_FUCHSITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE));
-		r.accept(new BlockItem(COBBLED_FUCHSITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_FUCHSITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE_SLAB));
-		r.accept(new BlockItem(COBBLED_FUCHSITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_FUCHSITE_WALL));
-		r.accept(new BlockItem(CHISELED_FUCHSITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_FUCHSITE_BRICKS));
+		blockItem(r, FUCHSITE, BlockItem::new, props);
+		blockItem(r, FUCHSITE_STAIRS, BlockItem::new, props);
+		blockItem(r, FUCHSITE_SLAB, BlockItem::new, props);
+		blockItem(r, FUCHSITE_WALL, BlockItem::new, props);
+		blockItem(r, FUCHSITE_BUTTON, BlockItem::new, props);
+		blockItem(r, FUCHSITE_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, FUCHSITE_BRICKS, BlockItem::new, props);
+		blockItem(r, FUCHSITE_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, FUCHSITE_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, FUCHSITE_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_FUCHSITE, BlockItem::new, props);
+		blockItem(r, COBBLED_FUCHSITE_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_FUCHSITE_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_FUCHSITE_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_FUCHSITE_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(TALC, props), BuiltInRegistries.BLOCK.getKey(TALC));
-		r.accept(new BlockItem(TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(TALC_STAIRS));
-		r.accept(new BlockItem(TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(TALC_SLAB));
-		r.accept(new BlockItem(TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(TALC_WALL));
-		r.accept(new BlockItem(TALC_BUTTON, props), BuiltInRegistries.BLOCK.getKey(TALC_BUTTON));
-		r.accept(new BlockItem(TALC_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(TALC_PRESSURE_PLATE));
-		r.accept(new BlockItem(TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICKS));
-		r.accept(new BlockItem(TALC_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICK_STAIRS));
-		r.accept(new BlockItem(TALC_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICK_SLAB));
-		r.accept(new BlockItem(TALC_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(TALC_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_TALC, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC));
-		r.accept(new BlockItem(COBBLED_TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC_STAIRS));
-		r.accept(new BlockItem(COBBLED_TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC_SLAB));
-		r.accept(new BlockItem(COBBLED_TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_TALC_WALL));
-		r.accept(new BlockItem(CHISELED_TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_TALC_BRICKS));
+		blockItem(r, TALC, BlockItem::new, props);
+		blockItem(r, TALC_STAIRS, BlockItem::new, props);
+		blockItem(r, TALC_SLAB, BlockItem::new, props);
+		blockItem(r, TALC_WALL, BlockItem::new, props);
+		blockItem(r, TALC_BUTTON, BlockItem::new, props);
+		blockItem(r, TALC_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, TALC_BRICKS, BlockItem::new, props);
+		blockItem(r, TALC_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, TALC_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, TALC_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_TALC, BlockItem::new, props);
+		blockItem(r, COBBLED_TALC_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_TALC_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_TALC_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_TALC_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(GNEISS, props), BuiltInRegistries.BLOCK.getKey(GNEISS));
-		r.accept(new BlockItem(GNEISS_STAIRS, props), BuiltInRegistries.BLOCK.getKey(GNEISS_STAIRS));
-		r.accept(new BlockItem(GNEISS_SLAB, props), BuiltInRegistries.BLOCK.getKey(GNEISS_SLAB));
-		r.accept(new BlockItem(GNEISS_WALL, props), BuiltInRegistries.BLOCK.getKey(GNEISS_WALL));
-		r.accept(new BlockItem(GNEISS_BUTTON, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BUTTON));
-		r.accept(new BlockItem(GNEISS_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(GNEISS_PRESSURE_PLATE));
-		r.accept(new BlockItem(GNEISS_BRICKS, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICKS));
-		r.accept(new BlockItem(GNEISS_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICK_STAIRS));
-		r.accept(new BlockItem(GNEISS_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICK_SLAB));
-		r.accept(new BlockItem(GNEISS_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(GNEISS_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_GNEISS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS));
-		r.accept(new BlockItem(COBBLED_GNEISS_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS_STAIRS));
-		r.accept(new BlockItem(COBBLED_GNEISS_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS_SLAB));
-		r.accept(new BlockItem(COBBLED_GNEISS_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_GNEISS_WALL));
-		r.accept(new BlockItem(CHISELED_GNEISS_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_GNEISS_BRICKS));
+		blockItem(r, GNEISS, BlockItem::new, props);
+		blockItem(r, GNEISS_STAIRS, BlockItem::new, props);
+		blockItem(r, GNEISS_SLAB, BlockItem::new, props);
+		blockItem(r, GNEISS_WALL, BlockItem::new, props);
+		blockItem(r, GNEISS_BUTTON, BlockItem::new, props);
+		blockItem(r, GNEISS_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, GNEISS_BRICKS, BlockItem::new, props);
+		blockItem(r, GNEISS_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, GNEISS_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, GNEISS_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_GNEISS, BlockItem::new, props);
+		blockItem(r, COBBLED_GNEISS_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_GNEISS_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_GNEISS_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_GNEISS_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(MYCELITE, props), BuiltInRegistries.BLOCK.getKey(MYCELITE));
-		r.accept(new BlockItem(MYCELITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_STAIRS));
-		r.accept(new BlockItem(MYCELITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_SLAB));
-		r.accept(new BlockItem(MYCELITE_WALL, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_WALL));
-		r.accept(new BlockItem(MYCELITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BUTTON));
-		r.accept(new BlockItem(MYCELITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(MYCELITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICKS));
-		r.accept(new BlockItem(MYCELITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICK_STAIRS));
-		r.accept(new BlockItem(MYCELITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICK_SLAB));
-		r.accept(new BlockItem(MYCELITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(MYCELITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_MYCELITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE));
-		r.accept(new BlockItem(COBBLED_MYCELITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_MYCELITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE_SLAB));
-		r.accept(new BlockItem(COBBLED_MYCELITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_MYCELITE_WALL));
-		r.accept(new BlockItem(CHISELED_MYCELITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_MYCELITE_BRICKS));
+		blockItem(r, MYCELITE, BlockItem::new, props);
+		blockItem(r, MYCELITE_STAIRS, BlockItem::new, props);
+		blockItem(r, MYCELITE_SLAB, BlockItem::new, props);
+		blockItem(r, MYCELITE_WALL, BlockItem::new, props);
+		blockItem(r, MYCELITE_BUTTON, BlockItem::new, props);
+		blockItem(r, MYCELITE_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, MYCELITE_BRICKS, BlockItem::new, props);
+		blockItem(r, MYCELITE_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, MYCELITE_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, MYCELITE_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_MYCELITE, BlockItem::new, props);
+		blockItem(r, COBBLED_MYCELITE_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_MYCELITE_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_MYCELITE_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_MYCELITE_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(CATACLASITE, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE));
-		r.accept(new BlockItem(CATACLASITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_STAIRS));
-		r.accept(new BlockItem(CATACLASITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_SLAB));
-		r.accept(new BlockItem(CATACLASITE_WALL, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_WALL));
-		r.accept(new BlockItem(CATACLASITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BUTTON));
-		r.accept(new BlockItem(CATACLASITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				CATACLASITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(CATACLASITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BRICKS));
-		r.accept(new BlockItem(CATACLASITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				CATACLASITE_BRICK_STAIRS));
-		r.accept(new BlockItem(CATACLASITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BRICK_SLAB));
-		r.accept(new BlockItem(CATACLASITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(CATACLASITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_CATACLASITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_CATACLASITE));
-		r.accept(new BlockItem(COBBLED_CATACLASITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_CATACLASITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_CATACLASITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_CATACLASITE_SLAB));
-		r.accept(new BlockItem(COBBLED_CATACLASITE_WALL, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_CATACLASITE_WALL));
-		r.accept(new BlockItem(CHISELED_CATACLASITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_CATACLASITE_BRICKS));
+		blockItem(r, CATACLASITE, BlockItem::new, props);
+		blockItem(r, CATACLASITE_STAIRS, BlockItem::new, props);
+		blockItem(r, CATACLASITE_SLAB, BlockItem::new, props);
+		blockItem(r, CATACLASITE_WALL, BlockItem::new, props);
+		blockItem(r, CATACLASITE_BUTTON, BlockItem::new, props);
+		blockItem(r, CATACLASITE_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, CATACLASITE_BRICKS, BlockItem::new, props);
+		blockItem(r, CATACLASITE_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, CATACLASITE_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, CATACLASITE_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_CATACLASITE, BlockItem::new, props);
+		blockItem(r, COBBLED_CATACLASITE_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_CATACLASITE_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_CATACLASITE_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_CATACLASITE_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(SOLITE, props), BuiltInRegistries.BLOCK.getKey(SOLITE));
-		r.accept(new BlockItem(SOLITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SOLITE_STAIRS));
-		r.accept(new BlockItem(SOLITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(SOLITE_SLAB));
-		r.accept(new BlockItem(SOLITE_WALL, props), BuiltInRegistries.BLOCK.getKey(SOLITE_WALL));
-		r.accept(new BlockItem(SOLITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BUTTON));
-		r.accept(new BlockItem(SOLITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(SOLITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(SOLITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICKS));
-		r.accept(new BlockItem(SOLITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICK_STAIRS));
-		r.accept(new BlockItem(SOLITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICK_SLAB));
-		r.accept(new BlockItem(SOLITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(SOLITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_SOLITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE));
-		r.accept(new BlockItem(COBBLED_SOLITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_SOLITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE_SLAB));
-		r.accept(new BlockItem(COBBLED_SOLITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_SOLITE_WALL));
-		r.accept(new BlockItem(CHISELED_SOLITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_SOLITE_BRICKS));
+		blockItem(r, SOLITE, BlockItem::new, props);
+		blockItem(r, SOLITE_STAIRS, BlockItem::new, props);
+		blockItem(r, SOLITE_SLAB, BlockItem::new, props);
+		blockItem(r, SOLITE_WALL, BlockItem::new, props);
+		blockItem(r, SOLITE_BUTTON, BlockItem::new, props);
+		blockItem(r, SOLITE_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, SOLITE_BRICKS, BlockItem::new, props);
+		blockItem(r, SOLITE_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, SOLITE_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, SOLITE_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_SOLITE, BlockItem::new, props);
+		blockItem(r, COBBLED_SOLITE_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_SOLITE_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_SOLITE_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_SOLITE_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(LUNITE, props), BuiltInRegistries.BLOCK.getKey(LUNITE));
-		r.accept(new BlockItem(LUNITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LUNITE_STAIRS));
-		r.accept(new BlockItem(LUNITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(LUNITE_SLAB));
-		r.accept(new BlockItem(LUNITE_WALL, props), BuiltInRegistries.BLOCK.getKey(LUNITE_WALL));
-		r.accept(new BlockItem(LUNITE_BUTTON, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BUTTON));
-		r.accept(new BlockItem(LUNITE_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(LUNITE_PRESSURE_PLATE));
-		r.accept(new BlockItem(LUNITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICKS));
-		r.accept(new BlockItem(LUNITE_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICK_STAIRS));
-		r.accept(new BlockItem(LUNITE_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICK_SLAB));
-		r.accept(new BlockItem(LUNITE_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(LUNITE_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_LUNITE, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE));
-		r.accept(new BlockItem(COBBLED_LUNITE_STAIRS, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE_STAIRS));
-		r.accept(new BlockItem(COBBLED_LUNITE_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE_SLAB));
-		r.accept(new BlockItem(COBBLED_LUNITE_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_LUNITE_WALL));
-		r.accept(new BlockItem(CHISELED_LUNITE_BRICKS, props), BuiltInRegistries.BLOCK.getKey(CHISELED_LUNITE_BRICKS));
+		blockItem(r, LUNITE, BlockItem::new, props);
+		blockItem(r, LUNITE_STAIRS, BlockItem::new, props);
+		blockItem(r, LUNITE_SLAB, BlockItem::new, props);
+		blockItem(r, LUNITE_WALL, BlockItem::new, props);
+		blockItem(r, LUNITE_BUTTON, BlockItem::new, props);
+		blockItem(r, LUNITE_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, LUNITE_BRICKS, BlockItem::new, props);
+		blockItem(r, LUNITE_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, LUNITE_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, LUNITE_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_LUNITE, BlockItem::new, props);
+		blockItem(r, COBBLED_LUNITE_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_LUNITE_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_LUNITE_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_LUNITE_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(ROSY_TALC, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC));
-		r.accept(new BlockItem(ROSY_TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_STAIRS));
-		r.accept(new BlockItem(ROSY_TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_SLAB));
-		r.accept(new BlockItem(ROSY_TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_WALL));
-		r.accept(new BlockItem(ROSY_TALC_BUTTON, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BUTTON));
-		r.accept(new BlockItem(ROSY_TALC_PRESSURE_PLATE, props), BuiltInRegistries.BLOCK.getKey(
-				ROSY_TALC_PRESSURE_PLATE));
-		r.accept(new BlockItem(ROSY_TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICKS));
-		r.accept(new BlockItem(ROSY_TALC_BRICK_STAIRS, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICK_STAIRS));
-		r.accept(new BlockItem(ROSY_TALC_BRICK_SLAB, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICK_SLAB));
-		r.accept(new BlockItem(ROSY_TALC_BRICK_WALL, props), BuiltInRegistries.BLOCK.getKey(ROSY_TALC_BRICK_WALL));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC, props), BuiltInRegistries.BLOCK.getKey(COBBLED_ROSY_TALC));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				COBBLED_ROSY_TALC_STAIRS));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC_SLAB, props), BuiltInRegistries.BLOCK.getKey(COBBLED_ROSY_TALC_SLAB));
-		r.accept(new BlockItem(COBBLED_ROSY_TALC_WALL, props), BuiltInRegistries.BLOCK.getKey(COBBLED_ROSY_TALC_WALL));
-		r.accept(new BlockItem(CHISELED_ROSY_TALC_BRICKS, props), BuiltInRegistries.BLOCK.getKey(
-				CHISELED_ROSY_TALC_BRICKS));
+		blockItem(r, ROSY_TALC, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_STAIRS, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_SLAB, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_WALL, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_BUTTON, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_PRESSURE_PLATE, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_BRICKS, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_BRICK_STAIRS, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_BRICK_SLAB, BlockItem::new, props);
+		blockItem(r, ROSY_TALC_BRICK_WALL, BlockItem::new, props);
+		blockItem(r, COBBLED_ROSY_TALC, BlockItem::new, props);
+		blockItem(r, COBBLED_ROSY_TALC_STAIRS, BlockItem::new, props);
+		blockItem(r, COBBLED_ROSY_TALC_SLAB, BlockItem::new, props);
+		blockItem(r, COBBLED_ROSY_TALC_WALL, BlockItem::new, props);
+		blockItem(r, CHISELED_ROSY_TALC_BRICKS, BlockItem::new, props);
 
-		r.accept(new BlockItem(WHITE_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				WHITE_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(WHITE_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				WHITE_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(WHITE_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				WHITE_PORTUGUESE_PAVEMENT_SLAB));
+		blockItem(r, WHITE_PORTUGUESE_PAVEMENT, BlockItem::new, props);
+		blockItem(r, WHITE_PORTUGUESE_PAVEMENT_STAIRS, BlockItem::new, props);
+		blockItem(r, WHITE_PORTUGUESE_PAVEMENT_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(BLACK_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				BLACK_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(BLACK_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				BLACK_PORTUGUESE_PAVEMENT_SLAB));
-		r.accept(new BlockItem(BLACK_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				BLACK_PORTUGUESE_PAVEMENT_STAIRS));
+		blockItem(r, BLACK_PORTUGUESE_PAVEMENT, BlockItem::new, props);
+		blockItem(r, BLACK_PORTUGUESE_PAVEMENT_SLAB, BlockItem::new, props);
+		blockItem(r, BLACK_PORTUGUESE_PAVEMENT_STAIRS, BlockItem::new, props);
 
-		r.accept(new BlockItem(BLUE_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				BLUE_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(BLUE_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				BLUE_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(BLUE_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				BLUE_PORTUGUESE_PAVEMENT_SLAB));
+		blockItem(r, BLUE_PORTUGUESE_PAVEMENT, BlockItem::new, props);
+		blockItem(r, BLUE_PORTUGUESE_PAVEMENT_STAIRS, BlockItem::new, props);
+		blockItem(r, BLUE_PORTUGUESE_PAVEMENT_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(YELLOW_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				YELLOW_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(YELLOW_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				YELLOW_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(YELLOW_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				YELLOW_PORTUGUESE_PAVEMENT_SLAB));
+		blockItem(r, YELLOW_PORTUGUESE_PAVEMENT, BlockItem::new, props);
+		blockItem(r, YELLOW_PORTUGUESE_PAVEMENT_STAIRS, BlockItem::new, props);
+		blockItem(r, YELLOW_PORTUGUESE_PAVEMENT_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(RED_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(RED_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(RED_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				RED_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(RED_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				RED_PORTUGUESE_PAVEMENT_SLAB));
+		blockItem(r, RED_PORTUGUESE_PAVEMENT, BlockItem::new, props);
+		blockItem(r, RED_PORTUGUESE_PAVEMENT_STAIRS, BlockItem::new, props);
+		blockItem(r, RED_PORTUGUESE_PAVEMENT_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(GREEN_PORTUGUESE_PAVEMENT, props), BuiltInRegistries.BLOCK.getKey(
-				GREEN_PORTUGUESE_PAVEMENT));
-		r.accept(new BlockItem(GREEN_PORTUGUESE_PAVEMENT_STAIRS, props), BuiltInRegistries.BLOCK.getKey(
-				GREEN_PORTUGUESE_PAVEMENT_STAIRS));
-		r.accept(new BlockItem(GREEN_PORTUGUESE_PAVEMENT_SLAB, props), BuiltInRegistries.BLOCK.getKey(
-				GREEN_PORTUGUESE_PAVEMENT_SLAB));
+		blockItem(r, GREEN_PORTUGUESE_PAVEMENT, BlockItem::new, props);
+		blockItem(r, GREEN_PORTUGUESE_PAVEMENT_STAIRS, BlockItem::new, props);
+		blockItem(r, GREEN_PORTUGUESE_PAVEMENT_SLAB, BlockItem::new, props);
 
-		r.accept(new BlockItem(MANAGLASS_PANE, props), BuiltInRegistries.BLOCK.getKey(MANAGLASS_PANE));
-		r.accept(new BlockItem(ALFGLASS_PANE, props), BuiltInRegistries.BLOCK.getKey(ALFGLASS_PANE));
-		r.accept(new BlockItem(BIFROST_PANE, props), BuiltInRegistries.BLOCK.getKey(BIFROST_PANE));
+		blockItem(r, MANAGLASS_PANE, BlockItem::new, props);
+		blockItem(r, ALFGLASS_PANE, BlockItem::new, props);
+		blockItem(r, BIFROST_PANE, BlockItem::new, props);
+	}
+
+	// PORT-26.3: block items need their own properties with the block's id and the block description prefix (vanilla's registerBlock)
+	private static <T extends Item> void blockItem(BiConsumer<Item, Identifier> r, Block block, BiFunction<Block, Item.Properties, T> factory,
+			Supplier<Item.Properties> properties) {
+		Identifier id = BuiltInRegistries.BLOCK.getKey(block);
+		r.accept(factory.apply(block, properties.get().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, id))), id);
 	}
 
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
-			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties) {
+			BiConsumer<Item, Identifier> r, T baseBlock, Supplier<Item.Properties> properties) {
 		registerBlockItemWithColoredVariants(r, baseBlock, properties, "_");
 	}
 
+	// PORT-26.3: takes a properties supplier, each item gets its own set with its id (see blockItem)
 	private static <T extends Block & OptionallyColored> void registerBlockItemWithColoredVariants(
-			BiConsumer<Item, Identifier> r, T baseBlock, Item.Properties properties, String coloredBlockInfix) {
+			BiConsumer<Item, Identifier> r, T baseBlock, Supplier<Item.Properties> properties, String coloredBlockInfix) {
 		Identifier baseId = BuiltInRegistries.BLOCK.getKey(baseBlock);
-		r.accept(new TooltipBlockItem(baseBlock, properties), baseId);
+		blockItem(r, baseBlock, TooltipBlockItem::new, properties);
 		ColorHelper.supportedColors().forEach(color -> {
 			Identifier coloredId = baseId.withPrefix(color.getSerializedName() + coloredBlockInfix);
 			Block coloredBlock = ALL.get(coloredId.getPath());
-			r.accept(new TooltipBlockItem(coloredBlock, properties), coloredId);
+			blockItem(r, coloredBlock, TooltipBlockItem::new, properties);
 		});
 	}
 
 	private static MysticalFlowerBlock makeMysticalFlower(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.MYSTICAL_FLOWER_SUFFIX,
-				new MysticalFlowerBlock(
+				props -> new MysticalFlowerBlock(
 						color,
 						effectForFlower(color),
 						MysticalFlowerBlock.STEW_DURATION,
 						BotaniaBlocks::getTallMysticalFlower,
-						properties
-				)
+						props
+				), properties
 		);
 	}
 
 	private static GlimmeringFlowerBlock makeGlimmeringFlower(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.GLIMMERING_FLOWER_SUFFIX,
-				new GlimmeringFlowerBlock(
+				props -> new GlimmeringFlowerBlock(
 						color,
 						effectForFlower(color),
 						GlimmeringFlowerBlock.STEW_DURATION,
-						properties
-				)
+						props
+				), properties
 		);
 	}
 
 	private static FloatingMundaneFlowerBlock makeFloatingMundaneFlower(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.FLOATING_FLOWER_SUFFIX,
-				new FloatingMundaneFlowerBlock(
+				props -> new FloatingMundaneFlowerBlock(
 						color,
-						properties
-				)
+						props
+				), properties
 		);
 	}
 
 	private static BuriedPetalBlock makeBuriedPetal(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.BURIED_PETAL_SUFFIX,
-				new BuriedPetalBlock(
+				props -> new BuriedPetalBlock(
 						color,
 						BotaniaBlocks::getTallMysticalFlower,
-						properties
-				)
+						props
+				), properties
 		);
 	}
 
 	private static PetalBlock makePetalBlock(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.PETAL_BLOCK_SUFFIX,
-				new PetalBlock(color, properties.mapColor(color))
+				props -> new PetalBlock(color, props), properties.mapColor(color)
 		);
 	}
 
 	private static ShimmeringMushroomBlock makeShimmeringMushroom(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.SHIMMERING_MUSHROOM_SUFFIX,
-				new ShimmeringMushroomBlock(color, properties)
+				props -> new ShimmeringMushroomBlock(color, props), properties
 		);
 	}
 
@@ -3220,55 +3272,62 @@ public final class BotaniaBlocks {
 		return block;
 	}
 
-	private static <T extends Block & OptionallyColored> T makeBlockWithColoredVariants(String baseName,
-			Function<@Nullable DyeColor, T> blockFactory) {
-		return makeBlockWithColoredVariants(baseName, blockFactory, "_");
+	// PORT-26.3: 26.3 blocks need their registry id in the properties before construction (drops, description id)
+	private static <T extends Block> T make(String name, Function<BlockBehaviour.Properties, T> factory, BlockBehaviour.Properties properties) {
+		return make(name, factory.apply(properties.setId(ResourceKey.create(Registries.BLOCK, botaniaRL(name)))));
 	}
 
-	private static <T extends Block & OptionallyColored> T makeBlockWithColoredVariants(String baseName, Function<@Nullable DyeColor, T> blockFactory,
+	private static <T extends Block & OptionallyColored> T makeBlockWithColoredVariants(String baseName,
+			BiFunction<@Nullable DyeColor, BlockBehaviour.Properties, T> blockFactory, Supplier<BlockBehaviour.Properties> properties) {
+		return makeBlockWithColoredVariants(baseName, blockFactory, properties, "_");
+	}
+
+	// PORT-26.3: each variant needs its own properties carrying its id, so the factory takes them and the supplier makes a fresh set per block
+	private static <T extends Block & OptionallyColored> T makeBlockWithColoredVariants(String baseName,
+			BiFunction<@Nullable DyeColor, BlockBehaviour.Properties, T> blockFactory, Supplier<BlockBehaviour.Properties> properties,
 			String coloredBlockInfix) {
-		T baseBlock = make(baseName, blockFactory.apply(null));
+		T baseBlock = make(baseName, props -> blockFactory.apply(null, props), properties.get());
 		ColorHelper.supportedColors().forEach(
-				color -> make(color.getSerializedName() + coloredBlockInfix + baseName, blockFactory.apply(color)));
+				color -> make(color.getSerializedName() + coloredBlockInfix + baseName, props -> blockFactory.apply(color, props), properties.get()));
 		return baseBlock;
 	}
 
 	private static TallMysticalFlowerBlock makeTallMysticalFlower(DyeColor color, BlockBehaviour.Properties properties) {
 		return make(
 				color.getSerializedName() + LibBlockNames.TALL_MYSTICAL_FLOWER_SUFFIX,
-				new TallMysticalFlowerBlock(color, properties)
+				props -> new TallMysticalFlowerBlock(color, props), properties
 		);
 	}
 
 	private static FlowerPotBlock makePottedMundaneFlower(MysticalFlowerBlock flower) {
 		return make(
 				LibBlockNames.POTTED_PREFIX + flower.color.getSerializedName() + LibBlockNames.MYSTICAL_FLOWER_SUFFIX,
-				flowerPot(flower, 0)
+				flowerPot(flower, 0), flowerPotProperties()
 		);
 	}
 
 	private static FlowerPotBlock makePottedGlimmeringFlower(GlimmeringFlowerBlock flower) {
 		return make(
 				LibBlockNames.POTTED_PREFIX + flower.color.getSerializedName() + LibBlockNames.GLIMMERING_FLOWER_SUFFIX,
-				flowerPot(flower, 15)
+				flowerPot(flower, 15), flowerPotProperties()
 		);
 	}
 
 	private static FlowerPotBlock makePottedShimmeringMushroom(ShimmeringMushroomBlock mushroom) {
 		return make(
 				LibBlockNames.POTTED_PREFIX + mushroom.color.getSerializedName() + LibBlockNames.SHIMMERING_MUSHROOM_SUFFIX,
-				flowerPot(mushroom, 3)
+				flowerPot(mushroom, 3), flowerPotProperties()
 		);
 	}
 
 	private static PetalApothecaryBlock makePetalApothecary(String name, SoundType soundType, MapColor mapColor) {
-		return make(name, new PetalApothecaryBlock(BlockBehaviour.Properties.of()
+		return make(name, PetalApothecaryBlock::new, BlockBehaviour.Properties.of()
 				.strength(3.5F)
 				.instrument(NoteBlockInstrument.BASEDRUM)
 				.requiresCorrectToolForDrops()
 				.lightLevel(state -> state.getValue(PetalApothecaryBlock.FLUID) == PetalApothecary.State.LAVA ? 15 : 0)
 				.sound(soundType)
-				.mapColor(mapColor))
+				.mapColor(mapColor)
 		);
 	}
 

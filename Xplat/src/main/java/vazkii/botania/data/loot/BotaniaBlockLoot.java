@@ -16,6 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -37,6 +38,11 @@ import vazkii.botania.common.helper.ColorHelper;
 import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,9 +57,43 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 			.collect(Collectors.toSet());
 
 	private final Set<Block> specialHandling = new HashSet<>();
+	// PORT-26.3: vanilla keeps its table map private, so the tables are collected here as well (see run)
+	private final Map<ResourceKey<LootTable>, LootTable.Builder> botaniaTables = new LinkedHashMap<>();
 
 	public BotaniaBlockLoot(LootTableSubProvider.Context output) {
 		super(EXPLOSION_RESISTANT, FeatureFlags.REGISTRY.allFlags(), output);
+	}
+
+	@Override
+	// public because Fabric's access widener opens the vanilla method
+	public void add(Block block, LootTable.Builder builder) {
+		botaniaTables.put(block.getLootTable().orElseThrow(() -> new IllegalStateException("Block " + block + " does not have loot table")), builder);
+	}
+
+	// PORT-26.3: vanilla's run() expects a table for every block in the registry (NeoForge adds a getKnownBlocks hook,
+	// Fabric does not), so this checks Botania's blocks only, the way the old Fabric wrapper did
+	@Override
+	public void run() {
+		generate();
+		Set<ResourceKey<LootTable>> seen = new HashSet<>();
+		for (Block block : BuiltInRegistries.BLOCK) {
+			if (!BotaniaAPI.MODID.equals(BuiltInRegistries.BLOCK.getKey(block).getNamespace())) {
+				continue;
+			}
+			block.getLootTable().ifPresent(lootTable -> {
+				if (seen.add(lootTable)) {
+					LootTable.Builder builder = botaniaTables.remove(lootTable);
+					if (builder == null) {
+						throw new IllegalStateException(String.format(Locale.ROOT, "Missing loottable '%s' for '%s'",
+								lootTable.identifier(), BuiltInRegistries.BLOCK.getKey(block)));
+					}
+					this.output.accept(lootTable, builder);
+				}
+			});
+		}
+		if (!botaniaTables.isEmpty()) {
+			throw new IllegalStateException("Created block loot tables for non-blocks: " + botaniaTables.keySet());
+		}
 	}
 
 	@Override
@@ -61,10 +101,10 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 		Map<Block, LootTable.Builder> specialCases = new HashMap<>();
 
 		// Empty
+		// PORT-26.3: fake air is a noLootTable() block, which has no table key at all now, so it is skipped below
 		Stream.of(
 				BotaniaBlocks.BIFROST_BRIDGE,
 				BotaniaBlocks.COCOON_OF_CAPRICE,
-				BotaniaBlocks.FAKE_AIR,
 				BotaniaBlocks.MANA_FLAME
 		).forEach(b -> specialCases.put(b, noDrop()));
 
@@ -109,7 +149,8 @@ public class BotaniaBlockLoot extends BlockLootSubProvider {
 
 		for (Block block : BuiltInRegistries.BLOCK) {
 			Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
-			if (!BotaniaAPI.MODID.equals(blockId.getNamespace()) || specialHandling.contains(block)) {
+			if (!BotaniaAPI.MODID.equals(blockId.getNamespace()) || specialHandling.contains(block)
+					|| block.getLootTable().isEmpty()) {
 				continue;
 			}
 			if (specialCases.containsKey(block)) {

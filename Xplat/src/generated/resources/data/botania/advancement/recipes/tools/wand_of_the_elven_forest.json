@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:wand_of_the_elven_forest"
+        "recipes": "botania:wand_of_the_elven_forest"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

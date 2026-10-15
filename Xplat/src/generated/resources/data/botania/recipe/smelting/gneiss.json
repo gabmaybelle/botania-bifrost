@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:cobbled_gneiss"
-  },
+  "ingredient": "botania:cobbled_gneiss",
   "result": {
     "id": "botania:gneiss"
   }

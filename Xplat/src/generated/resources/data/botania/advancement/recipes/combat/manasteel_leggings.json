@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manasteel_leggings"
+        "recipes": "botania:manasteel_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,19 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "0": {
-      "tag": "botania:dreamwood_logs"
-    },
-    "3": {
-      "item": "botania:framed_dreamwood"
-    },
-    "4": {
-      "item": "botania:pattern_framed_dreamwood"
-    },
-    "D": {
-      "tag": "c:dusts/pixie"
-    }
+    "0": "#botania:dreamwood_logs",
+    "3": "botania:framed_dreamwood",
+    "4": "botania:pattern_framed_dreamwood",
+    "D": "#c:dusts/pixie"
   },
   "pattern": [
     "343",

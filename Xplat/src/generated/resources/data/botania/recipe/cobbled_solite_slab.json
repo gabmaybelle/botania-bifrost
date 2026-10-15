@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_cobble_slab",
   "key": {
-    "Q": {
-      "item": "botania:cobbled_solite"
-    }
+    "Q": "botania:cobbled_solite"
   },
   "pattern": [
     "QQQ"

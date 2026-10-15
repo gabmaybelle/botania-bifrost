@@ -1,22 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:red_string"
-    },
-    {
-      "tag": "c:gems/dragonstone"
-    },
-    {
-      "tag": "c:dusts/glowstone"
-    },
-    {
-      "tag": "c:dusts/glowstone"
-    }
+    "botania:red_string",
+    "#c:gems/dragonstone",
+    "#c:dusts/glowstone",
+    "#c:dusts/glowstone"
   ],
   "result": {
-    "count": 1,
     "id": "botania:luminizer"
   }
 }

@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:lossy_deconstruction",
-  "input": {
-    "item": "minecraft:red_nether_bricks"
-  },
+  "input": "minecraft:red_nether_bricks",
   "mana": 82,
   "output": {
     "count": 2,

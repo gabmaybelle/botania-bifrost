@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:red_stringed_comparator"
+        "recipes": "botania:red_stringed_comparator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

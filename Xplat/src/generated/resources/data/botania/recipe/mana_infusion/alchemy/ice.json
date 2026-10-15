@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:snow_block"
-  },
+  "input": "minecraft:snow_block",
   "mana": 2250,
   "output": {
     "count": 1,

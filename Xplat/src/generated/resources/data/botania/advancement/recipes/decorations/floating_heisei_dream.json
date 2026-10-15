@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_heisei_dream"
+        "recipes": "botania:floating_heisei_dream"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

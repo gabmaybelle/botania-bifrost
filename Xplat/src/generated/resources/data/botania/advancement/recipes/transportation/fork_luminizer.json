@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:fork_luminizer"
+        "recipes": "botania:fork_luminizer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

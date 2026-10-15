@@ -10,17 +10,14 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 5.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 5,
+              "min": 1
             }
-          ],
+          },
           "name": "botania:manasteel_ingot",
           "weight": 25
         },
@@ -44,7 +41,7 @@
           "weight": 40
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

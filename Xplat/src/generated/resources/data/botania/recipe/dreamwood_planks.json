@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "tag": "botania:dreamwood_logs"
-    }
+    "#botania:dreamwood_logs"
   ],
   "result": {
     "count": 4,

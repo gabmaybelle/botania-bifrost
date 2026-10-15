@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:gems/dragonstone"
-    },
-    "G": {
-      "item": "botania:gaia_spirit"
-    },
-    "T": {
-      "item": "botania:dreamwood_twig"
-    }
+    "D": "#c:gems/dragonstone",
+    "G": "botania:gaia_spirit",
+    "T": "botania:dreamwood_twig"
   },
   "pattern": [
     "GDD",
@@ -18,7 +12,6 @@
     "T G"
   ],
   "result": {
-    "count": 1,
     "id": "botania:rod_of_the_unstable_reservior"
   }
 }

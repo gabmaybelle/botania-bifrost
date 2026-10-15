@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "botania:dreamwood_logs"
-    },
-    "E": {
-      "tag": "c:ingots/elementium"
-    },
-    "G": {
-      "item": "botania:gaia_spirit"
-    }
+    "D": "#botania:dreamwood_logs",
+    "E": "#c:ingots/elementium",
+    "G": "botania:gaia_spirit"
   },
   "pattern": [
     " EG",
@@ -18,7 +12,6 @@
     "GED"
   ],
   "result": {
-    "count": 1,
     "id": "botania:worldshapers_astrolabe"
   }
 }

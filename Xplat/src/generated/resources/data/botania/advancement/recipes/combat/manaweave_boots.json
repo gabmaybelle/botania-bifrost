@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manaweave_boots"
+        "recipes": "botania:manaweave_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

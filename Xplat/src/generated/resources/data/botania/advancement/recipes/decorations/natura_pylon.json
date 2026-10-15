@@ -33,7 +33,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:natura_pylon"
+        "recipes": "botania:natura_pylon"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_fluxfield"
+        "recipes": "botania:mana_fluxfield"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

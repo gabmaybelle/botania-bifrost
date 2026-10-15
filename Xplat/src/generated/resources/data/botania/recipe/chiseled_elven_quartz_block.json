@@ -3,16 +3,13 @@
   "category": "building",
   "group": "botania:quartz_chiseled",
   "key": {
-    "Q": {
-      "item": "botania:elven_quartz_slab"
-    }
+    "Q": "botania:elven_quartz_slab"
   },
   "pattern": [
     "Q",
     "Q"
   ],
   "result": {
-    "count": 1,
     "id": "botania:chiseled_elven_quartz_block"
   }
 }

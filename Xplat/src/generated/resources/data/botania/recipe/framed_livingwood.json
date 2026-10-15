@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "W": {
-      "item": "botania:livingwood_planks"
-    }
+    "W": "botania:livingwood_planks"
   },
   "pattern": [
     "W W",

@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:cobbled_cataclasite"
-  },
+  "ingredient": "botania:cobbled_cataclasite",
   "result": {
     "count": 2,
     "id": "botania:cobbled_cataclasite_slab"

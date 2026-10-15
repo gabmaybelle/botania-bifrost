@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:lossy_deconstruction",
-  "input": {
-    "item": "botania:mana_quartz_block"
-  },
+  "input": "botania:mana_quartz_block",
   "mana": 100,
   "output": {
     "count": 3,

@@ -2,15 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "botania:corporea_block"
-    }
+    "#": "botania:corporea_block"
   },
   "pattern": [
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "botania:corporea_pressure_plate"
   }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_daffomill"
+        "recipes": "botania:floating_daffomill"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

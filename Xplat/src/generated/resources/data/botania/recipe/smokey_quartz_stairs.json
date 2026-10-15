@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:quartz_stairs",
   "key": {
-    "Q": {
-      "item": "botania:smokey_quartz_block"
-    }
+    "Q": "botania:smokey_quartz_block"
   },
   "pattern": [
     "Q  ",

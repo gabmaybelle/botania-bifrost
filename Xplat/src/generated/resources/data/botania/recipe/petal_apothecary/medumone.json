@@ -1,30 +1,16 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "tag": "botania:petals/gray"
-    },
-    {
-      "tag": "botania:petals/gray"
-    },
-    {
-      "item": "botania:rune_of_earth"
-    },
-    {
-      "item": "botania:redstone_root"
-    }
+    "#botania:petals/brown",
+    "#botania:petals/brown",
+    "#botania:petals/gray",
+    "#botania:petals/gray",
+    "botania:rune_of_earth",
+    "botania:redstone_root"
   ],
   "output": {
     "count": 1,
     "id": "botania:medumone"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

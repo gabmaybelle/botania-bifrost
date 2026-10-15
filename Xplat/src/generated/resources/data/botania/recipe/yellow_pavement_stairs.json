@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:pavement_stairs",
   "key": {
-    "Q": {
-      "item": "botania:yellow_pavement"
-    }
+    "Q": "botania:yellow_pavement"
   },
   "pattern": [
     "Q  ",

@@ -2,15 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "botania:dreamwood_planks"
-    }
+    "#": "botania:dreamwood_planks"
   },
   "pattern": [
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "botania:dreamwood_pressure_plate"
   }
 }

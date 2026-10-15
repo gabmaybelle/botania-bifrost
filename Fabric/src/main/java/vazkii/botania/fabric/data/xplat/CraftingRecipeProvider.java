@@ -167,7 +167,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.pattern("BBB")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaBlocks.BIFROST))
 				.unlockedBy("has_rod", conditionsFromItem(BotaniaItems.ROD_OF_THE_BIFROST))
-				.save(recipeOutput, botaniaRL(getItemName(BotaniaBlocks.FABULOUS_MANA_POOL) + "_upgrade").toString());
+				.save(recipeOutput, recipeKey(botaniaRL(getItemName(BotaniaBlocks.FABULOUS_MANA_POOL) + "_upgrade").toString()));
 		dyedPools(recipeOutput, BotaniaBlocks.CREATIVE_MANA_POOL, "creative_pool_dyeing", BotaniaTags.Items.DYED_CREATIVE_MANA_POOLS);
 		shaped(RecipeCategory.DECORATIONS, BotaniaBlocks.RUNIC_ALTAR)
 				.define('P', BotaniaTags.Items.MANA_GEMS)
@@ -811,7 +811,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.requires(BotaniaTags.Items.MANA_POOL_DYE_REMOVER)
 				.group(groupName)
 				.unlockedBy("has_dyed", conditionsFromTag(dyedPoolsTag))
-				.save(recipeOutput, BuiltInRegistries.BLOCK.getKey(basePool).withSuffix("_undyed").toString());
+				.save(recipeOutput, recipeKey(BuiltInRegistries.BLOCK.getKey(basePool).withSuffix("_undyed").toString()));
 		ColorHelper.supportedColors().forEach(color -> {
 			ManaPoolBlock dyedBlock = BotaniaBlocks.findOptionallyDyedBlock(basePool, color);
 			shapeless(RecipeCategory.DECORATIONS, dyedBlock)
@@ -830,7 +830,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.unlockedBy("has_item", conditionsFromItem(Items.BOWL))
 				.unlockedBy("has_orig_recipe", RecipeUnlockedTrigger.unlocked(recipeOutput.lookup(Registries.RECIPE)
 						.getOrThrow(ResourceKey.create(Registries.RECIPE, Identifier.withDefaultNamespace("mushroom_stew")))))
-				.save(recipeOutput, "botania:mushroom_stew");
+				.save(recipeOutput, recipeKey("botania:mushroom_stew"));
 
 		WrapperRecipeBuilder.wrap(LexiconReturningShapelessRecipe.SERIALIZER,
 				shapeless(RecipeCategory.MISC, BotaniaItems.BANNER_PATTERN_BOTANIA)
@@ -884,7 +884,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.pattern(" M ")
 				.pattern("S S")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.MANA_INFUSED_STRING))
-				.save(recipeOutput, botaniaRL("cobweb").toString());
+				.save(recipeOutput, recipeKey(botaniaRL("cobweb").toString()));
 
 		petalApothecary(Items.COBBLESTONE, BotaniaBlocks.PETAL_APOTHECARY)
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.PETALS))
@@ -959,18 +959,18 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 					.group("botania:petal")
 					.unlockedBy("has_item", conditionsFromItem(tallMysticalFlower))
 					.unlockedBy("has_alt_item", conditionsFromItem(petal))
-					.save(recipeOutput, "botania:" + getConversionRecipeName(petal, tallMysticalFlower));
+					.save(recipeOutput, recipeKey("botania:" + getConversionRecipeName(petal, tallMysticalFlower)));
 			shapeless(RecipeCategory.MISC, petal, 2)
 					.requires(mysticalFlower)
 					.group("botania:petal")
 					.unlockedBy("has_item", conditionsFromItem(mysticalFlower))
 					.unlockedBy("has_alt_item", conditionsFromItem(petal))
-					.save(recipeOutput, "botania:" + getConversionRecipeName(petal, mysticalFlower));
+					.save(recipeOutput, recipeKey("botania:" + getConversionRecipeName(petal, mysticalFlower)));
 			shapeless(RecipeCategory.MISC, Items.DYE.pick(color))
 					.requires(tag(BotaniaTags.Items.getPetalTag(color)))
 					.group("botania:dye")
 					.unlockedBy("has_item", conditionsFromItem(petal))
-					.save(recipeOutput, "botania:dye_" + color.getName());
+					.save(recipeOutput, recipeKey("botania:dye_" + color.getName()));
 		});
 	}
 
@@ -1823,7 +1823,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.requires(Items.PUMPKIN)
 				.group("botania:red_string")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.PURE_ENDER_ESSENCE))
-				.save(recipeOutput, "botania:red_string_alt");
+				.save(recipeOutput, recipeKey("botania:red_string_alt"));
 		registerRedStringBlock(recipeOutput, BotaniaBlocks.RED_STRINGED_CONTAINER, tag(ConventionalItemTags.WOODEN_CHESTS));
 		registerRedStringBlock(recipeOutput, BotaniaBlocks.RED_STRINGED_DISPENSER, Ingredient.of(Items.DISPENSER));
 		registerRedStringBlock(recipeOutput, BotaniaBlocks.RED_STRINGED_NUTRIFIER, Ingredient.of(BotaniaItems.FLORAL_FERTILIZER));
@@ -1927,7 +1927,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.pattern("SGS")
 				.pattern(" S ")
 				.unlockedBy("has_item", conditionsFromTag(ConventionalBotaniaTags.Items.MANASTEEL_INGOTS))
-				.save(recipeOutput, "botania:mana_lens_pane");
+				.save(recipeOutput, recipeKey("botania:mana_lens_pane"));
 		shapeless(RecipeCategory.MISC, BotaniaItems.VELOCITY_LENS)
 				.requires(BotaniaItems.MANA_LENS)
 				.requires(BotaniaItems.RUNE_OF_AIR)
@@ -2043,7 +2043,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.pattern("GLG")
 				.pattern("FGF")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.MANA_LENS))
-				.save(recipeOutput, "botania:flash_lens_alt");
+				.save(recipeOutput, recipeKey("botania:flash_lens_alt"));
 		shaped(RecipeCategory.MISC, BotaniaItems.MESSENGER_LENS)
 				.define('P', Items.PAPER)
 				.define('L', BotaniaItems.MANA_LENS)
@@ -2156,7 +2156,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.requires(BotaniaBlocks.LIVINGROCK_BRICKS)
 				.requires(Items.VINE)
 				.unlockedBy("has_item", conditionsFromItem(BotaniaBlocks.LIVINGROCK_BRICKS))
-				.save(recipeOutput, "botania:mossy_livingrock_bricks_vine");
+				.save(recipeOutput, recipeKey("botania:mossy_livingrock_bricks_vine"));
 		shapeless(RecipeCategory.BUILDING_BLOCKS, BotaniaBlocks.SHIMMERROCK)
 				.requires(BotaniaBlocks.LIVINGROCK)
 				.requires(BotaniaBlocks.BIFROST)
@@ -2236,7 +2236,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.requires(Items.DYE.pick(DyeColor.BLUE))
 				.requires(BotaniaTags.Items.BLOCKS_QUARTZ)
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.BLOCKS_QUARTZ))
-				.save(recipeOutput, "botania:azulejo");
+				.save(recipeOutput, recipeKey("botania:azulejo"));
 
 		List<Item> allAzulejos = IntStream.range(0, 16).mapToObj(i -> "azulejo_" + i)
 				.map(BotaniaAPI::botaniaRL)
@@ -2249,7 +2249,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 					.requires(allAzulejos.get(i))
 					.unlockedBy("has_azulejo", conditionsFromItem(BotaniaBlocks.AZULEJO_0))
 					.group("botania:azulejo_cycling")
-					.save(recipeOutput, botaniaRL(recipeName).toString());
+					.save(recipeOutput, recipeKey(botaniaRL(recipeName).toString()));
 		}
 
 		shaped(RecipeCategory.TOOLS, BotaniaItems.TRINKET_CASE)
@@ -2574,14 +2574,14 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.define('#', glimmeringLog)
 				.pattern("##")
 				.pattern("##")
-				.save(recipeOutput, botaniaRL("glimmering_" + variant + "_from_log").toString());
+				.save(recipeOutput, recipeKey(botaniaRL("glimmering_" + variant + "_from_log").toString()));
 		shaped(RecipeCategory.BUILDING_BLOCKS, glimmeringStrippedWood, 3)
 				.group("botania:glimmering_" + variant)
 				.unlockedBy("has_log", conditionsFromItem(glimmeringStrippedLog))
 				.define('#', glimmeringStrippedLog)
 				.pattern("##")
 				.pattern("##")
-				.save(recipeOutput, botaniaRL("glimmering_stripped_" + variant + "_from_log").toString());
+				.save(recipeOutput, recipeKey(botaniaRL("glimmering_stripped_" + variant + "_from_log").toString()));
 
 		stairs(stairs, wood).save(recipeOutput);
 		slabShape(slab, wood).save(recipeOutput);
@@ -2606,7 +2606,7 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 				.requires(planks)
 				.requires(Items.VINE)
 				.unlockedBy("has_item", conditionsFromItem(planks))
-				.save(recipeOutput, botaniaRL("mossy_" + variant + "_planks_vine").toString());
+				.save(recipeOutput, recipeKey(botaniaRL("mossy_" + variant + "_planks_vine").toString()));
 		shaped(RecipeCategory.BUILDING_BLOCKS, framed, 4)
 				.define('W', planks)
 				.pattern("W W")

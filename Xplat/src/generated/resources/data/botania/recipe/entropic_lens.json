@@ -1,16 +1,10 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "item": "botania:rune_of_envy"
-    }
+    "botania:mana_lens",
+    "botania:rune_of_envy"
   ],
   "result": {
-    "count": 1,
     "id": "botania:entropic_lens"
   }
 }

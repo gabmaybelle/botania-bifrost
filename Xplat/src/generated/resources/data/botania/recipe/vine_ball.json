@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "V": {
-      "item": "minecraft:vine"
-    }
+    "V": "minecraft:vine"
   },
   "pattern": [
     "VVV",
@@ -12,7 +10,6 @@
     "VVV"
   ],
   "result": {
-    "count": 1,
     "id": "botania:vine_ball"
   }
 }

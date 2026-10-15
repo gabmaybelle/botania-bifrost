@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:bifrost"
+        "recipes": "botania:bifrost"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

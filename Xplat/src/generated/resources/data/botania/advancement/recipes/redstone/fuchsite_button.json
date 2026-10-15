@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:fuchsite_button"
+        "recipes": "botania:fuchsite_button"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

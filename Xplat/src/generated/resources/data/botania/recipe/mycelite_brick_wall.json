@@ -1,11 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "botania:metamorphic_brick_wall",
   "key": {
-    "B": {
-      "item": "botania:mycelite_bricks"
-    }
+    "B": "botania:mycelite_bricks"
   },
   "pattern": [
     "BBB",

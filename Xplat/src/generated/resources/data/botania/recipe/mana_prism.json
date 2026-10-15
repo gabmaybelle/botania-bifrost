@@ -1,16 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:glass_blocks/colorless"
-    },
-    "P": {
-      "tag": "c:gems/prismarine"
-    },
-    "S": {
-      "item": "botania:spectral_platform"
-    }
+    "G": "#c:glass_blocks/colorless",
+    "P": "#c:gems/prismarine",
+    "S": "botania:spectral_platform"
   },
   "pattern": [
     "GPG",
@@ -18,7 +11,6 @@
     "GPG"
   ],
   "result": {
-    "count": 1,
     "id": "botania:mana_prism"
   }
 }

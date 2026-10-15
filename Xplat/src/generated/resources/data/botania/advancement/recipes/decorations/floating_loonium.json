@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_loonium"
+        "recipes": "botania:floating_loonium"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

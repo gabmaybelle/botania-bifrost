@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_interceptor"
+        "recipes": "botania:corporea_interceptor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

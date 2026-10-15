@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:thundercaller"
+        "recipes": "botania:thundercaller"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gray_fabulous_mana_pool"
+        "recipes": "botania:gray_fabulous_mana_pool"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

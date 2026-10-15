@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_tablet"
+        "recipes": "botania:mana_tablet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

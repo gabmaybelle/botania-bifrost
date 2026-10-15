@@ -1,30 +1,16 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/magenta"
-    },
-    {
-      "tag": "botania:petals/magenta"
-    },
-    {
-      "tag": "botania:petals/purple"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "item": "botania:rune_of_wrath"
-    },
-    {
-      "tag": "c:dusts/pixie"
-    }
+    "#botania:petals/magenta",
+    "#botania:petals/magenta",
+    "#botania:petals/purple",
+    "#botania:petals/pink",
+    "botania:rune_of_wrath",
+    "#c:dusts/pixie"
   ],
   "output": {
     "count": 1,
     "id": "botania:heisei_dream"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:kindle_lens"
+        "recipes": "botania:kindle_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

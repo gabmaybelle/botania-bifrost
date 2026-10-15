@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "item": "minecraft:glowstone"
-    },
-    "S": {
-      "item": "botania:livingwood_twig"
-    },
-    "T": {
-      "tag": "c:ingots/terrasteel"
-    }
+    "G": "minecraft:glowstone",
+    "S": "botania:livingwood_twig",
+    "T": "#c:ingots/terrasteel"
   },
   "pattern": [
     "TTG",
@@ -18,7 +12,6 @@
     " S "
   ],
   "result": {
-    "count": 1,
     "id": "botania:terra_truncator"
   }
 }

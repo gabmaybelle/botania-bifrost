@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rod_of_the_terra_firma"
+        "recipes": "botania:rod_of_the_terra_firma"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

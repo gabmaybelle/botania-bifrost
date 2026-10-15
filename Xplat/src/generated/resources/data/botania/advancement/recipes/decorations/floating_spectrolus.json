@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_spectrolus"
+        "recipes": "botania:floating_spectrolus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

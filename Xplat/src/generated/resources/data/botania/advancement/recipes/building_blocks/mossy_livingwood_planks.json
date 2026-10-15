@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mossy_livingwood_planks"
+        "recipes": "botania:mossy_livingwood_planks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

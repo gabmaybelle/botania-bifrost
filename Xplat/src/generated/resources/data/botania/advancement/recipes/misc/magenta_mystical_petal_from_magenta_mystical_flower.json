@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:magenta_mystical_petal_from_magenta_mystical_flower"
+        "recipes": "botania:magenta_mystical_petal_from_magenta_mystical_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

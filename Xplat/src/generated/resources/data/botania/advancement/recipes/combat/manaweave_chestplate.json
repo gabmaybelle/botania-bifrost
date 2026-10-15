@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manaweave_chestplate"
+        "recipes": "botania:manaweave_chestplate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

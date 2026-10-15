@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rosy_talc_brick_stairs"
+        "recipes": "botania:rosy_talc_brick_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

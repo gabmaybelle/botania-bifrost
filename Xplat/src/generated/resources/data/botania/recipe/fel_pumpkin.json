@@ -1,22 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:bone"
-    },
-    "F": {
-      "item": "minecraft:rotten_flesh"
-    },
-    "G": {
-      "item": "minecraft:gunpowder"
-    },
-    "P": {
-      "item": "minecraft:pumpkin"
-    },
-    "S": {
-      "item": "minecraft:string"
-    }
+    "B": "minecraft:bone",
+    "F": "minecraft:rotten_flesh",
+    "G": "minecraft:gunpowder",
+    "P": "minecraft:pumpkin",
+    "S": "minecraft:string"
   },
   "pattern": [
     " S ",
@@ -24,7 +13,6 @@
     " G "
   ],
   "result": {
-    "count": 1,
     "id": "botania:fel_pumpkin"
   }
 }

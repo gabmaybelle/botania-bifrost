@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:fungus_cycle",
-  "input": {
-    "item": "minecraft:warped_fungus"
-  },
+  "input": "minecraft:warped_fungus",
   "mana": 120,
   "output": {
     "count": 1,

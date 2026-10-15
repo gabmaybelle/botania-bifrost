@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:life_imbuer"
+        "recipes": "botania:life_imbuer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

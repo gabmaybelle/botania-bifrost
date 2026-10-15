@@ -1,8 +1,5 @@
 {
   "type": "botania:crafting_special_tiara_wings",
-  "category": "equipment",
-  "material": {
-    "item": "botania:blaze_quartz"
-  },
+  "material": "botania:blaze_quartz",
   "variant": 4
 }

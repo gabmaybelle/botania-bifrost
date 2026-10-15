@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "item": "minecraft:firework_rocket"
-    },
-    {
-      "tag": "c:ingots/elementium"
-    }
+    "botania:mana_lens",
+    "minecraft:firework_rocket",
+    "#c:ingots/elementium"
   ],
   "result": {
-    "count": 1,
     "id": "botania:celebratory_lens"
   }
 }

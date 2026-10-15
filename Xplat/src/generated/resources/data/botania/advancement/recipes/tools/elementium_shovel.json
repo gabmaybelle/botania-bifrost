@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elementium_shovel"
+        "recipes": "botania:elementium_shovel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

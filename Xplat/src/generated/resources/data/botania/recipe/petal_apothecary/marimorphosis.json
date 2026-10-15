@@ -1,33 +1,17 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/gray"
-    },
-    {
-      "tag": "botania:petals/yellow"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "item": "botania:rune_of_earth"
-    },
-    {
-      "item": "botania:rune_of_fire"
-    },
-    {
-      "item": "botania:redstone_root"
-    }
+    "#botania:petals/gray",
+    "#botania:petals/yellow",
+    "#botania:petals/green",
+    "#botania:petals/red",
+    "botania:rune_of_earth",
+    "botania:rune_of_fire",
+    "botania:redstone_root"
   ],
   "output": {
     "count": 1,
     "id": "botania:marimorphosis"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

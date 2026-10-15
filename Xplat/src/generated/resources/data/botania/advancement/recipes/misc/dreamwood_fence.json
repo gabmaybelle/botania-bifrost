@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:dreamwood_fence"
+        "recipes": "botania:dreamwood_fence"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

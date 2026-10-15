@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:lossless_deconstruction",
-  "input": {
-    "item": "minecraft:clay"
-  },
+  "input": "minecraft:clay",
   "mana": 24,
   "output": {
     "count": 4,

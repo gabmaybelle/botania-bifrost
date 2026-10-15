@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:writable_book"
-  },
+  "input": "minecraft:writable_book",
   "mana": 6000,
   "output": {
     "count": 1,

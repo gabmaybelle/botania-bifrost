@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:abstruse_platform"
+        "recipes": "botania:abstruse_platform"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

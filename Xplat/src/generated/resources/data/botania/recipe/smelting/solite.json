@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:cobbled_solite"
-  },
+  "ingredient": "botania:cobbled_solite",
   "result": {
     "id": "botania:solite"
   }

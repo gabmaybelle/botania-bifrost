@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:orange_mana_pool"
+        "recipes": "botania:orange_mana_pool"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

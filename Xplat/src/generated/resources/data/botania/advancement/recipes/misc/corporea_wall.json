@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_wall"
+        "recipes": "botania:corporea_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

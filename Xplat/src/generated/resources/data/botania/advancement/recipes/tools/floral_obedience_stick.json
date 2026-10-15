@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floral_obedience_stick"
+        "recipes": "botania:floral_obedience_stick"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

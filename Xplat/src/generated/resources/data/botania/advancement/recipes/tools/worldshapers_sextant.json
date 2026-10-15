@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:worldshapers_sextant"
+        "recipes": "botania:worldshapers_sextant"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

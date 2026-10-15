@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manaweave_cloth"
+        "recipes": "botania:manaweave_cloth"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

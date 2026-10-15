@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:invisibility_cloak"
+        "recipes": "botania:invisibility_cloak"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

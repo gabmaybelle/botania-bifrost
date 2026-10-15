@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:alfglass_pane"
+        "recipes": "botania:alfglass_pane"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

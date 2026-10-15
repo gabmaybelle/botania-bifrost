@@ -195,6 +195,19 @@ public final class RecipeUtils {
 		return ingredient.items().map(ItemStack::new).toArray(ItemStack[]::new);
 	}
 
+	/**
+	 * PORT-26.3: a tag ingredient can't be expanded before its tag is bound (datagen, early world load); the holder
+	 * set behind the ingredient is private, so this asks the only way it can.
+	 */
+	public static boolean canExpand(Ingredient ingredient) {
+		try {
+			ingredient.items();
+			return true;
+		} catch (UnsupportedOperationException e) {
+			return false;
+		}
+	}
+
 	private record DummyRecipe<T extends RecipeInput>(NonNullList<Ingredient> ingredients) implements BotaniaRecipe<T> {
 
 		public NonNullList<Ingredient> getIngredients() {

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:redirective_lens"
+        "recipes": "botania:redirective_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

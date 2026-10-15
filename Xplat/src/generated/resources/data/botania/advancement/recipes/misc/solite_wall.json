@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:solite_wall"
+        "recipes": "botania:solite_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

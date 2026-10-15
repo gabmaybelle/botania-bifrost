@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "tag": "botania:shimmering_mushrooms"
-    },
-    {
-      "tag": "botania:shimmering_mushrooms"
-    },
-    {
-      "item": "minecraft:bowl"
-    }
+    "#botania:shimmering_mushrooms",
+    "#botania:shimmering_mushrooms",
+    "minecraft:bowl"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:mushroom_stew"
   }
 }

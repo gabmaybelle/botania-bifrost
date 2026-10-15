@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manaweave_helmet"
+        "recipes": "botania:manaweave_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cellular_block"
+        "recipes": "botania:cellular_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

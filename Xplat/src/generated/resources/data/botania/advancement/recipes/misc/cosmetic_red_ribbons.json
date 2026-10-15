@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_red_ribbons"
+        "recipes": "botania:cosmetic_red_ribbons"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

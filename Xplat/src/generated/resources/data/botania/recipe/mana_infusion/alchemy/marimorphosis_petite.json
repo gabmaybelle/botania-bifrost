@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_shrinking",
-  "input": {
-    "item": "botania:marimorphosis"
-  },
+  "input": "botania:marimorphosis",
   "mana": 2500,
   "output": {
     "count": 1,

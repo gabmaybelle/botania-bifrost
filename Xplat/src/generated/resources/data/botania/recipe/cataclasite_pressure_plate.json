@@ -3,15 +3,12 @@
   "category": "redstone",
   "group": "botania:metamorphic_stone_pressure_plate",
   "key": {
-    "#": {
-      "item": "botania:cataclasite"
-    }
+    "#": "botania:cataclasite"
   },
   "pattern": [
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cataclasite_pressure_plate"
   }
 }

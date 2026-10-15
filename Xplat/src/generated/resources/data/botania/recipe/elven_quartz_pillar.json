@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:quartz_pillar",
   "key": {
-    "Q": {
-      "item": "botania:elven_quartz_block"
-    }
+    "Q": "botania:elven_quartz_block"
   },
   "pattern": [
     "Q",

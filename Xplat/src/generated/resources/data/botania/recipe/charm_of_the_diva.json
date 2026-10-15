@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "H": {
-      "item": "botania:rune_of_pride"
-    },
-    "L": {
-      "item": "botania:gaia_spirit"
-    },
-    "P": {
-      "item": "botania:tiny_planet"
-    }
+    "G": "#c:ingots/gold",
+    "H": "botania:rune_of_pride",
+    "L": "botania:gaia_spirit",
+    "P": "botania:tiny_planet"
   },
   "pattern": [
     "LGP",
@@ -21,7 +13,6 @@
     " GL"
   ],
   "result": {
-    "count": 1,
     "id": "botania:charm_of_the_diva"
   }
 }

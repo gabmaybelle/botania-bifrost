@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spark_augment_dispersive"
+        "recipes": "botania:spark_augment_dispersive"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

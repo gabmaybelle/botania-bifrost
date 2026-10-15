@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:sapling_cycle",
-  "input": {
-    "item": "minecraft:mangrove_propagule"
-  },
+  "input": "minecraft:mangrove_propagule",
   "mana": 12000,
   "output": {
     "count": 1,

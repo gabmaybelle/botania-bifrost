@@ -1,0 +1,33 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:condition",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "botania:item/horn_of_the_canopy"
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "botania:item/horn_of_the_canopy_tooting"
+      },
+      "property": "botania:test",
+      "test": "tooting"
+    },
+    "on_true": {
+      "type": "minecraft:condition",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "botania:item/vuvuzela"
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "botania:item/vuvuzela_tooting"
+      },
+      "property": "botania:test",
+      "test": "tooting"
+    },
+    "property": "botania:test",
+    "test": "vuvuzela"
+  }
+}

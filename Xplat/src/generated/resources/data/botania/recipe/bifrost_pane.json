@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:bifrost"
-    }
+    "B": "botania:bifrost"
   },
   "pattern": [
     "BBB",

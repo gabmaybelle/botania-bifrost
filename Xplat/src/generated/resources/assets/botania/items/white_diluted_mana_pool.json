@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/white_diluted_mana_pool",
+    "tints": [
+      {
+        "type": "botania:mana_pool"
+      }
+    ]
+  }
+}

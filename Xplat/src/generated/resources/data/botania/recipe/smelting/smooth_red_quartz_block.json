@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:red_quartz_block"
-  },
+  "ingredient": "botania:red_quartz_block",
   "result": {
     "id": "botania:smooth_red_quartz_block"
   }

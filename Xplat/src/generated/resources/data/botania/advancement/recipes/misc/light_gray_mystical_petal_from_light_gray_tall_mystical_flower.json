@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:light_gray_mystical_petal_from_light_gray_tall_mystical_flower"
+        "recipes": "botania:light_gray_mystical_petal_from_light_gray_tall_mystical_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

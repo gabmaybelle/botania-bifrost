@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:nimbus_amulet"
+        "recipes": "botania:nimbus_amulet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_pure_daisy"
+        "recipes": "botania:floating_pure_daisy"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

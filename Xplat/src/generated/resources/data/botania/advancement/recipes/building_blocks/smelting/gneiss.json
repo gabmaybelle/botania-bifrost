@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/gneiss"
+        "recipes": "botania:smelting/gneiss"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

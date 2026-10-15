@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_tiny_potato_mask"
+        "recipes": "botania:cosmetic_tiny_potato_mask"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

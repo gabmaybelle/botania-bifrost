@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_shrinking",
-  "input": {
-    "item": "botania:clayconia"
-  },
+  "input": "botania:clayconia",
   "mana": 2500,
   "output": {
     "count": 1,

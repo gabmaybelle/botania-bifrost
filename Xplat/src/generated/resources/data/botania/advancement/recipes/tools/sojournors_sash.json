@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:sojournors_sash"
+        "recipes": "botania:sojournors_sash"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

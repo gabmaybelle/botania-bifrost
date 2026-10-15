@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lavender_quartz_block"
+        "recipes": "botania:lavender_quartz_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

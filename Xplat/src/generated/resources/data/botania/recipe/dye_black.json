@@ -1,14 +1,10 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "group": "botania:dye",
   "ingredients": [
-    {
-      "tag": "botania:petals/black"
-    }
+    "#botania:petals/black"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:black_dye"
   }
 }

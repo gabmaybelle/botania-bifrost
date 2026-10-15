@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_pump"
+        "recipes": "botania:mana_pump"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -31,14 +31,13 @@ import vazkii.botania.data.BlockTagProvider;
 import vazkii.botania.data.BlockstateProvider;
 import vazkii.botania.data.DamageTypeTagProvider;
 import vazkii.botania.data.DataComponentTypeTagProvider;
-import vazkii.botania.data.EntityTagProvider;
 import vazkii.botania.data.FloatingFlowerModelProvider;
 import vazkii.botania.data.GaiaFightConfigurationProvider;
 import vazkii.botania.data.ItemModelProvider;
-import vazkii.botania.data.ItemTagProvider;
 import vazkii.botania.data.LooniumStructureConfigurationProvider;
 import vazkii.botania.data.PottedPlantModelProvider;
 import vazkii.botania.data.loot.BotaniaLootTableProvider;
+import vazkii.botania.data.util.DatagenItemComponents;
 import vazkii.botania.fabric.data.fabric.FabricBlockTagProvider;
 import vazkii.botania.fabric.data.fabric.FabricItemTagProvider;
 import vazkii.botania.fabric.data.xplat.BrewProvider;
@@ -68,6 +67,8 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 		BotaniaItemProperties.registerTests(ConditionalItemModelProperties.ID_MAPPER::put);
 		BotaniaItemProperties.registerRanges(RangeSelectItemModelProperties.ID_MAPPER::put);
 		ColorHandler.submitItemTintSources(ItemTintSources.ID_MAPPER::put);
+		// PORT-26.3: bind the item components (a server job normally), the recipe providers build item stacks
+		DatagenItemComponents.bind();
 		if (System.getProperty("botania.xplat_datagen") != null) {
 			configureXplatDatagen(generator.createPack());
 		} else {
@@ -87,14 +88,12 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 		}
 		pack.addProvider(LooniumStructureConfigurationProvider::new);
 		pack.addProvider(GaiaFightConfigurationProvider::new);
-		BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
-		pack.addProvider((output, registriesFuture) -> new ItemTagProvider(
-				output, registriesFuture, blockTagProvider.contentsGetter()));
-		var conventionalBlockTagProvider = pack.addProvider(ConventionalBlockTagProvider::new);
+		// PORT-26.3: vanilla names tag providers by registry (final name), so the conventional tag providers extend
+		// Botania's own and write both sets; one provider per registry
+		BlockTagProvider blockTagProvider = pack.addProvider(ConventionalBlockTagProvider::new);
 		pack.addProvider((output, registriesFuture) -> new ConventionalItemTagProvider(
-				output, registriesFuture, conventionalBlockTagProvider.contentsGetter()));
+				output, registriesFuture, blockTagProvider.contentsGetter()));
 		pack.addProvider(ConventionalFluidTagProvider::new);
-		pack.addProvider(EntityTagProvider::new);
 		pack.addProvider(ConventionalEntityTypeTagProvider::new);
 		pack.addProvider(BannerPatternProvider::new);
 		pack.addProvider(BannerPatternTagsProvider::new);

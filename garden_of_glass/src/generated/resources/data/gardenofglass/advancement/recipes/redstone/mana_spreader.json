@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:mana_spreader"
+        "recipes": "gardenofglass:mana_spreader"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

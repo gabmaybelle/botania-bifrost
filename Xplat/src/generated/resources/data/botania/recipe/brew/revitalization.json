@@ -2,14 +2,8 @@
   "type": "botania:brew",
   "brew": "botania:revitalization",
   "ingredients": [
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:glowstone_dust"
-    }
+    "minecraft:nether_wart",
+    "minecraft:ghast_tear",
+    "minecraft:glowstone_dust"
   ]
 }

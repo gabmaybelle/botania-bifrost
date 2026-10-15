@@ -1,17 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "W": {
-      "tag": "botania:livingwood_logs"
-    }
+    "W": "#botania:livingwood_logs"
   },
   "pattern": [
     " W",
     "W "
   ],
   "result": {
-    "count": 1,
     "id": "botania:livingwood_twig"
   }
 }

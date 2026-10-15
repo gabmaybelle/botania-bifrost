@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_eerie_mask"
+        "recipes": "botania:cosmetic_eerie_mask"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

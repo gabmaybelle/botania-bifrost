@@ -3,16 +3,14 @@
   "criteria": {
     "guardian": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "botania:gaia_guardian",
-              "nbt": "{hardMode:1b}"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "botania:gaia_guardian",
+            "minecraft:nbt": "{hardMode:1b}"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     }
@@ -23,7 +21,6 @@
     },
     "frame": "challenge",
     "icon": {
-      "count": 1,
       "id": "botania:gaia_spirit"
     },
     "title": {

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:white_mystical_petal_from_white_tall_mystical_flower"
+        "recipes": "botania:white_mystical_petal_from_white_tall_mystical_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

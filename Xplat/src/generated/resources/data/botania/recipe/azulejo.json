@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "minecraft:blue_dye"
-    },
-    {
-      "tag": "botania:quartz_blocks"
-    }
+    "minecraft:blue_dye",
+    "#botania:quartz_blocks"
   ],
   "result": {
-    "count": 1,
     "id": "botania:azulejo_0"
   }
 }

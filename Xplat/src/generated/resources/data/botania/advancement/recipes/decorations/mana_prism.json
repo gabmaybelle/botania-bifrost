@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_prism"
+        "recipes": "botania:mana_prism"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

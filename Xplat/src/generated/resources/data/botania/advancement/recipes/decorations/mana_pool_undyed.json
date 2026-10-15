@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_pool_undyed"
+        "recipes": "botania:mana_pool_undyed"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/potency_lens",
+    "tints": [
+      {
+        "type": "botania:lens"
+      }
+    ]
+  }
+}

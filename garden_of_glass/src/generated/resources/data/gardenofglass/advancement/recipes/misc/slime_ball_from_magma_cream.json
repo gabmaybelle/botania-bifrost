@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:slime_ball_from_magma_cream"
+        "recipes": "gardenofglass:slime_ball_from_magma_cream"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

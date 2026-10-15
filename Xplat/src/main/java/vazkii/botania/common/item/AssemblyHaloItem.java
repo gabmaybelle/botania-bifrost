@@ -8,6 +8,7 @@
  */
 package vazkii.botania.common.item;
 
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -79,11 +80,13 @@ import vazkii.botania.xplat.XplatAbstractions;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class AssemblyHaloItem extends Item {
 
 	private static final Identifier glowTexture = Identifier.parse(ResourcesLib.MISC_GLOW_GREEN);
-	private static final ItemStack craftingTable = new ItemStack(Blocks.CRAFTING_TABLE);
+	// PORT-26.3: item stacks can't be made before the item registry is frozen (components bind then), so this is lazy
+	private static final Supplier<ItemStack> craftingTable = Suppliers.memoize(() -> new ItemStack(Blocks.CRAFTING_TABLE));
 
 	public static final int SEGMENTS = 12;
 
@@ -286,7 +289,7 @@ public class AssemblyHaloItem extends Item {
 
 	private static ItemStack getDisplayItem(Level world, ItemStack stack, int segment) {
 		if (segment == 0) {
-			return craftingTable;
+			return craftingTable.get();
 		} else if (segment >= SEGMENTS) {
 			return ItemStack.EMPTY;
 		} else {
@@ -459,14 +462,14 @@ public class AssemblyHaloItem extends Item {
 			int slot = getSegmentLookedAt(stack, player);
 
 			if (slot == 0) {
-				String name = craftingTable.getHoverName().getString();
+				String name = craftingTable.get().getHoverName().getString();
 				int l = font.width(name);
 				int x = window.getGuiScaledWidth() / 2 - l / 2;
 				int y = window.getGuiScaledHeight() / 2 - 65;
 
 				gui.fill(x - 6, y - 6, x + l + 6, y + 37, 0x22000000);
 				gui.fill(x - 4, y - 4, x + l + 4, y + 35, 0x22000000);
-				gui.item(craftingTable, window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
+				gui.item(craftingTable.get(), window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
 
 				gui.text(font, name, x, y, 0xFFFFFF);
 			} else {

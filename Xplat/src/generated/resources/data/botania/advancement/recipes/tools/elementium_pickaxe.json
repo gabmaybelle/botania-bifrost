@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elementium_pickaxe"
+        "recipes": "botania:elementium_pickaxe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:ghast_tear"
-  },
+  "input": "minecraft:ghast_tear",
   "mana": 28000,
   "output": {
     "count": 1,

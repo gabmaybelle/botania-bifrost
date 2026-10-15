@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lime_shimmering_mushroom"
+        "recipes": "botania:lime_shimmering_mushroom"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

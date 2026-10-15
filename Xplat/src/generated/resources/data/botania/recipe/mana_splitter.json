@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "R": {
-      "item": "botania:livingrock"
-    },
-    "S": {
-      "tag": "c:ingots/manasteel"
-    }
+    "R": "botania:livingrock",
+    "S": "#c:ingots/manasteel"
   },
   "pattern": [
     "RRR",
@@ -15,7 +10,6 @@
     "RRR"
   ],
   "result": {
-    "count": 1,
     "id": "botania:mana_splitter"
   }
 }

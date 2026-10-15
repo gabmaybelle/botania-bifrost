@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:black_petal_block"
+        "recipes": "botania:black_petal_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

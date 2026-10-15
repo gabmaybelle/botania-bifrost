@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_fallen_kanade"
+        "recipes": "botania:floating_fallen_kanade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

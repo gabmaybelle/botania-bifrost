@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:white_creative_mana_pool"
+        "recipes": "botania:white_creative_mana_pool"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

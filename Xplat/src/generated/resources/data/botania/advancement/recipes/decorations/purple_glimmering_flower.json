@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:purple_glimmering_flower"
+        "recipes": "botania:purple_glimmering_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

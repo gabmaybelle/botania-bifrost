@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:botania_banner_pattern"
+        "recipes": "botania:botania_banner_pattern"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

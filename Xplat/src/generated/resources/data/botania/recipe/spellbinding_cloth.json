@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "item": "botania:manaweave_cloth"
-    },
-    "P": {
-      "tag": "c:gems/mana_pearl"
-    }
+    "C": "botania:manaweave_cloth",
+    "P": "#c:gems/mana_pearl"
   },
   "pattern": [
     " C ",
@@ -15,7 +11,6 @@
     " C "
   ],
   "result": {
-    "count": 1,
     "id": "botania:spellbinding_cloth"
   }
 }

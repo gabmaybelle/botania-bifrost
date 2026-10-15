@@ -1,16 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "G": {
-      "item": "botania:gaia_spirit"
-    },
-    "L": {
-      "tag": "botania:livingwood_logs"
-    },
-    "T": {
-      "item": "minecraft:tnt"
-    }
+    "G": "botania:gaia_spirit",
+    "L": "#botania:livingwood_logs",
+    "T": "minecraft:tnt"
   },
   "pattern": [
     "LTL",
@@ -18,7 +11,6 @@
     "LTL"
   ],
   "result": {
-    "count": 1,
     "id": "botania:manastorm_charge"
   }
 }

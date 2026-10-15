@@ -1,22 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:blaze_rod"
-    },
-    "E": {
-      "tag": "botania:ender_essences"
-    },
-    "M": {
-      "tag": "c:storage_blocks/manasteel"
-    },
-    "P": {
-      "item": "minecraft:prismarine_bricks"
-    },
-    "S": {
-      "tag": "c:ingots/elementium"
-    }
+    "B": "minecraft:blaze_rod",
+    "E": "#botania:ender_essences",
+    "M": "#c:storage_blocks/manasteel",
+    "P": "minecraft:prismarine_bricks",
+    "S": "#c:ingots/elementium"
   },
   "pattern": [
     "BSB",
@@ -24,7 +13,6 @@
     "PEP"
   ],
   "result": {
-    "count": 1,
     "id": "botania:life_imbuer"
   }
 }

@@ -2,14 +2,8 @@
   "type": "botania:brew",
   "brew": "botania:fortitude",
   "ingredients": [
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:iron_ingot"
-    },
-    {
-      "item": "minecraft:leather"
-    }
+    "minecraft:nether_wart",
+    "minecraft:iron_ingot",
+    "minecraft:leather"
   ]
 }

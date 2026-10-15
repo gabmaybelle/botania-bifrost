@@ -1,36 +1,18 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/yellow"
-    },
-    {
-      "tag": "botania:petals/yellow"
-    },
-    {
-      "tag": "botania:petals/blue"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/black"
-    },
-    {
-      "item": "botania:rune_of_autumn"
-    },
-    {
-      "item": "botania:redstone_root"
-    },
-    {
-      "tag": "c:dusts/pixie"
-    }
+    "#botania:petals/yellow",
+    "#botania:petals/yellow",
+    "#botania:petals/blue",
+    "#botania:petals/white",
+    "#botania:petals/black",
+    "botania:rune_of_autumn",
+    "botania:redstone_root",
+    "#c:dusts/pixie"
   ],
   "output": {
     "count": 1,
     "id": "botania:labellia"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

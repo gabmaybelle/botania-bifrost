@@ -786,11 +786,11 @@ public class LooniumStructureConfigurationProvider implements DataProvider {
 			piglinNbt.putBoolean("IsImmuneToZombification", true);
 		}
 
-		// PORT-26.3: brains are saved as a packed memory map now; a brain itself needs a living body
+		// PORT-26.3: brains are saved as a packed memory map now; a brain itself needs a living body. ATE_RECENTLY has
+		// no codec (it never had one, so the old brain serializer silently dropped it) and the packed map refuses it.
 		MemoryMap piglinMemories = new MemoryMap.Builder()
 				.add(MemoryModuleType.UNIVERSAL_ANGER, ExpirableValue.of(true))
 				.add(MemoryModuleType.ADMIRING_DISABLED, ExpirableValue.of(true))
-				.add(MemoryModuleType.ATE_RECENTLY, ExpirableValue.of(true))
 				.build();
 
 		DataResult<Tag> dataResult = Brain.Packed.CODEC.encodeStart(NbtOps.INSTANCE, new Brain.Packed(piglinMemories));

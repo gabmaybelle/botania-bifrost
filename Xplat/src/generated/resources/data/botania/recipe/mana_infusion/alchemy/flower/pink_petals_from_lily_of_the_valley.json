@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_cycle",
-  "input": {
-    "item": "minecraft:lily_of_the_valley"
-  },
+  "input": "minecraft:lily_of_the_valley",
   "mana": 400,
   "output": {
     "count": 1,

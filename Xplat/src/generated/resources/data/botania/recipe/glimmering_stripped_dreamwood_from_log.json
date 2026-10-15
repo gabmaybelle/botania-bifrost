@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:glimmering_dreamwood",
   "key": {
-    "#": {
-      "item": "botania:glimmering_stripped_dreamwood_log"
-    }
+    "#": "botania:glimmering_stripped_dreamwood_log"
   },
   "pattern": [
     "##",

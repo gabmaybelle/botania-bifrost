@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:cobbled_cataclasite"
-  },
+  "ingredient": "botania:cobbled_cataclasite",
   "result": {
-    "count": 1,
     "id": "botania:cobbled_cataclasite_wall"
   }
 }

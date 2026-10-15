@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:greater_band_of_mana"
+        "recipes": "botania:greater_band_of_mana"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

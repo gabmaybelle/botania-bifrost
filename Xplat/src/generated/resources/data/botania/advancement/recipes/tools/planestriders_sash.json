@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:planestriders_sash"
+        "recipes": "botania:planestriders_sash"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

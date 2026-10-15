@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_jiyuulia"
+        "recipes": "botania:floating_jiyuulia"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

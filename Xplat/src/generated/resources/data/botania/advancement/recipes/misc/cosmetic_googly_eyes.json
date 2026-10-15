@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_googly_eyes"
+        "recipes": "botania:cosmetic_googly_eyes"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

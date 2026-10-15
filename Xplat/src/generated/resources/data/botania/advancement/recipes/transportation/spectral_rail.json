@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spectral_rail"
+        "recipes": "botania:spectral_rail"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

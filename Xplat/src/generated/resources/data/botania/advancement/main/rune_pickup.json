@@ -17,7 +17,6 @@
       "translate": "advancement.botania:runePickup.desc"
     },
     "icon": {
-      "count": 1,
       "id": "botania:runic_altar"
     },
     "title": {

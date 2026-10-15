@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lime_mystical_petal_from_lime_mystical_flower"
+        "recipes": "botania:lime_mystical_petal_from_lime_mystical_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

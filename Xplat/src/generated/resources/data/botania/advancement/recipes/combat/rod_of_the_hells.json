@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rod_of_the_hells"
+        "recipes": "botania:rod_of_the_hells"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

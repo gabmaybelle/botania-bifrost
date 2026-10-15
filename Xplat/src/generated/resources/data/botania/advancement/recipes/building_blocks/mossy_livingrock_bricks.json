@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mossy_livingrock_bricks"
+        "recipes": "botania:mossy_livingrock_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

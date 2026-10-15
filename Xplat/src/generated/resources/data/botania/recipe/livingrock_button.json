@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "botania:livingrock"
-    }
+    "botania:livingrock"
   ],
   "result": {
-    "count": 1,
     "id": "botania:livingrock_button"
   }
 }

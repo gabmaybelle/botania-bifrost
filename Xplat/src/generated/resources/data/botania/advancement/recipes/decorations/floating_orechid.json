@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_orechid"
+        "recipes": "botania:floating_orechid"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

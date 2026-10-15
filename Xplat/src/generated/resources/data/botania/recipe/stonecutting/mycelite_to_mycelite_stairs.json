@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:mycelite"
-  },
+  "ingredient": "botania:mycelite",
   "result": {
-    "count": 1,
     "id": "botania:mycelite_stairs"
   }
 }

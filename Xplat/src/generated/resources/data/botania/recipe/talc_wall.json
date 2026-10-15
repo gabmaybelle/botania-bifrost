@@ -1,11 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "botania:metamorphic_stone_wall",
   "key": {
-    "B": {
-      "item": "botania:talc"
-    }
+    "B": "botania:talc"
   },
   "pattern": [
     "BBB",

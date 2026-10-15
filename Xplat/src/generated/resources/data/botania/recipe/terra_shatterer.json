@@ -2,15 +2,9 @@
   "type": "botania:crafting_shaped_mana_upgrade",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/terrasteel"
-    },
-    "L": {
-      "item": "botania:livingwood_twig"
-    },
-    "T": {
-      "item": "botania:mana_tablet"
-    }
+    "I": "#c:ingots/terrasteel",
+    "L": "botania:livingwood_twig",
+    "T": "botania:mana_tablet"
   },
   "pattern": [
     "ITI",
@@ -18,7 +12,6 @@
     " L "
   ],
   "result": {
-    "count": 1,
     "id": "botania:terra_shatterer"
   }
 }

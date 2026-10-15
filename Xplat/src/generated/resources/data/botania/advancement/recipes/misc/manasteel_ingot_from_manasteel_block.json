@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manasteel_ingot_from_manasteel_block"
+        "recipes": "botania:manasteel_ingot_from_manasteel_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

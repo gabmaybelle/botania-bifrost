@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_index"
+        "recipes": "botania:corporea_index"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

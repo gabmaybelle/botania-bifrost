@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:nullodermal_virus"
+        "recipes": "botania:nullodermal_virus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

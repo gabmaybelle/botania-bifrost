@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "E": {
-      "item": "botania:rune_of_earth"
-    },
-    "M": {
-      "tag": "c:ingots/manasteel"
-    },
-    "P": {
-      "item": "minecraft:golden_pickaxe"
-    }
+    "E": "botania:rune_of_earth",
+    "M": "#c:ingots/manasteel",
+    "P": "minecraft:golden_pickaxe"
   },
   "pattern": [
     "EMP",
@@ -18,7 +12,6 @@
     " M "
   ],
   "result": {
-    "count": 1,
     "id": "botania:ring_of_the_mantle"
   }
 }

@@ -2,14 +2,8 @@
   "type": "botania:brew",
   "brew": "botania:owlsight",
   "ingredients": [
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:spider_eye"
-    },
-    {
-      "item": "minecraft:golden_carrot"
-    }
+    "minecraft:nether_wart",
+    "minecraft:spider_eye",
+    "minecraft:golden_carrot"
   ]
 }

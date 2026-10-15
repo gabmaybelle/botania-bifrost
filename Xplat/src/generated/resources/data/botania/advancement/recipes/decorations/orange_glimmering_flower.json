@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:orange_glimmering_flower"
+        "recipes": "botania:orange_glimmering_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

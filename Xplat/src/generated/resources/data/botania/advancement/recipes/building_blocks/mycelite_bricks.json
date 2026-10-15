@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mycelite_bricks"
+        "recipes": "botania:mycelite_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

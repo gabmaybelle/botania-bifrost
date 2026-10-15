@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:alchemy_catalyst"
+        "recipes": "botania:alchemy_catalyst"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

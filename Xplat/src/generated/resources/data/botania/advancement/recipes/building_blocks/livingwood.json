@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingwood"
+        "recipes": "botania:livingwood"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

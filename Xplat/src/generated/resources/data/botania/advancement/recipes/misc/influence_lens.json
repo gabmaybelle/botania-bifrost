@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:influence_lens"
+        "recipes": "botania:influence_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

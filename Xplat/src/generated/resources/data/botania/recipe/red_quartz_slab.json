@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:quartz_slab",
   "key": {
-    "Q": {
-      "item": "botania:red_quartz_block"
-    }
+    "Q": "botania:red_quartz_block"
   },
   "pattern": [
     "QQQ"

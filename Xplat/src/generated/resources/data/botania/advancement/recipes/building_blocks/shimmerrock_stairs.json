@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:shimmerrock_stairs"
+        "recipes": "botania:shimmerrock_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

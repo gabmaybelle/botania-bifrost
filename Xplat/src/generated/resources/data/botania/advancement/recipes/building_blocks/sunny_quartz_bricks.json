@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:sunny_quartz_bricks"
+        "recipes": "botania:sunny_quartz_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

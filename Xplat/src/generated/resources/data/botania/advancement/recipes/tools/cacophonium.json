@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cacophonium"
+        "recipes": "botania:cacophonium"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

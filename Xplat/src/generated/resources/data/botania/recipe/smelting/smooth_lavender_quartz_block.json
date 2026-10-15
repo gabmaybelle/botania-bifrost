@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:lavender_quartz_block"
-  },
+  "ingredient": "botania:lavender_quartz_block",
   "result": {
     "id": "botania:smooth_lavender_quartz_block"
   }

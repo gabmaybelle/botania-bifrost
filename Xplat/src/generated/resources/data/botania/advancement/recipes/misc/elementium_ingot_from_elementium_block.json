@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elementium_ingot_from_elementium_block"
+        "recipes": "botania:elementium_ingot_from_elementium_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_brick_slab",
   "key": {
-    "Q": {
-      "item": "botania:mycelite_bricks"
-    }
+    "Q": "botania:mycelite_bricks"
   },
   "pattern": [
     "QQQ"

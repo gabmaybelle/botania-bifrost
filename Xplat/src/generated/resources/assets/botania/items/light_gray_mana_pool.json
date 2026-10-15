@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/light_gray_mana_pool",
+    "tints": [
+      {
+        "type": "botania:mana_pool"
+      }
+    ]
+  }
+}

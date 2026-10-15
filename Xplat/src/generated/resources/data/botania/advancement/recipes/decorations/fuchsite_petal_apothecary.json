@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:fuchsite_petal_apothecary"
+        "recipes": "botania:fuchsite_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

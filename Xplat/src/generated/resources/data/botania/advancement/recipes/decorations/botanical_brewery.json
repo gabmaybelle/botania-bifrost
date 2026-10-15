@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:botanical_brewery"
+        "recipes": "botania:botanical_brewery"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

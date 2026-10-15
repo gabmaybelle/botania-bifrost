@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cataclasite_slab"
+        "recipes": "botania:cataclasite_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

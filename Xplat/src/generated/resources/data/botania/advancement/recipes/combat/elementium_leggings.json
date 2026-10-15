@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elementium_leggings"
+        "recipes": "botania:elementium_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

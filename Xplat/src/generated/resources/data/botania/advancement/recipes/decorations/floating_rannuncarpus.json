@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_rannuncarpus"
+        "recipes": "botania:floating_rannuncarpus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lunite_button"
+        "recipes": "botania:lunite_button"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "E": {
-      "item": "minecraft:ender_chest"
-    },
-    "L": {
-      "item": "minecraft:leather"
-    },
-    "O": {
-      "item": "minecraft:obsidian"
-    },
-    "P": {
-      "tag": "c:gems/mana_pearl"
-    }
+    "E": "minecraft:ender_chest",
+    "L": "minecraft:leather",
+    "O": "minecraft:obsidian",
+    "P": "#c:gems/mana_pearl"
   },
   "pattern": [
     "PLO",
@@ -21,7 +13,6 @@
     "OL "
   ],
   "result": {
-    "count": 1,
     "id": "botania:hand_of_ender"
   }
 }

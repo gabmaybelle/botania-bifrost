@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spreader_turntable"
+        "recipes": "botania:spreader_turntable"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

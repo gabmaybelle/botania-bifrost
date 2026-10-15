@@ -1,14 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "wooden_fence",
   "key": {
-    "B": {
-      "item": "botania:livingwood_planks"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "B": "botania:livingwood_planks",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "BSB",

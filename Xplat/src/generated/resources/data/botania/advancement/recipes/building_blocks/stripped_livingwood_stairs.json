@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:stripped_livingwood_stairs"
+        "recipes": "botania:stripped_livingwood_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

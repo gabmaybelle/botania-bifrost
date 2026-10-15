@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "C": {
-      "item": "minecraft:sunflower"
-    },
-    "Q": {
-      "item": "minecraft:quartz"
-    }
+    "C": "minecraft:sunflower",
+    "Q": "minecraft:quartz"
   },
   "pattern": [
     "QQQ",

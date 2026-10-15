@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:talc_petal_apothecary"
+        "recipes": "botania:talc_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "tag": "c:glass_blocks/colorless"
-    },
-    "I": {
-      "tag": "c:ingots/manasteel"
-    },
-    "T": {
-      "item": "botania:livingwood_twig"
-    }
+    "G": "#c:glass_blocks/colorless",
+    "I": "#c:ingots/manasteel",
+    "T": "botania:livingwood_twig"
   },
   "pattern": [
     "GIG",
@@ -18,7 +12,6 @@
     " T "
   ],
   "result": {
-    "count": 1,
     "id": "botania:vitreous_pickaxe"
   }
 }

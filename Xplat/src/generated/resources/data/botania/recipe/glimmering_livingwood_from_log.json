@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:glimmering_livingwood",
   "key": {
-    "#": {
-      "item": "botania:glimmering_livingwood_log"
-    }
+    "#": "botania:glimmering_livingwood_log"
   },
   "pattern": [
     "##",

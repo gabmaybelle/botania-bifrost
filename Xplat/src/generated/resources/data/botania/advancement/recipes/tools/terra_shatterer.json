@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terra_shatterer"
+        "recipes": "botania:terra_shatterer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

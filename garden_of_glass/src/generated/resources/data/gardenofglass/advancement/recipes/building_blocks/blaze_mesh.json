@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:blaze_mesh"
+        "recipes": "gardenofglass:blaze_mesh"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

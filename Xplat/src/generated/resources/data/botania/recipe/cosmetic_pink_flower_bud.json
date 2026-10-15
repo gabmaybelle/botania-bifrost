@@ -1,14 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "botania:cosmetic_bauble",
   "key": {
-    "P": {
-      "item": "botania:light_gray_mystical_petal"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "P": "botania:light_gray_mystical_petal",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "PPP",
@@ -16,7 +11,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cosmetic_pink_flower_bud"
   }
 }

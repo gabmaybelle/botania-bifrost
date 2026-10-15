@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_devil_tail"
+        "recipes": "botania:cosmetic_devil_tail"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

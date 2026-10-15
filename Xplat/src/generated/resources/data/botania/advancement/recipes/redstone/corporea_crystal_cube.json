@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_crystal_cube"
+        "recipes": "botania:corporea_crystal_cube"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

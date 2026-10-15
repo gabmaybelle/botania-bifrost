@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "botania:mana_spark"
-    },
-    {
-      "tag": "c:dusts/pixie"
-    },
-    {
-      "tag": "botania:ender_essences"
-    }
+    "botania:mana_spark",
+    "#c:dusts/pixie",
+    "#botania:ender_essences"
   ],
   "result": {
     "count": 4,

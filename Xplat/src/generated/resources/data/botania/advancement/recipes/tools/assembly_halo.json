@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:assembly_halo"
+        "recipes": "botania:assembly_halo"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wood",
   "key": {
-    "#": {
-      "item": "botania:stripped_livingwood_log"
-    }
+    "#": "botania:stripped_livingwood_log"
   },
   "pattern": [
     "##",

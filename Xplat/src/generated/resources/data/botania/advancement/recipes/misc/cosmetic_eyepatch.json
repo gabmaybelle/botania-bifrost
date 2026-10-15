@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_eyepatch"
+        "recipes": "botania:cosmetic_eyepatch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

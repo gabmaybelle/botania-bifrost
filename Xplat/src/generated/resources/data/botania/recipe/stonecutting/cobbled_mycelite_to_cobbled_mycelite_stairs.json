@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:cobbled_mycelite"
-  },
+  "ingredient": "botania:cobbled_mycelite",
   "result": {
-    "count": 1,
     "id": "botania:cobbled_mycelite_stairs"
   }
 }

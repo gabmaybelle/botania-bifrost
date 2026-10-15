@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rod_of_the_plentiful_mantle"
+        "recipes": "botania:rod_of_the_plentiful_mantle"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

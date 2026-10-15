@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:vitreous_pickaxe"
+        "recipes": "botania:vitreous_pickaxe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

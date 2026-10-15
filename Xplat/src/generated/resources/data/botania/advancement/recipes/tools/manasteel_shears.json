@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manasteel_shears"
+        "recipes": "botania:manasteel_shears"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

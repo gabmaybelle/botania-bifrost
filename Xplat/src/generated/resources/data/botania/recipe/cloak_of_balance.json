@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "R": {
-      "tag": "c:gems/emerald"
-    },
-    "S": {
-      "item": "botania:gaia_spirit"
-    },
-    "W": {
-      "item": "minecraft:light_gray_wool"
-    }
+    "R": "#c:gems/emerald",
+    "S": "botania:gaia_spirit",
+    "W": "minecraft:light_gray_wool"
   },
   "pattern": [
     "WWW",
@@ -18,7 +12,6 @@
     "RSR"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cloak_of_balance"
   }
 }

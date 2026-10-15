@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:pure_ender_essence"
-    },
-    "E": {
-      "tag": "c:ingots/elementium"
-    },
-    "G": {
-      "item": "botania:gaia_spirit"
-    }
+    "A": "botania:pure_ender_essence",
+    "E": "#c:ingots/elementium",
+    "G": "botania:gaia_spirit"
   },
   "pattern": [
     " G ",
@@ -18,7 +12,6 @@
     " E "
   ],
   "result": {
-    "count": 1,
     "id": "botania:black_hole_talisman"
   }
 }

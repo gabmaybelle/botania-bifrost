@@ -1,75 +1,30 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:gems/mana_pearl"
-    },
+    "#c:gems/mana_pearl",
     [
-      {
-        "item": "minecraft:white_dye"
-      },
-      {
-        "item": "minecraft:light_gray_dye"
-      },
-      {
-        "item": "minecraft:gray_dye"
-      },
-      {
-        "item": "minecraft:black_dye"
-      },
-      {
-        "item": "minecraft:brown_dye"
-      },
-      {
-        "item": "minecraft:red_dye"
-      },
-      {
-        "item": "minecraft:orange_dye"
-      },
-      {
-        "item": "minecraft:yellow_dye"
-      },
-      {
-        "item": "minecraft:lime_dye"
-      },
-      {
-        "item": "minecraft:green_dye"
-      },
-      {
-        "item": "minecraft:cyan_dye"
-      },
-      {
-        "item": "minecraft:light_blue_dye"
-      },
-      {
-        "item": "minecraft:blue_dye"
-      },
-      {
-        "item": "minecraft:purple_dye"
-      },
-      {
-        "item": "minecraft:magenta_dye"
-      },
-      {
-        "item": "minecraft:pink_dye"
-      }
+      "minecraft:white_dye",
+      "minecraft:light_gray_dye",
+      "minecraft:gray_dye",
+      "minecraft:black_dye",
+      "minecraft:brown_dye",
+      "minecraft:red_dye",
+      "minecraft:orange_dye",
+      "minecraft:yellow_dye",
+      "minecraft:lime_dye",
+      "minecraft:green_dye",
+      "minecraft:cyan_dye",
+      "minecraft:light_blue_dye",
+      "minecraft:blue_dye",
+      "minecraft:purple_dye",
+      "minecraft:magenta_dye",
+      "minecraft:pink_dye"
     ],
-    {
-      "tag": "c:glass_blocks/cheap"
-    },
-    {
-      "item": "minecraft:glass_bottle"
-    },
-    {
-      "item": "minecraft:glass_bottle"
-    },
-    {
-      "item": "minecraft:glass_bottle"
-    },
-    {
-      "item": "minecraft:glass_bottle"
-    }
+    "#c:glass_blocks/cheap",
+    "minecraft:glass_bottle",
+    "minecraft:glass_bottle",
+    "minecraft:glass_bottle",
+    "minecraft:glass_bottle"
   ],
   "result": {
     "count": 4,

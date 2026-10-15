@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/life_aggregator"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/life_aggregator_full"
+    },
+    "property": "botania:test",
+    "test": "life_aggregator_full"
+  }
+}

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lime_glimmering_flower"
+        "recipes": "botania:lime_glimmering_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

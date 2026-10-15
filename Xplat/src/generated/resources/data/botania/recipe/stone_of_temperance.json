@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "R": {
-      "item": "botania:rune_of_earth"
-    },
-    "S": {
-      "item": "minecraft:stone"
-    }
+    "R": "botania:rune_of_earth",
+    "S": "minecraft:stone"
   },
   "pattern": [
     " S ",
@@ -15,7 +11,6 @@
     " S "
   ],
   "result": {
-    "count": 1,
     "id": "botania:stone_of_temperance"
   }
 }

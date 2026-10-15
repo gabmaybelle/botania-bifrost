@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:shimmerwood_planks"
+        "recipes": "botania:shimmerwood_planks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

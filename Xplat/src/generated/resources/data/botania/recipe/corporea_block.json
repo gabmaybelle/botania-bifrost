@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "botania:polished_livingrock"
-    },
-    {
-      "item": "botania:corporea_spark"
-    }
+    "botania:polished_livingrock",
+    "botania:corporea_spark"
   ],
   "result": {
     "count": 8,

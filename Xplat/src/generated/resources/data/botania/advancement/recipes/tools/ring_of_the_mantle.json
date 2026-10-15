@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:ring_of_the_mantle"
+        "recipes": "botania:ring_of_the_mantle"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

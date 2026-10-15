@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:phantom_ink"
+        "recipes": "botania:phantom_ink"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

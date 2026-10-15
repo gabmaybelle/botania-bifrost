@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terra_blade"
+        "recipes": "botania:terra_blade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

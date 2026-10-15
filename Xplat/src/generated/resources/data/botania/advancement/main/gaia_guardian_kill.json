@@ -3,15 +3,13 @@
   "criteria": {
     "guardian": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "botania:gaia_guardian"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "botania:gaia_guardian"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     }
@@ -21,7 +19,6 @@
       "translate": "advancement.botania:gaiaGuardianKill.desc"
     },
     "icon": {
-      "count": 1,
       "id": "botania:gaia_head"
     },
     "title": {

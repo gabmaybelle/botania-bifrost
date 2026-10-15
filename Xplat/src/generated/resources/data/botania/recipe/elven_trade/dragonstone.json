@@ -1,12 +1,11 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "tag": "c:gems/mana_diamond"
-    }
+    "#c:gems/mana_diamond"
   ],
   "output": [
     {
+      "count": 1,
       "id": "botania:dragonstone"
     }
   ]

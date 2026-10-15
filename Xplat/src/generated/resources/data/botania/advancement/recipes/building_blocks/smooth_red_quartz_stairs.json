@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smooth_red_quartz_stairs"
+        "recipes": "botania:smooth_red_quartz_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

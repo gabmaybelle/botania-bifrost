@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:fel_pumpkin"
+        "recipes": "botania:fel_pumpkin"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

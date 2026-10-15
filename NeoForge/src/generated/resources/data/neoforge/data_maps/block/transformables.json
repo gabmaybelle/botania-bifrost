@@ -1,0 +1,814 @@
+{
+  "values": {
+    "botania:dreamwood": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:dreamwood"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_dreamwood",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:dreamwood_log": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:dreamwood_log"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_dreamwood_log",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:dreamwood_slab": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:dreamwood_slab"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_dreamwood_slab",
+                  "properties": {
+                    "type": "bottom",
+                    "waterlogged": "false"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:dreamwood_stairs": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:dreamwood_stairs"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_dreamwood_stairs",
+                  "properties": {
+                    "facing": "north",
+                    "half": "bottom",
+                    "shape": "straight",
+                    "waterlogged": "false"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:dreamwood_wall": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:dreamwood_wall"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_dreamwood_wall",
+                  "properties": {
+                    "east": "none",
+                    "north": "none",
+                    "south": "none",
+                    "up": "true",
+                    "waterlogged": "false",
+                    "west": "none"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:dry_grass": {
+      "transformers": {
+        "minecraft:hoe": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:dry_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:farmland",
+                  "properties": {
+                    "moisture": "0"
+                  }
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        },
+        "minecraft:shovel": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:dry_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:dirt_path"
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        }
+      }
+    },
+    "botania:glimmering_dreamwood": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:glimmering_dreamwood"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:glimmering_stripped_dreamwood",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:glimmering_dreamwood_log": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:glimmering_dreamwood_log"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:glimmering_stripped_dreamwood_log",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:glimmering_livingwood": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:glimmering_livingwood"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:glimmering_stripped_livingwood",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:glimmering_livingwood_log": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:glimmering_livingwood_log"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:glimmering_stripped_livingwood_log",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:golden_grass": {
+      "transformers": {
+        "minecraft:hoe": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:golden_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:farmland",
+                  "properties": {
+                    "moisture": "0"
+                  }
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        },
+        "minecraft:shovel": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:golden_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:dirt_path"
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        }
+      }
+    },
+    "botania:infused_grass": {
+      "transformers": {
+        "minecraft:hoe": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:infused_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:farmland",
+                  "properties": {
+                    "moisture": "0"
+                  }
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        },
+        "minecraft:shovel": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:infused_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:dirt_path"
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        }
+      }
+    },
+    "botania:livingwood": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:livingwood"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_livingwood",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:livingwood_log": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:livingwood_log"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_livingwood_log",
+                  "properties": {
+                    "axis": "y"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:livingwood_slab": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:livingwood_slab"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_livingwood_slab",
+                  "properties": {
+                    "type": "bottom",
+                    "waterlogged": "false"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:livingwood_stairs": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:livingwood_stairs"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_livingwood_stairs",
+                  "properties": {
+                    "facing": "north",
+                    "half": "bottom",
+                    "shape": "straight",
+                    "waterlogged": "false"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:livingwood_wall": {
+      "transform_data": {
+        "block_state_provider": {
+          "type": "minecraft:rule_based",
+          "rules": [
+            {
+              "if_true": {
+                "type": "minecraft:matching_blocks",
+                "blocks": "botania:livingwood_wall"
+              },
+              "then": {
+                "type": "minecraft:copy_properties",
+                "source": {
+                  "id": "botania:stripped_livingwood_wall",
+                  "properties": {
+                    "east": "none",
+                    "north": "none",
+                    "south": "none",
+                    "up": "true",
+                    "waterlogged": "false",
+                    "west": "none"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "item_damage_per_use": 1,
+        "sound": "minecraft:item.axe.strip"
+      },
+      "transformer": "minecraft:axe"
+    },
+    "botania:mutated_grass": {
+      "transformers": {
+        "minecraft:hoe": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:mutated_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:farmland",
+                  "properties": {
+                    "moisture": "0"
+                  }
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        },
+        "minecraft:shovel": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:mutated_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:dirt_path"
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        }
+      }
+    },
+    "botania:scorched_grass": {
+      "transformers": {
+        "minecraft:hoe": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:scorched_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:farmland",
+                  "properties": {
+                    "moisture": "0"
+                  }
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        },
+        "minecraft:shovel": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:scorched_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:dirt_path"
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        }
+      }
+    },
+    "botania:vivid_grass": {
+      "transformers": {
+        "minecraft:hoe": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:vivid_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:farmland",
+                  "properties": {
+                    "moisture": "0"
+                  }
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        },
+        "minecraft:shovel": {
+          "block_state_provider": {
+            "type": "minecraft:rule_based",
+            "rules": [
+              {
+                "if_true": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "botania:vivid_grass"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        1,
+                        0
+                      ],
+                      "tag": "minecraft:air"
+                    }
+                  ]
+                },
+                "then": {
+                  "id": "minecraft:dirt_path"
+                }
+              }
+            ]
+          },
+          "item_damage_per_use": 1
+        }
+      }
+    }
+  }
+}

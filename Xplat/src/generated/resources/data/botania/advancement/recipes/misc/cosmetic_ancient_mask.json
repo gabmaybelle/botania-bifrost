@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_ancient_mask"
+        "recipes": "botania:cosmetic_ancient_mask"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

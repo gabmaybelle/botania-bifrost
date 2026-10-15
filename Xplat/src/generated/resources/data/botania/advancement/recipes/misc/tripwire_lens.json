@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:tripwire_lens"
+        "recipes": "botania:tripwire_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elven_quartz_slab"
+        "recipes": "botania:elven_quartz_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

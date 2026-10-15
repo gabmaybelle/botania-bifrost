@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gaia_pylon"
+        "recipes": "botania:gaia_pylon"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

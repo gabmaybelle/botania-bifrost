@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cataclasite_button"
+        "recipes": "botania:cataclasite_button"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

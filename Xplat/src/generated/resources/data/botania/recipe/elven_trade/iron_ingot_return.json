@@ -1,12 +1,11 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "minecraft:iron_ingot"
-    }
+    "minecraft:iron_ingot"
   ],
   "output": [
     {
+      "count": 1,
       "id": "minecraft:iron_ingot"
     }
   ]

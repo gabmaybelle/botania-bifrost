@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manaseer_monocle"
+        "recipes": "botania:manaseer_monocle"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

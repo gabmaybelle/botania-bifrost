@@ -1,25 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:cactus"
-    },
-    {
-      "item": "minecraft:cactus"
-    },
-    {
-      "item": "minecraft:cactus"
-    },
-    {
-      "item": "minecraft:beetroot"
-    },
-    {
-      "item": "minecraft:carrot"
-    },
-    {
-      "item": "minecraft:potato"
-    }
+    "minecraft:cactus",
+    "minecraft:cactus",
+    "minecraft:cactus",
+    "minecraft:beetroot",
+    "minecraft:carrot",
+    "minecraft:potato"
   ],
   "result": {
     "count": 3,

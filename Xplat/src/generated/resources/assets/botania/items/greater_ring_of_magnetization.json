@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/greater_ring_of_magnetization"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/greater_ring_of_magnetization_active"
+    },
+    "property": "botania:test",
+    "test": "ring_active"
+  }
+}

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:polished_livingrock"
-    }
+    "Q": "botania:polished_livingrock"
   },
   "pattern": [
     "QQQ"

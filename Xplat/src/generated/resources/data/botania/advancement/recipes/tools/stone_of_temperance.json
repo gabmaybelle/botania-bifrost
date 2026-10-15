@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:stone_of_temperance"
+        "recipes": "botania:stone_of_temperance"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

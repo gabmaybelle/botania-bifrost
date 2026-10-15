@@ -1,33 +1,19 @@
 {
   "type": "botania:runic_altar",
   "catalysts": [
-    {
-      "item": "botania:rune_of_water"
-    },
-    {
-      "item": "botania:rune_of_fire"
-    }
+    "botania:rune_of_water",
+    "botania:rune_of_fire"
   ],
   "ingredients": [
-    {
-      "tag": "minecraft:saplings"
-    },
-    {
-      "tag": "minecraft:saplings"
-    },
-    {
-      "tag": "minecraft:saplings"
-    },
-    {
-      "item": "minecraft:wheat"
-    }
+    "#minecraft:saplings",
+    "#minecraft:saplings",
+    "#minecraft:saplings",
+    "minecraft:wheat"
   ],
   "mana": 8000,
   "output": {
     "count": 1,
     "id": "botania:rune_of_spring"
   },
-  "reagent": {
-    "item": "botania:livingrock"
-  }
+  "reagent": "botania:livingrock"
 }

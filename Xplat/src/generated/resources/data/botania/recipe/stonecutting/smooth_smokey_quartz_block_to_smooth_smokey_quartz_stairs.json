@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:smooth_smokey_quartz_block"
-  },
+  "ingredient": "botania:smooth_smokey_quartz_block",
   "result": {
-    "count": 1,
     "id": "botania:smooth_smokey_quartz_stairs"
   }
 }

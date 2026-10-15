@@ -1,16 +1,10 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "tag": "c:dusts/pixie"
-    }
+    "botania:mana_lens",
+    "#c:dusts/pixie"
   ],
   "result": {
-    "count": 1,
     "id": "botania:warp_lens"
   }
 }

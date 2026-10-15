@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "C": {
-      "item": "minecraft:cobbled_deepslate"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "C": "minecraft:cobbled_deepslate",
+    "P": "#botania:petals"
   },
   "pattern": [
     "CPC",
@@ -15,7 +10,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "botania:deepslate_petal_apothecary"
   }
 }

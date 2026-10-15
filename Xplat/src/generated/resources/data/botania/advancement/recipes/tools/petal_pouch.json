@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:petal_pouch"
+        "recipes": "botania:petal_pouch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

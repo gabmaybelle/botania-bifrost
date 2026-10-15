@@ -13,13 +13,13 @@
     },
     "has_orig_recipe": {
       "conditions": {
-        "recipe": "minecraft:mushroom_stew"
+        "recipes": "minecraft:mushroom_stew"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mushroom_stew"
+        "recipes": "botania:mushroom_stew"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

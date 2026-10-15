@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "C": {
-      "item": "botania:livingrock"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "C": "botania:livingrock",
+    "P": "#botania:petals"
   },
   "pattern": [
     "CPC",
@@ -15,7 +10,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "botania:livingrock_petal_apothecary"
   }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:stripped_dreamwood_slab"
+        "recipes": "botania:stripped_dreamwood_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

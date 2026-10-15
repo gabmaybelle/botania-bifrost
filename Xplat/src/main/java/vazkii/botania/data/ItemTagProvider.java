@@ -45,7 +45,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
 public class ItemTagProvider extends IntrinsicTagsProvider<Item> {
-	private static final Set<TagKey<Item>> REQUIRED_TAGS = Set.of(
+	// PORT-26.3: protected so the Fabric conventional subclass can add its own required tags to these
+	protected static final Set<TagKey<Item>> REQUIRED_TAGS = Set.of(
 			ItemTags.SAND,
 			ItemTags.ARROWS,
 			ItemTags.SAPLINGS

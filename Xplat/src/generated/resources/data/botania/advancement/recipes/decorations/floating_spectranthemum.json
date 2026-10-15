@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_spectranthemum"
+        "recipes": "botania:floating_spectranthemum"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

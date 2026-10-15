@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:conjuration_catalyst"
   },
-  "input": {
-    "item": "minecraft:gravel"
-  },
+  "input": "minecraft:gravel",
   "mana": 720,
   "output": {
     "count": 2,

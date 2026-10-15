@@ -10,6 +10,8 @@
 
 package vazkii.botania.fabric.data.xplat;
 
+import com.google.common.collect.Sets;
+
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -41,11 +43,14 @@ public class ConventionalBlockTagProvider extends BlockTagProvider {
 	);
 
 	public ConventionalBlockTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider, DummyTagLookup.completedFuture(REQUIRED_TAGS));
+		// PORT-26.3: this provider writes Botania's block tags as well, so both required-tag lists apply
+		super(packOutput, lookupProvider, DummyTagLookup.completedFuture(Sets.union(BlockTagProvider.REQUIRED_TAGS, REQUIRED_TAGS)));
 	}
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
+		// PORT-26.3: vanilla names tag providers by registry (final), so the conventional tags ride on Botania's own provider
+		super.addTags(provider);
 
 		// Cobblestones
 		tag(ConventionalBotaniaTags.Blocks.FUCHSITE_COBBLESTONES).add(BotaniaBlocks.COBBLED_FUCHSITE);

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terrasteel_helmet"
+        "recipes": "botania:terrasteel_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

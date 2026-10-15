@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:purple_floating_flower"
+        "recipes": "botania:purple_floating_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

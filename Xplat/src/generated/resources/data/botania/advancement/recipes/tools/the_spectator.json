@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:the_spectator"
+        "recipes": "botania:the_spectator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

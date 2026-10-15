@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terrasteel_leggings"
+        "recipes": "botania:terrasteel_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

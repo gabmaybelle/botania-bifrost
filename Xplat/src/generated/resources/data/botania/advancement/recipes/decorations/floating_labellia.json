@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_labellia"
+        "recipes": "botania:floating_labellia"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

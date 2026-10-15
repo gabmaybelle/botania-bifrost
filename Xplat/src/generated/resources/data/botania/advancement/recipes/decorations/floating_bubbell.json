@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_bubbell"
+        "recipes": "botania:floating_bubbell"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

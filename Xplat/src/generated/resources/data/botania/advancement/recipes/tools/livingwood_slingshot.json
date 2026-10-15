@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingwood_slingshot"
+        "recipes": "botania:livingwood_slingshot"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

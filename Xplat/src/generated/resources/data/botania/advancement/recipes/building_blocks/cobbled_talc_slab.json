@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cobbled_talc_slab"
+        "recipes": "botania:cobbled_talc_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,0 +1,10 @@
+// 26.3	-999999999-01-01T00:00:00	Botania Bifrost/minecraft:chest Loot Table
+0414678b7e7fdb3fec6db30be52daffb99e7ca3a data/botania/loot_table/injected/minecraft/chests/abandoned_mineshaft.json
+0414678b7e7fdb3fec6db30be52daffb99e7ca3a data/botania/loot_table/injected/minecraft/chests/desert_pyramid.json
+bc3b32fc6d474096fdc1896566075f7dacf7464d data/botania/loot_table/injected/minecraft/chests/jungle_temple.json
+a18a73e4ce13cf92bd5a284f6b675316050e96f0 data/botania/loot_table/injected/minecraft/chests/simple_dungeon.json
+abf6566a66abd3c61820386d8241008a146aa911 data/botania/loot_table/injected/minecraft/chests/spawn_bonus_chest.json
+f1e8d175d156a720a44eb02b433c18d17aad2a98 data/botania/loot_table/injected/minecraft/chests/stronghold_corridor.json
+8d2f931b8e30acad790728507b7d92499a265b17 data/botania/loot_table/injected/minecraft/chests/village/village_temple.json
+8d2f931b8e30acad790728507b7d92499a265b17 data/botania/loot_table/injected/minecraft/chests/village/village_toolsmith.json
+8d2f931b8e30acad790728507b7d92499a265b17 data/botania/loot_table/injected/minecraft/chests/village/village_weaponsmith.json

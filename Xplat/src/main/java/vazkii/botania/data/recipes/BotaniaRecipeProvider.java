@@ -19,6 +19,8 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
@@ -61,7 +63,8 @@ public abstract class BotaniaRecipeProvider extends RecipeProvider {
 				.requires(packedForm)
 				.group(unpackingRecipeGroup)
 				.unlockedBy(getHasName(packedForm), has(packedForm))
-				.save(recipeOutput, unpackingRecipeId);
+				// saved by key like vanilla: the String overload refuses an id equal to the default one
+				.save(recipeOutput, ResourceKey.create(Registries.RECIPE, Identifier.parse(unpackingRecipeId)));
 		shaped(packedFormCategory, packedForm)
 				.define('#', unpackedForm)
 				.pattern("###")
@@ -69,7 +72,13 @@ public abstract class BotaniaRecipeProvider extends RecipeProvider {
 				.pattern("###")
 				.group(packingRecipeGroup)
 				.unlockedBy(getHasName(unpackedForm), has(unpackedForm))
-				.save(recipeOutput, packingRecipeId);
+				.save(recipeOutput, ResourceKey.create(Registries.RECIPE, Identifier.parse(packingRecipeId)));
+	}
+
+	// PORT-26.3: vanilla's save(output, String) refuses an id equal to the builder's default one; Botania names its
+	// recipes deliberately, so the explicit ids go through the key overload like vanilla's own helpers do
+	protected static ResourceKey<Recipe<?>> recipeKey(String id) {
+		return ResourceKey.create(Registries.RECIPE, Identifier.parse(id));
 	}
 
 	@Override

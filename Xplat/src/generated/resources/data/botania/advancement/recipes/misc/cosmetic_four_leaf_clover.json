@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_four_leaf_clover"
+        "recipes": "botania:cosmetic_four_leaf_clover"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

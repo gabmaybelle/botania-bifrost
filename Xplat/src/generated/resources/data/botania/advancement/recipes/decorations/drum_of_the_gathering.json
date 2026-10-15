@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:drum_of_the_gathering"
+        "recipes": "botania:drum_of_the_gathering"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

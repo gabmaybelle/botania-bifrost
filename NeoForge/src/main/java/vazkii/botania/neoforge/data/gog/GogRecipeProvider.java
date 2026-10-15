@@ -63,7 +63,7 @@ public class GogRecipeProvider extends BotaniaRecipeProvider {
 				.group("botania:floral_fertilizer")
 				.unlockedBy(getHasName(Items.BONE_MEAL), has(Items.BONE_MEAL))
 				.unlockedBy("has_any_dye", has(Tags.Items.DYES))
-				.save(recipeOutput, gogRL("floral_fertilizer_from_dye").toString());
+				.save(recipeOutput, recipeKey(gogRL("floral_fertilizer_from_dye").toString()));
 		shaped(RecipeCategory.MISC, BotaniaBlocks.COCOON_OF_CAPRICE)
 				.define('S', Items.STRING)
 				.define('P', BotaniaBlocks.FEL_PUMPKIN)
@@ -72,7 +72,7 @@ public class GogRecipeProvider extends BotaniaRecipeProvider {
 				.pattern("SPS")
 				.pattern("SIS")
 				.unlockedBy("has_item", has(BotaniaBlocks.FEL_PUMPKIN))
-				.save(recipeOutput, gogRL(getItemName(BotaniaBlocks.COCOON_OF_CAPRICE)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getItemName(BotaniaBlocks.COCOON_OF_CAPRICE)).toString()));
 		shaped(RecipeCategory.REDSTONE, BotaniaBlocks.MANA_SPREADER)
 				.define('P', BotaniaTags.Items.PETALS)
 				.define('W', BotaniaTags.Items.LIVINGWOOD_LOGS)
@@ -81,7 +81,7 @@ public class GogRecipeProvider extends BotaniaRecipeProvider {
 				.pattern("WWW")
 				.group("botania:spreader")
 				.unlockedBy("has_item", has(BotaniaTags.Items.LIVINGWOOD_LOGS))
-				.save(recipeOutput, gogRL(getItemName(BotaniaBlocks.MANA_SPREADER)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getItemName(BotaniaBlocks.MANA_SPREADER)).toString()));
 
 		Ingredient yellow = tag(BotaniaTags.Items.PETALS_YELLOW);
 		Ingredient gray = tag(BotaniaTags.Items.PETALS_GRAY);
@@ -100,29 +100,29 @@ public class GogRecipeProvider extends BotaniaRecipeProvider {
 				.define('O', Blocks.OBSIDIAN)
 				.pattern("OGO")
 				.unlockedBy("has_gaia_spirit", has(BotaniaItems.GAIA_SPIRIT))
-				.save(recipeOutput, gogRL(getItemName(Blocks.END_PORTAL_FRAME)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getItemName(Blocks.END_PORTAL_FRAME)).toString()));
 		shapeless(RecipeCategory.MISC, Items.SLIME_BALL)
 				.requires(Items.MAGMA_CREAM)
 				.requires(Items.WATER_BUCKET)
 				.unlockedBy(getHasName(Items.MAGMA_CREAM), has(Items.MAGMA_CREAM))
-				.save(recipeOutput, gogRL(getConversionRecipeName(Items.SLIME_BALL, Items.MAGMA_CREAM)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getConversionRecipeName(Items.SLIME_BALL, Items.MAGMA_CREAM)).toString()));
 		shaped(RecipeCategory.BUILDING_BLOCKS, Blocks.COBBLESTONE)
 				.define('#', BotaniaItems.PEBBLE)
 				.pattern("##")
 				.pattern("##")
 				.unlockedBy(getHasName(BotaniaItems.PEBBLE), has(BotaniaItems.PEBBLE))
-				.save(recipeOutput, gogRL(getConversionRecipeName(Blocks.COBBLESTONE, BotaniaItems.PEBBLE)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getConversionRecipeName(Blocks.COBBLESTONE, BotaniaItems.PEBBLE)).toString()));
 		shapeless(RecipeCategory.MISC, BotaniaItems.FLORAL_FERTILIZER, 1)
 				.requires(BotaniaItems.LIVING_ROOT)
 				.group("botania:floral_fertilizer")
 				.unlockedBy(getHasName(BotaniaItems.LIVING_ROOT), has(BotaniaItems.LIVING_ROOT))
-				.save(recipeOutput, gogRL(getConversionRecipeName(BotaniaItems.FLORAL_FERTILIZER, BotaniaItems.LIVING_ROOT)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getConversionRecipeName(BotaniaItems.FLORAL_FERTILIZER, BotaniaItems.LIVING_ROOT)).toString()));
 		shaped(RecipeCategory.MISC, Blocks.OAK_SAPLING)
 				.define('#', BotaniaItems.LIVING_ROOT)
 				.pattern("##")
 				.pattern("##")
 				.unlockedBy(getHasName(BotaniaItems.LIVING_ROOT), has(BotaniaItems.LIVING_ROOT))
-				.save(recipeOutput, gogRL(getConversionRecipeName(Blocks.OAK_SAPLING, BotaniaItems.LIVING_ROOT)).toString());
+				.save(recipeOutput, recipeKey(gogRL(getConversionRecipeName(Blocks.OAK_SAPLING, BotaniaItems.LIVING_ROOT)).toString()));
 
 		manaInfusion(recipeOutput, Items.HEART_OF_THE_SEA, Items.NAUTILUS_SHELL, 20000, ALCHEMY_CATALYST);
 		manaInfusion(recipeOutput, Items.PRISMARINE_CRYSTALS, Items.PRISMARINE_SHARD, 500, ALCHEMY_CATALYST);

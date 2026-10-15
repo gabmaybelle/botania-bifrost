@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cobbled_lunite_slab"
+        "recipes": "botania:cobbled_lunite_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

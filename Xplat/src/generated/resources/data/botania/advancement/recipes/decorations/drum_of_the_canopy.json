@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:drum_of_the_canopy"
+        "recipes": "botania:drum_of_the_canopy"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

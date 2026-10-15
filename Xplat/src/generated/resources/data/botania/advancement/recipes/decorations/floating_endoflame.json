@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_endoflame"
+        "recipes": "botania:floating_endoflame"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

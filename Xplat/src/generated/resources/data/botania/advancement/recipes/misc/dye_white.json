@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:dye_white"
+        "recipes": "botania:dye_white"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_dreadthorne"
+        "recipes": "botania:floating_dreadthorne"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

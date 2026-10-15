@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lunite_stairs"
+        "recipes": "botania:lunite_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

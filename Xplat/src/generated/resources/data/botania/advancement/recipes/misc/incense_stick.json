@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:incense_stick"
+        "recipes": "botania:incense_stick"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

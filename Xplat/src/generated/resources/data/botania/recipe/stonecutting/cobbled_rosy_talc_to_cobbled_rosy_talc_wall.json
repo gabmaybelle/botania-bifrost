@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:cobbled_rosy_talc"
-  },
+  "ingredient": "botania:cobbled_rosy_talc",
   "result": {
-    "count": 1,
     "id": "botania:cobbled_rosy_talc_wall"
   }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:great_fairy_ring"
+        "recipes": "botania:great_fairy_ring"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

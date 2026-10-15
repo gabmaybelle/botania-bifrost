@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_retainer"
+        "recipes": "botania:corporea_retainer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

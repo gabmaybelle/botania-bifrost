@@ -1,45 +1,21 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/blue"
-    },
-    {
-      "tag": "botania:petals/blue"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "item": "botania:rune_of_winter"
-    },
-    {
-      "item": "botania:rune_of_air"
-    },
-    {
-      "tag": "c:dusts/pixie"
-    }
+    "#botania:petals/red",
+    "#botania:petals/red",
+    "#botania:petals/green",
+    "#botania:petals/green",
+    "#botania:petals/blue",
+    "#botania:petals/blue",
+    "#botania:petals/white",
+    "#botania:petals/white",
+    "botania:rune_of_winter",
+    "botania:rune_of_air",
+    "#c:dusts/pixie"
   ],
   "output": {
     "count": 1,
     "id": "botania:spectrolus"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

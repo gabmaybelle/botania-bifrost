@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:pyroclast_pendant"
+        "recipes": "botania:pyroclast_pendant"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

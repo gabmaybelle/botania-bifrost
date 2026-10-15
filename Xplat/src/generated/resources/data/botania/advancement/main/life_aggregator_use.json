@@ -15,7 +15,6 @@
       "translate": "advancement.botania:spawnerMoverUse.desc"
     },
     "icon": {
-      "count": 1,
       "id": "botania:life_aggregator"
     },
     "title": {

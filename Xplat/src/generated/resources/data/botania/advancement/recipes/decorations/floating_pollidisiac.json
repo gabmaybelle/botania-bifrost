@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_pollidisiac"
+        "recipes": "botania:floating_pollidisiac"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

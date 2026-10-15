@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:flower_pouch"
+        "recipes": "botania:flower_pouch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

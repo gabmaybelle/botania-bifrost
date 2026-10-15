@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:smooth_red_quartz_block"
-  },
+  "ingredient": "botania:smooth_red_quartz_block",
   "result": {
-    "count": 1,
     "id": "botania:smooth_red_quartz_stairs"
   }
 }

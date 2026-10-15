@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:extrapolated_bucket"
+        "recipes": "botania:extrapolated_bucket"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

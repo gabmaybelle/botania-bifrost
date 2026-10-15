@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:damaging_lens"
+        "recipes": "botania:damaging_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

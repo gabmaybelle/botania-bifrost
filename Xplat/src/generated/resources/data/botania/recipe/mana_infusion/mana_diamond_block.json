@@ -1,8 +1,6 @@
 {
   "type": "botania:mana_infusion",
-  "input": {
-    "tag": "c:storage_blocks/diamond"
-  },
+  "input": "#c:storage_blocks/diamond",
   "mana": 90000,
   "output": {
     "count": 1,

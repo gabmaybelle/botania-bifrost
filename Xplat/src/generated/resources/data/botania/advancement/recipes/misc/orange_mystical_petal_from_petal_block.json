@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:orange_mystical_petal_from_petal_block"
+        "recipes": "botania:orange_mystical_petal_from_petal_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

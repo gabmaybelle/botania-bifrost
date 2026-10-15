@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:red_mystical_petal_from_red_mystical_flower"
+        "recipes": "botania:red_mystical_petal_from_red_mystical_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:flugel_tiara_0"
+        "recipes": "botania:flugel_tiara_0"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

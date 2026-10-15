@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:conjuration_catalyst"
+        "recipes": "botania:conjuration_catalyst"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

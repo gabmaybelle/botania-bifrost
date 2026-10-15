@@ -1,15 +1,9 @@
 {
   "type": "botania:terrestrial_agglomeration_plate",
   "ingredients": [
-    {
-      "tag": "c:ingots/manasteel"
-    },
-    {
-      "tag": "c:gems/mana_pearl"
-    },
-    {
-      "tag": "c:gems/mana_diamond"
-    }
+    "#c:ingots/manasteel",
+    "#c:gems/mana_pearl",
+    "#c:gems/mana_diamond"
   ],
   "mana": 500000,
   "result": {

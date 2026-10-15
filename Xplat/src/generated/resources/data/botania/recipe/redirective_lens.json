@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "tag": "botania:livingwood_logs"
-    },
-    {
-      "tag": "c:ingots/elementium"
-    }
+    "botania:mana_lens",
+    "#botania:livingwood_logs",
+    "#c:ingots/elementium"
   ],
   "result": {
-    "count": 1,
     "id": "botania:redirective_lens"
   }
 }

@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_cycle",
-  "input": {
-    "item": "minecraft:pink_tulip"
-  },
+  "input": "minecraft:pink_tulip",
   "mana": 400,
   "output": {
     "count": 1,

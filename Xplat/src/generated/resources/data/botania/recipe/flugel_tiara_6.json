@@ -1,8 +1,5 @@
 {
   "type": "botania:crafting_special_tiara_wings",
-  "category": "equipment",
-  "material": {
-    "item": "botania:red_quartz"
-  },
+  "material": "botania:red_quartz",
   "variant": 6
 }

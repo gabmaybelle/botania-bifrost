@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:poisonous_potato"
-  },
+  "input": "minecraft:poisonous_potato",
   "mana": 1200,
   "output": {
     "count": 1,

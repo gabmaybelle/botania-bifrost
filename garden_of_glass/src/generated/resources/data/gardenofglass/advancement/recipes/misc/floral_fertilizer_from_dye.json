@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:floral_fertilizer_from_dye"
+        "recipes": "gardenofglass:floral_fertilizer_from_dye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

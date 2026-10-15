@@ -43,7 +43,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spark_augments_banner_pattern"
+        "recipes": "botania:spark_augments_banner_pattern"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

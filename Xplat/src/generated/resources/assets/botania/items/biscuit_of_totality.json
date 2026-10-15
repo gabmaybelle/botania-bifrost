@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/biscuit_of_totality"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/totalbiscuit"
+    },
+    "property": "botania:test",
+    "test": "totalbiscuit"
+  }
+}

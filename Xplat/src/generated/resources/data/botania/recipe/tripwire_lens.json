@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:mana_lens"
-    },
-    {
-      "item": "minecraft:tripwire_hook"
-    },
-    {
-      "tag": "c:ingots/elementium"
-    }
+    "botania:mana_lens",
+    "minecraft:tripwire_hook",
+    "#c:ingots/elementium"
   ],
   "result": {
-    "count": 1,
     "id": "botania:tripwire_lens"
   }
 }

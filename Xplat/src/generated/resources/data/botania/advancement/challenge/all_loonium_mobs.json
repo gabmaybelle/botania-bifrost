@@ -3,331 +3,287 @@
   "criteria": {
     "minecraft:blaze": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:blaze",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:blaze",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:cave_spider": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:cave_spider",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:cave_spider",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:creeper": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:creeper",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:creeper",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:drowned": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:drowned",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:drowned",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:enderman": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:enderman",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:enderman",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:evoker": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:evoker",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:evoker",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:guardian": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:guardian",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:guardian",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:hoglin": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:hoglin",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:hoglin",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:husk": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:husk",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:husk",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:piglin": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:piglin",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:piglin",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:piglin_brute": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:piglin_brute",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:piglin_brute",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:pillager": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:pillager",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:pillager",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:shulker": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:shulker",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:shulker",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:silverfish": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:silverfish",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:silverfish",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:skeleton": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:skeleton",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:skeleton",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:stray": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:stray",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:stray",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:vindicator": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:vindicator",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:vindicator",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:wither_skeleton": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:wither_skeleton",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:wither_skeleton",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:zoglin": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:zoglin",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:zoglin",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:zombie": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:zombie",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:zombie",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:zombie_villager": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:zombie_villager",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:zombie_villager",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "minecraft:zombified_piglin": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "minecraft:zombified_piglin",
-              "team": "Loonium Monsters"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:zombified_piglin",
+            "minecraft:team": "Loonium Monsters"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     }
@@ -338,7 +294,6 @@
     },
     "frame": "challenge",
     "icon": {
-      "count": 1,
       "id": "botania:loonium"
     },
     "title": {

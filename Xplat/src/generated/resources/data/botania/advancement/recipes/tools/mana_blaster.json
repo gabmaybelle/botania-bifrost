@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_blaster"
+        "recipes": "botania:mana_blaster"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

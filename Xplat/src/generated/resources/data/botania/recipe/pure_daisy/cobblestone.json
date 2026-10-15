@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:cobblestone"
-    }
+    "state": "minecraft:cobblestone"
   },
   "time": 150
 }

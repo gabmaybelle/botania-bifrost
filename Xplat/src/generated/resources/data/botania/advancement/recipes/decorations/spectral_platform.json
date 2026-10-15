@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spectral_platform"
+        "recipes": "botania:spectral_platform"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

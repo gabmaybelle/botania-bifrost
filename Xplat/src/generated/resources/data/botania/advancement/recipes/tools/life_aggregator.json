@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:life_aggregator"
+        "recipes": "botania:life_aggregator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

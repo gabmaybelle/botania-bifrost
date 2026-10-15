@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:red_stringed_nutrifier"
+        "recipes": "botania:red_stringed_nutrifier"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

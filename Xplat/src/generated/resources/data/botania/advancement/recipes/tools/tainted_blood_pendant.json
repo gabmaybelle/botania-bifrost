@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:tainted_blood_pendant"
+        "recipes": "botania:tainted_blood_pendant"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

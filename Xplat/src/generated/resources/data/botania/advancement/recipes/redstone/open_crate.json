@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:open_crate"
+        "recipes": "botania:open_crate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

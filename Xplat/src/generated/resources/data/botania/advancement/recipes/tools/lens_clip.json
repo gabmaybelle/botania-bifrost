@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lens_clip"
+        "recipes": "botania:lens_clip"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

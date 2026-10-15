@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:livingrock_bricks"
-  },
+  "ingredient": "botania:livingrock_bricks",
   "result": {
     "id": "botania:cracked_livingrock_bricks"
   }

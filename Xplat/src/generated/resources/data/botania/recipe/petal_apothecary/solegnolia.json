@@ -1,27 +1,15 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/blue"
-    },
-    {
-      "item": "botania:redstone_root"
-    }
+    "#botania:petals/brown",
+    "#botania:petals/brown",
+    "#botania:petals/red",
+    "#botania:petals/blue",
+    "botania:redstone_root"
   ],
   "output": {
     "count": 1,
     "id": "botania:solegnolia"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

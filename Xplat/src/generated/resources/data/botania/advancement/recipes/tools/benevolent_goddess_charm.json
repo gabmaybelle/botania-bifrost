@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:benevolent_goddess_charm"
+        "recipes": "botania:benevolent_goddess_charm"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

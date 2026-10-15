@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:luminizer_launcher"
+        "recipes": "botania:luminizer_launcher"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

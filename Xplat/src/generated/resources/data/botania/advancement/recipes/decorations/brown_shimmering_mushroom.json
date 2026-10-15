@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:brown_shimmering_mushroom"
+        "recipes": "botania:brown_shimmering_mushroom"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

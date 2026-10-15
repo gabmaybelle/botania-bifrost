@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:crop_cycle",
-  "input": {
-    "item": "minecraft:pumpkin_seeds"
-  },
+  "input": "minecraft:pumpkin_seeds",
   "mana": 6000,
   "output": {
     "count": 1,

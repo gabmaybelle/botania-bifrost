@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:solite"
-  },
+  "ingredient": "botania:solite",
   "result": {
-    "count": 1,
     "id": "botania:solite_stairs"
   }
 }

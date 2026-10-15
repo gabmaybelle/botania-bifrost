@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:hand_of_ender"
+        "recipes": "botania:hand_of_ender"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elven_mana_spreader"
+        "recipes": "botania:elven_mana_spreader"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

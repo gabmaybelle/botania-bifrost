@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_manastar"
+        "recipes": "botania:floating_manastar"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

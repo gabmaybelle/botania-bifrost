@@ -1,24 +1,14 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "item": "botania:redstone_root"
-    }
+    "#botania:petals/orange",
+    "#botania:petals/green",
+    "#botania:petals/green",
+    "botania:redstone_root"
   ],
   "output": {
     "count": 1,
     "id": "botania:bergamute"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

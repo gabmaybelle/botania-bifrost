@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "W": {
-      "item": "botania:livingwood_planks"
-    }
+    "W": "botania:livingwood_planks"
   },
   "pattern": [
     "WWW",
@@ -12,7 +10,6 @@
     "W W"
   ],
   "result": {
-    "count": 1,
     "id": "botania:open_crate"
   }
 }

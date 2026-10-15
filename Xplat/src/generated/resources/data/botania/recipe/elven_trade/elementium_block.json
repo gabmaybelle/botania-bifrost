@@ -1,15 +1,12 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/manasteel"
-    },
-    {
-      "tag": "c:storage_blocks/manasteel"
-    }
+    "#c:storage_blocks/manasteel",
+    "#c:storage_blocks/manasteel"
   ],
   "output": [
     {
+      "count": 1,
       "id": "botania:elementium_block"
     }
   ]

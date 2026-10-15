@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "M": {
-      "item": "botania:managlass"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "tag": "c:ingots/manasteel"
-    }
+    "G": "#c:ingots/gold",
+    "M": "botania:managlass",
+    "R": "#c:dusts/redstone",
+    "S": "#c:ingots/manasteel"
   },
   "pattern": [
     "GMG",
@@ -21,7 +13,6 @@
     "GMG"
   ],
   "result": {
-    "count": 1,
     "id": "botania:hovering_hourglass"
   }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:dreamwood_plank_stairs"
+        "recipes": "botania:dreamwood_plank_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

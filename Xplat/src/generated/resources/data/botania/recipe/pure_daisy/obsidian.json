@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:obsidian"
-    }
+    "state": "minecraft:obsidian"
   },
   "time": 150
 }

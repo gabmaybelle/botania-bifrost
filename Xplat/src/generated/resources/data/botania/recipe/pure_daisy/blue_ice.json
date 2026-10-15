@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:blue_ice"
-    }
+    "state": "minecraft:blue_ice"
   },
   "time": 150
 }

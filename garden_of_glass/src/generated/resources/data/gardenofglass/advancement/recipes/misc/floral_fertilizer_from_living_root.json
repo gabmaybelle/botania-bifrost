@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:floral_fertilizer_from_living_root"
+        "recipes": "gardenofglass:floral_fertilizer_from_living_root"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

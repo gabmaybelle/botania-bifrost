@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:ring_of_dexterous_motion"
+        "recipes": "botania:ring_of_dexterous_motion"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

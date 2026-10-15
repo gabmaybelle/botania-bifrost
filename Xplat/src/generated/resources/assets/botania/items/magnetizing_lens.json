@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/magnetizing_lens",
+    "tints": [
+      {
+        "type": "botania:lens"
+      }
+    ]
+  }
+}

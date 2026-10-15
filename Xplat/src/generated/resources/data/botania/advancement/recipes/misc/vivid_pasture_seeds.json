@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:vivid_pasture_seeds"
+        "recipes": "botania:vivid_pasture_seeds"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

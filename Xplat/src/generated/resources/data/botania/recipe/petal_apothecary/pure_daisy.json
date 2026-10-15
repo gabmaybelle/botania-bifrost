@@ -1,24 +1,14 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    }
+    "#botania:petals/white",
+    "#botania:petals/white",
+    "#botania:petals/white",
+    "#botania:petals/white"
   ],
   "output": {
     "count": 1,
     "id": "botania:pure_daisy"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

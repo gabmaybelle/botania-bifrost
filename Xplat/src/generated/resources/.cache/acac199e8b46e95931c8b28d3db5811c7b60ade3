@@ -1,0 +1,11 @@
+// 26.3	-999999999-01-01T00:00:00	Botania Bifrost/Botania Pure Daisy recipes
+fbae0552ba2817d467a962370cf8f9515758233c data/botania/recipe/pure_daisy/blue_ice.json
+493719e7efba111bae354670090565104e874673 data/botania/recipe/pure_daisy/calcite.json
+3e88f5dc87c5863974004d766a7d9a3190b4b6ff data/botania/recipe/pure_daisy/cobbled_deepslate.json
+d5b5e42fcca7edc02ac04cb16905b7203197d1c7 data/botania/recipe/pure_daisy/cobblestone.json
+f83fe5d3391ab83fff34f8041a054cf61a33a805 data/botania/recipe/pure_daisy/livingrock.json
+310da57812dac985a30e277521ad224c467372eb data/botania/recipe/pure_daisy/livingwood_log.json
+5c272d87b5e61729d5b59eeb53f34dec37c3f990 data/botania/recipe/pure_daisy/obsidian.json
+ecb00a4abdeefcbb1edc91f00607ea1b47a184c5 data/botania/recipe/pure_daisy/packed_ice.json
+b9670c232d243523de71e0c16824ac665e09f86d data/botania/recipe/pure_daisy/sand.json
+2c9de2bf780ca12ee0b4e9227d3b4d713ee2e566 data/botania/recipe/pure_daisy/snow_block.json

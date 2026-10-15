@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lunite_wall"
+        "recipes": "botania:lunite_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

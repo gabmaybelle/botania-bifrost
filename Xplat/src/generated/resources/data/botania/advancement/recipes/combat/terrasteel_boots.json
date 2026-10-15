@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terrasteel_boots"
+        "recipes": "botania:terrasteel_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

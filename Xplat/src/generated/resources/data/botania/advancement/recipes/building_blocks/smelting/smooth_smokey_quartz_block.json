@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/smooth_smokey_quartz_block"
+        "recipes": "botania:smelting/smooth_smokey_quartz_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

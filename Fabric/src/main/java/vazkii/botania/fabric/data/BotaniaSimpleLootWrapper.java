@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvi
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderOwner;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -68,10 +69,20 @@ public class BotaniaSimpleLootWrapper extends SimpleFabricLootTableSubProvider {
 			return registries.lookupOrThrow(Registries.LOOT_TABLE);
 		}
 
+		// The datagen registries hand out delegating wrappers that answer "can serialize" through their parent, so a
+		// stand-alone reference has to name the innermost lookup as its owner or the loot table codec rejects it.
+		private static HolderOwner<LootTable> owner(HolderLookup.RegistryLookup<LootTable> lookup) {
+			HolderLookup.RegistryLookup<LootTable> owner = lookup;
+			while (owner instanceof HolderLookup.RegistryLookup.Delegate<LootTable> delegate) {
+				owner = delegate.parent();
+			}
+			return owner;
+		}
+
 		@Override
 		public Holder.Reference<LootTable> accept(ResourceKey<LootTable> key, LootTable.Builder value) {
 			output.accept(key, value);
-			return Holder.Reference.createStandAlone(lootTables(), key);
+			return Holder.Reference.createStandAlone(owner(lootTables()), key);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -82,7 +93,7 @@ public class BotaniaSimpleLootWrapper extends SimpleFabricLootTableSubProvider {
 				return (HolderGetter<S>) new HolderGetter<LootTable>() {
 					@Override
 					public Optional<Holder.Reference<LootTable>> get(ResourceKey<LootTable> id) {
-						return Optional.of(lootTables.get(id).orElseGet(() -> Holder.Reference.createStandAlone(lootTables, id)));
+						return Optional.of(lootTables.get(id).orElseGet(() -> Holder.Reference.createStandAlone(owner(lootTables), id)));
 					}
 
 					@Override

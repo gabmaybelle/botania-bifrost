@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingwood_trapdoor"
+        "recipes": "botania:livingwood_trapdoor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

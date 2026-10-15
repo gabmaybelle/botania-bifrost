@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_kekimurus"
+        "recipes": "botania:floating_kekimurus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

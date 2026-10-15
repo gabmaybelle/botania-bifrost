@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "M": {
-      "tag": "c:ingots/manasteel"
-    },
-    "R": {
-      "item": "botania:rune_of_water"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    },
-    "W": {
-      "item": "botania:rune_of_winter"
-    }
+    "M": "#c:ingots/manasteel",
+    "R": "botania:rune_of_water",
+    "S": "botania:mana_string",
+    "W": "botania:rune_of_winter"
   },
   "pattern": [
     "WS ",
@@ -21,7 +13,6 @@
     "MSR"
   ],
   "result": {
-    "count": 1,
     "id": "botania:snowflake_pendant"
   }
 }

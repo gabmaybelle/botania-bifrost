@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_exoflame"
+        "recipes": "botania:floating_exoflame"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

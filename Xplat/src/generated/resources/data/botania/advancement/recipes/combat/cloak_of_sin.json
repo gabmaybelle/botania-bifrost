@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cloak_of_sin"
+        "recipes": "botania:cloak_of_sin"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

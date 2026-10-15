@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:calcite"
-    }
+    "state": "minecraft:calcite"
   },
   "time": 150
 }

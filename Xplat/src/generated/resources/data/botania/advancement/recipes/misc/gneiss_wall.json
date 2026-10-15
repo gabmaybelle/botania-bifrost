@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gneiss_wall"
+        "recipes": "botania:gneiss_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

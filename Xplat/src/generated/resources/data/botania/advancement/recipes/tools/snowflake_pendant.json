@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:snowflake_pendant"
+        "recipes": "botania:snowflake_pendant"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

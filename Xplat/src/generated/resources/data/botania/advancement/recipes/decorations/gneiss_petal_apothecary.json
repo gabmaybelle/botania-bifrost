@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gneiss_petal_apothecary"
+        "recipes": "botania:gneiss_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

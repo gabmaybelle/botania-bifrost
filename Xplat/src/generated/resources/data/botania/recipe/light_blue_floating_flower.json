@@ -1,17 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "botania:floating_flowers",
   "key": {
-    "D": {
-      "item": "minecraft:dirt"
-    },
-    "F": {
-      "item": "botania:light_blue_glimmering_flower"
-    },
-    "S": {
-      "item": "botania:pasture_seeds"
-    }
+    "D": "minecraft:dirt",
+    "F": "botania:light_blue_glimmering_flower",
+    "S": "botania:pasture_seeds"
   },
   "pattern": [
     "F",
@@ -19,7 +12,6 @@
     "D"
   ],
   "result": {
-    "count": 1,
     "id": "botania:light_blue_floating_flower"
   }
 }

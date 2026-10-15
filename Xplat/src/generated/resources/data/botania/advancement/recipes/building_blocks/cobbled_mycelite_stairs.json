@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cobbled_mycelite_stairs"
+        "recipes": "botania:cobbled_mycelite_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_detector"
+        "recipes": "botania:mana_detector"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

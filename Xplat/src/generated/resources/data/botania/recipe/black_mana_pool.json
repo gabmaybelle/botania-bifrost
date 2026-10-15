@@ -1,17 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "group": "mana_pool_dyeing",
   "ingredients": [
-    {
-      "item": "botania:mana_pool"
-    },
-    {
-      "tag": "botania:petals/black"
-    }
+    "botania:mana_pool",
+    "#botania:petals/black"
   ],
   "result": {
-    "count": 1,
     "id": "botania:black_mana_pool"
   }
 }

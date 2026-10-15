@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:dirt"
-  },
+  "input": "minecraft:dirt",
   "mana": 120,
   "output": {
     "count": 1,

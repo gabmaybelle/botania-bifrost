@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:packed_ice"
-    }
+    "state": "minecraft:packed_ice"
   },
   "time": 150
 }

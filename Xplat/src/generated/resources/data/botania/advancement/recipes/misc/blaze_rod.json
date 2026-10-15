@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_blaze_mesh": {
@@ -33,7 +24,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:blaze_rod"
+        "recipes": "botania:blaze_rod"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

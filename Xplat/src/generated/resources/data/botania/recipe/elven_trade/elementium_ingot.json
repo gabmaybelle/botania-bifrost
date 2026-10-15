@@ -1,15 +1,12 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "tag": "c:ingots/manasteel"
-    },
-    {
-      "tag": "c:ingots/manasteel"
-    }
+    "#c:ingots/manasteel",
+    "#c:ingots/manasteel"
   ],
   "output": [
     {
+      "count": 1,
       "id": "botania:elementium_ingot"
     }
   ]

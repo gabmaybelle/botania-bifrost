@@ -3,15 +3,12 @@
   "category": "redstone",
   "group": "botania:metamorphic_stone_pressure_plate",
   "key": {
-    "#": {
-      "item": "botania:talc"
-    }
+    "#": "botania:talc"
   },
   "pattern": [
     "##"
   ],
   "result": {
-    "count": 1,
     "id": "botania:talc_pressure_plate"
   }
 }

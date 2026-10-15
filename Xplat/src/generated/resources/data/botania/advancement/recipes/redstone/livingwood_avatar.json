@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingwood_avatar"
+        "recipes": "botania:livingwood_avatar"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

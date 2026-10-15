@@ -1,12 +1,11 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "tag": "c:gems/mana_pearl"
-    }
+    "#c:gems/mana_pearl"
   ],
   "output": [
     {
+      "count": 1,
       "id": "botania:pixie_dust"
     }
   ]

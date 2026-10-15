@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_hyacidus"
+        "recipes": "botania:floating_hyacidus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

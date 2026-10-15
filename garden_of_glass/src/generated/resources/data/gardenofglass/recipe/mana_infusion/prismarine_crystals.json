@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:prismarine_shard"
-  },
+  "input": "minecraft:prismarine_shard",
   "mana": 500,
   "output": {
     "count": 1,

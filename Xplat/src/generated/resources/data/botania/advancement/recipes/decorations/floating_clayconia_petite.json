@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_clayconia_petite"
+        "recipes": "botania:floating_clayconia_petite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:master_corporea_spark"
+        "recipes": "botania:master_corporea_spark"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

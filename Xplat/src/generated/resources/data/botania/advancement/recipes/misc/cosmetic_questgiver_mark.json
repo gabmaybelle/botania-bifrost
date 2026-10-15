@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_questgiver_mark"
+        "recipes": "botania:cosmetic_questgiver_mark"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

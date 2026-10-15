@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:lossy_deconstruction",
-  "input": {
-    "tag": "minecraft:wool"
-  },
+  "input": "#minecraft:wool",
   "mana": 100,
   "output": {
     "count": 3,

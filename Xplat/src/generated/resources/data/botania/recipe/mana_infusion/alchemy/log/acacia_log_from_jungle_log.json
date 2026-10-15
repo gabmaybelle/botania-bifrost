@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:log_cycle",
-  "input": {
-    "item": "minecraft:jungle_log"
-  },
+  "input": "minecraft:jungle_log",
   "mana": 40,
   "output": {
     "count": 1,

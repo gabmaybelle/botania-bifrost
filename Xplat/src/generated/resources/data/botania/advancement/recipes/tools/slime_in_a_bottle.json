@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:slime_in_a_bottle"
+        "recipes": "botania:slime_in_a_bottle"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:manufactory_halo"
+        "recipes": "botania:manufactory_halo"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

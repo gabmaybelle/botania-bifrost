@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_stone_stairs",
   "key": {
-    "Q": {
-      "item": "botania:lunite"
-    }
+    "Q": "botania:lunite"
   },
   "pattern": [
     "Q  ",

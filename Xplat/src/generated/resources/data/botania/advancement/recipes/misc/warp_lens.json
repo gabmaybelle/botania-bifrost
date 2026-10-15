@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:warp_lens"
+        "recipes": "botania:warp_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

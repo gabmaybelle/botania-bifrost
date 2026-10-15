@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:dreamwood_twig"
+        "recipes": "botania:dreamwood_twig"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

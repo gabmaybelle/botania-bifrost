@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:polished_livingrock_stairs"
+        "recipes": "botania:polished_livingrock_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

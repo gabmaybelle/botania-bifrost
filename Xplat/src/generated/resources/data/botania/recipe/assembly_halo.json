@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "tag": "c:player_workstations/crafting_tables"
-    },
-    "I": {
-      "tag": "c:ingots/manasteel"
-    },
-    "P": {
-      "tag": "c:gems/mana_pearl"
-    }
+    "C": "#c:player_workstations/crafting_tables",
+    "I": "#c:ingots/manasteel",
+    "P": "#c:gems/mana_pearl"
   },
   "pattern": [
     " P ",
@@ -18,7 +12,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "botania:assembly_halo"
   }
 }

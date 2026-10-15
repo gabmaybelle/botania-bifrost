@@ -1,14 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "botania:cosmetic_bauble",
   "key": {
-    "P": {
-      "item": "minecraft:red_dye"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "P": "minecraft:red_dye",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "PPP",
@@ -16,7 +11,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cosmetic_tiny_potato_mask"
   }
 }

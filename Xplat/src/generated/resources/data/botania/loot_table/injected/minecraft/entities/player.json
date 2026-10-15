@@ -1,44 +1,44 @@
 {
   "type": "minecraft:entity",
-  "functions": [
-    {
-      "entity": "this",
-      "function": "minecraft:fill_player_head"
-    }
-  ],
+  "modifier": {
+    "type": "minecraft:fill_player_head",
+    "entity": "this"
+  },
   "pools": [
     {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:entity_properties",
-          "entity": "attacking_player",
-          "predicate": {
-            "equipment": {
-              "mainhand": {
-                "items": "botania:elementium_axe"
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:entity_properties",
+            "entity": "attacking_player",
+            "predicate": {
+              "minecraft:equipment": {
+                "mainhand": {
+                  "items": "botania:elementium_axe"
+                }
               }
             }
-          }
-        },
-        {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
-          "enchanted_chance": {
-            "type": "minecraft:linear",
-            "base": 0.1818,
-            "per_level_above_first": 0.0909
           },
-          "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.0909
-        }
-      ],
+          {
+            "type": "minecraft:random_chance_with_enchanted_bonus",
+            "enchanted_chance": {
+              "type": "minecraft:linear",
+              "base": 0.1818,
+              "per_level_above_first": 0.0909
+            },
+            "enchantment": "minecraft:looting",
+            "unenchanted_chance": 0.0909
+          }
+        ]
+      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:player_head"
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

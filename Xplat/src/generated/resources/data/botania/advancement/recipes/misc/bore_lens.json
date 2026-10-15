@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:bore_lens"
+        "recipes": "botania:bore_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

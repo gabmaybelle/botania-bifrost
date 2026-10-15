@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_tigerseye"
+        "recipes": "botania:floating_tigerseye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

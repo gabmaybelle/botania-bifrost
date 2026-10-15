@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_lens"
+        "recipes": "botania:mana_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

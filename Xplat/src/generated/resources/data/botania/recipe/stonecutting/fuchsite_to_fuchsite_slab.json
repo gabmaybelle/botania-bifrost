@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:fuchsite"
-  },
+  "ingredient": "botania:fuchsite",
   "result": {
     "count": 2,
     "id": "botania:fuchsite_slab"

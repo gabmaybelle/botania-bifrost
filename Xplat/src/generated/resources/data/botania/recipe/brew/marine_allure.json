@@ -2,17 +2,9 @@
   "type": "botania:brew",
   "brew": "botania:marine_allure",
   "ingredients": [
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:cod"
-    },
-    {
-      "item": "minecraft:quartz"
-    },
-    {
-      "item": "minecraft:golden_carrot"
-    }
+    "minecraft:nether_wart",
+    "minecraft:cod",
+    "minecraft:quartz",
+    "minecraft:golden_carrot"
   ]
 }

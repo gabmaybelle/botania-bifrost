@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terra_truncator"
+        "recipes": "botania:terra_truncator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

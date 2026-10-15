@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:spark_tinkerer"
+        "recipes": "botania:spark_tinkerer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

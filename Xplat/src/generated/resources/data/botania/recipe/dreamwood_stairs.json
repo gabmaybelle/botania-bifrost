@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:dreamwood"
-    }
+    "Q": "botania:dreamwood"
   },
   "pattern": [
     "Q  ",

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:greater_ring_of_magnetization"
+        "recipes": "botania:greater_ring_of_magnetization"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

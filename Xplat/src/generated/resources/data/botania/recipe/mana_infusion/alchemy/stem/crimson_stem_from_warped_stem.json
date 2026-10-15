@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:stem_cycle",
-  "input": {
-    "item": "minecraft:warped_stem"
-  },
+  "input": "minecraft:warped_stem",
   "mana": 40,
   "output": {
     "count": 1,

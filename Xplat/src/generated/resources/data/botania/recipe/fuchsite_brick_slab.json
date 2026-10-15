@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_brick_slab",
   "key": {
-    "Q": {
-      "item": "botania:fuchsite_bricks"
-    }
+    "Q": "botania:fuchsite_bricks"
   },
   "pattern": [
     "QQQ"

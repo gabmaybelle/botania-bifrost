@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:cobbled_deepslate"
-    }
+    "state": "minecraft:cobbled_deepslate"
   },
   "success_function": "botania:ender_essence_release",
   "time": 150

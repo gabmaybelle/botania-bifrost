@@ -1,7 +1,6 @@
 {
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:loot_table",
@@ -13,7 +12,7 @@
           "name": "minecraft:elytra"
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

@@ -2,17 +2,9 @@
   "type": "botania:brew",
   "brew": "botania:absolution",
   "ingredients": [
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:quartz"
-    },
-    {
-      "item": "minecraft:emerald"
-    },
-    {
-      "item": "minecraft:melon_slice"
-    }
+    "minecraft:nether_wart",
+    "minecraft:quartz",
+    "minecraft:emerald",
+    "minecraft:melon_slice"
   ]
 }

@@ -1,11 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "botania:petal_block",
   "key": {
-    "#": {
-      "item": "botania:green_mystical_petal"
-    }
+    "#": "botania:green_mystical_petal"
   },
   "pattern": [
     "###",
@@ -13,7 +10,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "botania:green_petal_block"
   }
 }

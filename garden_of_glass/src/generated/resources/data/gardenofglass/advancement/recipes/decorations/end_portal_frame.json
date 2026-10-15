@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:end_portal_frame"
+        "recipes": "gardenofglass:end_portal_frame"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

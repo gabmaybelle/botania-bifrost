@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lunite_petal_apothecary"
+        "recipes": "botania:lunite_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

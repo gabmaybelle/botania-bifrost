@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_funnel"
+        "recipes": "botania:corporea_funnel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

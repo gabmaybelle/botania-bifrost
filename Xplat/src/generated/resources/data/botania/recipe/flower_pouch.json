@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "P": {
-      "tag": "botania:petals"
-    },
-    "W": {
-      "tag": "minecraft:wool"
-    }
+    "P": "#botania:petals",
+    "W": "#minecraft:wool"
   },
   "pattern": [
     "WPW",
@@ -15,7 +11,6 @@
     " W "
   ],
   "result": {
-    "count": 1,
     "id": "botania:flower_pouch"
   }
 }

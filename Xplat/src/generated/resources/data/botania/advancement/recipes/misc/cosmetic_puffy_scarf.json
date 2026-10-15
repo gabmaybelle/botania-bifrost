@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_puffy_scarf"
+        "recipes": "botania:cosmetic_puffy_scarf"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

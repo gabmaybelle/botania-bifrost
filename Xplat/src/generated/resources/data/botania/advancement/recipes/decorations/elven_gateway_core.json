@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:elven_gateway_core"
+        "recipes": "botania:elven_gateway_core"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

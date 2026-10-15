@@ -1,11 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "group": "botania:mana_diamond",
   "ingredients": [
-    {
-      "item": "botania:mana_diamond_block"
-    }
+    "botania:mana_diamond_block"
   ],
   "result": {
     "count": 9,

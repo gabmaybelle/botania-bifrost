@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:managlass_pane"
+        "recipes": "botania:managlass_pane"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_agricarnation_petite"
+        "recipes": "botania:floating_agricarnation_petite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

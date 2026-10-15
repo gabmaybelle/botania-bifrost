@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "botania:shimmerrock"
-    }
+    "botania:shimmerrock"
   ],
   "result": {
-    "count": 1,
     "id": "botania:shimmerrock_button"
   }
 }

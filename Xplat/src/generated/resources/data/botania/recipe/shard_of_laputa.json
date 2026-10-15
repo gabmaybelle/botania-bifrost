@@ -2,24 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:rune_of_air"
-    },
-    "D": {
-      "tag": "c:gems/dragonstone"
-    },
-    "E": {
-      "item": "botania:rune_of_earth"
-    },
-    "F": {
-      "tag": "botania:mundane_floating_flowers"
-    },
-    "P": {
-      "tag": "c:gems/prismarine"
-    },
-    "S": {
-      "item": "botania:gaia_spirit"
-    }
+    "A": "botania:rune_of_air",
+    "D": "#c:gems/dragonstone",
+    "E": "botania:rune_of_earth",
+    "F": "#botania:mundane_floating_flowers",
+    "P": "#c:gems/prismarine",
+    "S": "botania:gaia_spirit"
   },
   "pattern": [
     "SFS",
@@ -27,7 +15,6 @@
     "ASE"
   ],
   "result": {
-    "count": 1,
     "id": "botania:shard_of_laputa"
   }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:horn_of_the_wild"
+        "recipes": "botania:horn_of_the_wild"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

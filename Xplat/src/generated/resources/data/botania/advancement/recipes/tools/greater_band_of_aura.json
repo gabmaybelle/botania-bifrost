@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:greater_band_of_aura"
+        "recipes": "botania:greater_band_of_aura"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

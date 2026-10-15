@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gaia_mana_spreader"
+        "recipes": "botania:gaia_mana_spreader"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

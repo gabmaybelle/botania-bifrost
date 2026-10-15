@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "D": {
-      "tag": "botania:dreamwood_logs"
-    },
-    "L": {
-      "item": "botania:luminizer"
-    }
+    "D": "#botania:dreamwood_logs",
+    "L": "botania:luminizer"
   },
   "pattern": [
     "DDD",
     "DLD"
   ],
   "result": {
-    "count": 1,
     "id": "botania:luminizer_launcher"
   }
 }

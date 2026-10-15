@@ -1,24 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": [
-      {
-        "item": "minecraft:allium"
-      },
-      {
-        "item": "minecraft:pink_tulip"
-      },
-      {
-        "item": "minecraft:lilac"
-      },
-      {
-        "item": "minecraft:peony"
-      }
+      "minecraft:allium",
+      "minecraft:pink_tulip",
+      "minecraft:lilac",
+      "minecraft:peony"
     ],
-    "Q": {
-      "item": "minecraft:quartz"
-    }
+    "Q": "minecraft:quartz"
   },
   "pattern": [
     "QQQ",

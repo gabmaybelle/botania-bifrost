@@ -3,12 +3,9 @@
   "category": "redstone",
   "group": "botania:metamorphic_stone_button",
   "ingredients": [
-    {
-      "item": "botania:lunite"
-    }
+    "botania:lunite"
   ],
   "result": {
-    "count": 1,
     "id": "botania:lunite_button"
   }
 }

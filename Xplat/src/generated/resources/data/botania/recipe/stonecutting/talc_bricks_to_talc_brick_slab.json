@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:talc_bricks"
-  },
+  "ingredient": "botania:talc_bricks",
   "result": {
     "count": 2,
     "id": "botania:talc_brick_slab"

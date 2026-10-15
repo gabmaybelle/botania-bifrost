@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_jaded_amaranthus"
+        "recipes": "botania:floating_jaded_amaranthus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

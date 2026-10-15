@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:paintslinger_lens"
+        "recipes": "botania:paintslinger_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

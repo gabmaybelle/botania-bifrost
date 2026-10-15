@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:orange_floating_flower"
+        "recipes": "botania:orange_floating_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

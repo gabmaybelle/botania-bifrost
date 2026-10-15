@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/gaia_mana_spreader",
+    "tints": [
+      {
+        "type": "botania:gaia_spreader"
+      }
+    ]
+  }
+}

@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:cobbled_rosy_talc"
-  },
+  "ingredient": "botania:cobbled_rosy_talc",
   "result": {
     "id": "botania:rosy_talc"
   }

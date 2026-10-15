@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:cocoon_of_caprice"
+        "recipes": "gardenofglass:cocoon_of_caprice"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:shrub_cycle",
-  "input": {
-    "item": "minecraft:short_grass"
-  },
+  "input": "minecraft:short_grass",
   "mana": 500,
   "output": {
     "count": 1,

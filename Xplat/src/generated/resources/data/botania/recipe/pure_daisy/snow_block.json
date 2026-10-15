@@ -6,9 +6,7 @@
   },
   "output": {
     "type": "botania:state",
-    "state": {
-      "Name": "minecraft:snow_block"
-    }
+    "state": "minecraft:snow_block"
   },
   "time": 150
 }

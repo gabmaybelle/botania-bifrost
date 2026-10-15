@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:fuchsite_bricks"
+        "recipes": "botania:fuchsite_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

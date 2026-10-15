@@ -1,16 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "D": {
-      "tag": "c:dusts/pixie"
-    },
-    "E": {
-      "tag": "c:ingots/elementium"
-    },
-    "P": {
-      "item": "botania:mana_pylon"
-    }
+    "D": "#c:dusts/pixie",
+    "E": "#c:ingots/elementium",
+    "P": "botania:mana_pylon"
   },
   "pattern": [
     " D ",
@@ -18,7 +11,6 @@
     " D "
   ],
   "result": {
-    "count": 1,
     "id": "botania:gaia_pylon"
   }
 }

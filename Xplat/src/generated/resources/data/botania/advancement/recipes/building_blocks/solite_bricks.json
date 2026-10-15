@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:solite_bricks"
+        "recipes": "botania:solite_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

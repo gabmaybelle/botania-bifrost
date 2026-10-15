@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:mana_quartz_block"
-  },
+  "ingredient": "botania:mana_quartz_block",
   "result": {
     "id": "botania:smooth_mana_quartz_block"
   }

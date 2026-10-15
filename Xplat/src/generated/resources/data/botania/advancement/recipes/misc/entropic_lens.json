@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:entropic_lens"
+        "recipes": "botania:entropic_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

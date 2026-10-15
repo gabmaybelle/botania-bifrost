@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:shimmerwood_pressure_plate"
+        "recipes": "botania:shimmerwood_pressure_plate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

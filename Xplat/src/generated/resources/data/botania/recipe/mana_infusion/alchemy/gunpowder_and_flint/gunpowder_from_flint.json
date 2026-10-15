@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:gunpowder_and_flint_cycle",
-  "input": {
-    "item": "minecraft:flint"
-  },
+  "input": "minecraft:flint",
   "mana": 200,
   "output": {
     "count": 1,

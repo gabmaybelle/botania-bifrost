@@ -1,19 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:dusts/pixie"
-    },
-    {
-      "item": "minecraft:vine"
-    },
-    {
-      "item": "botania:pure_ender_essence"
-    }
+    "#c:dusts/pixie",
+    "minecraft:vine",
+    "botania:pure_ender_essence"
   ],
   "result": {
-    "count": 1,
     "id": "botania:resolute_ivy"
   }
 }

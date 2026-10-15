@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:managlass_vial"
+        "recipes": "botania:managlass_vial"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

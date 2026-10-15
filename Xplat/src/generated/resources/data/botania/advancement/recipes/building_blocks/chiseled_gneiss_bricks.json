@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:chiseled_gneiss_bricks"
+        "recipes": "botania:chiseled_gneiss_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

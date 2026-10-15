@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:stem_cycle",
-  "input": {
-    "item": "minecraft:crimson_stem"
-  },
+  "input": "minecraft:crimson_stem",
   "mana": 40,
   "output": {
     "count": 1,

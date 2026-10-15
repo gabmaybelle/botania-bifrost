@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:redstone_root"
+        "recipes": "botania:redstone_root"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

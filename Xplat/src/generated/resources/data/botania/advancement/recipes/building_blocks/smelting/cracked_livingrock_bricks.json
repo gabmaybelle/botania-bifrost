@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/cracked_livingrock_bricks"
+        "recipes": "botania:smelting/cracked_livingrock_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -9,8 +9,8 @@
 
 package vazkii.botania.neoforge.data;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableProvider;
@@ -23,23 +23,18 @@ import net.minecraft.world.level.biome.TheEndBiomeSource;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.world.BiomeModifier;
-import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import vazkii.botania.api.BotaniaAPI;
-import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.world.SkyblockChunkGenerator;
+import vazkii.botania.data.util.DatagenItemComponents;
 import vazkii.botania.neoforge.data.gog.GogBlockLootSubProvider;
 import vazkii.botania.neoforge.data.gog.GogBlockTagsProvider;
 import vazkii.botania.neoforge.data.gog.GogBlockUseLootProvider;
@@ -51,24 +46,8 @@ import vazkii.botania.neoforge.data.gog.GogWorldPresetTagsProvider;
 import java.util.Map;
 import java.util.Set;
 
-import static vazkii.botania.api.BotaniaAPI.botaniaRL;
-
 @EventBusSubscriber(modid = BotaniaAPI.MODID)
 public class NeoForgeDatagenInitializer {
-	private static final ResourceKey<PlacedFeature> MYSTICAL_FLOWERS_FEATURE = ResourceKey.create(
-			Registries.PLACED_FEATURE, botaniaRL("mystical_flowers"));
-	private static final ResourceKey<PlacedFeature> SHIMMERING_MUSHROOMS_FEATURE = ResourceKey.create(
-			Registries.PLACED_FEATURE, botaniaRL("shimmering_mushrooms"));
-
-	private static final ResourceKey<BiomeModifier> ADD_MYSTICAL_FLOWERS = ResourceKey.create(
-			NeoForgeRegistries.Keys.BIOME_MODIFIERS, botaniaRL("add_mystical_flowers"));
-	private static final ResourceKey<BiomeModifier> ADD_SHIMMERING_MUSHROOMS = ResourceKey.create(
-			NeoForgeRegistries.Keys.BIOME_MODIFIERS, botaniaRL("add_shimmering_mushrooms"));
-	private static final ResourceKey<BiomeModifier> REMOVE_MYSTICAL_FLOWERS = ResourceKey.create(
-			NeoForgeRegistries.Keys.BIOME_MODIFIERS, botaniaRL("remove_mystical_flowers"));
-	private static final ResourceKey<BiomeModifier> REMOVE_SHIMMERING_MUSHROOMS = ResourceKey.create(
-			NeoForgeRegistries.Keys.BIOME_MODIFIERS, botaniaRL("remove_shimmering_mushrooms"));
-
 	public static final ResourceKey<WorldPreset> SKYBLOCK_PRESET = ResourceKey.create(
 			Registries.WORLD_PRESET, BotaniaAPI.gogRL("gardenofglass"));
 
@@ -76,6 +55,7 @@ public class NeoForgeDatagenInitializer {
 	// recipes and loot tables are registries now and go through GatherDataRegistryEntriesEvent
 	@SubscribeEvent
 	public static void configureDatagen(GatherDataEvent.Client evt) {
+		bindItemComponents();
 		if (System.getProperty("botania.gog_datagen") != null) {
 			configureGogDatagen(evt);
 		} else {
@@ -83,8 +63,23 @@ public class NeoForgeDatagenInitializer {
 		}
 	}
 
+	// PORT-26.3: bind the item components (a server job normally): the recipe providers build item stacks, and the
+	// Garden of Glass recipe bootstrap runs while NeoForge builds its registry set, before GatherDataEvent fires.
+	// NeoForge's dev-time component self-check (gated by this flag) rejects the empty tag sets the binder hands
+	// out for datapack registries (HolderSet.emptyNamed has no equals), so the check is off for the binding only.
+	private static void bindItemComponents() {
+		boolean inIde = SharedConstants.IS_RUNNING_IN_IDE;
+		SharedConstants.IS_RUNNING_IN_IDE = false;
+		try {
+			DatagenItemComponents.bind();
+		} finally {
+			SharedConstants.IS_RUNNING_IN_IDE = inIde;
+		}
+	}
+
 	@SubscribeEvent
 	public static void gatherRegistryEntries(GatherDataRegistryEntriesEvent evt) {
+		bindItemComponents();
 		if (System.getProperty("botania.gog_datagen") != null) {
 			evt.gatherFor(BotaniaAPI.GOG_MODID)
 					.lootTable(new LootTableProvider.SubProviderEntry(GogBlockUseLootProvider::new, LootContextParamSets.BLOCK_USE),
@@ -96,7 +91,9 @@ public class NeoForgeDatagenInitializer {
 	private static void configureNeoForgeDatagen(GatherDataEvent evt) {
 		evt.createBlockAndItemTags(NeoForgeBlockTagProvider::new, NeoForgeItemTagProvider::new);
 		evt.createProvider(NeoForgeEntityTagProvider::new);
-		evt.getDefaultPackGenerator().createWorldRegistryObjects(addBiomeModifiers());
+		// PORT-26.3: the four biome modifiers are hand-written JSON in src/main/resources now (like the placed features
+		// they point at): the 26.3 registry builder refuses references to entries that are not in its base set, and
+		// the datagen base set is vanilla only
 		// PORT-26.3: disabled. The Curios slot data provider comes back with Curios in Phase 5 (src/disabled/integration/curios).
 		evt.createProvider(BotaniaGlobalLootModifierProvider::new);
 		evt.createProvider(BotaniaDataMapsProvider::new);
@@ -108,29 +105,6 @@ public class NeoForgeDatagenInitializer {
 		evt.getDefaultPackGenerator().createWorldRegistryObjects(addWorldPresets(), Set.of(BotaniaAPI.GOG_MODID));
 		evt.createProvider(GogWorldPresetTagsProvider::new);
 		evt.createProvider(GogSoundDefinitionProvider::new);
-	}
-
-	private static RegistrySetBuilder addBiomeModifiers() {
-		return new RegistrySetBuilder().add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
-			HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
-			HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
-			context.register(ADD_MYSTICAL_FLOWERS, new BiomeModifiers.AddFeaturesBiomeModifier(
-					biomes.getOrThrow(BotaniaTags.Biomes.MYSTICAL_FLOWER_SPAWNLIST),
-					HolderSet.direct(placedFeatures.getOrThrow(MYSTICAL_FLOWERS_FEATURE)),
-					GenerationStep.Decoration.VEGETAL_DECORATION));
-			context.register(
-					ADD_SHIMMERING_MUSHROOMS, new BiomeModifiers.AddFeaturesBiomeModifier(
-							biomes.getOrThrow(BotaniaTags.Biomes.SHIMMERING_MUSHROOM_SPAWNLIST),
-							HolderSet.direct(placedFeatures.getOrThrow(SHIMMERING_MUSHROOMS_FEATURE)),
-							GenerationStep.Decoration.VEGETAL_DECORATION));
-			context.register(REMOVE_MYSTICAL_FLOWERS, BiomeModifiers.RemoveFeaturesBiomeModifier.allSteps(
-					biomes.getOrThrow(BotaniaTags.Biomes.MYSTICAL_FLOWER_BLOCKLIST),
-					HolderSet.direct(placedFeatures.getOrThrow(MYSTICAL_FLOWERS_FEATURE))));
-			context.register(
-					REMOVE_SHIMMERING_MUSHROOMS, BiomeModifiers.RemoveFeaturesBiomeModifier.allSteps(
-							biomes.getOrThrow(BotaniaTags.Biomes.SHIMMERING_MUSHROOM_BLOCKLIST),
-							HolderSet.direct(placedFeatures.getOrThrow(SHIMMERING_MUSHROOMS_FEATURE))));
-		});
 	}
 
 	private static RegistrySetBuilder addWorldPresets() {

@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:terracotta"
-  },
+  "input": "minecraft:terracotta",
   "mana": 50,
   "output": {
     "count": 1,

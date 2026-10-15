@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "tag": "c:dusts/glowstone"
-    },
-    "S": {
-      "item": "botania:gaia_spirit"
-    },
-    "W": {
-      "item": "minecraft:white_wool"
-    }
+    "G": "#c:dusts/glowstone",
+    "S": "botania:gaia_spirit",
+    "W": "minecraft:white_wool"
   },
   "pattern": [
     "WWW",
@@ -18,7 +12,6 @@
     "GSG"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cloak_of_virtue"
   }
 }

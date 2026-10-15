@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:resistance_lens"
+        "recipes": "botania:resistance_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

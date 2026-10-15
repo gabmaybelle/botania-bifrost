@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rod_of_the_depths"
+        "recipes": "botania:rod_of_the_depths"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

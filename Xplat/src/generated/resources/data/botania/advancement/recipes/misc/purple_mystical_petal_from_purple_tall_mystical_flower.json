@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:purple_mystical_petal_from_purple_tall_mystical_flower"
+        "recipes": "botania:purple_mystical_petal_from_purple_tall_mystical_flower"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

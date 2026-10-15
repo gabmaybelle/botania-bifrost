@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingwood_slab"
+        "recipes": "botania:livingwood_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

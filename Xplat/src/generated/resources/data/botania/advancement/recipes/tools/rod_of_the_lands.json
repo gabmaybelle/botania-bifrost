@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:rod_of_the_lands"
+        "recipes": "botania:rod_of_the_lands"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

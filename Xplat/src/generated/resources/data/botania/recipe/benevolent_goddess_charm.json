@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:rune_of_water"
-    },
-    "D": {
-      "tag": "c:gems/mana_diamond"
-    },
-    "P": {
-      "tag": "botania:petals/pink"
-    },
-    "S": {
-      "item": "botania:rune_of_spring"
-    }
+    "A": "botania:rune_of_water",
+    "D": "#c:gems/mana_diamond",
+    "P": "#botania:petals/pink",
+    "S": "botania:rune_of_spring"
   },
   "pattern": [
     " P ",
@@ -21,7 +13,6 @@
     "ADS"
   ],
   "result": {
-    "count": 1,
     "id": "botania:benevolent_goddess_charm"
   }
 }

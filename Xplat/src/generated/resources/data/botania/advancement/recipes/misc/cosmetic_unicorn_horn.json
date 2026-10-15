@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cosmetic_unicorn_horn"
+        "recipes": "botania:cosmetic_unicorn_horn"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

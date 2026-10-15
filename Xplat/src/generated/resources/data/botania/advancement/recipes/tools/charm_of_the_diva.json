@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:charm_of_the_diva"
+        "recipes": "botania:charm_of_the_diva"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

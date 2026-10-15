@@ -17,7 +17,6 @@
       "translate": "advancement.botania:manaCartCraft.desc"
     },
     "icon": {
-      "count": 1,
       "id": "botania:mana_pool_minecart"
     },
     "title": {

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_rosa_arcana"
+        "recipes": "botania:floating_rosa_arcana"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

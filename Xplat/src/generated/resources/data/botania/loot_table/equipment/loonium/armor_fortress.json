@@ -2,110 +2,97 @@
   "type": "minecraft:equipment",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:loot_table",
           "value": {
             "pools": [
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:iron_helmet"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:iron_chestplate"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:iron_leggings"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:iron_boots"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               }
             ]
@@ -117,103 +104,91 @@
           "value": {
             "pools": [
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_helmet"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_chestplate"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_leggings"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:golden_boots"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               }
             ]
@@ -225,103 +200,91 @@
           "value": {
             "pools": [
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_helmet"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_chestplate"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_leggings"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               },
               {
-                "bonus_rolls": 0.0,
                 "entries": [
                   {
                     "type": "minecraft:item",
-                    "functions": [
-                      {
-                        "components": {
-                          "minecraft:trim": {
-                            "material": "minecraft:iron",
-                            "pattern": "minecraft:rib"
-                          }
-                        },
-                        "function": "minecraft:set_components"
+                    "modifier": {
+                      "type": "minecraft:set_components",
+                      "components": {
+                        "minecraft:trim": {
+                          "material": "minecraft:iron",
+                          "pattern": "minecraft:rib"
+                        }
                       }
-                    ],
+                    },
                     "name": "minecraft:diamond_boots"
                   }
                 ],
                 "rolls": {
                   "type": "minecraft:uniform",
-                  "max": 1.0,
-                  "min": 0.0
+                  "max": 1,
+                  "min": 0
                 }
               }
             ]
@@ -329,7 +292,7 @@
           "weight": 2
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

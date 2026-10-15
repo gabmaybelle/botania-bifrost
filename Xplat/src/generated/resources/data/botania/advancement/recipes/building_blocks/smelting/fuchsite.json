@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/fuchsite"
+        "recipes": "botania:smelting/fuchsite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_bricks",
   "key": {
-    "Q": {
-      "item": "botania:lunite"
-    }
+    "Q": "botania:lunite"
   },
   "pattern": [
     "QQ",

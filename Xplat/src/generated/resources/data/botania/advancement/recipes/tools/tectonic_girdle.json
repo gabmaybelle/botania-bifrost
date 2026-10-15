@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:tectonic_girdle"
+        "recipes": "botania:tectonic_girdle"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "item": "minecraft:feather"
-    },
-    "R": {
-      "item": "botania:rune_of_air"
-    },
-    "T": {
-      "item": "botania:livingwood_twig"
-    }
+    "F": "minecraft:feather",
+    "R": "botania:rune_of_air",
+    "T": "botania:livingwood_twig"
   },
   "pattern": [
     "  F",
@@ -18,7 +12,6 @@
     "R  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:rod_of_the_skies"
   }
 }

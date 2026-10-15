@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:corporea_spark"
+        "recipes": "botania:corporea_spark"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

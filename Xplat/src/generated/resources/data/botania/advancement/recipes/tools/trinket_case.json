@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:trinket_case"
+        "recipes": "botania:trinket_case"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

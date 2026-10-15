@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "T": {
-      "tag": "c:ingots/terrasteel"
-    },
-    "V": {
-      "item": "minecraft:vine"
-    }
+    "T": "#c:ingots/terrasteel",
+    "V": "minecraft:vine"
   },
   "pattern": [
     "VVV",

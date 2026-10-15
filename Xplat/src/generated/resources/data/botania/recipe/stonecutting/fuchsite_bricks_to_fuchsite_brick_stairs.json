@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:fuchsite_bricks"
-  },
+  "ingredient": "botania:fuchsite_bricks",
   "result": {
-    "count": 1,
     "id": "botania:fuchsite_brick_stairs"
   }
 }

@@ -1,30 +1,16 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/yellow"
-    },
-    {
-      "tag": "botania:petals/yellow"
-    },
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "item": "botania:rune_of_spring"
-    }
+    "#botania:petals/white",
+    "#botania:petals/white",
+    "#botania:petals/yellow",
+    "#botania:petals/yellow",
+    "#botania:petals/orange",
+    "botania:rune_of_spring"
   ],
   "output": {
     "count": 1,
     "id": "botania:fallen_kanade"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

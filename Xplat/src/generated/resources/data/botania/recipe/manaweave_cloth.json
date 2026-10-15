@@ -1,17 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "S": "botania:mana_string"
   },
   "pattern": [
     "SS",
     "SS"
   ],
   "result": {
-    "count": 1,
     "id": "botania:manaweave_cloth"
   }
 }

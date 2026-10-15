@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingrock_button"
+        "recipes": "botania:livingrock_button"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

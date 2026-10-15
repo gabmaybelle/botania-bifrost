@@ -67,6 +67,13 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 			throw new IllegalArgumentException("Ingredients with custom test implementations are not supported: " + customTestIngredients);
 		}
 
+		// PORT-26.3: tag ingredients can't be expanded before the tags are bound (datagen, early world load); the
+		// overlap check then waits for the next datapack reload, which is what the old cache reset hack achieved
+		if (Stream.concat(Stream.concat(Stream.of(ingredients), Stream.of(catalysts)), Stream.of(reagent))
+				.anyMatch(ingredient -> !RecipeUtils.canExpand(ingredient))) {
+			return;
+		}
+
 		var ingredientItems = new ReferenceOpenHashSet<Item>(ingredients.length);
 		var catalystItems = new ReferenceOpenHashSet<Item>(catalysts.length);
 		var reagentItems = new ReferenceOpenHashSet<Item>(1);
@@ -75,8 +82,6 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 		Stream.of(catalysts).flatMap(catalyst -> Stream.of(RecipeUtils.stacksOf(catalyst)))
 				.map(ItemStack::getItem).forEach(catalystItems::add);
 		Stream.of(RecipeUtils.stacksOf(reagent)).map(ItemStack::getItem).forEach(reagentItems::add);
-
-		// PORT-26.3: ingredients no longer cache an item list (they are holder sets), so the cache reset hack is gone
 
 		var ingredientsOverlap = ingredientItems.clone();
 		ingredientsOverlap.retainAll(catalystItems);

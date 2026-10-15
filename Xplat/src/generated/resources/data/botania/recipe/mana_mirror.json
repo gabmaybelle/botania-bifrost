@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/terrasteel"
-    },
-    "P": {
-      "tag": "c:gems/mana_pearl"
-    },
-    "R": {
-      "item": "botania:livingrock"
-    },
-    "S": {
-      "item": "botania:livingwood_twig"
-    },
-    "T": {
-      "item": "botania:mana_tablet"
-    }
+    "I": "#c:ingots/terrasteel",
+    "P": "#c:gems/mana_pearl",
+    "R": "botania:livingrock",
+    "S": "botania:livingwood_twig",
+    "T": "botania:mana_tablet"
   },
   "pattern": [
     " PR",
@@ -24,7 +14,6 @@
     "T  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:mana_mirror"
   }
 }

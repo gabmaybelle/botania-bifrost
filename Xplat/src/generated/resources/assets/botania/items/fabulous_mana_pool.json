@@ -1,0 +1,25 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/fabulous_mana_pool",
+      "tints": [
+        {
+          "type": "botania:mana_pool"
+        }
+      ]
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:block/fabulous_mana_pool_full",
+      "tints": [
+        {
+          "type": "botania:mana_pool"
+        }
+      ]
+    },
+    "property": "botania:test",
+    "test": "pool_full"
+  }
+}

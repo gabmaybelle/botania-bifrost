@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/terrasteel"
-    },
-    "S": {
-      "item": "botania:livingwood_twig"
-    }
+    "I": "#c:ingots/terrasteel",
+    "S": "botania:livingwood_twig"
   },
   "pattern": [
     "I",
@@ -15,7 +11,6 @@
     "S"
   ],
   "result": {
-    "count": 1,
     "id": "botania:terra_blade"
   }
 }

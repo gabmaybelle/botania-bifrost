@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:horn_of_the_covering"
+        "recipes": "botania:horn_of_the_covering"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:world_seed"
+        "recipes": "botania:world_seed"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_marimorphosis_petite"
+        "recipes": "botania:floating_marimorphosis_petite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

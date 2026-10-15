@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:cobbled_fuchsite_wall"
+        "recipes": "botania:cobbled_fuchsite_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

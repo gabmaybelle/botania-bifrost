@@ -1,54 +1,22 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "tag": "botania:petals/pink"
-    }
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink",
+    "#botania:petals/pink"
   ],
   "output": {
     "components": {
@@ -59,7 +27,5 @@
     "count": 1,
     "id": "minecraft:player_head"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

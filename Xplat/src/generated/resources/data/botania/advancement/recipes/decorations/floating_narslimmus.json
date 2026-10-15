@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_narslimmus"
+        "recipes": "botania:floating_narslimmus"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

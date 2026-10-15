@@ -8,6 +8,8 @@
  */
 package vazkii.botania.common.item.lens;
 
+import com.google.common.base.Suppliers;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerLevel;
@@ -37,6 +39,7 @@ import vazkii.botania.xplat.BotaniaConfig;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class BoreLens extends Lens {
@@ -123,13 +126,14 @@ public class BoreLens extends Lens {
 		return Stream.of(items).map(ItemStack::new).toList();
 	}
 
-	private static final List<List<ItemStack>> HARVEST_TOOLS_BY_LEVEL = List.of(
+	// PORT-26.3: item stacks can't be made before the item registry is frozen (components bind then), so this is lazy
+	private static final Supplier<List<List<ItemStack>>> HARVEST_TOOLS_BY_LEVEL = Suppliers.memoize(() -> List.of(
 			stacks(Items.WOODEN_PICKAXE, Items.WOODEN_AXE, Items.WOODEN_HOE, Items.WOODEN_SHOVEL),
 			stacks(Items.STONE_PICKAXE, Items.STONE_AXE, Items.STONE_HOE, Items.STONE_SHOVEL),
 			stacks(Items.IRON_PICKAXE, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SHOVEL),
 			stacks(Items.DIAMOND_PICKAXE, Items.DIAMOND_AXE, Items.DIAMOND_HOE, Items.DIAMOND_SHOVEL),
 			stacks(Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SHOVEL)
-	);
+	));
 
 	public static boolean canHarvest(int harvestLevel, BlockState state) {
 		return !getTool(harvestLevel, state).isEmpty();
@@ -141,11 +145,11 @@ public class BoreLens extends Lens {
 
 	private static ItemStack getTool(int harvestLevel, BlockState state) {
 		if (!state.requiresCorrectToolForDrops()) {
-			return HARVEST_TOOLS_BY_LEVEL.get(0).get(0);
+			return HARVEST_TOOLS_BY_LEVEL.get().get(0).get(0);
 		}
 
-		int idx = Math.min(harvestLevel, HARVEST_TOOLS_BY_LEVEL.size() - 1);
-		for (var tool : HARVEST_TOOLS_BY_LEVEL.get(idx)) {
+		int idx = Math.min(harvestLevel, HARVEST_TOOLS_BY_LEVEL.get().size() - 1);
+		for (var tool : HARVEST_TOOLS_BY_LEVEL.get().get(idx)) {
 			if (tool.isCorrectToolForDrops(state)) {
 				return tool;
 			}

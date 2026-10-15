@@ -10,15 +10,6 @@
       }
     }
   ],
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:mod_loaded",
-        "modid": "gardenofglass"
-      }
-    }
-  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_any_dye": {
@@ -43,7 +34,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floral_fertilizer"
+        "recipes": "botania:floral_fertilizer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

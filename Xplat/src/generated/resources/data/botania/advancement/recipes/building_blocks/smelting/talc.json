@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smelting/talc"
+        "recipes": "botania:smelting/talc"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

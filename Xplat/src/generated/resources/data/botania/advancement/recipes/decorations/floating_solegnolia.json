@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_solegnolia"
+        "recipes": "botania:floating_solegnolia"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

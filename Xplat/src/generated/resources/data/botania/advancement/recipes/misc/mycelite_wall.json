@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mycelite_wall"
+        "recipes": "botania:mycelite_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

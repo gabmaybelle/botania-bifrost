@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:big_dripleaf"
-  },
+  "input": "minecraft:big_dripleaf",
   "mana": 500,
   "output": {
     "count": 1,

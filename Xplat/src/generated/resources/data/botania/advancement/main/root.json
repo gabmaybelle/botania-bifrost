@@ -13,12 +13,11 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "botania:textures/block/livingwood_log.png",
+    "background": "botania:block/livingwood_log",
     "description": {
       "translate": "botania.desc"
     },
     "icon": {
-      "count": 1,
       "id": "botania:lexica_botania"
     },
     "show_toast": false,

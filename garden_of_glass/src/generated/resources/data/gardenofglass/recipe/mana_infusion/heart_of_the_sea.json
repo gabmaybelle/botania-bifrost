@@ -4,9 +4,7 @@
     "type": "botania:block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:nautilus_shell"
-  },
+  "input": "minecraft:nautilus_shell",
   "mana": 20000,
   "output": {
     "count": 1,

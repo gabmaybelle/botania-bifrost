@@ -1,39 +1,19 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/pink"
-    },
-    {
-      "item": "botania:rune_of_pride"
-    },
-    {
-      "item": "botania:rune_of_greed"
-    },
-    {
-      "item": "botania:redstone_root"
-    },
-    {
-      "tag": "c:dusts/pixie"
-    }
+    "#botania:petals/red",
+    "#botania:petals/red",
+    "#botania:petals/white",
+    "#botania:petals/white",
+    "#botania:petals/pink",
+    "botania:rune_of_pride",
+    "botania:rune_of_greed",
+    "botania:redstone_root",
+    "#c:dusts/pixie"
   ],
   "output": {
     "count": 1,
     "id": "botania:orechid_ignem"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

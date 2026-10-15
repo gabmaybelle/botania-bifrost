@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mana_diamond_from_mana_diamond_block"
+        "recipes": "botania:mana_diamond_from_mana_diamond_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:light_blue_mana_pool"
+        "recipes": "botania:light_blue_mana_pool"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

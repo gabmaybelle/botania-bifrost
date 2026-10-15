@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:crafting_pattern_2_1"
+        "recipes": "botania:crafting_pattern_2_1"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

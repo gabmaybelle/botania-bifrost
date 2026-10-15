@@ -1,22 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:paper"
-    },
-    {
-      "tag": "c:foods/raw_fish"
-    },
-    {
-      "tag": "botania:small_mystical_flowers"
-    },
-    {
-      "tag": "minecraft:saplings"
-    }
+    "minecraft:paper",
+    "#c:foods/raw_fish",
+    "#botania:small_mystical_flowers",
+    "#minecraft:saplings"
   ],
   "result": {
-    "count": 1,
     "id": "botania:materials_banner_pattern"
   }
 }

@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_cycle",
-  "input": {
-    "item": "minecraft:rose_bush"
-  },
+  "input": "minecraft:rose_bush",
   "mana": 400,
   "output": {
     "count": 1,

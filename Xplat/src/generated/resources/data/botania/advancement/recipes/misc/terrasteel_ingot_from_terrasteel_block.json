@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:terrasteel_ingot_from_terrasteel_block"
+        "recipes": "botania:terrasteel_ingot_from_terrasteel_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

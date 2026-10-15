@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/slime_in_a_bottle"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/slime_in_a_bottle_active"
+    },
+    "property": "botania:test",
+    "test": "active_transient"
+  }
+}

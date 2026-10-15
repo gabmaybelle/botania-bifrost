@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:terrasteel_ingot"
-    }
+    "botania:terrasteel_ingot"
   ],
   "result": {
     "count": 9,

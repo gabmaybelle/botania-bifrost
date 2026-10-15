@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:lexica_botania"
+        "recipes": "botania:lexica_botania"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

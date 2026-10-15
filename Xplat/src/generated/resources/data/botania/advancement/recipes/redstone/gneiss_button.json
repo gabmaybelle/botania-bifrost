@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:gneiss_button"
+        "recipes": "botania:gneiss_button"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

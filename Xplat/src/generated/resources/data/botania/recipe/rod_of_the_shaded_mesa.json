@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:gems/dragonstone"
-    },
-    "T": {
-      "item": "botania:dreamwood_twig"
-    },
-    "W": {
-      "item": "minecraft:wheat"
-    }
+    "D": "#c:gems/dragonstone",
+    "T": "botania:dreamwood_twig",
+    "W": "minecraft:wheat"
   },
   "pattern": [
     " TD",
@@ -18,7 +12,6 @@
     "T  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:rod_of_the_shaded_mesa"
   }
 }

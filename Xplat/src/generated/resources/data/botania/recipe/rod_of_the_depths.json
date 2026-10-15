@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "item": "minecraft:cobblestone"
-    },
-    "F": {
-      "item": "botania:rune_of_fire"
-    },
-    "T": {
-      "item": "botania:livingwood_twig"
-    },
-    "W": {
-      "item": "botania:rune_of_water"
-    }
+    "C": "minecraft:cobblestone",
+    "F": "botania:rune_of_fire",
+    "T": "botania:livingwood_twig",
+    "W": "botania:rune_of_water"
   },
   "pattern": [
     " FC",
@@ -21,7 +13,6 @@
     "T  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:rod_of_the_depths"
   }
 }

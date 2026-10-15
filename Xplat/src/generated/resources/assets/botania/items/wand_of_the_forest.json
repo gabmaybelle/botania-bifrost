@@ -1,0 +1,43 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/wand_of_the_forest",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "botania:wand",
+          "layer": 1
+        },
+        {
+          "type": "botania:wand",
+          "layer": 2
+        }
+      ]
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/wand_of_the_forest_bind",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "botania:wand",
+          "layer": 1
+        },
+        {
+          "type": "botania:wand",
+          "layer": 2
+        }
+      ]
+    },
+    "property": "botania:test",
+    "test": "bindmode"
+  }
+}

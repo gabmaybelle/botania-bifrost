@@ -3,16 +3,13 @@
   "category": "building",
   "group": "botania:quartz_block",
   "key": {
-    "Q": {
-      "item": "botania:smokey_quartz"
-    }
+    "Q": "botania:smokey_quartz"
   },
   "pattern": [
     "QQ",
     "QQ"
   ],
   "result": {
-    "count": 1,
     "id": "botania:smokey_quartz_block"
   }
 }

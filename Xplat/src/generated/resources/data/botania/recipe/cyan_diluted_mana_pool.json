@@ -1,17 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "group": "diluted_pool_dyeing",
   "ingredients": [
-    {
-      "item": "botania:diluted_mana_pool"
-    },
-    {
-      "tag": "botania:petals/cyan"
-    }
+    "botania:diluted_mana_pool",
+    "#botania:petals/cyan"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cyan_diluted_mana_pool"
   }
 }

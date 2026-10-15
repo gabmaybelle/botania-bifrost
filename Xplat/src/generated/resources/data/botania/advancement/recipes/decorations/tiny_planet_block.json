@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:tiny_planet_block"
+        "recipes": "botania:tiny_planet_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

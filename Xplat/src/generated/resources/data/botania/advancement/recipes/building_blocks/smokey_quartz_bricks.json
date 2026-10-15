@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:smokey_quartz_bricks"
+        "recipes": "botania:smokey_quartz_bricks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

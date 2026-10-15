@@ -1,0 +1,70 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "botania:item/brew_vial_1",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "botania:brew"
+            }
+          ]
+        },
+        "threshold": 0.33333334
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "botania:item/brew_vial_2",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "botania:brew"
+            }
+          ]
+        },
+        "threshold": 0.6666667
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "botania:item/brew_vial_3",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "botania:brew"
+            }
+          ]
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "botania:item/brew_vial",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "botania:brew"
+        }
+      ]
+    },
+    "property": "botania:range",
+    "range": "brew_swigs_taken"
+  }
+}

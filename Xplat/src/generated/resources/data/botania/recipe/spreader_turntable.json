@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "P": {
-      "item": "minecraft:sticky_piston"
-    },
-    "W": {
-      "tag": "botania:livingwood_logs"
-    }
+    "P": "minecraft:sticky_piston",
+    "W": "#botania:livingwood_logs"
   },
   "pattern": [
     "WWW",
@@ -15,7 +10,6 @@
     "WWW"
   ],
   "result": {
-    "count": 1,
     "id": "botania:spreader_turntable"
   }
 }

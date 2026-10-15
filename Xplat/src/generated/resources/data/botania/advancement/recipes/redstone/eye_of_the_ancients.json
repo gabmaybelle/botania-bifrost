@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:eye_of_the_ancients"
+        "recipes": "botania:eye_of_the_ancients"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

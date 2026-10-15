@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "gardenofglass:cobblestone_from_pebble"
+        "recipes": "gardenofglass:cobblestone_from_pebble"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

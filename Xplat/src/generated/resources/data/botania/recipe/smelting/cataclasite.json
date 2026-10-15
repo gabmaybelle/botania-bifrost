@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:cobbled_cataclasite"
-  },
+  "ingredient": "botania:cobbled_cataclasite",
   "result": {
     "id": "botania:cataclasite"
   }

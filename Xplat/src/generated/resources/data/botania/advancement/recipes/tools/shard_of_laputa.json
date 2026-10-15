@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:shard_of_laputa"
+        "recipes": "botania:shard_of_laputa"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:mutated_pasture_seeds"
+        "recipes": "botania:mutated_pasture_seeds"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

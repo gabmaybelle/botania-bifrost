@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/manasteel"
-    },
-    "R": {
-      "item": "botania:rune_of_mana"
-    }
+    "I": "#c:ingots/manasteel",
+    "R": "botania:rune_of_mana"
   },
   "pattern": [
     "RI ",
@@ -15,7 +11,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "botania:band_of_aura"
   }
 }

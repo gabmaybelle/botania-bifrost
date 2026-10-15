@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:potency_lens"
+        "recipes": "botania:potency_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

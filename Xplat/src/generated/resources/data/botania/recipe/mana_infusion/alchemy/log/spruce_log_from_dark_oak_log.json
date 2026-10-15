@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:log_cycle",
-  "input": {
-    "item": "minecraft:dark_oak_log"
-  },
+  "input": "minecraft:dark_oak_log",
   "mana": 40,
   "output": {
     "count": 1,

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:solite_petal_apothecary"
+        "recipes": "botania:solite_petal_apothecary"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

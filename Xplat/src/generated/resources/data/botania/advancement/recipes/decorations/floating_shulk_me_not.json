@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:floating_shulk_me_not"
+        "recipes": "botania:floating_shulk_me_not"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

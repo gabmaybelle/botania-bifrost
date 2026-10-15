@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "botania:dreamwood_planks"
-    },
-    {
-      "item": "minecraft:vine"
-    }
+    "botania:dreamwood_planks",
+    "minecraft:vine"
   ],
   "result": {
-    "count": 1,
     "id": "botania:mossy_dreamwood_planks"
   }
 }

@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:cobbled_lunite"
-  },
+  "ingredient": "botania:cobbled_lunite",
   "result": {
     "count": 2,
     "id": "botania:cobbled_lunite_slab"

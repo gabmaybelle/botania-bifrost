@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "botania:livingwood_twig"
+        "recipes": "botania:livingwood_twig"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
