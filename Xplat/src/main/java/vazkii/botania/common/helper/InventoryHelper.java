@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import vazkii.botania.mixin.HopperBlockEntityAccessor;
-import vazkii.botania.mixin.InventoryAccessor;
 
 import java.util.List;
 import java.util.function.Function;
@@ -199,14 +198,7 @@ public class InventoryHelper {
 	 * @return {@code true} if the inventory contains an item of the specified type, otherwise {@code false}.
 	 */
 	public static boolean containsType(Inventory inventory, Item item) {
-		for (List<ItemStack> compartment : ((InventoryAccessor) inventory).botania_getCompartments()) {
-			for (ItemStack stack : compartment) {
-				if (stack.is(item)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		// PORT-26.3: the inventory has no compartment list any more; it iterates its own slots (items, armour, offhand)
+		return inventory.contains(stack -> stack.is(item));
 	}
 }

@@ -68,9 +68,11 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CookingFuel;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -481,7 +483,12 @@ public class FabricXplatImpl implements XplatAbstractions {
 
 	@Override
 	public boolean canFurnaceBurn(AbstractFurnaceBlockEntity furnace, @Nullable RecipeHolder<?> recipeHolder, NonNullList<ItemStack> items, int maxStackSize) {
-		return AbstractFurnaceBlockEntityFabricAccessor.botania_canBurn(furnace.getLevel().registryAccess(), recipeHolder, items, maxStackSize);
+		// PORT-26.3: vanilla assembles the result first and asks canBurn whether it fits in the output slot
+		if (items.get(0).isEmpty() || recipeHolder == null || !(recipeHolder.value() instanceof AbstractCookingRecipe recipe)) {
+			return false;
+		}
+		ItemStack burnResult = recipe.assemble(new SingleRecipeInput(items.get(0)));
+		return !burnResult.isEmpty() && AbstractFurnaceBlockEntityFabricAccessor.botania_canBurn(items, maxStackSize, burnResult);
 	}
 
 	@Override

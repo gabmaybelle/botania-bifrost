@@ -9,8 +9,8 @@
 
 package vazkii.botania.mixin.client;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -25,12 +25,15 @@ public class AbstractClientPlayerMixin {
 	/**
 	 * Applies the bow pull-back FOV effect to Botania's bows.
 	 * 
-	 * @param originalResult Original result of the check, typically whether a vanilla bow is being used.
-	 * @param useStack       The item currently being used by the player.
+	 * @param useStack The item currently being used by the player.
+	 * @param item     The item type vanilla checks for (the bow).
+	 * @param original The vanilla check.
 	 * @return @{@code true} if the FOV zoom should be applied, otherwise {@code false}.
 	 */
-	@ModifyExpressionValue(method = "getFieldOfViewModifier", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
-	private boolean isBowItem(boolean originalResult, @Local ItemStack useStack) {
-		return originalResult || useStack.is(BotaniaItems.LIVINGWOOD_BOW) || useStack.is(BotaniaItems.CRYSTAL_BOW);
+	// PORT-26.3: is(Item) is the erased TypedInstance#is(T) now, and the use stack is no longer a local variable,
+	// so wrap the call and take the stack from it
+	@WrapOperation(method = "getFieldOfViewModifier", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Ljava/lang/Object;)Z"))
+	private boolean isBowItem(ItemStack useStack, Object item, Operation<Boolean> original) {
+		return original.call(useStack, item) || useStack.is(BotaniaItems.LIVINGWOOD_BOW) || useStack.is(BotaniaItems.CRYSTAL_BOW);
 	}
 }

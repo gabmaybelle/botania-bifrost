@@ -10,19 +10,17 @@
 package vazkii.botania.neoforge.mixin;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public interface AbstractFurnaceBlockEntityNeoForgeAccessor {
+	// PORT-26.3: canBurn takes the assembled result instead of the recipe, and is static again on NeoForge
 	@Invoker("canBurn")
-	static boolean botania_canBurn(RegistryAccess registryAccess, @Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> inventory, int maxStackSize, AbstractFurnaceBlockEntity furnace) {
+	static boolean botania_canBurn(NonNullList<ItemStack> items, int maxStackSize, ItemStack burnResult) {
 		throw new IllegalStateException();
 	}
 }

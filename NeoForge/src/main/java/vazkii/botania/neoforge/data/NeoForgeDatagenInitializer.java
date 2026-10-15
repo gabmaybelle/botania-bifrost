@@ -34,6 +34,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import vazkii.botania.api.BotaniaAPI;
@@ -42,13 +43,11 @@ import vazkii.botania.common.world.SkyblockChunkGenerator;
 import vazkii.botania.neoforge.data.gog.GogBlockLootSubProvider;
 import vazkii.botania.neoforge.data.gog.GogBlockTagsProvider;
 import vazkii.botania.neoforge.data.gog.GogBlockUseLootProvider;
-import vazkii.botania.neoforge.data.gog.GogDataMapsProvider;
 import vazkii.botania.neoforge.data.gog.GogGlobalLootModifierProvider;
 import vazkii.botania.neoforge.data.gog.GogRecipeProvider;
 import vazkii.botania.neoforge.data.gog.GogSoundDefinitionProvider;
 import vazkii.botania.neoforge.data.gog.GogWorldPresetTagsProvider;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,8 +72,10 @@ public class NeoForgeDatagenInitializer {
 	public static final ResourceKey<WorldPreset> SKYBLOCK_PRESET = ResourceKey.create(
 			Registries.WORLD_PRESET, BotaniaAPI.gogRL("gardenofglass"));
 
+	// PORT-26.3: NeoForge generates client and server data in one clientData run (GatherDataEvent.Client);
+	// recipes and loot tables are registries now and go through GatherDataRegistryEntriesEvent
 	@SubscribeEvent
-	public static void configureDatagen(GatherDataEvent evt) {
+	public static void configureDatagen(GatherDataEvent.Client evt) {
 		if (System.getProperty("botania.gog_datagen") != null) {
 			configureGogDatagen(evt);
 		} else {
@@ -82,10 +83,20 @@ public class NeoForgeDatagenInitializer {
 		}
 	}
 
+	@SubscribeEvent
+	public static void gatherRegistryEntries(GatherDataRegistryEntriesEvent evt) {
+		if (System.getProperty("botania.gog_datagen") != null) {
+			evt.gatherFor(BotaniaAPI.GOG_MODID)
+					.lootTable(new LootTableProvider.SubProviderEntry(GogBlockUseLootProvider::new, LootContextParamSets.BLOCK_USE),
+							new LootTableProvider.SubProviderEntry(GogBlockLootSubProvider::new, LootContextParamSets.BLOCK))
+					.recipe(GogRecipeProvider::new);
+		}
+	}
+
 	private static void configureNeoForgeDatagen(GatherDataEvent evt) {
 		evt.createBlockAndItemTags(NeoForgeBlockTagProvider::new, NeoForgeItemTagProvider::new);
 		evt.createProvider(NeoForgeEntityTagProvider::new);
-		evt.createDatapackRegistryObjects(addBiomeModifiers());
+		evt.getDefaultPackGenerator().createWorldRegistryObjects(addBiomeModifiers());
 		// PORT-26.3: disabled. The Curios slot data provider comes back with Curios in Phase 5 (src/disabled/integration/curios).
 		evt.createProvider(BotaniaGlobalLootModifierProvider::new);
 		evt.createProvider(BotaniaDataMapsProvider::new);
@@ -93,16 +104,10 @@ public class NeoForgeDatagenInitializer {
 
 	private static void configureGogDatagen(GatherDataEvent evt) {
 		evt.createProvider(GogBlockTagsProvider::new);
-		evt.createProvider(GogRecipeProvider::new);
 		evt.createProvider(GogGlobalLootModifierProvider::new);
-		evt.createDatapackRegistryObjects(addWorldPresets(), Set.of(BotaniaAPI.GOG_MODID));
+		evt.getDefaultPackGenerator().createWorldRegistryObjects(addWorldPresets(), Set.of(BotaniaAPI.GOG_MODID));
 		evt.createProvider(GogWorldPresetTagsProvider::new);
-		evt.addProvider(new LootTableProvider(evt.getGenerator().getPackOutput(), Set.of(), List.of(
-				new LootTableProvider.SubProviderEntry(GogBlockUseLootProvider::new, LootContextParamSets.BLOCK_USE),
-				new LootTableProvider.SubProviderEntry(GogBlockLootSubProvider::new, LootContextParamSets.BLOCK)
-		), evt.getLookupProvider()));
-		evt.addProvider(new GogSoundDefinitionProvider(evt.getGenerator().getPackOutput(), evt.getExistingFileHelper()));
-		evt.createProvider(GogDataMapsProvider::new);
+		evt.createProvider(GogSoundDefinitionProvider::new);
 	}
 
 	private static RegistrySetBuilder addBiomeModifiers() {

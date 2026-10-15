@@ -19,14 +19,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import java.util.Optional;
+
 @Mixin(Mob.class)
 public interface MobAccessor {
 	@Nullable
 	@Invoker("getAmbientSound")
 	SoundEvent botania_getAmbientSound();
 
+	// PORT-26.3: the loot table override is optional now
 	@Accessor("lootTable")
-	void botania_setLootTable(ResourceKey<LootTable> id);
+	void botania_setLootTable(Optional<ResourceKey<LootTable>> id);
 
 	@Accessor("goalSelector")
 	GoalSelector botania_getGoalSelector();

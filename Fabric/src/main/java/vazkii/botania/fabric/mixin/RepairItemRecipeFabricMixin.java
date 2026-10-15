@@ -29,7 +29,8 @@ public class RepairItemRecipeFabricMixin {
 			target = "Lnet/minecraft/world/item/crafting/RepairItemRecipe;canCombine(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"
 		)
 	)
-	private boolean preventSpellClothRepair(ItemStack stack1, ItemStack stack2, Operation<Boolean> original) {
+	// PORT-26.3: getItemsToCombine is static now, so the wrapper has to be too
+	private static boolean preventSpellClothRepair(ItemStack stack1, ItemStack stack2, Operation<Boolean> original) {
 		return !stack1.is(BotaniaItems.SPELLBINDING_CLOTH) && !stack2.is(BotaniaItems.SPELLBINDING_CLOTH)
 				&& original.call(stack1, stack2);
 	}

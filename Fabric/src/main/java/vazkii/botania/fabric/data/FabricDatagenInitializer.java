@@ -5,29 +5,40 @@
  *
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
+ *
  */
+
 package vazkii.botania.fabric.data;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
-import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.minecraft.client.color.item.ItemTintSources;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
+import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import vazkii.botania.api.BotaniaAPI;
+import vazkii.botania.client.BotaniaItemProperties;
+import vazkii.botania.client.render.ColorHandler;
 import vazkii.botania.common.block.BotaniaBannerPatterns;
-import vazkii.botania.data.*;
-import vazkii.botania.data.loot.BotaniaBlockLoot;
-import vazkii.botania.data.loot.BotaniaChestLoot;
-import vazkii.botania.data.loot.BotaniaEntityLoot;
-import vazkii.botania.data.loot.BotaniaEquipmentLoot;
-import vazkii.botania.data.loot.BotaniaGenericLoot;
-import vazkii.botania.data.loot.BotaniaGiftLoot;
+import vazkii.botania.data.BannerPatternProvider;
+import vazkii.botania.data.BannerPatternTagsProvider;
+import vazkii.botania.data.BlockTagProvider;
+import vazkii.botania.data.BlockstateProvider;
+import vazkii.botania.data.DamageTypeTagProvider;
+import vazkii.botania.data.DataComponentTypeTagProvider;
+import vazkii.botania.data.EntityTagProvider;
+import vazkii.botania.data.FloatingFlowerModelProvider;
+import vazkii.botania.data.GaiaFightConfigurationProvider;
+import vazkii.botania.data.ItemModelProvider;
+import vazkii.botania.data.ItemTagProvider;
+import vazkii.botania.data.LooniumStructureConfigurationProvider;
+import vazkii.botania.data.PottedPlantModelProvider;
+import vazkii.botania.data.loot.BotaniaLootTableProvider;
 import vazkii.botania.fabric.data.fabric.FabricBlockTagProvider;
 import vazkii.botania.fabric.data.fabric.FabricItemTagProvider;
 import vazkii.botania.fabric.data.xplat.BrewProvider;
@@ -47,17 +58,16 @@ import vazkii.botania.fabric.data.xplat.SmeltingProvider;
 import vazkii.botania.fabric.data.xplat.StonecuttingProvider;
 import vazkii.botania.fabric.data.xplat.TerrestrialAgglomerationProvider;
 
-import java.util.List;
-
 import static vazkii.botania.common.BotaniaDamageTypes.*;
 
 public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
-	@SuppressWarnings("UnstableApiUsage")
-	public static final NotResourceCondition GOG_NOT_LOADED_CONDITION =
-			new NotResourceCondition(new AllModsLoadedResourceCondition(List.of(BotaniaAPI.GOG_MODID)));
-
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
+		// PORT-26.3: the item model definitions are written through the item model codecs, which look Botania's item
+		// properties and tint sources up by id, so they are registered here as well as in the client initializer
+		BotaniaItemProperties.registerTests(ConditionalItemModelProperties.ID_MAPPER::put);
+		BotaniaItemProperties.registerRanges(RangeSelectItemModelProperties.ID_MAPPER::put);
+		ColorHandler.submitItemTintSources(ItemTintSources.ID_MAPPER::put);
 		if (System.getProperty("botania.xplat_datagen") != null) {
 			configureXplatDatagen(generator.createPack());
 		} else {
@@ -72,14 +82,11 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 	}
 
 	private static void configureXplatDatagen(FabricDataGenerator.Pack pack) {
-		pack.addProvider(BotaniaBlockLootWrapper.wrap(BotaniaBlockLoot::new));
+		for (LootTableProvider.SubProviderEntry entry : BotaniaLootTableProvider.subProviders()) {
+			pack.addProvider(BotaniaSimpleLootWrapper.wrap(entry));
+		}
 		pack.addProvider(LooniumStructureConfigurationProvider::new);
 		pack.addProvider(GaiaFightConfigurationProvider::new);
-		pack.addProvider(BotaniaSimpleLootWrapper.wrap(BotaniaGenericLoot::new, LootContextParamSets.ALL_PARAMS));
-		pack.addProvider(BotaniaSimpleLootWrapper.wrap(BotaniaEquipmentLoot::new, LootContextParamSets.EQUIPMENT));
-		pack.addProvider(BotaniaSimpleLootWrapper.wrap(BotaniaEntityLoot::new, LootContextParamSets.ENTITY));
-		pack.addProvider(BotaniaSimpleLootWrapper.wrap(BotaniaGiftLoot::new, LootContextParamSets.GIFT));
-		pack.addProvider(BotaniaSimpleLootWrapper.wrap(BotaniaChestLoot::new, LootContextParamSets.CHEST));
 		BlockTagProvider blockTagProvider = pack.addProvider(BlockTagProvider::new);
 		pack.addProvider((output, registriesFuture) -> new ItemTagProvider(
 				output, registriesFuture, blockTagProvider.contentsGetter()));
@@ -95,22 +102,30 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 		pack.addProvider(BotaniaDynamicRegistryProvider::new);
 		pack.addProvider(DamageTypeTagProvider::new);
 		pack.addProvider(DataComponentTypeTagProvider::new);
-		pack.addProvider(StonecuttingProvider::new);
-		pack.addProvider(CraftingRecipeProvider::new);
-		pack.addProvider(SmeltingProvider::new);
-		pack.addProvider(ElvenTradeProvider::new);
-		pack.addProvider(ManaInfusionProvider::new);
-		pack.addProvider(PureDaisyProvider::new);
-		pack.addProvider(BrewProvider::new);
-		pack.addProvider(PetalApothecaryProvider::new);
-		pack.addProvider(RunicAltarProvider::new);
-		pack.addProvider(TerrestrialAgglomerationProvider::new);
-		pack.addProvider(OrechidProvider::new);
-		pack.addProvider((PackOutput output) -> new BlockstateProvider(output));
-		pack.addProvider((PackOutput output) -> new FloatingFlowerModelProvider(output));
-		pack.addProvider((PackOutput output) -> new ItemModelProvider(output));
-		pack.addProvider((PackOutput output) -> new PottedPlantModelProvider(output));
-		pack.addProvider(AdvancementProvider::create);
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania stonecutting recipes",
+				(recipes, advancements, conditions) -> new StonecuttingProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania crafting recipes", CraftingRecipeProvider::new));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania smelting recipes",
+				(recipes, advancements, conditions) -> new SmeltingProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania elven trade recipes",
+				(recipes, advancements, conditions) -> new ElvenTradeProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania mana pool recipes",
+				(recipes, advancements, conditions) -> new ManaInfusionProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania Pure Daisy recipes",
+				(recipes, advancements, conditions) -> new PureDaisyProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania Brew recipes",
+				(recipes, advancements, conditions) -> new BrewProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania petal apothecary recipes", PetalApothecaryProvider::new));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania runic altar recipes",
+				(recipes, advancements, conditions) -> new RunicAltarProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania Terra Plate recipes",
+				(recipes, advancements, conditions) -> new TerrestrialAgglomerationProvider(recipes, advancements)));
+		pack.addProvider(BotaniaFabricRecipeProvider.of("Botania Orechid and Marimorphosis recipes", OrechidProvider::new));
+		pack.addProvider((FabricPackOutput output) -> new BlockstateProvider(output));
+		pack.addProvider((FabricPackOutput output) -> new FloatingFlowerModelProvider(output));
+		pack.addProvider((FabricPackOutput output) -> new ItemModelProvider(output));
+		pack.addProvider((FabricPackOutput output) -> new PottedPlantModelProvider(output));
+		pack.addProvider(BotaniaFabricAdvancementProvider::new);
 	}
 
 	@Override

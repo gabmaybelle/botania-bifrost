@@ -69,6 +69,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 		Profiler.get().pop();
 	}
 
+	// PORT-26.3: called from AbstractMinecartMixin on both loaders (NeoForge no longer has the rail hook)
 	@SoftImplement("IBaseRailBlockExtension")
 	public void onMinecartPass(BlockState state, Level world, BlockPos pos, AbstractMinecart cart) {
 		if (!world.isClientSide()) {

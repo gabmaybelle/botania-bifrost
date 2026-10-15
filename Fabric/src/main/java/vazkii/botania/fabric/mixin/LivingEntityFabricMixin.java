@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -46,9 +47,6 @@ public abstract class LivingEntityFabricMixin extends Entity {
 	@Shadow
 	public abstract ItemStack getItemInHand(InteractionHand hand);
 
-	@Shadow
-	protected int lastHurtByPlayerTime;
-
 	@Inject(at = @At("HEAD"), cancellable = true, method = "dropFromLootTable(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;Z)V")
 	private void dropLoonium(ServerLevel level, DamageSource source, boolean playerKilled, CallbackInfo ci) {
 		var self = (LivingEntity) (Object) this;
@@ -71,13 +69,14 @@ public abstract class LivingEntityFabricMixin extends Entity {
 
 	}
 
-	@Inject(at = @At("HEAD"), method = "swing(Lnet/minecraft/world/InteractionHand;Z)V", cancellable = true)
-	private void onSwing(InteractionHand hand, boolean bl, CallbackInfo ci) {
+	// PORT-26.3: swing takes the animation and returns whether the swing started
+	@Inject(at = @At("HEAD"), method = "swing(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/component/SwingAnimation;Z)Z", cancellable = true)
+	private void onSwing(InteractionHand hand, SwingAnimation animation, boolean sendToSwingingEntity, CallbackInfoReturnable<Boolean> cir) {
 		ItemStack stack = getItemInHand(hand);
 		LivingEntity self = (LivingEntity) (Object) this;
 		if (!level().isClientSide()) {
 			if (stack.getItem() instanceof AssemblyHaloItem halo && halo.onEntitySwing(stack, self, hand)) {
-				ci.cancel();
+				cir.setReturnValue(false);
 			} else if (stack.getItem() instanceof ShadedMesaRodItem rod) {
 				rod.onEntitySwing(stack, self, hand);
 			}

@@ -14,17 +14,17 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.data.util.DummyTagLookup;
+import vazkii.botania.data.util.IntrinsicTagsProvider;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class ConventionalFluidTagProvider extends IntrinsicHolderTagsProvider<Fluid> {
+public class ConventionalFluidTagProvider extends IntrinsicTagsProvider<Fluid> {
 	private static final Set<TagKey<Fluid>> RELEVANT_TAGS = Set.of(
 			ConventionalFluidTags.WATER, ConventionalFluidTags.LAVA
 	);
@@ -41,8 +41,4 @@ public class ConventionalFluidTagProvider extends IntrinsicHolderTagsProvider<Fl
 		this.tag(BotaniaTags.Fluids.THERMALILY_CONSUMABLE).addTag(ConventionalFluidTags.LAVA);
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

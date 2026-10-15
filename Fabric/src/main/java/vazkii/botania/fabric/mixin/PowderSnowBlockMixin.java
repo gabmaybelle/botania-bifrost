@@ -15,7 +15,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.PowderSnowBlock;
 
@@ -30,10 +29,11 @@ public class PowderSnowBlockMixin {
 	@WrapOperation(
 		method = "canEntityWalkOnPowderSnow", at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"
+			target = "Lnet/minecraft/world/item/ItemStack;is(Ljava/lang/Object;)Z"
 		)
 	)
-	private static boolean canWalkOnPowderSnowWithBotaniaItems(ItemStack stack, Item item, Operation<Boolean> original, @Local(argsOnly = true) Entity entity) {
+	// PORT-26.3: is(Item) is the erased TypedInstance#is(T) now
+	private static boolean canWalkOnPowderSnowWithBotaniaItems(ItemStack stack, Object item, Operation<Boolean> original, @Local(argsOnly = true) Entity entity) {
 		return original.call(stack, item) || stack.is(BotaniaItems.MANAWEAVE_BOOTS)
 				|| !EquipmentHandler.findOrEmpty(BotaniaItems.SNOWFLAKE_PENDANT, (LivingEntity) entity).isEmpty();
 	}

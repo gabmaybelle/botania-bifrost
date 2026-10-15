@@ -9,21 +9,21 @@
 
 package vazkii.botania.neoforge.data.gog;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
-
-import org.jetbrains.annotations.NotNull;
 
 import vazkii.botania.api.BotaniaAPI;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static vazkii.botania.api.BotaniaAPI.gogRL;
@@ -33,20 +33,14 @@ public class GogGlobalLootModifierProvider extends GlobalLootModifierProvider {
 		super(output, registries, BotaniaAPI.GOG_MODID);
 	}
 
-	@NotNull
-	@Override
-	public String getName() {
-		return "GoG Global Loot Modifiers";
-	}
-
 	@Override
 	protected void start() {
-		add("extra_seeds", new AddTableLootModifier(new LootItemCondition[] {
+		add("extra_seeds", new AddTableLootModifier(Optional.of(Holder.direct(
 				AnyOfCondition.anyOf(
-						LootTableIdCondition.builder(Blocks.SHORT_GRASS.getLootTable().identifier()),
-						LootTableIdCondition.builder(Blocks.TALL_GRASS.getLootTable().identifier())
-				).build()
-		}, ResourceKey.create(Registries.LOOT_TABLE, gogRL("extra_seeds"))));
+						LootTableIdCondition.builder(Blocks.SHORT_GRASS.getLootTable().orElseThrow().identifier()),
+						LootTableIdCondition.builder(Blocks.TALL_GRASS.getLootTable().orElseThrow().identifier())
+				).build())),
+				IGlobalLootModifier.DEFAULT_PRIORITY, ResourceKey.create(Registries.LOOT_TABLE, gogRL("extra_seeds"))));
 	}
 
 }

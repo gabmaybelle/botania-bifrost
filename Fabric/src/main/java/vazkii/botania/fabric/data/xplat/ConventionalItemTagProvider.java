@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -27,12 +26,13 @@ import vazkii.botania.common.helper.ColorHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.lib.ConventionalBotaniaTags;
+import vazkii.botania.data.ItemTagProvider;
 import vazkii.botania.data.util.DummyTagLookup;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class ConventionalItemTagProvider extends ItemTagsProvider {
+public class ConventionalItemTagProvider extends ItemTagProvider {
 	private static final Set<TagKey<Item>> RELEVANT_TAGS = Set.of(
 			BotaniaTags.Items.SHIMMERING_MUSHROOMS,
 			ConventionalItemTags.SEEDS
@@ -89,7 +89,7 @@ public class ConventionalItemTagProvider extends ItemTagsProvider {
 		// Dyed
 		ColorHelper.supportedColors().forEach(color -> {
 			tag(TagKey.create(ConventionalItemTags.DYED.registry(),
-					ConventionalItemTags.DYED.identifier().withSuffix("/" + color.getSerializedName())))
+					ConventionalItemTags.DYED.location().withSuffix("/" + color.getSerializedName())))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color).asItem())
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color).asItem())
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color).asItem())
@@ -252,8 +252,4 @@ public class ConventionalItemTagProvider extends ItemTagsProvider {
 				.addTag(ConventionalItemTags.SEEDS);
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

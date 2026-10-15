@@ -10,10 +10,12 @@
 package vazkii.botania.mixin;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,8 +31,9 @@ public class ItemStackMixin {
 	/**
 	 * Self-repair for mana-repaired items.
 	 */
+	// PORT-26.3: inventoryTick takes the equipment slot (null for plain inventory slots) instead of index + selected flag
 	@Inject(method = "inventoryTick", at = @At("HEAD"))
-	private void tickSelfRepair(Level level, Entity entity, int inventorySlot, boolean isCurrentItem, CallbackInfo ci) {
+	private void tickSelfRepair(Level level, Entity entity, @Nullable EquipmentSlot slot, CallbackInfo ci) {
 
 		ItemStack self = (ItemStack) (Object) this;
 

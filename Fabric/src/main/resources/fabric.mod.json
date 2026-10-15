@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "${mod_id}",
   "version": "${version}",
-
   "name": "${mod_name}",
   "description": "${description}",
   "authors": [
@@ -23,10 +22,8 @@
     "sources": "${sources_url}",
     "issues": "${issues_url}"
   },
-
   "license": "${license}",
   "icon": "logo.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -62,6 +59,9 @@
       "vazkii.botania.test.item.lens.PaintslingerLensTest",
       "vazkii.botania.test.item.lens.WarpForceTest",
       "vazkii.botania.test.TranslationKeysTest"
+    ],
+    "fabric-datagen": [
+      "vazkii.botania.fabric.data.FabricDatagenInitializer"
     ]
   },
   "mixins": [
@@ -69,7 +69,6 @@
     "botania.fabric.mixins.json"
   ],
   "accessWidener": "botania.accesswidener",
-
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",

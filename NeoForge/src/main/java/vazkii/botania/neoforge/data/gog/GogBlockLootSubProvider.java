@@ -11,10 +11,13 @@ package vazkii.botania.neoforge.data.gog;
 
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.predicates.StatePropertiesPredicate;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -23,8 +26,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.neoforged.neoforge.common.Tags;
 
@@ -33,26 +36,39 @@ import vazkii.botania.common.loot.BotaniaLootTables;
 import java.util.function.BiConsumer;
 
 public class GogBlockLootSubProvider implements LootTableSubProvider {
-	public GogBlockLootSubProvider(HolderLookup.Provider provider) {}
+	private final LootTableSubProvider.Context output;
+
+	private final HolderGetter<Item> items;
+	private final HolderGetter<Block> blocks;
+
+	public GogBlockLootSubProvider(LootTableSubProvider.Context output) {
+		this.output = output;
+		this.items = output.lookup(Registries.ITEM);
+		this.blocks = output.lookup(Registries.BLOCK);
+	}
 
 	@Override
+	public void run() {
+		generate(output::accept);
+	}
+
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
 		output.accept(BotaniaLootTables.GOG_EXTRA_SEEDS,
 				LootTable.lootTable().withPool(LootPool.lootPool()
 						.add(LootItem.lootTableItem(Items.MELON_SEEDS))
 						.add(LootItem.lootTableItem(Items.PUMPKIN_SEEDS))
 						.when(AnyOfCondition.anyOf(
-								LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.SHORT_GRASS),
-								LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.TALL_GRASS)
-										.setProperties(StatePropertiesPredicate.Builder.properties()
+								MatchBlock.blockMatches(blocks, Blocks.SHORT_GRASS),
+								MatchBlock.blockMatches(blocks, Blocks.TALL_GRASS,
+										StatePropertiesPredicate.Builder.properties()
 												.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF,
 														DoubleBlockHalf.LOWER)
-										)
+								)
 						))
 						.when(ExplosionCondition.survivesExplosion())
 						.when(LootItemRandomChanceCondition.randomChance(0.03125f))
 						// TODO: on NeoForge this should actually match the shears tool ability, not the item tag
-						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.TOOLS_SHEAR)).invert())
+						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(items, Tags.Items.TOOLS_SHEAR)).invert())
 				));
 	}
 }

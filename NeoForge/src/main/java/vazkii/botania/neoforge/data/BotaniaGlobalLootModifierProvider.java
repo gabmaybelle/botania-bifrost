@@ -10,18 +10,20 @@
 
 package vazkii.botania.neoforge.data;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.loot.BotaniaLootTables;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class BotaniaGlobalLootModifierProvider extends GlobalLootModifierProvider {
@@ -35,8 +37,8 @@ public class BotaniaGlobalLootModifierProvider extends GlobalLootModifierProvide
 			ResourceKey<LootTable> targetTable = BotaniaLootTables.getInjectionTargetLootTable(lootTable);
 			if (targetTable != null) {
 				add(lootTable.identifier().getPath(), new AddTableLootModifier(
-						new LootItemCondition[] { LootTableIdCondition.builder(targetTable.identifier()).build() },
-						lootTable)
+						Optional.of(Holder.direct(LootTableIdCondition.builder(targetTable.identifier()).build())),
+						IGlobalLootModifier.DEFAULT_PRIORITY, lootTable)
 				);
 			}
 		}

@@ -11,6 +11,7 @@ package vazkii.botania.common.block.block_entity.flower.generating;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
@@ -90,7 +91,8 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 				}
 				BlockState blockState = level.getBlockState(pos);
 				if (!(fluidState.getType() instanceof FlowingFluid flowing)
-						|| !((FlowingFluidAccessor) flowing).botania_getNewLiquid(level, pos, blockState).isSource()) {
+						// PORT-26.3: getNewLiquid wants the server level (this runs after the client-side guard above)
+						|| !((FlowingFluidAccessor) flowing).botania_getNewLiquid((ServerLevel) level, pos, blockState).isSource()) {
 					// liquid would not form a new source here if this one was removed, so consume it
 					if (!(blockState.getBlock() instanceof BucketPickup bucketPickup)
 							|| bucketPickup.pickupBlock(null, level, pos, blockState).isEmpty()) {

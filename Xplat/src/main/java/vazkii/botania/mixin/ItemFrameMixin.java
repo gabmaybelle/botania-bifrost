@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,8 +37,9 @@ public class ItemFrameMixin {
 		PhantomInked.updateItemFrame((ItemFrame) (Object) this, stack);
 	}
 
+	// PORT-26.3: interact takes the hit location as well
 	@Inject(method = "interact", at = @At("HEAD"), cancellable = true)
-	private void botania_applyPhantomInk(Player player, InteractionHand hand,
+	private void botania_applyPhantomInk(Player player, InteractionHand hand, Vec3 location,
 			CallbackInfoReturnable<InteractionResult> cir) {
 		if (PhantomInked.applyToItemFrame((ItemFrame) (Object) this, player, hand)) {
 			cir.setReturnValue(InteractionResult.CONSUME);

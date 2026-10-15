@@ -51,8 +51,9 @@ public abstract class HashCacheFabricMixin {
 		botania_originalCaches = ImmutableMap.copyOf(map);
 	}
 
+	// PORT-26.3: javac's name for the purgeStaleAndWrite lambda (re-check with javap on every Minecraft update)
 	@WrapWithCondition(
-		method = "method_46571",
+		method = "lambda$purgeStaleAndWrite$0",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/data/HashCache$ProviderCache;save(Ljava/nio/file/Path;Ljava/nio/file/Path;Ljava/lang/String;)V"

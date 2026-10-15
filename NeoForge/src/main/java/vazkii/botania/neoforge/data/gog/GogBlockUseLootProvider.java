@@ -9,7 +9,6 @@
 
 package vazkii.botania.neoforge.data.gog;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -22,9 +21,17 @@ import vazkii.botania.common.loot.BotaniaLootTables;
 import java.util.function.BiConsumer;
 
 public class GogBlockUseLootProvider implements LootTableSubProvider {
-	public GogBlockUseLootProvider(HolderLookup.Provider provider) {}
+	private final LootTableSubProvider.Context output;
+
+	public GogBlockUseLootProvider(LootTableSubProvider.Context output) {
+		this.output = output;
+	}
 
 	@Override
+	public void run() {
+		generate(output::accept);
+	}
+
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
 		output.accept(BotaniaLootTables.GOG_PEBBLES_TABLE,
 				LootTable.lootTable().withPool(LootPool.lootPool().add(LootItem.lootTableItem(BotaniaItems.PEBBLE))));

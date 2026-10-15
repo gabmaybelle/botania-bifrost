@@ -26,18 +26,18 @@ public interface AbstractFurnaceBlockEntityAccessor {
 	@Accessor("quickCheck")
 	RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> botania_getQuickCheck();
 
-	@Accessor("litTime")
+	@Accessor("litTimeRemaining")
 	int botania_getLitTime();
 
-	@Accessor("litTime")
+	@Accessor("litTimeRemaining")
 	void botania_setLitTime(int burnTime);
 
-	@Accessor("cookingProgress")
+	@Accessor("cookingTimer")
 	int botania_getCookingProgress();
 
 	@Accessor("cookingTotalTime")
 	int botania_getCookingTotalTime();
 
-	@Accessor("cookingProgress")
+	@Accessor("cookingTimer")
 	void botania_setCookingProgress(int cookTime);
 }

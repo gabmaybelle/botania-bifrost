@@ -10,7 +10,7 @@
 package vazkii.botania.mixin;
 
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.redstone.NeighborUpdater;
+import net.minecraft.world.level.redstone.CollectingNeighborUpdater;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -18,5 +18,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Level.class)
 public interface LevelAccessor {
 	@Accessor("neighborUpdater")
-	NeighborUpdater botania_getNeighborUpdater();
+	CollectingNeighborUpdater botania_getNeighborUpdater(); // PORT-26.3: the field is a CollectingNeighborUpdater now
 }

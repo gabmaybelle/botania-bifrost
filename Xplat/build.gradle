@@ -22,8 +22,9 @@ dependencies {
     annotationProcessor(libs.mixin.extras)
 
     // PORT-26.3: Patchouli has no 26.3 build. Its 1.21.1 jar stays on the compile classpath for the API only:
-    // the multiblock definitions and the Lexica item compile against it, and at runtime PatchouliAPI.get()
-    // falls back to the API's built-in stub when Patchouli isn't installed. Revisit in Phase 5.
+    // the multiblock definitions and the Lexica item compile against it. The API classes are not on the
+    // runtime classpath, so nothing may reach PatchouliAPI at startup (the config flags are guarded) and the
+    // gameplay call sites (multiblocks, lexicon) stay broken until Phase 5 settles the Lexica.
     compileOnly(libs.patchouli.xplat)
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
     //compileOnly(libs.ears)

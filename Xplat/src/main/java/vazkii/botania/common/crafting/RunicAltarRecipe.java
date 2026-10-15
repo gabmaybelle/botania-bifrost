@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.api.recipe.ProcessingRecipeInput;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.crafting.recipe.RecipeUtils;
-import vazkii.botania.mixin.IngredientAccessor;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.util.ArrayList;
@@ -77,11 +76,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 				.map(ItemStack::getItem).forEach(catalystItems::add);
 		Stream.of(RecipeUtils.stacksOf(reagent)).map(ItemStack::getItem).forEach(reagentItems::add);
 
-		// HACK: Reset cached items lists of ingredients, because these might be empty right after world load.
-		// (This also means the validation is not reliable on world load, only on datagen and datapack reload.)
-		Stream.of(ingredients).forEach(ingr -> ((IngredientAccessor) ingr).botania_setItemStacks(null));
-		Stream.of(catalysts).forEach(ingr -> ((IngredientAccessor) ingr).botania_setItemStacks(null));
-		((IngredientAccessor) reagent).botania_setItemStacks(null);
+		// PORT-26.3: ingredients no longer cache an item list (they are holder sets), so the cache reset hack is gone
 
 		var ingredientsOverlap = ingredientItems.clone();
 		ingredientsOverlap.retainAll(catalystItems);

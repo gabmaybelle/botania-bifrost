@@ -12,6 +12,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TraceableEntity;
@@ -105,7 +106,7 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 		Entity owner = getOwner();
 		burst.setOwner(owner);
 		if (owner == null && ownerUUID != null) {
-			((ProjectileAccessor) burst).botania_setOwnerUUID(ownerUUID);
+			((ProjectileAccessor) burst).botania_setOwner(EntityReference.of(ownerUUID));
 		}
 		burst.setPos(getX(), getY(), getZ());
 

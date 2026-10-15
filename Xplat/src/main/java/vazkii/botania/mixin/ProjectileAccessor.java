@@ -9,21 +9,24 @@
 
 package vazkii.botania.mixin;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.Projectile;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-
-import java.util.UUID;
 
 @Mixin(Projectile.class)
 public interface ProjectileAccessor {
 	@Accessor("leftOwner")
 	boolean botania_getLeftOwner();
 
-	@Accessor("ownerUUID")
-	UUID botania_getOwnerUUID();
+	// PORT-26.3: the owner UUID field is an EntityReference now
+	@Accessor("owner")
+	@Nullable
+	EntityReference<Entity> botania_getOwner();
 
-	@Accessor("ownerUUID")
-	void botania_setOwnerUUID(UUID ownerUUID);
+	@Accessor("owner")
+	void botania_setOwner(@Nullable EntityReference<Entity> owner);
 }

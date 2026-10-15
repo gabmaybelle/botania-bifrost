@@ -50,8 +50,9 @@ public abstract class ExperienceOrbMixin extends Entity {
 		}
 	}
 
+	// PORT-26.3: the player-following check moved out of tick into followNearbyPlayer
 	@WrapOperation(
-		method = "tick",
+		method = "followNearbyPlayer",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z")
 	)
 	private boolean skipFollowingPlayerIfFollowingFlower(Player instance, Operation<Boolean> original) {

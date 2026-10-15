@@ -12,14 +12,13 @@ package vazkii.botania.neoforge.data.gog;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
 import static vazkii.botania.api.BotaniaAPI.gogRL;
 
 public class GogSoundDefinitionProvider extends SoundDefinitionsProvider {
-	public GogSoundDefinitionProvider(PackOutput output, ExistingFileHelper helper) {
-		super(output, "minecraft", helper);
+	public GogSoundDefinitionProvider(PackOutput output) {
+		super(output, "minecraft");
 	}
 
 	@Override

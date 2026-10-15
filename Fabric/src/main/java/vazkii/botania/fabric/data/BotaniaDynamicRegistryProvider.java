@@ -9,7 +9,7 @@
 
 package vazkii.botania.fabric.data;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 
@@ -19,7 +19,7 @@ import static vazkii.botania.common.BotaniaDamageTypes.*;
 
 public class BotaniaDynamicRegistryProvider extends FabricDynamicRegistryProvider {
 
-	public BotaniaDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public BotaniaDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, registriesFuture);
 	}
 

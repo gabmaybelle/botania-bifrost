@@ -11,7 +11,9 @@ package vazkii.botania.fabric.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,14 +23,15 @@ import vazkii.botania.common.block.block_entity.flower.functional.VinculotusBloc
 
 @Mixin(Enderman.class)
 public class EnderManFabricMixin {
-	@WrapOperation(method = "teleport(DDD)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Enderman;randomTeleport(DDDZ)Z"))
-	private boolean checkForVincs(Enderman instance, double x, double y, double z, boolean broadcastTeleport, Operation<Boolean> original) {
+	@WrapOperation(method = "teleport(DDD)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Enderman;randomTeleport(DDDZLnet/minecraft/tags/TagKey;)Z"))
+	// PORT-26.3: randomTeleport takes the avoidance tag as well
+	private boolean checkForVincs(Enderman instance, double x, double y, double z, boolean broadcastTeleport, TagKey<Block> avoidanceTag, Operation<Boolean> original) {
 		Vec3 vincPos = VinculotusBlockEntity.onEndermanTeleport(instance, x, y, z);
 		if (vincPos != null) {
 			x = vincPos.x();
 			y = vincPos.y();
 			z = vincPos.z();
 		}
-		return original.call(instance, x, y, z, broadcastTeleport);
+		return original.call(instance, x, y, z, broadcastTeleport, avoidanceTag);
 	}
 }

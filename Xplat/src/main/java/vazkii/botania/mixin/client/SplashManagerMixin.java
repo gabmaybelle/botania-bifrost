@@ -8,15 +8,12 @@
  */
 package vazkii.botania.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Local;
-
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,7 +26,8 @@ import vazkii.botania.client.integration.shared.LocaleHelper;
 import vazkii.botania.common.block.block_entity.TinyPotatoBlockEntity;
 import vazkii.botania.xplat.BotaniaConfig;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,9 +37,14 @@ import java.util.List;
  */
 @Mixin(SplashManager.class)
 public class SplashManagerMixin {
+	// PORT-26.3: the splash list is an immutable list of components now, replaced on every resource reload
 	@Shadow
-	@Final
-	private List<String> splashes;
+	private List<Component> splashes;
+
+	@Shadow
+	private static Component literalSplash(String text) {
+		throw new AssertionError();
+	}
 
 	@Unique
 	private boolean botania_alreadyAdded;
@@ -50,27 +53,25 @@ public class SplashManagerMixin {
 		method = "apply(Ljava/util/List;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
 		at = @At("HEAD")
 	)
-	private void resetSelf(List<String> object, ResourceManager resourceManager, ProfilerFiller profiler,
+	private void resetSelf(List<Component> object, ResourceManager resourceManager, ProfilerFiller profiler,
 			CallbackInfo ci) {
 		botania_alreadyAdded = false;
 	}
 
-	@Inject(
-		method = "getSplash",
-		at = @At(value = "INVOKE", target = "Ljava/util/Calendar;get(I)I", ordinal = 0),
-		cancellable = true
-	)
-	private void handleBotaniaSplashes(CallbackInfoReturnable<SplashRenderer> cir, @Local Calendar calendar) {
+	// PORT-26.3: vanilla no longer reads a Calendar in getSplash (it uses SpecialDates), so hook the start of it
+	@Inject(method = "getSplash", at = @At("HEAD"), cancellable = true)
+	private void handleBotaniaSplashes(CallbackInfoReturnable<SplashRenderer> cir) {
 		var config = BotaniaConfig.client();
 		if (config == null || !config.splashesEnabled()) {
 			return;
 		}
 
 		// override splash for tater's birthday
-		if (calendar.get(Calendar.MONTH) + 1 == TinyPotatoBlockEntity.BIRTHDAY.getMonth().getValue()
-				&& calendar.get(Calendar.DAY_OF_MONTH) == TinyPotatoBlockEntity.BIRTHDAY.getDayOfMonth()) {
-			int age = calendar.get(Calendar.YEAR) - TinyPotatoBlockEntity.BIRTHDAY.getYear();
-			cir.setReturnValue(new SplashRenderer(Component.literal("Happy %s birthday, Tiny Potato!"
+		LocalDate today = LocalDate.now();
+		if (today.getMonth() == TinyPotatoBlockEntity.BIRTHDAY.getMonth()
+				&& today.getDayOfMonth() == TinyPotatoBlockEntity.BIRTHDAY.getDayOfMonth()) {
+			int age = today.getYear() - TinyPotatoBlockEntity.BIRTHDAY.getYear();
+			cir.setReturnValue(new SplashRenderer(literalSplash("Happy %s birthday, Tiny Potato!"
 					.formatted(LocaleHelper.formatAsEnglishOrdinal(age)))));
 			return;
 		}
@@ -85,11 +86,15 @@ public class SplashManagerMixin {
 
 	@Unique
 	private void botania_addSplashes() {
-		splashes.addAll(List.of(
+		List<Component> list = new ArrayList<>(splashes);
+		for (String splash : List.of(
 				"Do not feed bread to elves!",
 				"Drum wild!",
 				"Edible textures!",
 				"Music by Firel!"
-		));
+		)) {
+			list.add(literalSplash(splash));
+		}
+		splashes = List.copyOf(list);
 	}
 }

@@ -39,6 +39,8 @@ import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.loot.BotaniaLootTables;
 import vazkii.botania.mixin.MobAccessor;
 
+import java.util.Optional;
+
 public class FelPumpkinBlock extends BotaniaBlock {
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	@Nullable
@@ -93,7 +95,7 @@ public class FelPumpkinBlock extends BotaniaBlock {
 			Blaze blaze = EntityTypes.BLAZE.create(level, EntitySpawnReason.EVENT);
 			if (blaze != null) {
 				blaze.setPersistenceRequired();
-				((MobAccessor) blaze).botania_setLootTable(BotaniaLootTables.FEL_BLAZE);
+				((MobAccessor) blaze).botania_setLootTable(Optional.of(BotaniaLootTables.FEL_BLAZE));
 				spawnBlazeInWorld(level, blockPatternMatch, blaze, blockPatternMatch.getBlock(0, 2, 0).getPos());
 			}
 		}

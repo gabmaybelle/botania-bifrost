@@ -62,7 +62,7 @@ public abstract class PlayerFabricMixin extends LivingEntity {
 	 * Performs many reactions when being hit
 	 */
 	// PORT-26.3: hurt became hurtServer(ServerLevel, DamageSource, float)
-	@ModifyArgs(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	@ModifyArgs(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Avatar;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z")) // PORT-26.3: super is Avatar now
 	private void onHurt(Args args) {
 		Player self = (Player) (Object) this;
 		DamageSource src = args.get(1);
@@ -92,7 +92,7 @@ public abstract class PlayerFabricMixin extends LivingEntity {
 	}
 
 	// PORT-26.3: the fall distance is a double now
-	@ModifyArg(index = 0, method = "causeFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;causeFallDamage(DFLnet/minecraft/world/damagesource/DamageSource;)Z"))
+	@ModifyArg(index = 0, method = "causeFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Avatar;causeFallDamage(DFLnet/minecraft/world/damagesource/DamageSource;)Z")) // PORT-26.3: super is Avatar now
 	private double cushionFall(double originalDist) {
 		return SojournersSashItem.onPlayerFall((Player) (Object) this, (float) originalDist);
 	}

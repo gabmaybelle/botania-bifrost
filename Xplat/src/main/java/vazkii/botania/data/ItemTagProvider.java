@@ -57,7 +57,12 @@ public class ItemTagProvider extends IntrinsicTagsProvider<Item> {
 
 	public ItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
 			CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
-		super(output, Registries.ITEM, lookupProvider, DummyTagLookup.completedFuture(REQUIRED_TAGS),
+		this(output, lookupProvider, DummyTagLookup.completedFuture(REQUIRED_TAGS), blockTags);
+	}
+
+	protected ItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
+			CompletableFuture<TagsProvider.TagLookup<Item>> parentProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
+		super(output, Registries.ITEM, lookupProvider, parentProvider,
 				item -> BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow());
 		this.blockTags = blockTags;
 	}

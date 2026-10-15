@@ -15,6 +15,7 @@ import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -22,6 +23,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base of Botania's recipe generators: vanilla's {@link RecipeProvider}, which writes into the recipe and
@@ -41,6 +44,32 @@ public abstract class BotaniaRecipeProvider extends RecipeProvider {
 
 	protected Criterion<InventoryChangeTrigger.TriggerInstance> conditionsFromTag(TagKey<Item> tag) {
 		return has(tag);
+	}
+
+	// [VanillaCopy] RecipeProvider#nineBlockStorageRecipes, with the output as a parameter so the packed/unpacked pair
+	// can carry load conditions (the eight-argument form is private there now)
+	protected void nineBlockStorageRecipes(RecipeOutput recipeOutput, RecipeCategory unpackedFormCategory, ItemLike unpackedForm,
+			RecipeCategory packedFormCategory, ItemLike packedForm) {
+		nineBlockStorageRecipes(recipeOutput, unpackedFormCategory, unpackedForm, packedFormCategory, packedForm,
+				getSimpleRecipeName(packedForm), null, getSimpleRecipeName(unpackedForm), null);
+	}
+
+	protected void nineBlockStorageRecipes(RecipeOutput recipeOutput, RecipeCategory unpackedFormCategory, ItemLike unpackedForm,
+			RecipeCategory packedFormCategory, ItemLike packedForm, String packingRecipeId, @Nullable String packingRecipeGroup,
+			String unpackingRecipeId, @Nullable String unpackingRecipeGroup) {
+		shapeless(unpackedFormCategory, unpackedForm, 9)
+				.requires(packedForm)
+				.group(unpackingRecipeGroup)
+				.unlockedBy(getHasName(packedForm), has(packedForm))
+				.save(recipeOutput, unpackingRecipeId);
+		shaped(packedFormCategory, packedForm)
+				.define('#', unpackedForm)
+				.pattern("###")
+				.pattern("###")
+				.pattern("###")
+				.group(packingRecipeGroup)
+				.unlockedBy(getHasName(unpackedForm), has(unpackedForm))
+				.save(recipeOutput, packingRecipeId);
 	}
 
 	@Override

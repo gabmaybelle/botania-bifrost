@@ -11,7 +11,6 @@ package vazkii.botania.neoforge.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,16 +25,16 @@ import vazkii.botania.common.item.equipment.tool.ToolCommons;
 @Mixin(ItemStack.class)
 public class ItemStackNeoForgeMixin {
 
+	// PORT-26.3: the durability change is computed by a private ItemStack method now (NeoForge's LivingEntity overload)
 	@WrapOperation(
 		method = "hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;processDurabilityChange(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;I)I"
+			target = "Lnet/minecraft/world/item/ItemStack;processDurabilityChange(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)I"
 		)
 	)
-	private int absorbDamageWithMana(ServerLevel level, ItemStack stack, int damage, Operation<Integer> original,
-			@Local(argsOnly = true) @Nullable LivingEntity livingEntity) {
-
-		return ToolCommons.absorbDamageWithMana(stack, original.call(level, stack, damage), livingEntity);
+	private int absorbDamageWithMana(ItemStack stack, int damage, ServerLevel level, @Nullable LivingEntity livingEntity,
+			Operation<Integer> original) {
+		return ToolCommons.absorbDamageWithMana(stack, original.call(stack, damage, level, livingEntity), livingEntity);
 	}
 }

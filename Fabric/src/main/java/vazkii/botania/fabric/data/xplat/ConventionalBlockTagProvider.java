@@ -77,7 +77,7 @@ public class ConventionalBlockTagProvider extends BlockTagProvider {
 		// Dyed blocks
 		ColorHelper.supportedColors().forEach(color -> {
 			tag(TagKey.create(ConventionalBlockTags.DYED.registry(),
-					ConventionalBlockTags.DYED.identifier().withSuffix("/" + color.getSerializedName())))
+					ConventionalBlockTags.DYED.location().withSuffix("/" + color.getSerializedName())))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.MANA_POOL, color))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.CREATIVE_MANA_POOL, color))
 					.add(BotaniaBlocks.findOptionallyDyedBlock(BotaniaBlocks.DILUTED_MANA_POOL, color))
@@ -150,20 +150,11 @@ public class ConventionalBlockTagProvider extends BlockTagProvider {
 				// redstone lamp and beacon do not need silktouch by default
 				.add(Blocks.GLOWSTONE, Blocks.SEA_LANTERN)
 				// copper bulbs have higher mining level by default
-				.add(
-						Blocks.COPPER_BULB, Blocks.EXPOSED_COPPER_BULB,
-						Blocks.WEATHERED_COPPER_BULB, Blocks.OXIDIZED_COPPER_BULB,
-						Blocks.WAXED_COPPER_BULB, Blocks.WAXED_EXPOSED_COPPER_BULB,
-						Blocks.WAXED_WEATHERED_COPPER_BULB, Blocks.WAXED_OXIDIZED_COPPER_BULB
-				);
+				.add(Blocks.COPPER_BULB.asList().toArray(Block[]::new));
 
 		tag(BotaniaTags.Blocks.MANTLE_RING_AFFECTED).addTag(BlockTags.MINEABLE_WITH_PICKAXE);
 		tag(BotaniaTags.Blocks.MANTLE_RING_HARD).addTag(ConventionalBlockTags.ORES);
 		tag(BotaniaTags.Blocks.ROD_OF_THE_PLENTIFUL_MANTLE_HIGHLIGHTED).addTag(ConventionalBlockTags.ORES);
 	}
 
-	@Override
-	public String getName() {
-		return "Conventional " + super.getName();
-	}
 }

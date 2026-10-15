@@ -9,15 +9,17 @@
 
 package vazkii.botania.mixin;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.Animal;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.UUID;
-
 @Mixin(Animal.class)
 public interface AnimalAccessor {
+	// PORT-26.3: the love cause is an entity reference now
 	@Accessor("loveCause")
-	void botania_setLoveCause(UUID id);
+	void botania_setLoveCause(@Nullable EntityReference<ServerPlayer> loveCause);
 }

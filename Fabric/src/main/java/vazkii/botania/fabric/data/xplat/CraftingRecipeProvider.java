@@ -2819,32 +2819,6 @@ public class CraftingRecipeProvider extends ConditionalRecipeProvider {
 		BotaniaSpecialRecipeBuilder.special(factory).save(recipeOutput);
 	}
 
-	// [VanillaCopy] RecipeProvider#nineBlockStorageRecipes, with the output as a parameter so the packed/unpacked pair
-	// can carry load conditions (the eight-argument form is private there now)
-	private void nineBlockStorageRecipes(RecipeOutput recipeOutput, RecipeCategory unpackedFormCategory, ItemLike unpackedForm,
-			RecipeCategory packedFormCategory, ItemLike packedForm) {
-		nineBlockStorageRecipes(recipeOutput, unpackedFormCategory, unpackedForm, packedFormCategory, packedForm,
-				getSimpleRecipeName(packedForm), null, getSimpleRecipeName(unpackedForm), null);
-	}
-
-	private void nineBlockStorageRecipes(RecipeOutput recipeOutput, RecipeCategory unpackedFormCategory, ItemLike unpackedForm,
-			RecipeCategory packedFormCategory, ItemLike packedForm, String packingRecipeId, @Nullable String packingRecipeGroup,
-			String unpackingRecipeId, @Nullable String unpackingRecipeGroup) {
-		shapeless(unpackedFormCategory, unpackedForm, 9)
-				.requires(packedForm)
-				.group(unpackingRecipeGroup)
-				.unlockedBy(getHasName(packedForm), has(packedForm))
-				.save(recipeOutput, unpackingRecipeId);
-		shaped(packedFormCategory, packedForm)
-				.define('#', unpackedForm)
-				.pattern("###")
-				.pattern("###")
-				.pattern("###")
-				.group(packingRecipeGroup)
-				.unlockedBy(getHasName(unpackedForm), has(unpackedForm))
-				.save(recipeOutput, packingRecipeId);
-	}
-
 	protected Block getBlockOrThrow(Identifier location) {
 		return BuiltInRegistries.BLOCK.getValueOrThrow(ResourceKey.create(Registries.BLOCK, location));
 	}

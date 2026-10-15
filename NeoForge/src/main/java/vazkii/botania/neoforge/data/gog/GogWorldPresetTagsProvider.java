@@ -15,28 +15,16 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.WorldPresetTags;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import org.jetbrains.annotations.NotNull;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.neoforge.data.NeoForgeDatagenInitializer;
 
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class GogWorldPresetTagsProvider extends TagsProvider<WorldPreset> {
 	public GogWorldPresetTagsProvider(PackOutput output,
 			CompletableFuture<HolderLookup.Provider> provider) {
-		super(output, Registries.WORLD_PRESET, provider, BotaniaAPI.MODID,
-				new ExistingFileHelper(List.of(), Set.of(), false, null, null));
-	}
-
-	@NotNull
-	@Override
-	public String getName() {
-		return "GoG world preset tags";
+		super(output, Registries.WORLD_PRESET, provider, BotaniaAPI.MODID);
 	}
 
 	@Override

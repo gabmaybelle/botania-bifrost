@@ -61,7 +61,7 @@ public class SnowflakePendantItem extends BaubleItem implements BlockChangedList
 
 				if (level.isEmptyBlock(blockpos) && blockstate.canSurvive(level, blockpos)) {
 					var biome = level.getBiome(blockpos);
-					if (((BiomeAccessor) (Object) biome.value()).botania_getTemperature(blockpos) < 0.9F) {
+					if (((BiomeAccessor) (Object) biome.value()).botania_getTemperature(blockpos, level.getSeaLevel()) < 0.9F) {
 						level.setBlockAndUpdate(blockpos, blockstate);
 					}
 				}

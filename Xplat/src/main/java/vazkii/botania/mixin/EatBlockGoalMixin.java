@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.EatBlockGoal;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +45,8 @@ public class EatBlockGoalMixin {
 		method = { "canUse", "tick" },
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/world/level/block/Block;)Z",
+			// PORT-26.3: is(Block) is the erased TypedInstance#is(T) now
+			target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z",
 			ordinal = 0
 		),
 		slice = @Slice(
@@ -57,7 +57,7 @@ public class EatBlockGoalMixin {
 			)
 		)
 	)
-	private boolean canEatBotaniaGrasses(BlockState instance, Block block, Operation<Boolean> original) {
+	private boolean canEatBotaniaGrasses(BlockState instance, Object block, Operation<Boolean> original) {
 		return original.call(instance, block) || instance.is(BotaniaTags.Blocks.SHEEP_EDIBLE_GRASSES);
 	}
 

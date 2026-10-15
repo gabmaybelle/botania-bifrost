@@ -16,7 +16,6 @@ import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import vazkii.botania.common.block.block_entity.corporea.CorporeaIndexBlockEntity;
@@ -32,16 +31,9 @@ public class ClientPacketListenerMixin {
 		}
 	}
 
-	@Inject(
-		method = "handleUpdateRecipes",
-		at = @At(value = "RETURN"),
-		slice = @Slice(
-			from = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/client/multiplayer/SessionSearchTrees;updateRecipes(Lnet/minecraft/client/ClientRecipeBook;Lnet/minecraft/world/level/Level;)V"
-			)
-		)
-	)
+	// PORT-26.3: handleUpdateRecipes only stores the new recipe container now (the recipe book refresh is a separate
+	// packet), so the cache is cleared at its end without the slice
+	@Inject(method = "handleUpdateRecipes", at = @At(value = "RETURN"))
 	private void onRecipesUpdated(ClientboundUpdateRecipesPacket packet, CallbackInfo ci) {
 		BotaniaRecipeIngredientsCache.clearClientCache();
 	}

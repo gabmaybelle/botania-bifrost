@@ -8,6 +8,8 @@
  */
 package vazkii.botania.fabric.mixin;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -19,15 +21,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import vazkii.botania.common.item.ColoredContentsPouchItem;
 
-import java.util.UUID;
-
 @Mixin(ItemEntity.class)
 public class ItemEntityFabricMixin {
 	@Shadow
 	private int pickupDelay;
 
 	@Shadow
-	private UUID thrower;
+	private EntityReference<Entity> thrower; // PORT-26.3: an entity reference now
 
 	@Inject(
 		method = "playerTouch",
@@ -36,7 +36,7 @@ public class ItemEntityFabricMixin {
 	)
 	private void onPickup(Player player, CallbackInfo ci) {
 		ItemEntity self = (ItemEntity) (Object) this;
-		if (pickupDelay == 0 && (thrower == null || thrower.equals(player.getUUID()))
+		if (pickupDelay == 0 && (thrower == null || thrower.getUUID().equals(player.getUUID()))
 				&& ColoredContentsPouchItem.onPickupItem(self, player)) {
 			ci.cancel();
 		}

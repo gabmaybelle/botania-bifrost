@@ -30,8 +30,6 @@ public abstract class BeeMixin extends Animal {
 	/**
 	 * Allows bees to treat special flowers as proper flowers for
 	 * pollination despite being excluded from the flower tag.
-	 * 
-	 * @see PollinateGoalMixin
 	 */
 	// PORT-26.3: the flower check is the static Bee#attractsBees(BlockState), used by the pollinate goal
 	@Inject(method = "attractsBees", cancellable = true, at = @At("HEAD"))

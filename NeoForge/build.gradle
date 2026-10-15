@@ -37,13 +37,13 @@ neoForge {
             systemProperty("neoforge.logging.console.level", "debug")
         }
         neoforgeDatagen {
-            data()
+            clientData() // PORT-26.3: client and server data in one run, like NeoForge itself
             programArguments.addAll("--mod", mod_id, "--all",
                     "--output", file("src/generated/resources/").getAbsolutePath(),
                     "--existing", file("src/main/resources/").getAbsolutePath())
         }
         gardenOfGlassDatagen {
-            data()
+            clientData()
             programArguments.addAll("--mod", mod_id, "--all",
                     "--output", file("../garden_of_glass/src/generated/resources/").getAbsolutePath(),
                     "--existing", file("../garden_of_glass/src/main/resources/").getAbsolutePath())

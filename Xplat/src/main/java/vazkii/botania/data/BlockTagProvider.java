@@ -165,6 +165,8 @@ public class BlockTagProvider extends IntrinsicTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.FLOATING_FLOWERS).addTag(BotaniaTags.Blocks.MUNDANE_FLOATING_FLOWERS)
 				.addTag(BotaniaTags.Blocks.SPECIAL_FLOATING_FLOWERS);
+		// PORT-26.3: farmland now keeps its shape under blocks in this vanilla tag (used to be the FarmBlockMixin)
+		tag(BlockTags.MAINTAINS_FARMLAND).addTag(BotaniaTags.Blocks.FLOATING_FLOWERS);
 
 		tag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS).add(
 				ColorHelper.supportedColors()
