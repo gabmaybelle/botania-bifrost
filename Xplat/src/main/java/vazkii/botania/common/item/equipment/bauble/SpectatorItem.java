@@ -172,7 +172,7 @@ public class SpectatorItem extends BaubleItem {
 					}
 				}
 			} else if (e instanceof Container inv && (!(inv instanceof AbstractMinecartContainer minecart)
-					|| minecart.getLootTable() == null)) {
+					|| minecart.getContainerLootTable() == null)) {
 				if (scanInventory(inv, mainHandStack, offHandStack)) {
 					entityIds.add(e.getId());
 				}

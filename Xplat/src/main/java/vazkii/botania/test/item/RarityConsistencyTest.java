@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import vazkii.botania.api.BotaniaAPI;
@@ -149,6 +150,11 @@ public class RarityConsistencyTest {
 			}
 			case PureDaisyRecipe pureDaisyRecipe -> {
 				return pureDaisyRecipe.getOutput().getDisplayedStacks();
+			}
+			case SmithingTrimRecipe trimRecipe -> {
+				// PORT-26.3: a trim recipe's display shows a sample trimmed armour piece; in 1.21.1 it had no single
+				// result (getResultItem was empty), so it was never checked
+				return List.of();
 			}
 			default -> {
 				// PORT-26.3: vanilla recipes only expose their result through their display

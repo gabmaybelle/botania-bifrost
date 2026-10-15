@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -1479,10 +1480,12 @@ public final class BotaniaBlocks {
 			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, false, false,
 					ManaPoolBlock.NORMAL_SHAPE_VARIANT, color, props),
 			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
+	// PORT-26.3: getDescriptionId is final; the dyed creative pools share the undyed one's name through their properties
 	public static final ManaPoolBlock CREATIVE_MANA_POOL = makeBlockWithColoredVariants(LibBlockNames.CREATIVE_MANA_POOL,
 			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA, false, true,
 					ManaPoolBlock.BIG_SHAPE_VARIANT, color, props),
-			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));
+			() -> BlockBehaviour.Properties.ofFullCopy(LIVINGROCK)
+					.overrideDescription(Util.makeDescriptionId("block", botaniaRL(LibBlockNames.CREATIVE_MANA_POOL))));
 	public static final ManaPoolBlock DILUTED_MANA_POOL = makeBlockWithColoredVariants(LibBlockNames.DILUTED_MANA_POOL,
 			(color, props) -> new ManaPoolBlock(ManaPoolBlock.MAX_MANA_DILUTED, false, false,
 					ManaPoolBlock.SMALL_SHAPE_VARIANT, color, props),
@@ -1641,7 +1644,8 @@ public final class BotaniaBlocks {
 					.sound(SoundType.METAL)
 					.requiresCorrectToolForDrops());
 	public static final Block SOLID_VINE = make(LibBlockNames.SOLID_VINE,
-			SolidVineBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.VINE));
+			SolidVineBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.VINE)
+					.overrideDescription(Blocks.VINE.getDescriptionId())); // PORT-26.3: was SolidVineBlock#getDescriptionId
 	public static final Block ABSTRUSE_PLATFORM = make(LibBlockNames.PLATFORM_ABSTRUSE,
 			AbstrusePlatformBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD)
 					.strength(2, 5)
@@ -1755,6 +1759,7 @@ public final class BotaniaBlocks {
 			AvatarBlock::new, BlockBehaviour.Properties.ofFullCopy(LIVINGWOOD));
 	public static final Block FAKE_AIR = make(LibBlockNames.FAKE_AIR,
 			FakeAirBlock::new, BlockBehaviour.Properties.of()
+					.overrideDescription(Blocks.AIR.getDescriptionId()) // PORT-26.3: was FakeAirBlock#getDescriptionId
 					.replaceable()
 					.noCollision()
 					.noLootTable()
@@ -1837,7 +1842,8 @@ public final class BotaniaBlocks {
 					.pushReaction(PushReaction.POPPED)
 					.strength(1));
 	public static final Block GAIA_WALL_HEAD_BLOCK = make(LibBlockNames.GAIA_WALL_HEAD,
-			GaiaWallHeadBlock::new, BlockBehaviour.Properties.ofFullCopy(GAIA_HEAD));
+			GaiaWallHeadBlock::new, BlockBehaviour.Properties.ofFullCopy(GAIA_HEAD)
+					.overrideDescription(GAIA_HEAD.getDescriptionId())); // PORT-26.3: wall blocks name themselves like vanilla's wall skulls
 
 	public static final Block SHIMMERROCK = make(LibBlockNames.SHIMMERROCK,
 			Block::new, BlockBehaviour.Properties.ofFullCopy(LIVINGROCK));

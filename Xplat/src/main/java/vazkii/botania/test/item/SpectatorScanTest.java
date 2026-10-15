@@ -119,7 +119,7 @@ public class SpectatorScanTest {
 		((SpectatorItem) BotaniaItems.THE_SPECTATOR).scanForItems(spectatorStack, player);
 
 		// ensure loot content has not been rolled
-		TestingUtil.assertThat(lootChestCart.getLootTable() != null, () -> "Chest loot was rolled");
+		TestingUtil.assertThat(lootChestCart.getContainerLootTable() != null, () -> "Chest loot was rolled");
 		TestingUtil.assertThat(lootChest.getLootTable() != null, () -> "Chest loot was rolled");
 
 		// check that exactly the relevant positions have been found
