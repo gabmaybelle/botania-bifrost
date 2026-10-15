@@ -58,7 +58,7 @@ What a careful reviewer looks at before trusting a port.
 
 ### Builds and tests
 - [ ] Both loaders build from a clean clone with one command.
-- [ ] GitHub Actions builds both loaders and runs the GameTests on every push (update upstream's workflow to Java 25).
+- [x] GitHub Actions builds both loaders and runs the GameTests on every push (Java 25; datagen check plus Fabric and NeoForge game tests).
 - [x] All GameTests pass, or each failure is listed in `PORTING.md` with a reason. (213 required Botania tests on 26.3, on both loaders; only the optional paintslinger test fails, as upstream marks it.)
 - [ ] **No test expectation is changed just to make it pass.** If a test must change, the reason goes in the commit message.
 
