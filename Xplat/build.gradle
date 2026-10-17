@@ -30,7 +30,9 @@ dependencies {
     //compileOnly(libs.ears)
     compileOnly(libs.jei.common.api)
     //compileOnly(variantOf(libs.emi.xplat) { classifier("api") })
-    //compileOnly(libs.rei.neoforge) // (the -common variant would be in Intermediary mapping)
+    // PORT-26.3: REI's API pulls Architectury, which names Fabric Loader; Xplat compiles without it and has no Fabric repo
+    compileOnly(libs.rei.api) { exclude group: "net.fabricmc" }
+    compileOnly(libs.rei.default.plugin) { exclude group: "net.fabricmc" }
 
     compileOnly(libs.jetbrains.annotations)
 }

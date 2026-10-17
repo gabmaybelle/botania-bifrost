@@ -20,7 +20,7 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.api.BotaniaAPI;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class BreweryREICategory implements DisplayCategory<BreweryREIDisplay> {
 	private final EntryStack<ItemStack> brewery = EntryStacks.of(new ItemStack(BotaniaBlocks.BOTANICAL_BREWERY));
-	private final ResourceLocation BREWERY_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/nei_brewery.png");
+	private final Identifier BREWERY_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/nei_brewery.png");
 
 	@Override
 	public CategoryIdentifier<BreweryREIDisplay> getCategoryIdentifier() {

@@ -11,6 +11,7 @@ package vazkii.botania.client.integration.rei;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import vazkii.botania.api.recipe.ElvenTradeRecipe;
@@ -19,7 +20,7 @@ import vazkii.botania.common.block.block_entity.AlfheimPortalBlockEntity;
 public class ElvenTradeREIDisplay extends BotaniaRecipeDisplay<ElvenTradeRecipe> {
 
 	public ElvenTradeREIDisplay(RecipeHolder<? extends ElvenTradeRecipe> recipe) {
-		super(recipe);
+		super(recipe, recipe.value().getIngredients(), ItemStack.EMPTY);
 		this.outputs = EntryIngredients.ofItemStacks(recipe.value().getOutputs());
 	}
 

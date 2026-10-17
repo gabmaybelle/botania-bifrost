@@ -21,7 +21,7 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.api.BotaniaAPI;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class RunicAltarREICategory implements DisplayCategory<RunicAltarREIDisplay> {
 	private final EntryStack<ItemStack> altar = EntryStacks.of(new ItemStack(BotaniaBlocks.RUNIC_ALTAR));
-	private final ResourceLocation PETAL_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/petal_overlay.png");
+	private final Identifier PETAL_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/petal_overlay.png");
 
 	@Override
 	public CategoryIdentifier<RunicAltarREIDisplay> getCategoryIdentifier() {

@@ -81,7 +81,9 @@ dependencies {
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
     //compileOnly(variantOf(libs.emi.neoforge) { classifier("api") })
     compileOnly(libs.jei.neoforge.api)
-    //compileOnly(libs.rei.neoforge)
+    compileOnly(libs.rei.neoforge)
+    compileOnly(libs.rei.api) { exclude group: "net.fabricmc" } // PORT-26.3: as in Xplat, no Fabric Loader here
+    compileOnly(libs.rei.default.plugin) { exclude group: "net.fabricmc" }
 
     //compileOnly(libs.ears)
     //compileOnly(libs.sodium.neoforge) { transitive = false }
@@ -89,8 +91,16 @@ dependencies {
 
     runtimeOnly(libs.curios)
 
-    // PORT-26.3: JEI is the only recipe viewer back so far (REI and EMI wait), so it's the one in dev runs.
-    runtimeOnly(libs.jei.neoforge.full)
+    // PORT-26.3: one recipe viewer at a time in dev runs (never JEI and REI together): JEI by default,
+    // REI with -Pload_override_rei. EMI has no 26.3 build.
+    if (rootProject.hasProperty("load_override_rei")) {
+        runtimeOnly(libs.rei.neoforge)
+        // PORT-26.3: REI 26.3.824 pulls Architectury 22.0.3, whose block-transform mixin fails on NeoForge 26.3.0.77;
+        // 22.0.5 applies cleanly
+        runtimeOnly("dev.architectury:architectury-neoforge:22.0.5")
+    } else {
+        runtimeOnly(libs.jei.neoforge.full)
+    }
 
     if (file("../garden_of_glass/gardenofglass-${gog_version}.jar").exists()) {
         runtimeOnly(files("../garden_of_glass/gardenofglass-${gog_version}.jar"))

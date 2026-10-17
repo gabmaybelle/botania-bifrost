@@ -8,9 +8,6 @@
  */
 package vazkii.botania.client.integration.rei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -22,17 +19,14 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.block.BotaniaBlocks;
@@ -42,7 +36,7 @@ import java.util.List;
 
 public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDisplay> {
 	private final EntryStack<ItemStack> gateway = EntryStacks.of(new ItemStack(BotaniaBlocks.ELVEN_GATEWAY_CORE));
-	private final ResourceLocation TRADE_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/elven_trade_overlay.png");
+	private final Identifier TRADE_OVERLAY = BotaniaAPI.botaniaRL("textures/gui/elven_trade_overlay.png");
 
 	@Override
 	public CategoryIdentifier<ElvenTradeREIDisplay> getCategoryIdentifier() {
@@ -66,7 +60,7 @@ public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDispl
 		widgets.add(Widgets.createRecipeBase(bounds));
 		widgets.add(Widgets.createDrawableWidget((gui, mouseX, mouseY, delta) -> {
 			CategoryUtils.drawOverlay(gui, TRADE_OVERLAY, center.x - 45, center.y - 34, 20, 19, 71, 75);
-			drawPortal(gui.pose(), center);
+			drawPortal(gui, center);
 		}));
 		int x = center.x - 20;
 		for (EntryIngredient o : display.getInputEntries()) {
@@ -86,20 +80,11 @@ public class ElvenTradeREICategory implements DisplayCategory<ElvenTradeREIDispl
 		return 100;
 	}
 
-	void drawPortal(PoseStack matrices, Point point) {
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(BotaniaAPI.botaniaRL("block/alfheim_portal_swirl"));
-		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderType.solid());
+	// PORT-26.3: GUI drawing goes through GuiGraphicsExtractor's pipelines; the portal swirl is a block atlas sprite
+	void drawPortal(GuiGraphicsExtractor gui, Point point) {
+		TextureAtlasSprite sprite = gui.getSprite(new SpriteId(TextureAtlas.LOCATION_BLOCKS, BotaniaAPI.botaniaRL("block/alfheim_portal_swirl")));
 		int startX = point.x - 43;
 		int startY = point.y - 17;
-		int stopX = startX + 48;
-		int stopY = startY + 48;
-		Matrix4f mat = matrices.last().pose();
-		Matrix3f n = matrices.last().normal();
-		v.addVertex(mat, startX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, startX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		immediate.endBatch();
+		gui.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, startX, startY, 48, 48);
 	}
 }

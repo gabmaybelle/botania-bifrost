@@ -26,11 +26,11 @@ public class BreweryREIDisplay extends BotaniaRecipeDisplay<BotanicalBreweryReci
 	private final EntryIngredient containers;
 
 	public BreweryREIDisplay(RecipeHolder<? extends BotanicalBreweryRecipe> recipe) {
-		super(recipe);
+		super(recipe, recipe.value().getIngredients(), ItemStack.EMPTY);
 		Ingredient brewContainerIngredient = RecipeUtils.getBrewContainerIngredient();
 		this.containers = EntryIngredients.ofIngredient(brewContainerIngredient);
 		List<ItemStack> outputs = new ArrayList<>();
-		for (ItemStack stack : brewContainerIngredient.getItems()) {
+		for (ItemStack stack : RecipeUtils.stacksOf(brewContainerIngredient)) {
 			ItemStack brewed = recipe.value().getOutput(stack);
 			if (!brewed.isEmpty()) {
 				outputs.add(brewed);

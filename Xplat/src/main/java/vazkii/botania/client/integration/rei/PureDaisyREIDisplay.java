@@ -15,17 +15,19 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 
 import vazkii.botania.api.recipe.PureDaisyRecipe;
 
 import java.util.Collections;
+import java.util.List;
 
 public class PureDaisyREIDisplay extends BotaniaRecipeDisplay<PureDaisyRecipe> {
 
 	public PureDaisyREIDisplay(RecipeHolder<? extends PureDaisyRecipe> recipe) {
-		super(recipe);
+		super(recipe, List.of(), ItemStack.EMPTY);
 		ImmutableList.Builder<EntryStack<?>> inputs = ImmutableList.builder();
 		for (BlockState state : recipe.value().getInput().getDisplayed()) {
 			if (!state.getFluidState().isEmpty()) {

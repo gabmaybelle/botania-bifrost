@@ -20,6 +20,7 @@ import me.shedaniel.rei.api.client.overlay.OverlayListWidget;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
@@ -30,10 +31,15 @@ import me.shedaniel.rei.plugin.common.displays.DefaultStrippingDisplay;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCustomDisplay;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +58,7 @@ import vazkii.botania.common.item.lens.LensItem;
 import vazkii.botania.common.lib.BotaniaTags;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
@@ -136,28 +143,19 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 		registerCompositeLensRecipeWrapper(registry);
 		registerTerraPickTippingRecipeWrapper(registry);
 
-		registry.registerRecipeFiller(PetalApothecaryRecipe.class,
-				BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE,
-				PetalApothecaryREIDisplay::new);
-		registry.registerRecipeFiller(BotanicalBreweryRecipe.class,
-				BotaniaRecipeTypes.BREW_TYPE,
-				BreweryREIDisplay::new);
-		registry.registerRecipeFiller(ElvenTradeRecipe.class,
-				BotaniaRecipeTypes.ELVEN_TRADE_TYPE::equals,
-				recipe -> !recipe.value().isReturnRecipe(),
-				ElvenTradeREIDisplay::new);
-		registry.registerRecipeFiller(ManaInfusionRecipe.class,
-				BotaniaRecipeTypes.MANA_INFUSION_TYPE,
-				ManaPoolREIDisplay::new);
-		registry.registerRecipeFiller(PureDaisyRecipe.class,
-				BotaniaRecipeTypes.PURE_DAISY_TYPE,
-				PureDaisyREIDisplay::new);
-		registry.registerRecipeFiller(RunicAltarRecipe.class,
-				BotaniaRecipeTypes.RUNIC_ALTAR_TYPE,
-				RunicAltarREIDisplay::new);
-		registry.registerRecipeFiller(TerrestrialAgglomerationRecipe.class,
-				BotaniaRecipeTypes.TERRA_PLATE_TYPE,
-				TerrestrialAgglomerationREIDisplay::new);
+		// PORT-26.3: REI's recipe fillers read the client's recipe manager, which 26.3 doesn't have; the displays are
+		// built from the copy of Botania's recipes the server syncs to the client (SyncedRecipes) instead
+		addDisplays(registry, BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE, PetalApothecaryREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.BREW_TYPE, BreweryREIDisplay::new);
+		for (RecipeHolder<ElvenTradeRecipe> recipe : recipes(BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
+			if (!recipe.value().isReturnRecipe()) {
+				registry.add(new ElvenTradeREIDisplay(recipe));
+			}
+		}
+		addDisplays(registry, BotaniaRecipeTypes.MANA_INFUSION_TYPE, ManaPoolREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.PURE_DAISY_TYPE, PureDaisyREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.RUNIC_ALTAR_TYPE, RunicAltarREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.TERRA_PLATE_TYPE, TerrestrialAgglomerationREIDisplay::new);
 
 		try {
 			for (var block : AxeStrippingData.getCustomStrippables()) {
@@ -167,15 +165,21 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 			BotaniaAPI.LOGGER.error("Error adding strippable entry to REI", e);
 		}
 
-		registry.registerRecipeFiller(OrechidRecipe.class,
-				BotaniaRecipeTypes.ORECHID_TYPE,
-				OrechidREIDisplay::new);
-		registry.registerRecipeFiller(OrechidRecipe.class,
-				BotaniaRecipeTypes.ORECHID_IGNEM_TYPE,
-				OrechidIgnemREIDisplay::new);
-		registry.registerRecipeFiller(OrechidRecipe.class,
-				BotaniaRecipeTypes.MARIMORPHOSIS_TYPE,
-				MarimorphosisREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.ORECHID_TYPE, OrechidREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.ORECHID_IGNEM_TYPE, OrechidIgnemREIDisplay::new);
+		addDisplays(registry, BotaniaRecipeTypes.MARIMORPHOSIS_TYPE, MarimorphosisREIDisplay::new);
+	}
+
+	private static <T extends Recipe<?>> List<RecipeHolder<T>> recipes(RecipeType<T> type) {
+		Level level = Minecraft.getInstance().level;
+		return level == null ? List.of() : BotaniaRecipeTypes.getAllRecipesFor(level, type);
+	}
+
+	private static <T extends Recipe<?>> void addDisplays(DisplayRegistry registry, RecipeType<T> type,
+			Function<RecipeHolder<T>, ? extends Display> factory) {
+		for (RecipeHolder<T> recipe : recipes(type)) {
+			registry.add(factory.apply(recipe));
+		}
 	}
 
 	void registerAncientWillRecipeWrapper(DisplayRegistry helper) {
@@ -195,8 +199,9 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 			container.addAncientWill(copy, ((AncientWillItem) will.getItem()).type);
 			output.add(EntryStacks.of(copy));
 		}
-		helper.add(new DefaultCustomDisplay(null, input.build(),
-				Collections.singletonList(EntryIngredient.of(output.build()))));
+		// PORT-26.3: DefaultCustomDisplay takes the inputs and outputs first, then an optional location
+		helper.add(new DefaultCustomDisplay(input.build(),
+				Collections.singletonList(EntryIngredient.of(output.build())), Optional.empty()));
 	}
 
 	void registerCompositeLensRecipeWrapper(DisplayRegistry helper) {
@@ -234,7 +239,7 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 		inputs.set(0, EntryIngredients.ofItemStacks(firstInput));
 		inputs.set(2, EntryIngredients.ofItemStacks(secondInput));
 
-		helper.add(new DefaultCustomDisplay(null, inputs, Collections.singletonList(EntryIngredients.ofItemStacks(outputs))));
+		helper.add(new DefaultCustomDisplay(inputs, Collections.singletonList(EntryIngredients.ofItemStacks(outputs)), Optional.empty()));
 	}
 
 	void registerTerraPickTippingRecipeWrapper(DisplayRegistry helper) {
@@ -244,7 +249,7 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 		ItemStack output = new ItemStack(BotaniaItems.TERRA_SHATTERER);
 		TerraShattererItem.setTipped(output);
 
-		helper.add(new DefaultCustomDisplay(null, inputs, Collections.singletonList(EntryIngredients.of(output))));
+		helper.add(new DefaultCustomDisplay(inputs, Collections.singletonList(EntryIngredients.of(output)), Optional.empty()));
 	}
 
 	private static ItemStack getHoveredREIStack() {
@@ -263,9 +268,11 @@ public class BotaniaREIPlugin implements REIClientPlugin {
 					return stack;
 				}
 			}
-			if (Minecraft.getInstance().screen instanceof DisplayScreen) {
+			// PORT-26.3: the open screen is on Gui now
+			Screen screen = Minecraft.getInstance().gui.screen();
+			if (screen instanceof DisplayScreen) {
 				Point point = PointHelper.ofMouse();
-				for (var child : Minecraft.getInstance().screen.children()) {
+				for (var child : screen.children()) {
 					if (child.isMouseOver(point.x, point.y) && child instanceof Slot slot) {
 						stack = unwrapEntry(slot.getCurrentEntry());
 						if (!stack.isEmpty()) {

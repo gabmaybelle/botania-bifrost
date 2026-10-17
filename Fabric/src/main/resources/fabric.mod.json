@@ -35,6 +35,9 @@
     "fabric-datagen": [
       "vazkii.botania.fabric.data.FabricDatagenInitializer"
     ],
+    "rei_client": [
+      "vazkii.botania.client.integration.rei.BotaniaREIPlugin"
+    ],
     "jei_mod_plugin": [
       "vazkii.botania.client.integration.jei.JEIBotaniaPlugin"
     ]

@@ -9,6 +9,7 @@
 package vazkii.botania.client.integration.rei;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
@@ -20,7 +21,7 @@ public class PetalApothecaryREIDisplay extends BotaniaRecipeDisplay<PetalApothec
 	private final EntryIngredient reagent;
 
 	public PetalApothecaryREIDisplay(RecipeHolder<? extends PetalApothecaryRecipe> recipe) {
-		super(recipe);
+		super(recipe, recipe.value().getIngredients(), recipe.value().getResultItem(BasicDisplay.registryAccess()));
 		reagent = EntryIngredients.ofIngredient(recipe.value().getReagent());
 	}
 

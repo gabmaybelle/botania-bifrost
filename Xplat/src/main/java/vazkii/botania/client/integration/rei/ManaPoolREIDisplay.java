@@ -9,6 +9,7 @@
 package vazkii.botania.client.integration.rei;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -22,7 +23,7 @@ public class ManaPoolREIDisplay extends BotaniaRecipeDisplay<ManaInfusionRecipe>
 	private final StateIngredient catalyst;
 
 	public ManaPoolREIDisplay(RecipeHolder<? extends ManaInfusionRecipe> recipe) {
-		super(recipe);
+		super(recipe, recipe.value().getIngredients(), recipe.value().getResultItem(BasicDisplay.registryAccess()));
 		this.catalyst = recipe.value().getRecipeCatalyst();
 	}
 

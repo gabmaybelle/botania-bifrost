@@ -9,6 +9,7 @@
 package vazkii.botania.client.integration.rei;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 
@@ -23,7 +24,7 @@ public class RunicAltarREIDisplay extends BotaniaRecipeDisplay<RunicAltarRecipe>
 	private final EntryIngredient reagent;
 
 	public RunicAltarREIDisplay(RecipeHolder<? extends RunicAltarRecipe> recipe) {
-		super(recipe);
+		super(recipe, recipe.value().getIngredients(), recipe.value().getResultItem(BasicDisplay.registryAccess()));
 		this.catalysts = EntryIngredients.ofIngredients(recipe.value().getCatalysts());
 		this.reagent = EntryIngredients.ofIngredient(recipe.value().getReagent());
 	}

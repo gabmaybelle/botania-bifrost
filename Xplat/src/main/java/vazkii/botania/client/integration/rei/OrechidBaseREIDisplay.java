@@ -9,15 +9,18 @@
 package vazkii.botania.client.integration.rei;
 
 import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import vazkii.botania.api.recipe.OrechidRecipe;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class OrechidBaseREIDisplay implements Display {
@@ -39,6 +42,17 @@ public abstract class OrechidBaseREIDisplay implements Display {
 	@Override
 	public List<EntryIngredient> getOutputEntries() {
 		return ores;
+	}
+
+	// PORT-26.3: built on the client from Botania's synced recipes, so no serializer (see BotaniaRecipeDisplay)
+	@Override
+	public DisplaySerializer<? extends Display> getSerializer() {
+		return null;
+	}
+
+	@Override
+	public Optional<Identifier> getDisplayLocation() {
+		return Optional.of(recipe.id().identifier());
 	}
 
 	public RecipeHolder<? extends OrechidRecipe> getRecipe() {

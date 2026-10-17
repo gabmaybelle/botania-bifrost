@@ -9,6 +9,7 @@
 package vazkii.botania.client.integration.rei;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -16,7 +17,7 @@ import vazkii.botania.api.recipe.TerrestrialAgglomerationRecipe;
 
 public class TerrestrialAgglomerationREIDisplay extends BotaniaRecipeDisplay<TerrestrialAgglomerationRecipe> {
 	public TerrestrialAgglomerationREIDisplay(RecipeHolder<? extends TerrestrialAgglomerationRecipe> recipe) {
-		super(recipe);
+		super(recipe, recipe.value().getIngredients(), recipe.value().getResultItem(BasicDisplay.registryAccess()));
 	}
 
 	@Override
