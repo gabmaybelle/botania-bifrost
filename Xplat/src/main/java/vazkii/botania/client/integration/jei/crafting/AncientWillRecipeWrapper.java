@@ -17,6 +17,7 @@ import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategor
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import vazkii.botania.api.item.AncientWillContainer;
 import vazkii.botania.common.crafting.recipe.AncientWillRecipe;
@@ -26,8 +27,18 @@ import vazkii.botania.common.item.BotaniaItems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class AncientWillRecipeWrapper implements ICraftingCategoryExtension<AncientWillRecipe> {
+	// PORT-26.3: JEI 31 asks crafting extensions for their inputs as slot displays
+	@Override
+	public List<SlotDisplay> getIngredients(RecipeHolder<AncientWillRecipe> recipe) {
+		return List.of(new SlotDisplay.ItemSlotDisplay(BotaniaItems.TERRASTEEL_HELMET),
+				new SlotDisplay.Composite(Stream.of(BotaniaItems.WILL_OF_AHRIM, BotaniaItems.WILL_OF_DHAROK,
+						BotaniaItems.WILL_OF_GUTHAN, BotaniaItems.WILL_OF_TORAG, BotaniaItems.WILL_OF_VERAC,
+						BotaniaItems.WILL_OF_KARIL).<SlotDisplay>map(SlotDisplay.ItemSlotDisplay::new).toList()));
+	}
+
 	@Override
 	public void setRecipe(RecipeHolder<AncientWillRecipe> recipe, IRecipeLayoutBuilder builder, ICraftingGridHelper helper, IFocusGroup focusGroup) {
 		var foci = focusGroup.getFocuses(VanillaTypes.ITEM_STACK, RecipeIngredientRole.INPUT)

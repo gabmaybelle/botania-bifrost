@@ -8,11 +8,9 @@
  */
 package vazkii.botania.client.integration.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import mezz.jei.api.gui.drawable.IDrawable;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class TerrestrialAgglomerationDrawable implements IDrawable {
 	private final IDrawable cornerBlock;
@@ -39,27 +37,21 @@ public class TerrestrialAgglomerationDrawable implements IDrawable {
 	 * Offsets copied from {@link vazkii.botania.client.patchouli.component.TerraPlateComponent}
 	 */
 	@Override
-	public void draw(GuiGraphics gui, int xOffset, int yOffset) {
-		PoseStack ms = gui.pose();
-		ms.pushPose();
-		ms.translate(0, 0, -50);
+	public void draw(GuiGraphicsExtractor gui, int xOffset, int yOffset) {
+		// PORT-26.3: GUI drawing is 2D now and layers by draw order, so the old depth offsets are gone; the blocks are
+		// drawn back to front, as before
 		cornerBlock.draw(gui, xOffset + 13, yOffset + 1);
 
-		ms.translate(0, 0, 5);
 		middleBlock.draw(gui, xOffset + 20, yOffset + 4);
 		middleBlock.draw(gui, xOffset + 7, yOffset + 4);
 
-		ms.translate(0, 0, 5);
 		cornerBlock.draw(gui, xOffset + 13, yOffset + 8);
 		centerBlock.draw(gui, xOffset + 27, yOffset + 8);
 		cornerBlock.draw(gui, xOffset, yOffset + 8);
 
-		ms.translate(0, 0, 5);
 		middleBlock.draw(gui, xOffset + 7, yOffset + 12);
 		middleBlock.draw(gui, xOffset + 20, yOffset + 12);
 
-		ms.translate(0, 0, 5);
 		cornerBlock.draw(gui, xOffset + 14, yOffset + 15);
-		ms.popPose();
 	}
 }

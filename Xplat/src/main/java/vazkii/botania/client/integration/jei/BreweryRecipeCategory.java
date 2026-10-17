@@ -54,7 +54,7 @@ public class BreweryRecipeCategory extends BotaniaRecipeCategoryBase<BotanicalBr
 		List<ItemStack> outputs = new ArrayList<>();
 		List<ItemStack> containers = new ArrayList<>();
 
-		for (var container : RecipeUtils.getBrewContainerIngredient().getItems()) {
+		for (var container : RecipeUtils.stacksOf(RecipeUtils.getBrewContainerIngredient())) {
 			ItemStack brewed = recipe.getOutput(container);
 			if (!brewed.isEmpty()) {
 				containers.add(container);

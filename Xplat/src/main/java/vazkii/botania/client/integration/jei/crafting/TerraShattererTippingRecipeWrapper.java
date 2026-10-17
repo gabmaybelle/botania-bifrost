@@ -18,6 +18,7 @@ import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategor
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import vazkii.botania.common.crafting.recipe.TerraShattererTippingRecipe;
 import vazkii.botania.common.item.BotaniaItems;
@@ -34,6 +35,13 @@ public class TerraShattererTippingRecipeWrapper implements ICraftingCategoryExte
 		inputs = ImmutableList.of(ImmutableList.of(new ItemStack(BotaniaItems.TERRA_SHATTERER)), ImmutableList.of(new ItemStack(BotaniaItems.ELEMENTIUM_PICKAXE)));
 		output = new ItemStack(BotaniaItems.TERRA_SHATTERER);
 		TerraShattererItem.setTipped(output);
+	}
+
+	// PORT-26.3: JEI 31 asks crafting extensions for their inputs as slot displays
+	@Override
+	public List<SlotDisplay> getIngredients(RecipeHolder<TerraShattererTippingRecipe> recipe) {
+		return List.of(new SlotDisplay.ItemSlotDisplay(BotaniaItems.TERRA_SHATTERER),
+				new SlotDisplay.ItemSlotDisplay(BotaniaItems.ELEMENTIUM_PICKAXE));
 	}
 
 	@Override

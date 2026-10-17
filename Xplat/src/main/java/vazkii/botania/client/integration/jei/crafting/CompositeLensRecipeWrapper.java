@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import vazkii.botania.common.crafting.recipe.CompositeLensRecipe;
 import vazkii.botania.common.item.lens.LensItem;
@@ -39,6 +40,13 @@ public class CompositeLensRecipeWrapper implements ICraftingCategoryExtension<Co
 				.filter(s -> ((LensItem) s.getItem()).isCombinable(s))
 				.map(ItemStack::getItem)
 				.toList();
+	}
+
+	// PORT-26.3: JEI 31 asks crafting extensions for their inputs as slot displays
+	@Override
+	public List<SlotDisplay> getIngredients(RecipeHolder<CompositeLensRecipe> recipe) {
+		SlotDisplay lenses = new SlotDisplay.Composite(allLenses.stream().<SlotDisplay>map(SlotDisplay.ItemSlotDisplay::new).toList());
+		return List.of(lenses, new SlotDisplay.ItemSlotDisplay(Items.SLIME_BALL), lenses);
 	}
 
 	@Override

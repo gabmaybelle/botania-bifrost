@@ -94,7 +94,7 @@ dependencies {
 
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
     //modCompileOnly(variantOf(libs.emi.fabric) { classifier("api") })
-    //modCompileOnly(libs.jei.fabric.api)
+    compileOnly(libs.jei.fabric.api)
     //modCompileOnly(libs.rei.fabric)
 
     //modCompileOnly(libs.ears)
@@ -102,13 +102,8 @@ dependencies {
     //modCompileOnly(libs.teamreborn.energy)
     //modCompileOnly(libs.speedrunigt)
 
-    //if (rootProject.hasProperty("load_override_jei")) {
-    //    modLocalRuntime(libs.jei.fabric.full)
-    //} else if (rootProject.hasProperty("load_override_rei")) {
-    //    modLocalRuntime(libs.rei.fabric)
-    //} else {
-    //    modLocalRuntime(libs.emi.fabric)
-    //}
+    // PORT-26.3: JEI is the only recipe viewer back so far (REI and EMI wait), so it's the one in dev runs.
+    localRuntime(libs.jei.fabric.full)
 
     // for testing multiplayer features in singleplayer worlds, and weird things like movable block entities
     //if (rootProject.hasProperty("load_fabric_carpet")) {

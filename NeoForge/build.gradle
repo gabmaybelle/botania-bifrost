@@ -80,7 +80,7 @@ dependencies {
 
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
     //compileOnly(variantOf(libs.emi.neoforge) { classifier("api") })
-    //compileOnly(libs.jei.neoforge.api)
+    compileOnly(libs.jei.neoforge.api)
     //compileOnly(libs.rei.neoforge)
 
     //compileOnly(libs.ears)
@@ -89,13 +89,8 @@ dependencies {
 
     runtimeOnly(libs.curios)
 
-    //if (rootProject.hasProperty("load_override_emi")) {
-    //    runtimeOnly(libs.emi.neoforge)
-    //} else if (rootProject.hasProperty("load_override_rei")) {
-    //    runtimeOnly(libs.rei.neoforge)
-    //} else {
-    //    runtimeOnly(libs.jei.neoforge.full)
-    //}
+    // PORT-26.3: JEI is the only recipe viewer back so far (REI and EMI wait), so it's the one in dev runs.
+    runtimeOnly(libs.jei.neoforge.full)
 
     if (file("../garden_of_glass/gardenofglass-${gog_version}.jar").exists()) {
         runtimeOnly(files("../garden_of_glass/gardenofglass-${gog_version}.jar"))

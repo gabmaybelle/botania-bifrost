@@ -8,9 +8,11 @@
  */
 package vazkii.botania.api.recipe;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -23,6 +25,12 @@ public interface PetalApothecaryRecipe extends RecipeWithReagent<ProcessingRecip
 
 	/** The inputs, other than the reagent. (Vanilla recipes no longer list ingredients.) */
 	NonNullList<Ingredient> getIngredients();
+
+	/**
+	 * The output, for display (recipe viewers, the HUD). Upstream inherited this from vanilla's {@code Recipe}, which
+	 * dropped it in 1.21.2.
+	 */
+	ItemStack getResultItem(HolderLookup.Provider registries);
 
 	@SuppressWarnings("unchecked")
 	@Override

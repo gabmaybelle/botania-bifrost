@@ -150,6 +150,7 @@ public class RunicAltarRecipe implements vazkii.botania.api.recipe.RunicAltarRec
 		return remainingItems;
 	}
 
+	@Override
 	public final ItemStack getResultItem(HolderLookup.Provider registries) {
 		return output.create();
 	}

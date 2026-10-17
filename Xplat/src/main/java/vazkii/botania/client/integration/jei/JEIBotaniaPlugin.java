@@ -12,7 +12,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -25,10 +25,13 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -67,13 +70,13 @@ import static vazkii.botania.api.BotaniaAPI.botaniaRL;
 
 @JeiPlugin
 public class JEIBotaniaPlugin implements IModPlugin {
-	private static final ResourceLocation ID = botaniaRL("main");
+	private static final Identifier ID = botaniaRL("main");
 
 	@SuppressWarnings("removal")
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registry) {
-		//TODO use ISubtypeInterpreter instead? (weird interface, requiring you to implement a deprecated-for-removal method)
-		IIngredientSubtypeInterpreter<ItemStack> interpreter = (stack, ctx) -> BaseBrewItem.getSubtype(stack);
+		// PORT-26.3: JEI 31 removed IIngredientSubtypeInterpreter; ISubtypeInterpreter has a single method now
+		ISubtypeInterpreter<ItemStack> interpreter = (stack, ctx) -> BaseBrewItem.getSubtype(stack);
 		registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, BotaniaItems.BREW_VIAL, interpreter);
 		registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, BotaniaItems.BREW_FLASK, interpreter);
 		registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, BotaniaItems.INCENSE_STICK, interpreter);
@@ -144,8 +147,8 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		registry.addRecipes(MarimorphosisRecipeCategory.TYPE, sortRecipes(BotaniaRecipeTypes.MARIMORPHOSIS_TYPE, comp));
 	}
 
-	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_ID = Comparator.comparing(RecipeHolder::id);
-	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_GROUP = Comparator.comparing(holder -> holder.value().getGroup());
+	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_ID = Comparator.comparing(holder -> holder.id().identifier()); // PORT-26.3: recipe ids are ResourceKeys, which aren't Comparable
+	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_GROUP = Comparator.comparing(holder -> holder.value().group());
 	private static final Comparator<RecipeHolder<? extends OrechidRecipe>> BY_WEIGHT =
 			Comparator.<RecipeHolder<? extends OrechidRecipe>, Integer>comparing(holder -> holder.value().getWeight()).reversed();
 	private static final Comparator<RecipeHolder<ManaInfusionRecipe>> BY_CATALYST = (l, r) -> {
@@ -162,7 +165,8 @@ public class JEIBotaniaPlugin implements IModPlugin {
 	};
 
 	private static <T extends Recipe<C>, C extends RecipeInput> List<T> sortRecipes(RecipeType<T> type, Comparator<? super RecipeHolder<T>> comparator) {
-		return Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(type)
+		// PORT-26.3: the client has no recipe manager; Botania syncs its own recipe types (see SyncedRecipes)
+		return BotaniaRecipeTypes.getAllRecipesFor(Minecraft.getInstance().level, type)
 				.stream().sorted(comparator).map(RecipeHolder::value).toList();
 	}
 
@@ -204,9 +208,9 @@ public class JEIBotaniaPlugin implements IModPlugin {
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
 		IRecipeManager recipeRegistry = jeiRuntime.getRecipeManager();
-		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+		Level level = Minecraft.getInstance().level;
 		// Hide the return recipes (iron ingot/diamond/ender pearl returns, not lexicon)
-		for (RecipeHolder<ElvenTradeRecipe> recipe : recipeManager.getAllRecipesFor(BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
+		for (RecipeHolder<ElvenTradeRecipe> recipe : BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
 			if (recipe.value() instanceof LexiconElvenTradeRecipe) {
 				continue;
 			}
@@ -216,13 +220,13 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		}
 
 		// TODO: we should probably not hard-code recipe IDs this way here
-		recipeManager.byKey(botaniaRL("petal_apothecary/daybloom_motif"))
+		BotaniaRecipeTypes.byKey(level, ResourceKey.create(Registries.RECIPE, botaniaRL("petal_apothecary/daybloom_motif")))
 				.ifPresent(r -> {
 					if (r.value() instanceof PetalApothecaryRecipe pr) {
 						recipeRegistry.hideRecipes(PetalApothecaryRecipeCategory.TYPE, List.of(pr));
 					}
 				});
-		recipeManager.byKey(botaniaRL("petal_apothecary/nightshade_motif"))
+		BotaniaRecipeTypes.byKey(level, ResourceKey.create(Registries.RECIPE, botaniaRL("petal_apothecary/nightshade_motif")))
 				.ifPresent(r -> {
 					if (r.value() instanceof PetalApothecaryRecipe pr) {
 						recipeRegistry.hideRecipes(PetalApothecaryRecipeCategory.TYPE, List.of(pr));
@@ -237,7 +241,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 	}
 
 	@Override
-	public ResourceLocation getPluginUid() {
+	public Identifier getPluginUid() {
 		return ID;
 	}
 

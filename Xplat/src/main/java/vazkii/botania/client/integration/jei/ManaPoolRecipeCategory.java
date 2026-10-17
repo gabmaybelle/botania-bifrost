@@ -8,8 +8,6 @@
  */
 package vazkii.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -19,7 +17,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
@@ -61,12 +59,10 @@ public class ManaPoolRecipeCategory extends BotaniaRecipeCategoryBase<ManaInfusi
 	}
 
 	@Override
-	public void draw(ManaInfusionRecipe recipe, IRecipeSlotsView slotsView, GuiGraphics gui, double mouseX, double mouseY) {
+	public void draw(ManaInfusionRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, slotsView, gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
 		overlay.draw(gui, 40, 0);
 		HUDHandler.renderManaBar(gui, 20, 50, 0x0000FF, 0.75F, recipe.getManaToConsume(), ManaPoolBlock.MAX_MANA / 10);
-		RenderSystem.disableBlend();
 	}
 
 	@Override
@@ -76,12 +72,12 @@ public class ManaPoolRecipeCategory extends BotaniaRecipeCategoryBase<ManaInfusi
 
 		var catalyst = recipe.getRecipeCatalyst();
 		if (catalyst != StateIngredients.NONE) {
-			builder.addSlot(RecipeIngredientRole.CATALYST, 12, 12)
+			builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 12, 12)
 					.addItemStacks(catalyst.getDisplayedStacks())
 					.addRichTooltipCallback((view, tooltip) -> tooltip.addAll(catalyst.descriptionTooltip()));
 		}
 
-		builder.addSlot(RecipeIngredientRole.CATALYST, 62, 12).addItemStack(renderStack);
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 62, 12).addItemStack(renderStack);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 12).addItemStack(recipe.getResultItem(getRegistryAccess()));
 	}
 }

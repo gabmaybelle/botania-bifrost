@@ -54,6 +54,7 @@ public class PetalApothecaryRecipe implements vazkii.botania.api.recipe.PetalApo
 		return RecipeUtils.matches(getIngredients(), input, requireSpecialMatching);
 	}
 
+	@Override
 	public final ItemStack getResultItem(HolderLookup.Provider registries) {
 		return output.create();
 	}

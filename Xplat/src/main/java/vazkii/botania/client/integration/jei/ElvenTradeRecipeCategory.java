@@ -8,10 +8,6 @@
  */
 package vazkii.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -21,17 +17,13 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.ElvenTradeRecipe;
@@ -56,29 +48,17 @@ public class ElvenTradeRecipeCategory extends BotaniaRecipeCategoryBase<ElvenTra
 	}
 
 	@Override
-	public void draw(ElvenTradeRecipe recipe, IRecipeSlotsView slotsView, GuiGraphics gui, double mouseX, double mouseY) {
+	public void draw(ElvenTradeRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, slotsView, gui, mouseX, mouseY);
-		PoseStack matrices = gui.pose();
-		RenderSystem.enableBlend();
 		overlay.draw(gui, 0, 4);
-		RenderSystem.disableBlend();
 
-		RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(BotaniaAPI.botaniaRL("block/alfheim_portal_swirl"));
-		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderType.solid());
+		// PORT-26.3: GUI drawing goes through GuiGraphicsExtractor's pipelines; the portal swirl is a block atlas sprite
+		TextureAtlasSprite sprite = gui.getSprite(new SpriteId(TextureAtlas.LOCATION_BLOCKS, botaniaRL("block/alfheim_portal_swirl")));
 		int startX = 22;
 		int startY = 25;
 		int stopX = 70;
 		int stopY = 73;
-		Matrix4f mat = matrices.last().pose();
-		Matrix3f n = matrices.last().normal();
-		v.addVertex(mat, startX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, startX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV1()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		v.addVertex(mat, stopX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV0()).setLight(0xF000F0).setNormal(matrices.last(), 1, 0, 0);
-		immediate.endBatch();
-
+		gui.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, startX, startY, stopX - startX, stopY - startY);
 	}
 
 	@Override

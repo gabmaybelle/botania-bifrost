@@ -22,7 +22,8 @@ patchouli-fabric = "1.21.1-92-FABRIC" # this is part of why we changed the forma
 patchouli-neoforge = "1.21.1-92-NEOFORGE" # TODO: is there a good way to define these programatically?
 
 emi = "1.1.24+1.21.1"
-jei = "19.27.0.340"
+# PORT-26.3: JEI for 26.3 is a beta
+jei = "31.14.0.72"
 rei = "16.0.799"
 
 # PORT-26.3: Curios for 26.3 is a beta; Trinkets (dev.emi) ends at 1.21.1, so Fabric uses Trinkets Updated
@@ -66,11 +67,11 @@ emi-neoforge = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
 
 # JEI
 # TODO: requiring a version number in the artifact ID is suboptimal
-jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
-jei-fabric-full = { module = "mezz.jei:jei-1.21.1-fabric", version.ref = "jei" }
-jei-fabric-api = { module = "mezz.jei:jei-1.21.1-fabric-api", version.ref = "jei" }
-jei-neoforge-full = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
-jei-neoforge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+jei-common-api = { module = "mezz.jei:jei-26.3-common-api", version.ref = "jei" }
+jei-fabric-full = { module = "mezz.jei:jei-26.3-fabric", version.ref = "jei" }
+jei-fabric-api = { module = "mezz.jei:jei-26.3-fabric-api", version.ref = "jei" }
+jei-neoforge-full = { module = "mezz.jei:jei-26.3-neoforge", version.ref = "jei" }
+jei-neoforge-api = { module = "mezz.jei:jei-26.3-neoforge-api", version.ref = "jei" }
 
 # REI
 # (no Xplat/Common definition for REI, since it's Intermediary and thus useless to our Xplat module)

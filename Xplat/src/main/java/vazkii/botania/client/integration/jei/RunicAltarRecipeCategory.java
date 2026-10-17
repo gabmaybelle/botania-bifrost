@@ -8,8 +8,6 @@
  */
 package vazkii.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -18,7 +16,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -50,12 +48,10 @@ public class RunicAltarRecipeCategory extends BotaniaRecipeCategoryBase<RunicAlt
 	}
 
 	@Override
-	public void draw(RunicAltarRecipe recipe, IRecipeSlotsView slotsView, GuiGraphics gui, double mouseX, double mouseY) {
+	public void draw(RunicAltarRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		super.draw(recipe, slotsView, gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
 		overlay.draw(gui, 0, 4);
 		HUDHandler.renderManaBar(gui, 6, 98, 0x0000FF, 0.75F, recipe.getMana(), ManaPoolBlock.MAX_MANA / 10);
-		RenderSystem.disableBlend();
 	}
 
 	@Override

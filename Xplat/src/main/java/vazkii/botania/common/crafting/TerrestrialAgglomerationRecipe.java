@@ -68,6 +68,7 @@ public class TerrestrialAgglomerationRecipe implements vazkii.botania.api.recipe
 		return output.create();
 	}
 
+	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return output.create();
 	}

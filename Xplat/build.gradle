@@ -28,7 +28,7 @@ dependencies {
     compileOnly(libs.patchouli.xplat)
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
     //compileOnly(libs.ears)
-    //compileOnly(libs.jei.common.api)
+    compileOnly(libs.jei.common.api)
     //compileOnly(variantOf(libs.emi.xplat) { classifier("api") })
     //compileOnly(libs.rei.neoforge) // (the -common variant would be in Intermediary mapping)
 
