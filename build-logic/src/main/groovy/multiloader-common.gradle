@@ -8,9 +8,10 @@ plugins {
 }
 
 base {
-    // PORT-26.3: jars are named after the port (botania-bifrost-fabric-26.3-457.jar); the mod id is unchanged.
+    // PORT-26.3: jars are named after the port and its own version (botania-bifrost-fabric-26.3-1.0.0-beta.1.jar);
+    // the mod id is unchanged.
     archivesName = "${archives_base_name}-${project.name.toLowerCase()}-${minecraft_version}"
-    version = build_number
+    version = mod_version
     if (System.getenv().RELEASE_MODE != "1") {
         version += "-SNAPSHOT"
     }
