@@ -88,11 +88,13 @@ public final class ColorHandler {
 			if (!(state.getBlock() instanceof ManaPoolBlock poolBlock)) {
 				return -1;
 			}
-			Optional<Integer> optionalColor = poolBlock.getOptionalColor().map(color -> lerpColor(0.8f, 0xFFFFFF, MysticalPetalItem.getPetalLikeColor(color)));
+			// PORT-26.3: tints are ARGB and item tints keep the alpha, so the RGB mix needs an opaque alpha or the dyed
+			// pools' item icons (and the dyed creative pools' bodies) draw fully transparent
+			Optional<Integer> optionalColor = poolBlock.getOptionalColor().map(color -> ARGB.opaque(lerpColor(0.8f, 0xFFFFFF, MysticalPetalItem.getPetalLikeColor(color))));
 			if (poolBlock.isFabulous()) {
 				float time = (ClientTickHandler.getEntityTicksInGame() + ClientTickHandler.getEntityPartialTick()) * 0.005F;
 				float posOffset = pos != null ? new Random(state.getSeed(pos)).nextFloat() : 0;
-				int fabulousColor = Mth.hsvToRgb((time + posOffset) % 1f, 0.4F, 1F);
+				int fabulousColor = ARGB.opaque(Mth.hsvToRgb((time + posOffset) % 1f, 0.4F, 1F));
 				return optionalColor.map(color -> ARGB.multiply(fabulousColor, color))
 						.orElse(fabulousColor);
 			}
