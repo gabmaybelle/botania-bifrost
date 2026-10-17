@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.block.WandBindable;
 import vazkii.botania.api.block.Wandable;
+import vazkii.botania.common.datafix.LegacySavedData;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.ForcePushHelper;
 import vazkii.botania.common.item.lens.ForceLens;
@@ -157,6 +158,7 @@ public class ForceRelayBlock extends BotaniaBlock {
 		// PORT-26.3: saved data is described by a type with a codec, and the file is named by an identifier now
 		// (data/botania/piston_relay_pairs.dat; the old PistonRelayPairs name is not a valid identifier)
 		private static final Identifier ID = botaniaRL("piston_relay_pairs");
+		private static final String LEGACY_ID = "PistonRelayPairs";
 		private static final Codec<WorldData> CODEC = BlockPos.CODEC.listOf().fieldOf("list").codec()
 				.xmap(WorldData::new, WorldData::toList);
 		public static final SavedDataType<WorldData> TYPE = new SavedDataType<>(ID, WorldData::new, CODEC, DataFixTypes.LEVEL);
@@ -182,7 +184,7 @@ public class ForceRelayBlock extends BotaniaBlock {
 		}
 
 		public static WorldData get(Level world) {
-			return ((ServerLevel) world).getDataStorage().computeIfAbsent(TYPE);
+			return LegacySavedData.get((ServerLevel) world, TYPE, LEGACY_ID);
 		}
 	}
 }

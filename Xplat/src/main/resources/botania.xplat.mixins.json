@@ -26,6 +26,7 @@
     "CollectingNeighborUpdaterMixin",
     "CreeperAccessor",
     "CreeperMixin",
+    "DataFixTypesMixin",
     "EatBlockGoalMixin",
     "EnderManMixin",
     "EntityAccessor",

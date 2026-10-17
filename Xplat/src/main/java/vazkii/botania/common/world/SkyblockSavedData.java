@@ -21,6 +21,7 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
+import vazkii.botania.common.datafix.LegacySavedData;
 import vazkii.botania.xplat.BotaniaConfig;
 
 import java.util.List;
@@ -73,7 +74,7 @@ public class SkyblockSavedData extends SavedData {
 	}
 
 	public static SkyblockSavedData get(ServerLevel world) {
-		return world.getDataStorage().computeIfAbsent(TYPE);
+		return LegacySavedData.get(world, TYPE, NAME.getPath());
 	}
 
 	public IslandPos getSpawn() {
