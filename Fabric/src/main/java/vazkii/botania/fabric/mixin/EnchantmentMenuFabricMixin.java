@@ -8,7 +8,11 @@
  */
 package vazkii.botania.fabric.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -18,20 +22,29 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import vazkii.botania.common.block.PylonBlock;
 
 @Mixin(EnchantmentMenu.class)
 public class EnchantmentMenuFabricMixin {
-	@ModifyVariable(
-		// PORT-26.3: Minecraft is unobfuscated, so this is javac's name for the slotsChanged lambda (checked with javap on the 26.3 jar)
+	// PORT-26.3: Minecraft is unobfuscated, so this is javac's name for the slotsChanged lambda (checked with javap on the 26.3 jar).
+	// The pylon power is added where the bookshelf count goes into the cost; a STORE hook on the count ran but the
+	// table never saw its result on 26.3 (PylonEnchantingTest).
+	@WrapOperation(
 		method = "lambda$slotsChanged$0(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V",
-		at = @At(value = "STORE", ordinal = 0),
-		ordinal = 0
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getEnchantmentCost(Lnet/minecraft/util/RandomSource;IILnet/minecraft/world/item/ItemStack;)I"
+		)
 	)
-	private int botaniaPylonEnchanting(int inPower, ItemStack stack, Level level, BlockPos pos) {
-		float power = inPower;
+	private int botaniaPylonEnchanting(RandomSource random, int slot, int bookcases, ItemStack item,
+			Operation<Integer> original, ItemStack stack, Level level, BlockPos pos) {
+		return original.call(random, slot, bookcases + pylonPower(level, pos), item);
+	}
+
+	@Unique
+	private int pylonPower(Level level, BlockPos pos) {
+		float power = 0;
 		BlockPos.MutableBlockPos testPos = new BlockPos.MutableBlockPos();
 		for (int x = -1; x <= 1; ++x) {
 			for (int z = -1; z <= 1; ++z) {

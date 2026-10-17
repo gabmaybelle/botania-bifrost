@@ -68,6 +68,7 @@ public final class BotaniaGameTests {
 			RannuncarpusTest.class,
 			SaveReloadTest.class,
 			LegacyDataTest.class,
+			PylonEnchantingTest.class,
 			TargetBlockTest.class,
 			AstrolabeTest.class,
 			CacophoniumTest.class,
