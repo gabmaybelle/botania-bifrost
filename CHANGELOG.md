@@ -2,6 +2,11 @@
 
 Botania Bifrost is an unofficial port of Botania by Vazkii and the Botania contributors to Minecraft 26.3.
 
+## 1.0.0-beta.2
+
+- Mana, Natura and Gaia Pylons give an enchanting table its power again on Fabric (they counted for nothing in
+  beta.1). NeoForge was already right.
+
 ## 1.0.0-beta.1
 
 The first release of the port, for Minecraft 26.3 on Fabric and NeoForge.
