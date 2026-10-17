@@ -81,11 +81,14 @@ dependencies {
 
     compileOnly(libs.jetbrains.annotations)
 
-    // PORT-26.3: Patchouli (API only, see Xplat/build.gradle) and Trinkets have no 26.3 builds; Trinkets Updated
-    // is the planned replacement in Phase 5. The 1.21.1 Patchouli jar is Mojang-mapped, so plain compileOnly.
+    // PORT-26.3: Patchouli (API only, see Xplat/build.gradle) has no 26.3 build. The 1.21.1 Patchouli jar is
+    // Mojang-mapped, so plain compileOnly.
     compileOnly(libs.patchouli.xplat)
     //modImplementation(libs.patchouli.fabric)
-    //modImplementation(libs.trinkets)
+    // PORT-26.3: Trinkets ends at 1.21.1; Trinkets Updated (eu.pb4.trinkets) replaces it. Its jar bundles Yumi,
+    // whose event classes the integration compiles against.
+    implementation(libs.trinkets.updated)
+    compileOnly(libs.yumi)
     implementation(libs.fiber)
     include(libs.fiber)
 

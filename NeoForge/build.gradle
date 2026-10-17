@@ -73,11 +73,10 @@ neoForge {
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    // PORT-26.3: Patchouli (API only, see Xplat/build.gradle) and Curios have no 26.3 release; Curios comes back
-    // in Phase 5.
+    // PORT-26.3: Patchouli (API only, see Xplat/build.gradle) has no 26.3 release.
     compileOnly(libs.patchouli.xplat)
     //implementation(libs.patchouli.neoforge)
-    //compileOnly(variantOf(libs.curios) { classifier("api") })
+    compileOnly(variantOf(libs.curios) { classifier("api") })
 
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).
     //compileOnly(variantOf(libs.emi.neoforge) { classifier("api") })
@@ -88,7 +87,7 @@ dependencies {
     //compileOnly(libs.sodium.neoforge) { transitive = false }
     //compileOnly(libs.embeddium) { transitive = false }
 
-    //runtimeOnly(libs.curios)
+    runtimeOnly(libs.curios)
 
     //if (rootProject.hasProperty("load_override_emi")) {
     //    runtimeOnly(libs.emi.neoforge)

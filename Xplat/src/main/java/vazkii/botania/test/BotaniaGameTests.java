@@ -75,6 +75,7 @@ public final class BotaniaGameTests {
 			LifeAggregatorTest.class,
 			RarityConsistencyTest.class,
 			SpectatorScanTest.class,
+			AccessorySlotTest.class,
 			BoreLensTest.class,
 			BoreWarpLensTest.class,
 			EntropicWarpLensTest.class,

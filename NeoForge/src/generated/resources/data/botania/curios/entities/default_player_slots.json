@@ -1,0 +1,13 @@
+{
+  "entities": [
+    "#curios:player_like"
+  ],
+  "slots": [
+    "belt",
+    "body",
+    "charm",
+    "head",
+    "necklace",
+    "ring"
+  ]
+}

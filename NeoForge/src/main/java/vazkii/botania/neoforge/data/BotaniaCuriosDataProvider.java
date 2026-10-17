@@ -12,7 +12,6 @@ package vazkii.botania.neoforge.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import top.theillusivec4.curios.api.CuriosDataProvider;
 
@@ -22,11 +21,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class BotaniaCuriosDataProvider extends CuriosDataProvider {
 	public BotaniaCuriosDataProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-		super(BotaniaAPI.MODID, output, null, registries);
+		super(BotaniaAPI.MODID, output, registries);
 	}
 
+	// PORT-26.3: Curios 17 dropped the ExistingFileHelper from the provider
 	@Override
-	public void generate(HolderLookup.Provider registries, ExistingFileHelper fileHelper) {
+	public void generate(HolderLookup.Provider registries) {
 		createEntities("default_player_slots").addPlayer().addSlots(
 				"belt", "body", "charm", "head", "necklace", "ring");
 		createSlot("ring").operation("ADD").size(1);

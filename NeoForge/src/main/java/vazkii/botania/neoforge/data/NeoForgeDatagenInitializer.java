@@ -94,7 +94,7 @@ public class NeoForgeDatagenInitializer {
 		// PORT-26.3: the four biome modifiers are hand-written JSON in src/main/resources now (like the placed features
 		// they point at): the 26.3 registry builder refuses references to entries that are not in its base set, and
 		// the datagen base set is vanilla only
-		// PORT-26.3: disabled. The Curios slot data provider comes back with Curios in Phase 5 (src/disabled/integration/curios).
+		evt.createProvider(BotaniaCuriosDataProvider::new);
 		evt.createProvider(BotaniaGlobalLootModifierProvider::new);
 		evt.createProvider(BotaniaDataMapsProvider::new);
 	}

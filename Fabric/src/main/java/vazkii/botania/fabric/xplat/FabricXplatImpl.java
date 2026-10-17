@@ -121,6 +121,7 @@ import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.common.proxy.Proxy;
 import vazkii.botania.fabric.block_entity.FabricRedStringContainerBlockEntity;
+import vazkii.botania.fabric.integration.trinkets.TrinketsIntegration;
 import vazkii.botania.fabric.internal_caps.FabricInternalEntityAttachments;
 import vazkii.botania.fabric.mixin.AbstractFurnaceBlockEntityFabricAccessor;
 import vazkii.botania.fabric.mixin.BucketItemFabricAccessor;
@@ -454,8 +455,11 @@ public class FabricXplatImpl implements XplatAbstractions {
 	@Nullable
 	@Override
 	public EquipmentHandler tryCreateEquipmentHandler() {
-		// PORT-26.3: disabled. Trinkets has no 26.3 build; Trinkets Updated takes its place in Phase 5
-		// (src/disabled/integration/trinkets). Until then accessories use the plain inventory handler.
+		// PORT-26.3: Trinkets Updated provides the "trinkets" mod id.
+		if (isModLoaded("trinkets")) {
+			TrinketsIntegration.init();
+			return new TrinketsIntegration();
+		}
 		return null;
 	}
 

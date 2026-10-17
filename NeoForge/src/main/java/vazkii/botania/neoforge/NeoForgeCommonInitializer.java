@@ -15,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.StructureUtils;
 import net.minecraft.network.chat.Component;
@@ -114,6 +115,7 @@ import vazkii.botania.common.world.SkyblockChunkGenerator;
 import vazkii.botania.common.world.SkyblockWorldEvents;
 import vazkii.botania.neoforge.integration.InventorySorterIntegration;
 import vazkii.botania.neoforge.integration.corporea.NeoForgeCapCorporeaNodeDetector;
+import vazkii.botania.neoforge.integration.curios.CurioIntegration;
 import vazkii.botania.neoforge.internal_caps.BotaniaNeoforgeDataComponents;
 import vazkii.botania.neoforge.internal_caps.ExtrapolatedBucketFluidHandler;
 import vazkii.botania.neoforge.internal_caps.NeoForgeInternalEntityCapabilities;
@@ -122,6 +124,7 @@ import vazkii.botania.neoforge.internal_caps.WaterBowlFluidHandler;
 import vazkii.botania.neoforge.network.NeoForgePacketHandler;
 import vazkii.botania.network.clientbound.ItemLifeTimePacket;
 import vazkii.botania.test.BotaniaGameTests;
+import vazkii.botania.test.item.AccessorySlotTest;
 import vazkii.botania.xplat.XplatAbstractions;
 
 import java.nio.file.Path;
@@ -163,7 +166,13 @@ public class NeoForgeCommonInitializer {
 			runRegistration(event, Registries.TEST_FUNCTION,
 					registry -> BotaniaGameTests.registerFunctions((key, function) -> Registry.register(registry, key, function)));
 		});
-		modBus.addListener((RegisterGameTestsEvent event) -> BotaniaGameTests.registerInstances(event::registerTest));
+		modBus.addListener((RegisterGameTestsEvent event) -> {
+			BotaniaGameTests.registerInstances(event::registerTest);
+			if (EquipmentHandler.instance instanceof CurioIntegration) {
+				AccessorySlotTest.equip = CurioIntegration::equipRingForGameTest;
+				AccessorySlotTest.wornReach = CurioIntegration::ringReachForGameTest;
+			}
+		});
 	}
 
 	@SubscribeEvent
@@ -461,8 +470,12 @@ public class NeoForgeCommonInitializer {
 		BotaniaCapabilities.registerCapabilityProviders(BotaniaNeoForgeCapabilities.getProviderRegistration(e));
 
 		// NeoForge-specific implementations
-		// PORT-26.3: disabled. Curios' capability registration comes back with Curios in Phase 5
-		// (src/disabled/integration/curios).
+		if (EquipmentHandler.instance instanceof CurioIntegration ci) {
+			Item[] baubleItems = BuiltInRegistries.ITEM.stream()
+					.filter(item -> item instanceof BaubleItem)
+					.toArray(Item[]::new);
+			ci.initCapability(e, baubleItems);
+		}
 
 		// PORT-26.3: NeoForge's transfer API: fluids and items are ResourceHandlers, items are reached through an ItemAccess,
 		// energy is an EnergyHandler, and every change happens inside a Transaction
