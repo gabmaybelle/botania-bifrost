@@ -455,7 +455,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 					);
 
 					if (progress == 1F) {
-						gui.text(font, "+", xc + radius + 14, yc + 12, 0xFFFFFF, false);
+						gui.text(font, "+", xc + radius + 14, yc + 12, 0xFFFFFFFF, false);
 					}
 				}
 
@@ -472,9 +472,9 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 			}
 			if (altar.recipeKeepTicks > 0 && altar.canAddLastRecipe()) {
 				String s = I18n.get("botaniamisc.altarRefill0");
-				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFF);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFFFF);
 				s = I18n.get("botaniamisc.altarRefill1");
-				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFF);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFFFF);
 			}
 		}
 	}

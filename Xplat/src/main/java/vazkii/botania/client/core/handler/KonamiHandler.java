@@ -72,7 +72,7 @@ public class KonamiHandler {
 
 			ms.translate((float) currWidth, gui.height / 2 - 10);
 			ms.scale(4, 4);
-			guiGraphics.text(Minecraft.getInstance().font, meme, 0, 0, 0xFFFFFF);
+			guiGraphics.text(Minecraft.getInstance().font, meme, 0, 0, 0xFFFFFFFF);
 			ms.popMatrix();
 		}
 	}

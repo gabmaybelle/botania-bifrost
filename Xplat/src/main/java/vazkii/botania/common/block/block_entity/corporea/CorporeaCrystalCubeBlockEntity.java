@@ -243,10 +243,10 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 				RenderHelper.renderHUDBox(gui, 8, -11, strlen + 32, locked ? 21 : 11);
 
-				gui.text(font, nameStr, 30, -9, 0x6666FF);
-				gui.text(font, countStr, 30, 1, 0xFFFFFF);
+				gui.text(font, nameStr, 30, -9, 0xFF6666FF);
+				gui.text(font, countStr, 30, 1, 0xFFFFFFFF);
 				if (locked) {
-					gui.text(font, lockedStr, 30, 11, 0xFFAA00);
+					gui.text(font, lockedStr, 30, 11, 0xFFFFAA00);
 				}
 
 				gui.item(target, 10, -9);

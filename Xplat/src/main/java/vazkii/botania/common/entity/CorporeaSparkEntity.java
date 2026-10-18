@@ -22,6 +22,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -349,7 +350,7 @@ public class CorporeaSparkEntity extends SparkBaseEntity implements CorporeaSpar
 			RenderHelper.renderHUDBox(gui, centerX - width / 2, centerY + 8, centerX + width / 2, centerY + 38);
 
 			RenderHelper.renderItemWithNameCentered(gui, window, font, sparkStack, centerY + 10, textColor);
-			gui.text(font, networkColorName, centerX - networkColorTextStart, centerY + 28, textColor);
+			gui.text(font, networkColorName, centerX - networkColorTextStart, centerY + 28, ARGB.opaque(textColor));
 		}
 	}
 

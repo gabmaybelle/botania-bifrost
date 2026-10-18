@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockItemTags;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.animal.Animal;
@@ -205,7 +206,7 @@ public class PollidisiacBlockEntity extends FunctionalFlowerBlockEntity implemen
 			int centerY = window.getGuiScaledHeight() / 2;
 
 			super.renderHUD(gui, window, font, halfMinWidth, halfMinWidth, 40);
-			gui.text(font, filter, filterTextStart, centerY + 30, flower.getColor());
+			gui.text(font, filter, filterTextStart, centerY + 30, ARGB.opaque(flower.getColor()));
 		}
 	}
 }

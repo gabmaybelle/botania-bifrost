@@ -20,6 +20,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -536,7 +537,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 			RenderHelper.renderItemWithNameCentered(gui, window, font, sparkStack, centerY + 10, textColor);
 			RenderHelper.renderItemWithNameCentered(gui, window, font, augmentStack, centerY + 28, textColor);
-			gui.text(font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), textColor);
+			gui.text(font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), ARGB.opaque(textColor));
 		}
 	}
 }

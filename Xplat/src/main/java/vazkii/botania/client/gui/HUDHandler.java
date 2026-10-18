@@ -338,9 +338,9 @@ public final class HUDHandler {
 		RenderHelper.renderHUDBox(gui, x - 4, y - 4, x + l + 4, y + 35);
 		gui.item(new ItemStack(BotaniaBlocks.CORPOREA_INDEX), x, y + 10);
 
-		gui.text(mc.font, txt0, x + 20, y, 0xFFFFFF);
-		gui.text(mc.font, txt1, x + 20, y + 14, 0xFFFFFF);
-		gui.text(mc.font, txt2, x + 20, y + 24, 0xFFFFFF);
+		gui.text(mc.font, txt0, x + 20, y, 0xFFFFFFFF);
+		gui.text(mc.font, txt1, x + 20, y + 14, 0xFFFFFFFF);
+		gui.text(mc.font, txt2, x + 20, y + 24, 0xFFFFFFFF);
 	}
 
 	/**
@@ -351,7 +351,7 @@ public final class HUDHandler {
 		int x = window.getGuiScaledWidth() / 2 - font.width(name) / 2;
 		int y = window.getGuiScaledHeight() / 2 + 10;
 
-		gui.text(font, name, x, y, color);
+		gui.text(font, name, x, y, ARGB.opaque(color));
 
 		x = window.getGuiScaledWidth() / 2 - 51;
 		y += 10;
@@ -375,11 +375,11 @@ public final class HUDHandler {
 		ms.pushMatrix();
 		// Magic number to get the string above the item we just rendered.
 		if (properlyBound) {
-			gui.text(font, "✔", x + 10, y + 9, 0x004C00);
-			gui.text(font, "✔", x + 10, y + 8, 0x0BD20D);
+			gui.text(font, "✔", x + 10, y + 9, 0xFF004C00);
+			gui.text(font, "✔", x + 10, y + 8, 0xFF0BD20D);
 		} else {
-			gui.text(font, "✘", x + 10, y + 9, 0x4C0000);
-			gui.text(font, "✘", x + 10, y + 8, 0xD2080D);
+			gui.text(font, "✘", x + 10, y + 9, 0xFF4C0000);
+			gui.text(font, "✘", x + 10, y + 8, 0xFFD2080D);
 		}
 		ms.popMatrix();
 	}

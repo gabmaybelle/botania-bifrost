@@ -58,7 +58,7 @@ public final class BossBarHandler {
 				if (drawName) {
 					Component name = bossEvent.getName();
 					int centerX = mc.getWindow().getGuiScaledWidth() / 2;
-					gui.centeredText(mc.font, name, centerX, y - 10, 0xA2018C);
+					gui.centeredText(mc.font, name, centerX, y - 10, 0xFFA2018C);
 				}
 
 				return OptionalInt.of(frameHeight + playerCountHeight + (drawName ? mc.font.lineHeight : 0));
@@ -73,7 +73,7 @@ public final class BossBarHandler {
 		Minecraft mc = Minecraft.getInstance();
 		ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
 		gui.item(stack, px, py);
-		gui.text(mc.font, Integer.toString(playerCount), px + 15, py + 4, 0xFFFFFF);
+		gui.text(mc.font, Integer.toString(playerCount), px + 15, py + 4, 0xFFFFFFFF);
 		return 5;
 	}
 

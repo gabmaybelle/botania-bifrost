@@ -143,7 +143,7 @@ public class AnimatedTorchBlockEntity extends BlockEntity implements ManaTrigger
 					+ torch.getBlockState().getValue(AnimatedTorchBlock.MODE).getSerializedName());
 			RenderHelper.renderHUDBox(gui, x, y, x + 18 + font.width(str), y + 20);
 			gui.fakeItem(new ItemStack(Blocks.REDSTONE_TORCH), x, y + 2);
-			gui.text(font, str, x + 16, y + 6, 0xFF4444);
+			gui.text(font, str, x + 16, y + 6, 0xFFFF4444);
 		}
 	}
 

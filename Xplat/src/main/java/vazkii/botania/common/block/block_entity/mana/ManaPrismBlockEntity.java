@@ -112,7 +112,7 @@ public class ManaPrismBlockEntity extends ExposedSimpleInventoryBlockEntity impl
 
 				RenderHelper.renderHUDBox(gui, centerX - halfWidth, centerY + 8, centerX + halfWidth, centerY + 28);
 
-				gui.text(font, lensName, centerX - halfWidth + 22, centerY + 14, 0xFFFFFF);
+				gui.text(font, lensName, centerX - halfWidth + 22, centerY + 14, 0xFFFFFFFF);
 				gui.fakeItem(lens, centerX - halfWidth + 2, centerY + 10);
 			}
 		}

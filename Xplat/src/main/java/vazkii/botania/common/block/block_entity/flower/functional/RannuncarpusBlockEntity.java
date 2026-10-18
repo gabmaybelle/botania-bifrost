@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -228,7 +229,7 @@ public class RannuncarpusBlockEntity extends FunctionalFlowerBlockEntity impleme
 			int minWidth = Math.max(RenderHelper.itemWithNameWidth(filterStack, font), modeWidth) + 4;
 
 			super.renderHUD(gui, window, font, minWidth / 2, minWidth / 2, filterStack.isEmpty() ? 40 : 60);
-			gui.text(font, mode, modeTextStart, centerY + 30, color);
+			gui.text(font, mode, modeTextStart, centerY + 30, ARGB.opaque(color));
 			RenderHelper.renderItemWithNameCentered(gui, window, font, filterStack, centerY + 40, color);
 		}
 	}

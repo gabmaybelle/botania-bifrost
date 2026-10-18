@@ -679,7 +679,7 @@ public final class RenderHelper {
 	*/
 	public static void renderItemWithName(GuiGraphicsExtractor gui, Font font, ItemStack itemStack, int startX, int startY, int color) {
 		if (!itemStack.isEmpty()) {
-			gui.text(font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, color);
+			gui.text(font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, ARGB.opaque(color));
 			gui.item(itemStack, startX, startY);
 		}
 	}

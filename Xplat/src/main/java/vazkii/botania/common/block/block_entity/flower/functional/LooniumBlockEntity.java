@@ -27,6 +27,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.Weighted;
@@ -600,7 +601,7 @@ public class LooniumBlockEntity extends FunctionalFlowerBlockEntity {
 			int centerY = window.getGuiScaledHeight() / 2;
 
 			super.renderHUD(gui, window, font, halfMinWidth, halfMinWidth, 40);
-			gui.text(font, lootTypeMessage, lootTypeTextStart, centerY + 30, flower.getColor());
+			gui.text(font, lootTypeMessage, lootTypeTextStart, centerY + 30, ARGB.opaque(flower.getColor()));
 		}
 	}
 }

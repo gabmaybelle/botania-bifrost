@@ -42,6 +42,6 @@ public interface SimpleTextAndIconMonocleHud extends MonocleHud {
 		int textWidth = font.width(text.getVisualOrderText());
 		RenderHelper.renderHUDBox(gui, x - 4, y - 4, x + textWidth + 24, y + 20);
 		gui.item(getDisplayStack(), x, y);
-		gui.text(font, text, x + 20, y + 4, 0xFFFFFF);
+		gui.text(font, text, x + 20, y + 4, 0xFFFFFFFF);
 	}
 }

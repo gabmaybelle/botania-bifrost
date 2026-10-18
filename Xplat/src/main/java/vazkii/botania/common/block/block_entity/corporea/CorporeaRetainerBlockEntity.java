@@ -163,7 +163,7 @@ public class CorporeaRetainerBlockEntity extends BlockEntity implements Wandable
 			int y = window.getGuiScaledHeight() / 2 + 8;
 
 			RenderHelper.renderHUDBox(gui, x - 2, y, x + strWidth + 2, y + 12);
-			gui.text(font, mode, x, y + 2, 0xFFFFFF);
+			gui.text(font, mode, x, y + 2, 0xFFFFFFFF);
 		}
 	}
 

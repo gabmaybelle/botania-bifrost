@@ -360,7 +360,7 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 						reagent = reagents[idx];
 					}
 					gui.fakeItem(reagent, xc + radius + 16, yc + 6);
-					gui.text(font, "+", xc + radius + 14, yc + 10, 0xFFFFFF, false);
+					gui.text(font, "+", xc + radius + 14, yc + 10, 0xFFFFFFFF, false);
 				});
 
 				for (int i = 0; i < amt; i++) {
@@ -376,9 +376,9 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 			}
 			if (altar.recipeKeepTicks > 0 && altar.canAddLastRecipe()) {
 				String s = I18n.get("botaniamisc.altarRefill0");
-				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFF, false);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 10, 0xFFFFFFFF, false);
 				s = I18n.get("botaniamisc.altarRefill1");
-				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFF, false);
+				gui.text(font, s, xc - font.width(s) / 2, yc + 20, 0xFFFFFFFF, false);
 			}
 		}
 	}

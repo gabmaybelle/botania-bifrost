@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -208,7 +209,7 @@ public class HopperhockBlockEntity extends FunctionalFlowerBlockEntity implement
 			int centerY = window.getGuiScaledHeight() / 2;
 
 			super.renderHUD(gui, window, font, halfMinWidth, halfMinWidth, 40);
-			gui.text(font, filter, filterTextStart, centerY + 30, flower.getColor());
+			gui.text(font, filter, filterTextStart, centerY + 30, ARGB.opaque(flower.getColor()));
 		}
 	}
 

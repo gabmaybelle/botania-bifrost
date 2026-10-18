@@ -77,7 +77,7 @@ public class ColoredContentsPouchScreen extends AbstractContainerScreen<ColoredC
 					// Always draw the count even at 1
 					ms.pushMatrix();
 					// Same as how much vanilla offsets when drawing item decorations in gui slots
-					guiGraphics.text(mc.font, "1", x + 11, y + 9, 0xFFFFFF);
+					guiGraphics.text(mc.font, "1", x + 11, y + 9, 0xFFFFFFFF);
 					ms.popMatrix();
 				}
 			}

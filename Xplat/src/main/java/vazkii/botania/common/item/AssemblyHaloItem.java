@@ -471,7 +471,7 @@ public class AssemblyHaloItem extends Item {
 				gui.fill(x - 4, y - 4, x + l + 4, y + 35, 0x22000000);
 				gui.item(craftingTable.get(), window.getGuiScaledWidth() / 2 - 8, window.getGuiScaledHeight() / 2 - 52);
 
-				gui.text(font, name, x, y, 0xFFFFFF);
+				gui.text(font, name, x, y, 0xFFFFFFFF);
 			} else {
 				RecipeHolder<? extends Recipe<CraftingInput>> recipe = getSavedRecipe(player.level(), stack, slot);
 				Component label;
@@ -536,11 +536,11 @@ public class AssemblyHaloItem extends Item {
 			int yoff = 110;
 			if (isSavedRecipe && recipe != null && !canCraftHeuristic(player, recipe)) {
 				String warning = ChatFormatting.RED + I18n.get("botaniamisc.cantCraft");
-				gui.centeredText(font, warning, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
+				gui.centeredText(font, warning, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFFFF);
 				yoff += 12;
 			}
 
-			gui.centeredText(font, label, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFF);
+			gui.centeredText(font, label, window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() / 2 - yoff, 0xFFFFFFFF);
 		}
 	}
 

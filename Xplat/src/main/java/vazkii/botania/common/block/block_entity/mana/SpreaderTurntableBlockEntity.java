@@ -87,7 +87,7 @@ public class SpreaderTurntableBlockEntity extends BlockEntity implements Wandabl
 			int y = window.getGuiScaledHeight() / 2 + 8;
 
 			RenderHelper.renderHUDBox(gui, x - 2, y, x + strWidth + 2, y + 12);
-			gui.text(font, speed, x, y + 2, 0xFFFFFF);
+			gui.text(font, speed, x, y + 2, 0xFFFFFFFF);
 		}
 	}
 

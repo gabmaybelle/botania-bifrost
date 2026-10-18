@@ -362,7 +362,7 @@ public class SextantItem extends Item {
 					s = ChatFormatting.RED + s;
 				}
 
-				gui.text(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
+				gui.text(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFFFF);
 
 				if (inRange) {
 					radius += 4;

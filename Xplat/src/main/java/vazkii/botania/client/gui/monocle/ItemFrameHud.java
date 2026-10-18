@@ -69,7 +69,7 @@ public record ItemFrameHud(ItemFrame itemFrame) implements MonocleHud {
 
 			int textRow = 0;
 			for (var line : lines) {
-				gui.text(mc.font, line, x + 20, y + TEXT_ROW_HEIGHT * textRow + 4, 0xFFFFFF);
+				gui.text(mc.font, line, x + 20, y + TEXT_ROW_HEIGHT * textRow + 4, 0xFFFFFFFF);
 				textRow++;
 			}
 
@@ -91,7 +91,7 @@ public record ItemFrameHud(ItemFrame itemFrame) implements MonocleHud {
 				MutableComponent remainingItemsHint = Component.translatable(
 						"botaniamisc.monocle.frame.additional_stacks",
 						contentItems.size() - MAX_CONTENTS_COLUMNS * MAX_CONTENTS_ROWS);
-				gui.text(mc.font, remainingItemsHint, x + 24, y + 18 * row + 6 + textYOffset, 0xFFFFFF);
+				gui.text(mc.font, remainingItemsHint, x + 24, y + 18 * row + 6 + textYOffset, 0xFFFFFFFF);
 			}
 		}
 	}
