@@ -73,9 +73,9 @@ neoForge {
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    // PORT-26.3: Patchouli (API only, see Xplat/build.gradle) has no 26.3 release.
+    // PORT-26.3: the Patchouli 26.3 port.
     compileOnly(libs.patchouli.xplat)
-    //implementation(libs.patchouli.neoforge)
+    implementation(libs.patchouli.neoforge)
     compileOnly(variantOf(libs.curios) { classifier("api") })
 
     // PORT-26.3: disabled until these mods have 26.3 builds (their code is in src/disabled/integration).

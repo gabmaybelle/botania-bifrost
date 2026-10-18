@@ -101,6 +101,7 @@ import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.impl.BotaniaAPIImpl;
 import vazkii.botania.common.impl.corporea.DefaultCorporeaMatchers;
 import vazkii.botania.common.integration.corporea.CorporeaNodeDetectors;
+import vazkii.botania.common.integration.patchouli.PatchouliMultiblocks;
 import vazkii.botania.common.internal_caps.ItemSources;
 import vazkii.botania.common.item.*;
 import vazkii.botania.common.item.equipment.armor.terrasteel.TerrasteelHelmItem;
@@ -126,6 +127,7 @@ import vazkii.botania.network.clientbound.ItemLifeTimePacket;
 import vazkii.botania.test.BotaniaGameTests;
 import vazkii.botania.test.item.AccessorySlotTest;
 import vazkii.botania.xplat.XplatAbstractions;
+import vazkii.patchouli.api.PatchouliAPI;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -187,8 +189,11 @@ public class NeoForgeCommonInitializer {
 		DefaultCorporeaMatchers.init();
 		PlayerHelper.setFakePlayerClass(FakePlayer.class);
 
-		// PORT-26.3: disabled. Registering the multiblocks with Patchouli (for the Lexica's visualiser) waits for
-		// a 26.3 Patchouli in Phase 5. The Patchouli multiblocks are in PatchouliMultiblocks; gameplay uses BotaniaMultiblock.
+		// PORT-26.3: the Patchouli multiblocks (Lexica visualiser) are in PatchouliMultiblocks; gameplay uses BotaniaMultiblock
+		PatchouliAPI.get().registerMultiblock(botaniaRL("alfheim_portal"), PatchouliMultiblocks.ALFHEIM_PORTAL.get());
+		PatchouliAPI.get().registerMultiblock(BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.TERRESTRIAL_AGGLOMERATION_PLATE), PatchouliMultiblocks.TERRA_PLATE.get());
+		PatchouliAPI.get().registerMultiblock(BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.MANA_ENCHANTER), PatchouliMultiblocks.MANA_ENCHANTER.get());
+		PatchouliAPI.get().registerMultiblock(botaniaRL("gaia_ritual"), PatchouliMultiblocks.GAIA_ARENA.get());
 
 		OrechidManager.registerListener();
 		BotaniaRecipeIngredientsCache.registerListener();

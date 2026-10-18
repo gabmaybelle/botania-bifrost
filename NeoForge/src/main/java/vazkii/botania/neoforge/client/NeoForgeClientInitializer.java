@@ -70,6 +70,7 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.common.item.equipment.bauble.RingOfDexterousMotionItem;
 import vazkii.botania.xplat.ClientXplatAbstractions;
+import vazkii.patchouli.api.BookDrawScreenEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class NeoForgeClientInitializer {
 		// Events
 		var bus = NeoForge.EVENT_BUS;
 		// GUIs
-		// PORT-26.3: disabled. The Konami code's book overlay hooks Patchouli's BookDrawScreenEvent (Phase 5).
+		bus.addListener((BookDrawScreenEvent e) -> KonamiHandler.renderBook(e.getBook(), e.getScreen(), e.getMouseX(), e.getMouseY(), e.getPartialTicks(), e.getGraphics()));
 		bus.addListener((ClientTickEvent.Post e) -> {
 			ClientTickHandler.clientTickEnd(Minecraft.getInstance());
 			KonamiHandler.clientTick(Minecraft.getInstance());

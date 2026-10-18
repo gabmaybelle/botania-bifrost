@@ -13,7 +13,6 @@ import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -47,7 +46,7 @@ public class RotatingRecipeComponent extends RotatingItemListComponentBase {
 			}
 			var ingredients = new ArrayList<>(recipe.get().value().getIngredients());
 			ingredients.addAll(recipe.get().value().getCatalysts());
-			return NonNullList.of(Ingredient.EMPTY, ingredients.toArray(Ingredient[]::new));
+			return ingredients;
 		} else if ("petal_apothecary".equals(recipeType)) {
 			var recipe = BotaniaRecipeTypes.getRecipe(world,
 					Identifier.parse(recipeName), BotaniaRecipeTypes.PETAL_APOTHECARY_TYPE

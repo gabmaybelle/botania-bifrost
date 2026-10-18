@@ -44,7 +44,7 @@ public class TerraPlateComponent implements ICustomComponent {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
 		Matrix3x2fStack ms = gui.pose();
 		ms.pushMatrix();
 		context.renderItemStack(gui, x + 13, y + 1, mouseX, mouseY, cornerBlock);

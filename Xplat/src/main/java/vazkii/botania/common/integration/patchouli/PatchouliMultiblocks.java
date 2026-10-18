@@ -40,8 +40,8 @@ import java.util.stream.StreamSupport;
 /**
  * PORT-26.3: the Patchouli multiblocks, for the Lexica's previews and the Gaia arena display. They lived on the block
  * entities and the Gaia Guardian, whose classes then couldn't load without Patchouli's API (the lambdas name its
- * types). Gameplay checks the same patterns with {@link vazkii.botania.common.block.BotaniaMultiblock}; only touch
- * this class when Patchouli is installed.
+ * types). Gameplay checks the same patterns with {@link vazkii.botania.common.block.BotaniaMultiblock}; the loaders
+ * register these with Patchouli at startup.
  */
 public final class PatchouliMultiblocks {
 	private PatchouliMultiblocks() {}

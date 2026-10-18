@@ -87,6 +87,7 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.fabric.network.FabricPacketHandler;
 import vazkii.botania.xplat.ClientXplatAbstractions;
+import vazkii.patchouli.api.BookDrawScreenCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,7 +178,7 @@ public class FabricClientInitializer implements ClientModInitializer {
 		});
 
 		// Events
-		// PORT-26.3: disabled. The Konami code's book overlay hooks Patchouli's BookDrawScreenCallback (Phase 5).
+		BookDrawScreenCallback.EVENT.register(KonamiHandler::renderBook);
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::loadComplete);
 		ClientTickEvents.END_CLIENT_TICK.register(ClientTickHandler::clientTickEnd);
 		ClientTickEvents.END_CLIENT_TICK.register(KonamiHandler::clientTick);

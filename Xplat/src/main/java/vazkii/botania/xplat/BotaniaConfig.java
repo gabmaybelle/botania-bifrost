@@ -91,11 +91,6 @@ public class BotaniaConfig {
 	}
 
 	public static void resetPatchouliFlags() {
-		// PORT-26.3: the Patchouli API is compile-only until Phase 5, so its classes are missing at runtime;
-		// the flags only matter when Patchouli is installed anyway
-		if (!XplatAbstractions.INSTANCE.isModLoaded("patchouli")) {
-			return;
-		}
 		PatchouliAPI.get().setConfigFlag("botania:relics", common().relicsEnabled());
 		PatchouliAPI.get().setConfigFlag("botania:mana_enchanter", common().enchanterEnabled());
 		PatchouliAPI.get().setConfigFlag("botania:ender_hand_pickpocket", common().enderPickpocketEnabled());

@@ -32,6 +32,7 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -40,14 +41,15 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 import vazkii.botania.client.fx.WispParticleData;
-import vazkii.botania.client.patchouli.PatchouliUtils;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 import vazkii.botania.common.proxy.Proxy;
+import vazkii.patchouli.api.IMultiblock;
 import vazkii.patchouli.api.IStateMatcher;
 import vazkii.patchouli.api.PatchouliAPI;
+import vazkii.patchouli.common.multiblock.SparseMultiblock;
 
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -116,15 +118,15 @@ public class SextantItem extends Item {
 		if (centerPos == null || centerPos.dimension() != level.dimension()) {
 			return;
 		}
-		// PORT-26.3: disabled (Patchouli 1.21.1 API): the sextant preview does not follow the player until Patchouli is back
-		if (!PatchouliUtils.MULTIBLOCK_PREVIEW_AVAILABLE) {
+		IMultiblock mb = PatchouliAPI.get().getCurrentMultiblock();
+		if (!(mb instanceof SparseMultiblock smb) || !mb.getID().equals(MULTIBLOCK_ID)) {
 			return;
 		}
 		BlockPos anchor = Proxy.INSTANCE.getMultiblockAnchor();
 		if (anchor == null) {
 			return;
 		}
-		Vec3i sizeVec = Vec3i.ZERO; // PORT-26.3: disabled (Patchouli 1.21.1 API): was the multiblock's size
+		Vec3i sizeVec = mb.getSize();
 		int size = Math.max(sizeVec.getX(), Math.max(sizeVec.getY(), sizeVec.getZ()));
 		BlockPos center = centerPos.pos();
 		BlockPos playerPos = entity.blockPosition();
@@ -136,7 +138,7 @@ public class SextantItem extends Item {
 
 		// we are reasonably far from the current anchor position, but still close enough to the actual center
 		BlockPos newOffset = playerPos.subtract(center);
-		// PORT-26.3: disabled (Patchouli 1.21.1 API) smb.setOffset(newOffset.getX(), newOffset.getY(), newOffset.getZ());
+		smb.setOffset(newOffset.getX(), newOffset.getY(), newOffset.getZ());
 		Proxy.INSTANCE.setMultiblockAnchor(playerPos);
 	}
 
@@ -157,7 +159,7 @@ public class SextantItem extends Item {
 		};
 	}
 
-	private static void makeSphere(Object matcher, double radius, Map<BlockPos, Object> map) {
+	private static void makeSphere(IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map) {
 		// 3D version of Midpoint circle algorithm, based on https://stackoverflow.com/a/41666156/1331011
 		// This algorithm generates all combinations of X, Y, and Z components, where:
 		// - the X/Y/Z position is inside the sphere,
@@ -192,7 +194,7 @@ public class SextantItem extends Item {
 		}
 	}
 
-	private static void generateMirroredPositions(int x, int y, int z, Map<BlockPos, Object> map, Object matcher) {
+	private static void generateMirroredPositions(int x, int y, int z, Map<BlockPos, IStateMatcher> map, IStateMatcher matcher) {
 		Stream.of(
 				new BlockPos(x, y, z), new BlockPos(-x, y, z),
 				new BlockPos(x, -y, z), new BlockPos(-x, -y, z),
@@ -208,23 +210,23 @@ public class SextantItem extends Item {
 		}
 
 		double radius = calculateRadius(stack, living);
-		// PORT-26.3: the shape only feeds the multiblock preview; off (and Patchouli untouched) until Patchouli is back
-		if (1 < radius && radius <= MAX_RADIUS && PatchouliUtils.MULTIBLOCK_PREVIEW_AVAILABLE) {
+		if (1 < radius && radius <= MAX_RADIUS) {
 			IStateMatcher matcher = PatchouliAPI.get().predicateMatcher(Blocks.COBBLESTONE, s -> !s.isAir());
 			GlobalPos centerPos = stack.get(BotaniaDataComponents.BINDING_POS);
 			if (centerPos != null && centerPos.dimension() == world.dimension()) {
-				Map<BlockPos, Object> map = new HashMap<>();
+				Map<BlockPos, IStateMatcher> map = new HashMap<>();
 				getMode(stack).getCreator().create(matcher, radius + 0.5, map);
-				// PORT-26.3: disabled (Patchouli 1.21.1 API): the sparse multiblock preview
-				// IMultiblock sparse = PatchouliAPI.get().makeSparseMultiblock(map).setId(MULTIBLOCK_ID).setSymmetrical(true);
-				// Proxy.INSTANCE.showMultiblock(sparse, Component.literal("r = " + getRadiusString(radius)), centerPos.pos(), Rotation.NONE);
+				IMultiblock sparse = PatchouliAPI.get().makeSparseMultiblock(map).setId(MULTIBLOCK_ID)
+						.setSymmetrical(true);
+				Proxy.INSTANCE.showMultiblock(sparse, Component.literal("r = " + getRadiusString(radius)),
+						centerPos.pos(), Rotation.NONE);
 			}
 		}
 		return true;
 	}
 
 	private static ShapeCreator defineCircleShapeCreator(Direction axis1, Direction axis2) {
-		return (Object matcher, double radius, Map<BlockPos, Object> map) -> {
+		return (IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map) -> {
 			// 2D version of makeSphere, assuming y=0 at all times
 			final int maxR2 = (int) Math.floor(radius * radius);
 			int z = (int) Math.floor(radius);
@@ -242,7 +244,7 @@ public class SextantItem extends Item {
 	}
 
 	private static void generateMirroredPositions(Vec3i normal1, Vec3i normal2, int offset1, int offset2,
-			Map<BlockPos, Object> map, Object matcher) {
+			Map<BlockPos, IStateMatcher> map, IStateMatcher matcher) {
 		Stream.of(
 				BlockPos.ZERO.offset(normal1.multiply(offset1).offset(normal2.multiply(offset2))),
 				BlockPos.ZERO.offset(normal1.multiply(-offset1).offset(normal2.multiply(offset2))),
@@ -376,11 +378,9 @@ public class SextantItem extends Item {
 		}
 	}
 
-	// PORT-26.3: the shapes take any marker (a Patchouli IStateMatcher for the preview) so this enum's method
-	// references don't name Patchouli types, which are missing at runtime until Phase 5
 	@FunctionalInterface
 	public interface ShapeCreator {
-		void create(Object matcher, double radius, Map<BlockPos, Object> map);
+		void create(IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map);
 	}
 
 	@FunctionalInterface

@@ -32,11 +32,10 @@ modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version}"
 
-# PORT-26.3: Patchouli has no 26.3 release, so it is optional. Curios is optional too: without it, accessories work
-# from the hotbar.
+# PORT-26.3: Curios is optional: without it, accessories work from the hotbar.
 [[dependencies.botania]]
 modId = "patchouli"
-type = "optional"
+type = "required"
 versionRange = "*"
 
 [[dependencies.botania]]
