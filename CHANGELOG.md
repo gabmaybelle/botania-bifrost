@@ -2,6 +2,16 @@
 
 Botania Bifrost is an unofficial port of Botania by Vazkii and the Botania contributors to Minecraft 26.3.
 
+## 1.0.0-beta.3
+
+- The Lexica Botania opens its book again. It now needs Patchouli: install the unofficial 26.3 port of Patchouli,
+  version 26.3-94+port.2 or newer, on the client and the server. Older versions show some entry names blank.
+- The book's recipe, structure and Botania pages all draw, search and bookmarks work, and Visualize shows a
+  structure's ghost blocks in the world.
+- Fixed: text on Botania's on-screen displays was invisible. Block names on the Wand of the Forest display, the
+  readouts of functional flowers, sparks and the Hovering Hourglass, the Gaia Guardian's name on its health bar
+  and the mana tier labels in tooltips show again.
+
 ## 1.0.0-beta.2
 
 - Mana, Natura and Gaia Pylons give an enchanting table its power again on Fabric (they counted for nothing in
