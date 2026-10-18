@@ -61,7 +61,7 @@ Re-check these before Phase 1 and update the table.
 
 | Dependency | Fabric | NeoForge | Plan |
 |---|---|---|---|
-| Patchouli (Lexica Botania) | 26.1.x beta only | 26.1.x beta only | Ported to 26.3 for this port (Phase 5, 2026-10-18): built from Patchouli's 26.1 branch, required again as upstream. Not published yet. |
+| Patchouli (Lexica Botania) | 26.1.x beta only | 26.1.x beta only | Ported to 26.3 for this port (Phase 5, 2026-10-18): built from Patchouli's 26.1 branch, required again as upstream. Released as `26.3-94+port.1` on https://github.com/gabmaybelle/patchouli (pre-release); the build reads the jars from its GitHub releases. |
 | Accessories (rings, amulets) | Trinkets ends at 1.21.1. Use **Trinkets Updated** (Patbox fork, MIT, 26.3) | **Curios** `17.0.0-beta.3+26.3` | Disabled in Phase 1, wired up again in Phase 5 (Trinkets Updated `4.2.1+26.3`, Curios `17.0.0-beta.3+26.3`); both stay optional, as in the mod metadata since Phase 1. |
 | EMI | no 26.3 build | no 26.3 build | Optional (compile-only). Disable. |
 | JEI, REI | on 26.3 (JEI 31 beta; REI 26.3.824) | on 26.3 (JEI 31 beta; REI 26.3.824) | Optional. Both back in Phase 5. Dev runs load one at a time, never both: JEI by default, REI with `-Pload_override_rei`. |

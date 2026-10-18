@@ -18,7 +18,7 @@ jetbrains-annotations = "26.1.0"
 # PORT-26.3: still the 1.21.1 versions. Everything below Patchouli is disabled in the build files until the
 # mod has a 26.3 build (see PORTING.md, "Disabled for now"); Patchouli's jar is used for its API only.
 # PORT-26.3: the Patchouli 26.3 port (one version for all three artifacts)
-patchouli = "26.3-94-SNAPSHOT"
+patchouli = "26.3-94+port.1"
 
 emi = "1.1.24+1.21.1"
 # PORT-26.3: JEI for 26.3 is a beta
