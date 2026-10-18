@@ -8,8 +8,8 @@
  */
 package vazkii.botania.client.patchouli.component;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.joml.Matrix3x2fStack;
@@ -40,12 +40,12 @@ abstract class RotatingItemListComponentBase implements ICustomComponent {
 	protected abstract List<Ingredient> makeIngredients();
 
 	@Override
-	public void render(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
 		int degreePerInput = (int) (360F / ingredients.size());
 		int ticksElapsed = context.getTicksInBook();
 
 		float currentDegree = BotaniaConfig.client().lexiconRotatingItems()
-				? Screen.hasShiftDown()
+				? Minecraft.getInstance().hasShiftDown()
 						? ticksElapsed
 						: ticksElapsed + pticks
 				: 0;
@@ -59,7 +59,7 @@ abstract class RotatingItemListComponentBase implements ICustomComponent {
 
 	private void renderIngredientAtAngle(GuiGraphicsExtractor gui, IComponentRenderContext context, float angle, Ingredient ingredient, int mouseX, int mouseY) {
 		Matrix3x2fStack ms = gui.pose();
-		if (ingredient.isEmpty()) {
+		if (ingredient == null || ingredient.isEmpty()) {
 			return;
 		}
 
@@ -69,7 +69,7 @@ abstract class RotatingItemListComponentBase implements ICustomComponent {
 		double yPos = y + Math.sin(angle * Math.PI / 180D) * radius + 32;
 
 		ms.pushMatrix(); // This translation makes it not stuttery. It does not affect the tooltip as that is drawn separately later.
-		ms.translate(xPos - (int) xPos, yPos - (int) yPos, 0);
+		ms.translate((float) (xPos - (int) xPos), (float) (yPos - (int) yPos));
 		context.renderIngredient(gui, (int) xPos, (int) yPos, mouseX, mouseY, ingredient);
 		ms.popMatrix();
 	}

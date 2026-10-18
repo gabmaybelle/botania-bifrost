@@ -8,7 +8,6 @@
  */
 package vazkii.botania.client.patchouli.processor;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -68,7 +67,10 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 				if (shapeless) {
 					shapeless = !(recipe instanceof ShapedRecipe);
 				}
-				for (Ingredient ingredient : recipe.getIngredients()) {
+				for (Ingredient ingredient : PatchouliUtils.ingredientsOf(recipe)) {
+					if (ingredient == null) {
+						continue;
+					}
 					int size = RecipeUtils.stacksOf(ingredient).length;
 					if (longestIngredientSize < size) {
 						longestIngredientSize = size;
@@ -90,7 +92,7 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 	public IVariable process(Level level, String key) {
 		if (key.equals("heading")) {
 			if (!hasCustomHeading && !recipes.isEmpty()) {
-				return IVariable.from(recipes.getFirst().getResultItem(level.registryAccess()).getHoverName(), level.registryAccess());
+				return IVariable.from(PatchouliUtils.resultOf(recipes.getFirst(), level).getHoverName(), level.registryAccess());
 			}
 			return null;
 		}
@@ -118,23 +120,23 @@ public class MultiCraftingProcessor implements IComponentProcessor {
 			for (CraftingRecipe recipe : recipeList) {
 				if (recipe instanceof ShapedRecipe shaped) {
 					if (shaped.getWidth() < shapedX + 1) {
-						ingredients.add(Ingredient.EMPTY);
+						ingredients.add(null);
 					} else {
 						int realIndex = index - (shapedY * (3 - shaped.getWidth()));
-						NonNullList<Ingredient> list = recipe.getIngredients();
-						ingredients.add(list.size() > realIndex ? list.get(realIndex) : Ingredient.EMPTY);
+						List<Ingredient> list = PatchouliUtils.ingredientsOf(recipe);
+						ingredients.add(list.size() > realIndex ? list.get(realIndex) : null);
 					}
 
 				} else {
-					NonNullList<Ingredient> list = recipe.getIngredients();
-					ingredients.add(list.size() > index ? list.get(index) : Ingredient.EMPTY);
+					List<Ingredient> list = PatchouliUtils.ingredientsOf(recipe);
+					ingredients.add(list.size() > index ? list.get(index) : null);
 				}
 			}
 			return PatchouliUtils.interweaveIngredients(ingredients, size, level);
 		}
 		if (key.equals(outputKey)) {
 			return IVariable.wrapList(recipeList.stream()
-					.map(r -> IVariable.from(r.getResultItem(level.registryAccess()), level.registryAccess()))
+					.map(r -> IVariable.from(PatchouliUtils.resultOf(r, level), level.registryAccess()))
 					.collect(Collectors.toList()), level.registryAccess());
 		}
 		if (key.equals(shapelessKey)) {

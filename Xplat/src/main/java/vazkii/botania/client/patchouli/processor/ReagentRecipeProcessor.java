@@ -9,6 +9,7 @@
 
 package vazkii.botania.client.patchouli.processor;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
@@ -30,6 +31,9 @@ public abstract class ReagentRecipeProcessor<T extends RecipeWithReagent<?>> imp
 	@Override
 	public abstract void setup(Level level, IVariableProvider variables);
 
+	/** PORT-26.3: getResultItem is declared on each recipe interface, not on RecipeWithReagent. */
+	protected abstract ItemStack getOutput(T recipe, Level level);
+
 	@UnknownNullability
 	@Override
 	public IVariable process(Level level, String key) {
@@ -38,10 +42,10 @@ public abstract class ReagentRecipeProcessor<T extends RecipeWithReagent<?>> imp
 			return null;
 		}
 		return switch (key) {
-			case "recipe" -> IVariable.wrap(recipe.id().toString(), level.registryAccess());
+			case "recipe" -> IVariable.wrap(recipe.id().identifier().toString(), level.registryAccess());
 			case "reagent" -> PatchouliUtils.interweaveIngredients(List.of(recipe.value().getReagent()), level);
-			case "output" -> IVariable.from(recipe.value().getResultItem(level.registryAccess()), level.registryAccess());
-			case "heading" -> IVariable.from(recipe.value().getResultItem(level.registryAccess()).getHoverName(), level.registryAccess());
+			case "output" -> IVariable.from(getOutput(recipe.value(), level), level.registryAccess());
+			case "heading" -> IVariable.from(getOutput(recipe.value(), level).getHoverName(), level.registryAccess());
 			default -> null;
 		};
 	}

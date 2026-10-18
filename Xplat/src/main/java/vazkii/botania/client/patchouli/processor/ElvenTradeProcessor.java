@@ -89,7 +89,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 			if (inputIndex < ingredients.size()) {
 				return ingredients.get(inputIndex);
 			} else {
-				return Ingredient.EMPTY;
+				return null; // PORT-26.3: no Ingredient.EMPTY; null draws as an empty slot
 			}
 		}).collect(Collectors.toList());
 		return PatchouliUtils.interweaveIngredients(recipes, longestIngredientSize, level);

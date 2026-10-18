@@ -15,7 +15,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -37,8 +36,8 @@ import vazkii.botania.common.advancements.UseItemSuccessTrigger;
 import vazkii.botania.common.component.BotaniaDataComponents;
 import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.helper.DataComponentHelper;
+import vazkii.patchouli.api.PatchouliAPI;
 
-import java.net.URI;
 import java.util.function.Consumer;
 
 public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents {
@@ -54,8 +53,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 	}
 
 	public static boolean isOpen() {
-		// PORT-26.3: disabled (Patchouli 1.21.1 API): the book is never open until Patchouli is back
-		return false;
+		return BuiltInRegistries.ITEM.getKey(BotaniaItems.LEXICA_BOTANIA).equals(PatchouliAPI.get().getOpenBookGui());
 	}
 
 	@Override
@@ -73,19 +71,13 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 		tooltip.accept(getEdition().copy().withStyle(ChatFormatting.GRAY));
 	}
 
-	private static final Component ONLINE_LEXICON = Component.literal("botaniamod.net/lexicon.html")
-			.withStyle(style -> style.withColor(ChatFormatting.AQUA).withUnderlined(true)
-					.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://botaniamod.net/lexicon.html"))));
-
 	@Override
 	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);
 
 		if (playerIn instanceof ServerPlayer player) {
 			UseItemSuccessTrigger.INSTANCE.trigger(player, stack, player.level(), player.getX(), player.getY(), player.getZ());
-			// PORT-26.3: disabled (Patchouli 1.21.1 API) PatchouliAPI.get().openBookGUI(player, BuiltInRegistries.ITEM.getKey(this));
-			// Until Patchouli has a 26.3 build, the book points to the online Lexicon instead of doing nothing
-			player.sendSystemMessage(Component.translatable("botaniamisc.lexicaUnavailable", ONLINE_LEXICON));
+			PatchouliAPI.get().openBookGUI(player, BuiltInRegistries.ITEM.getKey(this));
 			playerIn.playSound(BotaniaSounds.LEXICON_OPEN, 1F, (float) (0.7 + Math.random() * 0.4));
 		}
 
@@ -94,8 +86,7 @@ public class LexicaBotaniaItem extends Item implements CustomCreativeTabContents
 
 	public static Component getEdition() {
 		try {
-			// PORT-26.3: disabled (Patchouli 1.21.1 API) return PatchouliAPI.get().getSubtitle(...);
-			return Component.literal("");
+			return PatchouliAPI.get().getSubtitle(BuiltInRegistries.ITEM.getKey(BotaniaItems.LEXICA_BOTANIA));
 		} catch (IllegalArgumentException e) {
 			return Component.literal(""); // TODO Adjust Patchouli because first search tree creation is too early to get the edition
 		}

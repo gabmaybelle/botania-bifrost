@@ -8,9 +8,12 @@
  */
 package vazkii.botania.client.patchouli;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +29,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PatchouliUtils {
-	/** PORT-26.3: the multiblock preview calls into the 1.21.1 Patchouli API; off until Patchouli is back (Phase 5). */
-	public static boolean MULTIBLOCK_PREVIEW_AVAILABLE = false;
 
 	private static boolean crafttweakerInfoNote = false;
 	private static boolean inVisualizer;
@@ -74,8 +75,13 @@ public class PatchouliUtils {
 	 */
 	public static <T extends Recipe<C>, C extends RecipeInput> List<T> getRecipeGroup(RecipeType<T> type, String group) {
 		List<T> list = new ArrayList<>();
-		// PORT-26.3: the client no longer receives machine recipes from the server, so there is nothing to look
-		// through here until Botania syncs its own recipes (Phase 5, with the Lexica and the recipe viewers).
+		// PORT-26.3: the client level answers from Botania's synced recipes (SyncedRecipes)
+		for (RecipeHolder<T> holder : BotaniaRecipeTypes.getAllRecipesFor(Minecraft.getInstance().level, type)) {
+			T recipe = holder.value();
+			if (group.equals(recipe.group())) {
+				list.add(recipe);
+			}
+		}
 		if (list.isEmpty()) {
 			BotaniaAPI.LOGGER.warn("Template references empty group {} of recipe type {}", group, type);
 		}
@@ -92,8 +98,13 @@ public class PatchouliUtils {
 	 * @return Serialized Patchouli ingredient string
 	 */
 	public static IVariable interweaveIngredients(List<Ingredient> ingredients, int longestIngredientSize, Level level) {
+		// PORT-26.3: an empty slot is null (there is no Ingredient.EMPTY any more)
 		if (ingredients.size() == 1) {
-			return IVariable.wrapList(Arrays.stream(RecipeUtils.stacksOf(ingredients.getFirst()))
+			Ingredient only = ingredients.getFirst();
+			if (only == null || only.isEmpty()) {
+				return IVariable.wrapList(List.of(IVariable.from(ItemStack.EMPTY, level.registryAccess())), level.registryAccess());
+			}
+			return IVariable.wrapList(Arrays.stream(RecipeUtils.stacksOf(only))
 					.map(i -> IVariable.from(i, level.registryAccess()))
 					.collect(Collectors.toList()), level.registryAccess());
 		}
@@ -121,7 +132,7 @@ public class PatchouliUtils {
 	 * Overload of the method above that uses the provided list's longest ingredient size.
 	 */
 	public static IVariable interweaveIngredients(List<Ingredient> ingredients, Level level) {
-		return interweaveIngredients(ingredients, ingredients.stream().mapToInt(ingr -> RecipeUtils.stacksOf(ingr).length).max().orElse(1), level);
+		return interweaveIngredients(ingredients, ingredients.stream().mapToInt(ingr -> ingr == null ? 1 : RecipeUtils.stacksOf(ingr).length).max().orElse(1), level);
 	}
 
 	/**
@@ -165,6 +176,23 @@ public class PatchouliUtils {
 	 * Workaround for Patchouli limitation - Allow block entity-rendered blocks to detect being rendered in
 	 * a multiblock visualization and switch to block model rendering to actually be visible.
 	 */
+	/**
+	 * PORT-26.3: vanilla crafting recipes no longer list their ingredients; a shaped recipe gives its grid (empty
+	 * slots as null, which {@link #interweaveIngredients} draws as empty), any other one its placement ingredients.
+	 */
+	public static List<Ingredient> ingredientsOf(CraftingRecipe recipe) {
+		if (recipe instanceof ShapedRecipe shaped) {
+			return shaped.getIngredients().stream().map(o -> o.orElse(null)).collect(Collectors.toCollection(ArrayList::new));
+		}
+		return recipe.placementInfo().ingredients();
+	}
+
+	/** PORT-26.3: a vanilla recipe only shows its result through its display. */
+	public static ItemStack resultOf(Recipe<?> recipe, Level level) {
+		List<RecipeDisplay> displays = recipe.display();
+		return displays.isEmpty() ? ItemStack.EMPTY : displays.getFirst().result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
+	}
+
 	public static boolean isInVisualizer() {
 		return inVisualizer;
 	}

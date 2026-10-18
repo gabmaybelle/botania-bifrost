@@ -45,6 +45,19 @@ tasks.withType(Javadoc).configureEach {
 
 repositories {
     mavenCentral()
+    // PORT-26.3: the unofficial Patchouli 26.3 port has no Maven repository; its GitHub releases carry the jars
+    // (patchouli-{xplat,fabric,neoforge}-<version>.jar on tag v<version>)
+    exclusiveContent {
+        forRepository {
+            ivy {
+                name = "Patchouli 26.3 port (GitHub releases)"
+                url = "https://github.com/gabmaybelle/patchouli/releases/download"
+                patternLayout { artifact("v[revision]/[module]-[revision].[ext]") }
+                metadataSources { artifact() }
+            }
+        }
+        filter { includeGroup("vazkii.patchouli") }
+    }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
