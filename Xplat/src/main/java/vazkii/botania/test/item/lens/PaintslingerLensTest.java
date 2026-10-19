@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.CandleBlock;
 
 import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.common.item.lens.LensItem;
 import vazkii.botania.test.BotaniaGameTest;
 import vazkii.botania.test.TestingUtil;
 
@@ -37,6 +38,11 @@ public class PaintslingerLensTest {
 		var spreader = TestingUtil.assertBlockEntity(helper, spreaderPos, BotaniaBlockEntities.MANA_SPREADER);
 		TestingUtil.assertThat(spreader.bindTo(player, new ItemStack(BotaniaItems.WAND_OF_THE_FOREST), helper.absolutePos(bindPos), Direction.UP),
 				() -> "Failed to bind spreader");
+		// PORT-26.3: the scene's lens still has its colour in the old item tag, which the data fixer moves
+		// to custom data, so the lens loads untinted; tint it here
+		ItemStack lens = spreader.getItem(0);
+		TestingUtil.assertThat(lens.is(BotaniaItems.PAINTSLINGER_LENS), () -> "Spreader has no paintslinger lens");
+		LensItem.setLensColor(lens, DyeColor.BLUE);
 
 		helper.startSequence()
 				.thenExecuteAfter(1, () -> helper.pressButton(buttonPos))
