@@ -34,6 +34,15 @@ public interface BotaniaRecipe<T extends RecipeInput> extends Recipe<T> {
 		return PlacementInfo.NOT_PLACEABLE;
 	}
 
+	/**
+	 * Not a recipe-book recipe; without this, vanilla's recipe manager warns that every Botania recipe
+	 * "can't be placed due to empty ingredients" on each load.
+	 */
+	@Override
+	default boolean isSpecial() {
+		return true;
+	}
+
 	@Override
 	default RecipeBookCategory recipeBookCategory() {
 		return Objects.requireNonNull(BuiltInRegistries.RECIPE_BOOK_CATEGORY.getValue(BOOK_CATEGORY_ID));
