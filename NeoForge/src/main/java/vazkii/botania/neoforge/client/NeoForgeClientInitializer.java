@@ -57,6 +57,7 @@ import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.client.gui.bag.ColoredContentsPouchScreen;
 import vazkii.botania.client.gui.box.TrinketCaseScreen;
 import vazkii.botania.client.gui.enderhand.HandOfEnderScreen;
+import vazkii.botania.client.integration.iris.IrisIntegration;
 import vazkii.botania.client.model.BotaniaLayerDefinitions;
 import vazkii.botania.client.model.armor.ArmorModels;
 import vazkii.botania.client.render.ColorHandler;
@@ -70,6 +71,7 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.common.item.equipment.bauble.RingOfDexterousMotionItem;
 import vazkii.botania.xplat.ClientXplatAbstractions;
+import vazkii.botania.xplat.XplatAbstractions;
 import vazkii.patchouli.api.BookDrawScreenEvent;
 
 import java.util.ArrayList;
@@ -94,6 +96,9 @@ public class NeoForgeClientInitializer {
 				List.of(BotaniaAPIClient.instance(), ClientXplatAbstractions.instance()));
 
 		// PORT-26.3: block render layers are read off the textures since 26.1, BlockRenderLayers is gone
+		if (XplatAbstractions.INSTANCE.isModLoaded("iris")) {
+			IrisIntegration.init();
+		}
 
 		// Events
 		var bus = NeoForge.EVENT_BUS;

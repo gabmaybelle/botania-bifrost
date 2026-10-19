@@ -24,6 +24,8 @@ emi = "1.1.24+1.21.1"
 # PORT-26.3: JEI for 26.3 is a beta
 jei = "31.14.0.72"
 rei = "26.3.824"
+iris-fabric = "1.11.7+26.3-fabric"
+iris-neoforge = "1.11.7+26.3-neoforge"
 
 # PORT-26.3: Curios for 26.3 is a beta; Trinkets (dev.emi) ends at 1.21.1, so Fabric uses Trinkets Updated
 # (Patbox fork, MIT), which bundles the Yumi library it needs at runtime.
@@ -76,6 +78,8 @@ jei-neoforge-api = { module = "mezz.jei:jei-26.3-neoforge-api", version.ref = "j
 # (no Xplat/Common definition for REI, since it's Intermediary and thus useless to our Xplat module)
 # PORT-26.3: 26.x ships unobfuscated, so REI publishes a loader-neutral API the Xplat code can compile against
 rei-api = { module = "me.shedaniel:RoughlyEnoughItems-api", version.ref = "rei" }
+iris-fabric = { module = "maven.modrinth:iris", version.ref = "iris-fabric" }
+iris-neoforge = { module = "maven.modrinth:iris", version.ref = "iris-neoforge" }
 rei-default-plugin = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin", version.ref = "rei" }
 rei-fabric = { module = "me.shedaniel:RoughlyEnoughItems-fabric", version.ref = "rei" }
 rei-neoforge = { module = "me.shedaniel:RoughlyEnoughItems-neoforge", version.ref = "rei" }

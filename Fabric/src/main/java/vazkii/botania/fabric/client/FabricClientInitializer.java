@@ -76,6 +76,7 @@ import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.client.gui.bag.ColoredContentsPouchScreen;
 import vazkii.botania.client.gui.box.TrinketCaseScreen;
 import vazkii.botania.client.gui.enderhand.HandOfEnderScreen;
+import vazkii.botania.client.integration.iris.IrisIntegration;
 import vazkii.botania.client.model.BotaniaLayerDefinitions;
 import vazkii.botania.client.model.armor.ArmorModels;
 import vazkii.botania.client.render.ColorHandler;
@@ -87,6 +88,7 @@ import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.armor.manasteel.ManasteelArmorItem;
 import vazkii.botania.fabric.network.FabricPacketHandler;
 import vazkii.botania.xplat.ClientXplatAbstractions;
+import vazkii.botania.xplat.XplatAbstractions;
 import vazkii.patchouli.api.BookDrawScreenCallback;
 
 import java.util.ArrayList;
@@ -120,6 +122,9 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 		// PORT-26.3: shaders are RenderPipelines now (CoreShaders); Fabric needs no registration for them
 		FabricPacketHandler.initClient();
+		if (XplatAbstractions.INSTANCE.isModLoaded("iris")) {
+			IrisIntegration.init();
+		}
 
 		// Guis (MenuScreens#register is opened up by Fabric's transitive access widener)
 		MenuScreens.register(BotaniaItems.COLORED_CONTENTS_POUCH_MENU_TYPE, ColoredContentsPouchScreen::new);

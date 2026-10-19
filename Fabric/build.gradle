@@ -79,6 +79,7 @@ dependencies {
 
     testImplementation(libs.fabric.junit)
 
+    compileOnly(libs.iris.fabric) { transitive = false } // PORT-26.3: for IrisIntegration
     compileOnly(libs.jetbrains.annotations)
 
     // PORT-26.3: the Patchouli 26.3 port; 26.3 jars are not remapped, so plain implementation.

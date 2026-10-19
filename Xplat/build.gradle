@@ -31,6 +31,7 @@ dependencies {
     compileOnly(libs.rei.api) { exclude group: "net.fabricmc" }
     compileOnly(libs.rei.default.plugin) { exclude group: "net.fabricmc" }
 
+    compileOnly(libs.iris.fabric) { transitive = false } // PORT-26.3: only its v0 API, for IrisIntegration
     compileOnly(libs.jetbrains.annotations)
 }
 
