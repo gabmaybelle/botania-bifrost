@@ -1,42 +1,33 @@
 ## Botania Bifrost
 
-Botania Bifrost is an unofficial port of Botania to Minecraft 26.3 for Fabric
-and NeoForge, based on the original by Vazkii and the Botania contributors. It
-has been modified from the original and is distributed under the Botania License.
+![](web/assets/img/logo.png)
 
-Please don't report problems with this port to Vazkii or the official Botania
-team. Use this repository's issue tracker instead.
+Botania Bifrost is an unofficial port of [Botania](https://botaniamod.net/) to Minecraft 26.3 for Fabric
+and NeoForge, based on the original by Vazkii and the Botania contributors. It has been modified from the
+original and is distributed under the [Botania License](http://botaniamod.net/license.php).
 
-Porting progress is tracked in PORTING.md.
+Botania is a tech mod themed around natural magic: grow mystical flowers, gather mana and build up to
+Alfheim and the Gaia Guardian.
 
-![](web/assets/img/logo.png)  
-Welcome to the Botania repository.  
+**Please don't report problems with this port to Vazkii or the official Botania team.** Use this
+repository's [issue tracker](https://github.com/gabmaybelle/botania-bifrost/issues) instead.
 
-Botania is a [Minecraft](https://minecraft.net/) tech mod themed around natural magic. It's inspired by other magic mods, such as [Thaumcraft](https://www.curseforge.com/minecraft/mc-mods/thaumcraft) or [Blood Magic](https://www.curseforge.com/minecraft/mc-mods/blood-magic).  
+## Download
 
-Botania is licensed under the [Botania License](http://botaniamod.net/license.php)
+Get the jar for your loader from the [releases page](https://github.com/gabmaybelle/botania-bifrost/releases).
+The port is in beta: back up your worlds before trying it.
 
-For information on contributing, please read `CONTRIBUTING.md`.
+## What you need
 
-## Maven info
+- Minecraft 26.3 with Fabric or NeoForge.
+- [Patchouli](https://github.com/gabmaybelle/patchouli/releases), the unofficial 26.3 port, version
+  26.3-94+port.2 or newer, on both the client and the server. The Lexica Botania needs it.
+- On Fabric: [Fabric API](https://modrinth.com/mod/fabric-api).
+- Optional, for accessory slots (rings, amulets, belts): Trinkets Updated on Fabric, or Curios on NeoForge.
+- Works with Iris shader packs.
 
-Maven artifacts are located [here](https://maven.blamejared.com/vazkii/botania/Botania/), each folder representing a version.
+## More
 
-Note: As of 1.16, intermediate (non-release) Maven builds are no longer persisted.
-That is, you must either depend on a *released* version of Botania, e.g. `1.16.2-407`, or specifically opt in to the bleeding-edge
-build of the next version. For example, `1.16.2-408-SNAPSHOT` would be the current bleeding edge version of future version `1.16.2-408`. 
-
-Note that `-SNAPSHOT` versions can be broken from time to time, and you are strongly discouraged from using them unless you are helping dogfood, test, or contribute to Botania. They may also be pruned from time to time to save disk space on the server. Do *not* rely on `-SNAPSHOT` versions for anything important!
-
-In Forge, add the following to your `build.gradle`
-```gradle
-repositories {
-    maven { url 'https://maven.blamejared.com' }
-}
-
-dependencies {
-    // 1.14+
-    compileOnly fg.deobf("vazkii.botania:Botania:[VERSION]:api")
-    runtimeOnly fg.deobf("vazkii.botania:Botania:[VERSION]")
-}
-```
+- [CHANGELOG.md](CHANGELOG.md): what changed in each release.
+- [PORTING.md](PORTING.md): how the port was done and what was checked.
+- [CONTRIBUTING.md](CONTRIBUTING.md): the original Botania contributing guide.
