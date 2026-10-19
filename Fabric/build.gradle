@@ -40,6 +40,18 @@ test {
     useJUnitPlatform()
 }
 
+// PORT-26.3: client screenshot tests (src/gametest). `./gradlew :Fabric:runClientGameTest` starts a real
+// game, walks through Botania's screens and renderers, and saves screenshots. Nothing here ships in the jar.
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "botania_clienttest"
+        enableGameTests = false
+        enableClientGameTests = true
+        eula = true
+    }
+}
+
 repositories {
     maven {
         name = "Modmuss"

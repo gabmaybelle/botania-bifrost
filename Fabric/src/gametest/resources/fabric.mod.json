@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 1,
+	"id": "botania_clienttest",
+	"version": "1.0.0",
+	"name": "Botania client screenshot tests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"vazkii.botania.fabric.clienttest.BotaniaScreenshotTest"
+		]
+	},
+	"depends": {
+		"botania": "*"
+	}
+}
