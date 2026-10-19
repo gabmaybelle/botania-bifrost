@@ -2,6 +2,15 @@
 
 Botania Bifrost is an unofficial port of Botania by Vazkii and the Botania contributors to Minecraft 26.3.
 
+## 1.0.0-beta.4
+
+- Fixed: the Botania Challenges tab in the Advancements screen showed a magenta and black checkerboard. It has its
+  livingrock brick background again.
+- Wisps and sparkles now draw correctly with an Iris shader pack. Before, they could appear as a smear in the
+  corner of the screen, and the log warned about a missing program in Iris's override list.
+- The game log no longer lists every Botania recipe as "can't be placed" when a world loads. The recipes worked
+  before too; only the warnings are gone.
+
 ## 1.0.0-beta.3
 
 - The Lexica Botania opens its book again. It now needs Patchouli: install the unofficial 26.3 port of Patchouli,
