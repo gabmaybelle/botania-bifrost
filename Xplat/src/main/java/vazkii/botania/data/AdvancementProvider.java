@@ -436,7 +436,7 @@ public class AdvancementProvider {
 					.display(rootDisplay(BotaniaItems.DICE_OF_FATE,
 							"advancement.botania_challenge",
 							"advancement.botania_challenge.desc",
-							botaniaRL("textures/block/livingrock_bricks.png")))
+							botaniaRL("block/livingrock_bricks")))
 					.addCriterion("flower", onPickup(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS))
 					.save(output, challengeId("root"));
 
